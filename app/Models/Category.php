@@ -1,24 +1,21 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-class Payment extends Model
+
+class Category extends Model
 {
     public $incrementing = false;
 
-    const STATUS_PAGADO = 1;
-    const STATUS_PARCIAL = 2;
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
 
     protected $keyType = 'string';
-    protected $table = 'payments';
+    protected $table = 'category';
 
     protected $fillable = [
-        'id',
-        'service_id', 
-        'type',
-        'subtotal', 
-        'total', 
+        'id', 
+        'cat_name', 
         'status', 
         'creation_date'
     ];
-
 }

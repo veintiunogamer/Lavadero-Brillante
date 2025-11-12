@@ -1,24 +1,25 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
-class Payment extends Model
+
+class Role extends Model
 {
     public $incrementing = false;
 
-    const STATUS_PAGADO = 1;
-    const STATUS_PARCIAL = 2;
-
     protected $keyType = 'string';
-    protected $table = 'payments';
+    protected $table = 'roles';
+
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
+
+    const TYPE_ADMIN = 1;
+    const TYPE_USER = 2;
 
     protected $fillable = [
         'id',
-        'service_id', 
+        'name',
         'type',
-        'subtotal', 
-        'total', 
-        'status', 
+        'status',
         'creation_date'
     ];
-
 }
