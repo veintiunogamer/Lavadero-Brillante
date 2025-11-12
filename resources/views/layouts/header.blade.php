@@ -5,11 +5,12 @@
     </div>
 
     <nav class="main-nav">
-        <a href="#">Agendamiento</a>
-        <a href="#">Clientes</a>
-        <a href="#">Servicios</a>
-        <a href="#">Usuarios</a>
-        <a href="#">Informes</a>
+        <a href="{{ route('home') }}">Inicio</a>
+        <a href="{{ route('agendamiento.index') }}">Agendamiento</a>
+        <a href="{{ route('clientes.index') }}">Clientes</a>
+        <a href="{{ route('servicios.index') }}">Servicios</a>
+        <a href="{{ route('usuarios.index') }}">Usuarios</a>
+        <a href="{{ route('informes.index') }}">Informes</a>
     </nav>
 
     <div class="user-info">
