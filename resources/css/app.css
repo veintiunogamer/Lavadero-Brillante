@@ -265,3 +265,51 @@ hr {
     opacity: 1;
     box-shadow: 0 4px 16px rgba(51,102,255,0.18);
 }
+
+.card-citas {
+    background: #e5e5e5;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 1150px;
+}
+.citas-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #222;
+}
+.citas-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+.citas-tab {
+    background: #f7f9fa;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 2rem;
+    font-size: 1rem;
+    color: #222;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.citas-tab-active {
+    background: #eef3fa;
+    color: var(--color-azul-logo);
+    box-shadow: 0 2px 8px rgba(51,102,255,0.07);
+}
+.citas-content {
+    text-align: center;
+    margin-top: 2rem;
+}
+.citas-empty {
+    color: #3a4a5a;
+    font-size: 1.1rem;
+    margin-top: 2rem;
+}

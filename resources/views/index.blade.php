@@ -186,4 +186,14 @@
 <div class="row" style="justify-content:center; margin-top:2rem;">
     <button class="confirm-btn" disabled>Confirmar Agendamiento</button>
 </div>
+<div class="card-citas">
+    <h2 class="citas-title">Registro de Citas</h2>
+    <div class="citas-tabs">
+        <button class="citas-tab citas-tab-active"><span class="icon">📅</span> Citas Pendientes</button>
+        <button class="citas-tab"><span class="icon">⏲️</span> Historial Completo</button>
+    </div>
+    <div class="citas-content">
+        <p class="citas-empty">No hay citas pendientes.</p>
+    </div>
+</div>
 @endsection
