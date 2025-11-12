@@ -1,2 +1,10 @@
 // JS para funcionalidades de órdenes
-console.log('Orders JS cargado');
+function ordersModuleActive() {
+	return !!document.getElementById('orders-root');
+}
+
+if (typeof window !== 'undefined' && ordersModuleActive()) {
+	console.log('orders.js cargado');
+}
+
+// Aquí iría el resto del código específico de órdenes

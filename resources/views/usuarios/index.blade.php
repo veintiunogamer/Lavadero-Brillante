@@ -1,6 +1,6 @@
 @extends('layouts.base')
 @section('content')
-<div class="card-form" x-data="usuariosApp()" x-init="initData(@json($users), @json($roles))">
+<div id="usuarios-root" class="card-form" x-data="typeof usuariosApp === 'function' ? usuariosApp() : {}" x-init='if (typeof usuariosApp === "function") initData(@json($users), @json($roles))'>
     <h2 class="card-title">Usuarios</h2>
     <p>Listado y gestión de usuarios del sistema.</p>
 

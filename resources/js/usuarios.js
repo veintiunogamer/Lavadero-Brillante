@@ -1,4 +1,17 @@
+// Solo mostrar logs si estamos en la vista de usuarios
+function usuariosModuleActive() {
+    return !!document.getElementById('usuarios-root');
+}
+
+if (typeof window !== 'undefined' && usuariosModuleActive()) {
+    console.log('usuarios.js cargado');
+}
+
+// Exponer la función globalmente para Alpine
 window.usuariosApp = function() {
+    if (usuariosModuleActive()) {
+        console.log('window.usuariosApp definida');
+    }
     return {
         users: [],
         roles: [],

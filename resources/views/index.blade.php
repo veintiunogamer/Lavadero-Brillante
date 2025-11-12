@@ -1,6 +1,7 @@
 @extends('layouts.base')
 
 @section('content')
+<div id="orders-root">
 <div class="card-form">
     <h2 class="card-title">
         <span class="icon">👤</span>
@@ -195,5 +196,6 @@
     <div class="citas-content">
         <p class="citas-empty">No hay citas pendientes.</p>
     </div>
+</div>
 </div>
 @endsection
