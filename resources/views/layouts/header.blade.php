@@ -12,8 +12,16 @@
         <a href="#">Informes</a>
     </nav>
 
-    <button class="logout-btn">
-        <span class="icon">⎋</span> Cerrar Sesión
-    </button>
+    <div class="user-info">
+        @auth
+            <span class="user-name">👤 {{ Auth::user()->username }}</span>
+            <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="logout-btn">
+                    <span class="icon">⎋</span> Cerrar Sesión
+                </button>
+            </form>
+        @endauth
+    </div>
 
 </header>

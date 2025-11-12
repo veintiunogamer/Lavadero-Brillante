@@ -313,3 +313,99 @@ hr {
     font-size: 1.1rem;
     margin-top: 2rem;
 }
+
+/* LOGIN FORM STYLES */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-azul-bg);
+}
+.login-card {
+    background: var(--color-blanco);
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(51,102,255,0.08);
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.login-logo {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 1.2rem;
+    letter-spacing: 1px;
+}
+.login-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-azul-logo);
+}
+.login-desc {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 1.2rem;
+    text-align: center;
+}
+.input-group {
+    width: 100%;
+    margin-bottom: 1.1rem;
+}
+.input-group label {
+    font-size: 1rem;
+    color: var(--color-azul-logo);
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+.input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    font-size: 1rem;
+    background: #f8f9fa;
+    color: #222;
+    margin-top: 0.2rem;
+    outline: none;
+    transition: border 0.2s;
+}
+.input:focus {
+    border-color: var(--color-azul-logo);
+}
+.login-btn {
+    width: 100%;
+    background: var(--color-azul-logo);
+    color: var(--color-blanco);
+    border: none;
+    border-radius: 10px;
+    padding: 0.8rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background 0.2s;
+}
+.login-btn:disabled {
+    background: #b3c6ff;
+    cursor: not-allowed;
+}
+.login-error {
+    color: var(--color-rojo-btn);
+    background: #ffeaea;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-top: 0.7rem;
+    font-size: 1rem;
+    text-align: center;
+}
+.spinner {
+    margin: 1rem 0;
+    color: var(--color-azul-logo);
+    font-size: 1rem;
+    text-align: center;
+}
