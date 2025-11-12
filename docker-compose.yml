@@ -73,7 +73,7 @@ services:
       - brillante
       - app
     ports:
-      - "5173:5173" # Puerto por defecto de Vite
+      - "5174:5174" # Puerto configurado en vite.config.js
     labels:
       - traefik.enable=false
 

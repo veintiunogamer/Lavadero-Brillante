@@ -9,3 +9,259 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Variables de color */
+:root {
+    --color-azul-bg: #0a2239;
+    --color-azul-logo: #3366ff;
+    --color-amarillo-logo: #ffd600;
+    --color-rojo-btn: #f44336;
+    --color-blanco: #fff;
+}
+
+.app-bg {
+    background: var(--color-azul-bg);
+    min-height: 100vh;
+    color: var(--color-blanco);
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background: var(--color-azul-bg);
+}
+.logo {
+    font-size: 2rem;
+    font-weight: bold;
+}
+.lavadero {
+    color: var(--color-azul-logo);
+}
+.brillante {
+    color: var(--color-amarillo-logo);
+}
+.main-nav {
+    display: flex;
+    gap: 2rem;
+}
+.main-nav a {
+    color: var(--color-blanco);
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+.logout-btn {
+    background: var(--color-rojo-btn);
+    color: var(--color-blanco);
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.main-content {
+    padding: 2rem;
+}
+.main-footer {
+    text-align: center;
+    padding: 1rem;
+    background: var(--color-azul-bg);
+    color: var(--color-blanco);
+    font-size: 0.9rem;
+}
+
+.card-form {
+    background: var(--color-blanco);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 1150px;
+}
+.card-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #222;
+}
+.row {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+}
+.input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 220px;
+}
+.input-group label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    color: #222;
+}
+.input {
+    border: 1px solid #dbe2ea;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    background: #f7f9fa;
+    color: #222;
+    outline: none;
+    transition: border 0.2s;
+}
+.input:focus {
+    border-color: var(--color-azul-logo);
+}
+.required {
+    color: var(--color-rojo-btn);
+    font-size: 1.1em;
+}
+hr {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 1.5rem 0;
+}
+
+.service-box {
+    background: #f7f9fa;
+    border-radius: 12px;
+    border: 1px solid #e0e6ed;
+    padding: 1.2rem 1rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.add-service-btn {
+    background: #e0e6ed;
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.remove-btn {
+    background: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.card-form small {
+    color: #888;
+    margin-top: 0.3rem;
+    display: block;
+}
+
+.calendar-box {
+    background: #fff;
+    border: 1px solid #e0e6ed;
+    border-radius: 12px;
+    padding: 1.2rem;
+    min-width: 240px;
+    max-width: 260px;
+    margin-right: 2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.calendar-enhanced {
+    background: #f7f9fa;
+    border: 2px solid var(--color-azul-logo);
+    box-shadow: 0 2px 8px rgba(51,102,255,0.07);
+    margin-bottom: 0.5rem;
+}
+.calendar-header {
+    background: #e0e6ed;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.7rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-azul-logo);
+    letter-spacing: 0.5px;
+}
+.calendar-month {
+    font-weight: 700;
+    color: var(--color-azul-logo);
+}
+.calendar-year {
+    font-weight: 400;
+    color: #888;
+}
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 1rem;
+}
+.calendar-table th {
+    color: var(--color-azul-logo);
+    font-weight: 600;
+    background: #f7f9fa;
+    border-radius: 4px;
+}
+.calendar-table td {
+    padding: 0.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #222;
+    background: #fff;
+    transition: background 0.2s, color 0.2s;
+}
+.calendar-table td.calendar-active {
+    background: var(--color-azul-logo);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(51,102,255,0.12);
+}
+.calendar-table td.calendar-muted {
+    color: #bbb;
+    background: #f7f9fa;
+}
+.calendar-table td:hover:not(.calendar-active):not(.calendar-muted) {
+    background: #e0e6ed;
+}
+.calendar-footer {
+    margin-top: 0.7rem;
+    text-align: center;
+}
+.calendar-tip {
+    color: var(--color-azul-logo);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+.confirm-btn {
+    background: var(--color-azul-logo);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 2.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(51,102,255,0.10);
+    cursor: not-allowed;
+    opacity: 0.7;
+    transition: opacity 0.2s, box-shadow 0.2s;
+}
+.confirm-btn:enabled {
+    cursor: pointer;
+    opacity: 1;
+    box-shadow: 0 4px 16px rgba(51,102,255,0.18);
+}
