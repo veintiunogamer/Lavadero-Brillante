@@ -31,6 +31,7 @@
     justify-content: space-between;
     padding: 1rem 2rem;
     background: var(--color-azul-bg);
+    position: relative;
 }
 .logo {
     font-size: 2rem;
@@ -46,6 +47,147 @@
     display: flex;
     gap: 2rem;
 }
+
+/* Mobile styles for header */
+.nav-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+}
+.nav-toggle .hamburger {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--color-blanco);
+    position: relative;
+}
+.nav-toggle .hamburger::before,
+.nav-toggle .hamburger::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 22px;
+    height: 2px;
+    background: var(--color-blanco);
+}
+.nav-toggle .hamburger::before { top: -7px; }
+.nav-toggle .hamburger::after { top: 7px; }
+
+/* User info compact */
+.user-info { display: flex; gap: 1rem; align-items: center; }
+
+/* User dropdown */
+.user-dropdown { position: relative; }
+.user-toggle {
+    /* Make the whole control look like a badge */
+    background: var(--color-amarillo-logo);
+    border: none;
+    color: var(--color-azul-logo);
+    display: inline-flex;
+    gap: 0.6rem;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.45rem 0.9rem; /* increased vertical padding for more height */
+    min-height: 38px; /* ensure a taller hit area */
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+.user-toggle .caret { font-size: 0.85rem; opacity: 0.95; color: var(--color-azul-logo); }
+
+/* Icon helper used in headers and buttons */
+.icon {
+    margin-right: 0.6rem;
+    display: inline-block;
+}
+.user-menu {
+    position: absolute;
+    right: 0.25rem;
+    top: calc(100% + 8px);
+    background: var(--color-blanco);
+    color: #222;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    min-width: 180px;
+    display: none;
+    z-index: 120;
+    padding: 0.6rem;
+}
+.user-dropdown.open .user-menu { display: block; }
+.user-menu .logout-btn { width: 100%; display: block; }
+.logout-inline { display: none; }
+.logout-small {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.95rem;
+    border-radius: 6px;
+}
+
+/* Username badge styling */
+.user-toggle .user-name {
+    /* Username inherits the badge styling from the button; keep it inline */
+    background: none;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-block;
+    line-height: 1;
+}
+
+@media (max-width: 900px) {
+    .main-header {
+        padding: 0.75rem 1rem;
+        gap: 1rem;
+    }
+    .main-nav {
+        display: none;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: var(--color-azul-bg);
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 1rem 1.5rem 1rem;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        z-index: 90;
+    }
+    .main-nav a {
+        padding: 0.6rem 0.8rem;
+        display: block;
+        border-radius: 6px;
+    }
+    .nav-toggle { display: flex; }
+    .user-info { order: 3; }
+    .logo { order: 1; }
+
+    /* When header has nav-open, show nav */
+    .main-header.nav-open .main-nav {
+        display: flex;
+    }
+
+    /* Make logout button smaller on mobile */
+    .logout-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.95rem;
+    }
+
+    /* Show inline logout on small screens and hide dropdown toggle username */
+    .logout-inline { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .user-toggle .user-name { display: none; }
+}
+
+@media (max-width: 480px) {
+    .logo { font-size: 1.25rem; }
+    .main-nav a { font-size: 0.95rem; }
+    .main-header { padding: 0.6rem 0.8rem; }
+}
 .main-nav a {
     color: var(--color-blanco);
     text-decoration: none;
@@ -54,9 +196,11 @@
     border-radius: 6px;
     transition: background 0.2s, color 0.2s;
 }
-.main-nav a:hover {
-    background: var(--color-azul-logo);
-    color: var(--color-blanco);
+.main-nav a:hover,
+.main-nav a.active {
+    background: var(--color-amarillo-logo);
+    color: var(--color-azul-logo);
+    font-weight: 700;
 }
 .logout-btn {
     background: var(--color-rojo-btn);

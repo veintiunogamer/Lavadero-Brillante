@@ -4,7 +4,7 @@
 <div id="orders-root">
 <div class="card-form">
     <h2 class="card-title">
-        <span class="icon">👤</span>
+        <i class="fa-solid fa-receipt icon"></i>
         1. Datos del Cliente y Vehículo
     </h2>
     <div class="row">
@@ -53,9 +53,9 @@
     </div>
 </div>
 <div class="card-form">
-    <h2 class="card-title"><span class="icon">🧼</span> 2. Servicios</h2>
+    <h2 class="card-title"><i class="fa-solid fa-broom icon"></i> 2. Servicios</h2>
     <div class="row" style="margin-bottom: 0.5rem;">
-        <span class="icon" style="font-size:1.2rem;">🧼</span>
+        <i class="fa-solid fa-broom icon" style="font-size:1.2rem;"></i>
         <span style="font-size:1.2rem;font-weight:500;">2. Servicios</span>
     </div>
     <p>Elige una <a href="#" style="color:var(--color-azul-logo);text-decoration:underline;">categoría</a> y luego el servicio. La lista es corta y filtrada por categoría.</p>
@@ -85,12 +85,12 @@
                 <label>€</label>
                 <input type="number" class="input" value="0">
             </div>
-            <div class="input-group" style="align-items: flex-end;">
-                <button class="remove-btn">✕</button>
-            </div>
+                    <div class="input-group" style="align-items: flex-end;">
+                        <button class="remove-btn"><i class="fa-solid fa-times"></i></button>
+                    </div>
         </div>
     </div>
-    <button class="add-service-btn"><span class="icon">➕</span> Añadir Servicio</button>
+    <button class="add-service-btn"><i class="fa-solid fa-plus icon"></i> Añadir Servicio</button>
     <div class="service-box">
         <div class="input-group" style="width:100%;">
             <label>Descripción de la cita (se genera automáticamente)</label>
@@ -118,7 +118,7 @@
     </div>
 </div>
 <div class="card-form">
-    <h2 class="card-title"><span class="icon">✔️</span> 3. Fecha, Hora y Pago</h2>
+    <h2 class="card-title"><i class="fa-solid fa-check icon"></i> 3. Fecha, Hora y Pago</h2>
     <div class="row" style="align-items: flex-start;">
         <div class="calendar-box calendar-enhanced">
             <div class="calendar-header">
@@ -190,8 +190,8 @@
 <div class="card-citas">
     <h2 class="citas-title">Registro de Citas</h2>
     <div class="citas-tabs">
-        <button class="citas-tab citas-tab-active"><span class="icon">📅</span> Citas Pendientes</button>
-        <button class="citas-tab"><span class="icon">⏲️</span> Historial Completo</button>
+    <button class="citas-tab citas-tab-active"><i class="fa-solid fa-calendar icon"></i> Citas Pendientes</button>
+    <button class="citas-tab"><i class="fa-solid fa-clock icon"></i> Historial Completo</button>
     </div>
     <div class="citas-content">
         <p class="citas-empty">No hay citas pendientes.</p>

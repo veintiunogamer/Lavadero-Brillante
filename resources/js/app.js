@@ -1,6 +1,7 @@
 import './bootstrap';
 import './usuarios.js';
 import './orders.js';
+import './header.js';
 import './alpine.js';
 import './notyf.js';
 
