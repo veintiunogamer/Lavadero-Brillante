@@ -61,46 +61,44 @@
 
             </div>
 
-        </div>
-
-    </div>
-
-    <!-- Modal para Crear/Editar Usuario -->
-    <div x-show="showModal" class="modal fade show" style="display: none; background: rgba(0,0,0,0.5);" x-transition>
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" x-text="isEditing ? 'Editar Usuario' : 'Crear Usuario'"></h5>
+        <!-- Modal para Crear/Editar Usuario (moved inside x-data scope) -->
+        <div x-cloak @click.self="closeModal()" @keydown.escape.window="closeModal()" :class="showModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+            <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 900px; width: 95%;" tabindex="-1">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0" x-text="isEditing ? 'Editar Usuario' : 'Crear Usuario'"></h5>
                     <button @click="closeModal()" type="button" class="btn-close" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <form @submit.prevent="saveUser()">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nombre</label>
+
+                <form @submit.prevent="saveUser()">
+                    <div class="row gx-3 gy-3 justify-content-center">
+                        <div class="col-12 col-lg-3">
+                            <label class="form-label">Nombre</label>
                             <input type="text" x-model="form.name" class="form-control" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                        <div class="col-12 col-lg-3">
+                            <label class="form-label">Email</label>
                             <input type="email" x-model="form.email" class="form-control" required>
                         </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Teléfono</label>
+                        <div class="col-12 col-lg-3">
+                            <label class="form-label">Teléfono</label>
                             <input type="text" x-model="form.phone" class="form-control">
                         </div>
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Usuario</label>
+                        <div class="col-12 col-lg-3">
+                            <label class="form-label">Usuario</label>
                             <input type="text" x-model="form.username" class="form-control" required>
                         </div>
-                        <div class="mb-3" x-show="!isEditing">
-                            <label for="password" class="form-label">Contraseña</label>
+
+                        <div class="col-12 col-lg-3" x-show="!isEditing">
+                            <label class="form-label">Contraseña</label>
                             <input type="password" x-model="form.password" class="form-control" required>
                         </div>
-                        <div class="mb-3" x-show="isEditing">
-                            <label for="password" class="form-label">Nueva Contraseña (opcional)</label>
+                        <div class="col-12 col-lg-3" x-show="isEditing">
+                            <label class="form-label">Nueva Contraseña (opcional)</label>
                             <input type="password" x-model="form.password" class="form-control">
                         </div>
-                        <div class="mb-3">
-                            <label for="rol" class="form-label">Rol</label>
+
+                        <div class="col-12 col-lg-3">
+                            <label class="form-label">Rol</label>
                             <select x-model="form.rol" class="form-select" required>
                                 <option value="">Seleccionar Rol</option>
                                 <template x-for="role in roles" :key="role.id">
@@ -108,18 +106,25 @@
                                 </template>
                             </select>
                         </div>
-                        <div class="mb-3" x-show="isEditing">
-                            <label for="status" class="form-label">Estado</label>
+
+                        <div class="col-12 col-lg-3" x-show="isEditing">
+                            <label class="form-label">Estado</label>
                             <select x-model="form.status" class="form-select">
                                 <option value="1">Activo</option>
                                 <option value="0">Inactivo</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100" x-text="isEditing ? 'Actualizar' : 'Crear'"></button>
-                    </form>
-                </div>
+
+                        <div class="col-12 d-flex justify-content-center mt-3">
+                            <button type="submit" class="btn btn-success" style="min-width: 180px;"> 
+                                <span x-text="isEditing ? 'Actualizar' : 'Crear'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
+
     </div>
 
 @endsection

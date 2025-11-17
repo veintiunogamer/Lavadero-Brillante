@@ -57,7 +57,7 @@ class UserController extends Controller
             'rol' => 'required|uuid|exists:roles,id',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -68,7 +68,7 @@ class UserController extends Controller
             'creation_date' => now(),
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Usuario creado exitosamente']);
+        return response()->json(['success' => true, 'message' => 'Usuario creado exitosamente', 'user' => $user]);
     }
 
     public function update(Request $request, $id)
@@ -98,7 +98,7 @@ class UserController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
-        return response()->json(['success' => true, 'message' => 'Usuario actualizado exitosamente']);
+        return response()->json(['success' => true, 'message' => 'Usuario actualizado exitosamente', 'user' => $user->fresh()]);
     }
 
     public function destroy($id)

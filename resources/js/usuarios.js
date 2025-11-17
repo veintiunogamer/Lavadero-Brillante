@@ -9,9 +9,11 @@ if (typeof window !== 'undefined' && usuariosModuleActive()) {
 
 // Exponer la función globalmente para Alpine
 window.usuariosApp = function() {
+
     if (usuariosModuleActive()) {
         console.log('window.usuariosApp definida');
     }
+
     return {
         users: [],
         roles: [],
@@ -31,17 +33,30 @@ window.usuariosApp = function() {
         initData(usersData, rolesData) {
             this.users = usersData;
             this.roles = rolesData;
+            console.log('usuariosApp: initData called, ensuring showModal=false');
+            this.showModal = false;
         },
 
         openModal() {
+            console.log('usuariosApp: openModal called');
             this.showModal = true;
             this.isEditing = false;
             this.resetForm();
+            this.$nextTick(() => {
+                const first = document.querySelector('#usuarios-root input, #usuarios-root select');
+                if (first) first.focus();
+            });
         },
 
         closeModal() {
+            console.log('usuariosApp: closeModal called');
             this.showModal = false;
             this.resetForm();
+            // devolver foco al botón Crear
+            this.$nextTick(() => {
+                const trigger = document.querySelector('#usuarios-root button[ @click="openModal()" ], #usuarios-root button.btn-primary');
+                if (trigger) trigger.focus();
+            });
         },
 
         resetForm() {
@@ -73,10 +88,12 @@ window.usuariosApp = function() {
         },
 
         async saveUser() {
+
             const url = this.isEditing ? `/usuarios/${this.currentUserId}` : '/usuarios';
             const method = this.isEditing ? 'PUT' : 'POST';
 
             try {
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -89,12 +106,16 @@ window.usuariosApp = function() {
                 const result = await response.json();
 
                 if (result.success) {
+
                     this.closeModal();
+
                     // Recargar la página para actualizar la lista
                     location.reload();
+
                 } else {
                     alert('Error: ' + (result.message || 'Ocurrió un error'));
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 alert('Ocurrió un error al guardar el usuario');
@@ -102,11 +123,13 @@ window.usuariosApp = function() {
         },
 
         async deleteUser(id) {
+
             if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
                 return;
             }
 
             try {
+
                 const response = await fetch(`/usuarios/${id}`, {
                     method: 'DELETE',
                     headers: {
@@ -117,15 +140,19 @@ window.usuariosApp = function() {
                 const result = await response.json();
 
                 if (result.success) {
+
                     // Recargar la página para actualizar la lista
                     location.reload();
+
                 } else {
                     alert('Error: ' + (result.message || 'Ocurrió un error'));
                 }
+                
             } catch (error) {
                 console.error('Error:', error);
                 alert('Ocurrió un error al eliminar el usuario');
             }
         }
     }
+
 }

@@ -585,3 +585,8 @@ hr {
     font-size: 1rem;
     text-align: center;
 }
+
+/* Hide Alpine elements until Alpine initializes */
+[x-cloak] {
+    display: none !important;
+}
