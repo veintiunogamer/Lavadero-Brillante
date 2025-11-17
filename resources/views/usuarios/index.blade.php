@@ -6,51 +6,58 @@
         
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1200px;">
         
-            <div class="card-body p-0">
-                
-                <h2 class="card-title mb-3"><i class="fa-solid fa-user-cog icon color-blue"></i> Usuarios</h2>
-                <p class="fw-bold">Listado y gestión de usuarios del sistema.</p>
-                
-                <button @click="openModal()" class="btn btn-primary mb-3">Crear Nuevo Usuario</button>
-                
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered align-middle">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
-                                <th>Usuario</th>
-                                <th>Rol</th>
-                                <th>Estado</th>
-                                <th>Fecha Creación</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
+            <div class="col-12 d-flex justify-content-between align-items-center mb-3">
 
-                        <tbody>
-                            <template x-for="user in users" :key="user.id">
-                                <tr>
-                                    <td x-text="user.name"></td>
-                                    <td x-text="user.email"></td>
-                                    <td x-text="user.phone || 'N/A'"></td>
-                                    <td x-text="user.username"></td>
-                                    <td x-text="user.role ? user.role.name : 'N/A'"></td>
-                                    <td>
-                                        <span :class="user.status ? 'badge bg-success' : 'badge bg-danger'" x-text="user.status ? 'Activo' : 'Inactivo'"></span>
-                                    </td>
-                                    <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
-                                    <td>
-                                        <button @click="editUser(user)" class="btn btn-sm btn-warning me-1">Editar</button>
-                                        <button @click="deleteUser(user.id)" class="btn btn-sm btn-danger">Eliminar</button>
-                                    </td>
-                                </tr>
-                            </template>
-                        </tbody>
-
-                    </table>
-
+                <div class="col-6">
+                    <h2 class="card-title mb-3"><i class="fa-solid fa-user-cog icon color-blue"></i> Usuarios</h2>
+                    <p class="fw-bold">Listado y gestión de usuarios del sistema.</p>
                 </div>
+                
+                <div class="col-6">
+                    <button @click="openModal()" class="btn btn-primary mb-3 float-end">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Crear Nuevo Usuario
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="table-responsive mt-4">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Fecha Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <template x-for="user in users" :key="user.id">
+                            <tr>
+                                <td x-text="user.name"></td>
+                                <td x-text="user.email"></td>
+                                <td x-text="user.phone || 'N/A'"></td>
+                                <td x-text="user.username"></td>
+                                <td x-text="user.role ? user.role.name : 'N/A'"></td>
+                                <td>
+                                    <span :class="user.status ? 'badge bg-success' : 'badge bg-danger'" x-text="user.status ? 'Activo' : 'Inactivo'"></span>
+                                </td>
+                                <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
+                                <td>
+                                    <button @click="editUser(user)" class="btn btn-sm btn-warning me-1">Editar</button>
+                                    <button @click="deleteUser(user.id)" class="btn btn-sm btn-danger">Eliminar</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+
+                </table>
 
             </div>
 

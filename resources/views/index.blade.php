@@ -8,16 +8,19 @@
         <!-- Datos del Cliente y Vehículo -->
         <div class="mb-5">
 
-            <h2 class="card-title">
-                <i class="fa-solid fa-car icon color-blue"></i>
-                Datos del Cliente y Vehículo
-            </h2>
+            <div class="col-12 d-flex mb-4">
 
-            <div class="row">
+                <div class="col-6">
+                    <h2 class="card-title">
+                        <i class="fa-solid fa-car icon color-blue"></i>
+                        Datos del Cliente y Vehículo
+                    </h2>
+                    <span class="text-muted fw-bold">Información básica para agendar el servicio.</span>
+                </div>
 
-                <div class="input-group">
+                <div class="col-6">
 
-                    <label>Nº Orden / Factura</label>
+                    <label class="fw-bold">Nº Orden / Factura</label>
                     <div style="display: flex; gap: 0.5rem;">
                         <input type="text" class="input" value="12112025" readonly style="width: 120px;">
                         <input type="text" class="input" value="001" readonly style="width: 60px;">
@@ -27,36 +30,38 @@
 
             </div>
 
-            <div class="row">
+            <hr>
 
-                <div class="input-group">
-                    <label>Nombre Cliente <span class="required">*</span></label>
-                    <input type="text" class="input" placeholder="Nombre completo">
+            <div class="col-12 d-flex flex-wrap">
+
+                <div class="col-3">
+                    <label class="fw-bold">Nombre Cliente <span class="required">*</span></label>
+                    <input type="text" class="input form-control" placeholder="Nombre completo">
                 </div>
 
-                <div class="input-group">
-                    <label>Teléfono (para WhatsApp) <span class="required">*</span></label>
-                    <input type="text" class="input" placeholder="Número de contacto">
+                <div class="col-3">
+                    <label class="fw-bold">Teléfono (para WhatsApp) <span class="required">*</span></label>
+                    <input type="text" class="input form-control" placeholder="Número de contacto">
                 </div>
 
-                <div class="input-group">
-                    <label>Matrícula <span class="required">*</span></label>
-                    <input type="text" class="input" placeholder="Ej: 1234 ABC">
+                <div class="col-3">
+                    <label class="fw-bold">Matrícula <span class="required">*</span></label>
+                    <input type="text" class="input form-control" placeholder="Ej: 1234 ABC">
                 </div>
 
-                <div class="input-group">
-                    <label>Asignar Detallador <span class="required">*</span></label>
-                    <select class="input">
+                <div class="col-3">
+                    <label class="fw-bold">Asignar Detallador <span class="required">*</span></label>
+                    <select class="input form-control">
                         <option>Seleccionar</option>
                     </select>
                 </div>
 
             </div>
 
-            <div class="row">
-                <div class="input-group" style="width: 100%;">
-                    <label>Observaciones</label>
-                    <textarea class="input" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+            <div class="col-12">
+                <div class="col-12" style="width: 100%;">
+                    <label class="fw-bold">Observaciones</label>
+                    <textarea class="input form-control" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
                 </div>
             </div>
 
@@ -74,55 +79,59 @@
         <!-- Servicios -->
         <div class="mb-5">
 
-            <div class="row d-flex col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-12 col-md-12 col-sm-12 d-flex">
                 
-                <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="col-lg-8 col-md-8 col-sm-12 p-0">
                     <h2 class="card-title">
                         <i class="fa-solid fa-handshake icon color-blue"></i>Servicios
                     </h2>    
-                    <b class="text-primary">Elige una categoría y luego el servicio. La lista es corta y filtrada por categoría.</b>
+                    <b class="text-muted">Elige una categoría y luego el servicio. La lista es corta y filtrada por categoría.</b>
                 </div>
 
-                <div class="col-lg-6 col-md-6 col-sm-12">  
-                    <button class="add-service-btn float-right"><i class="fa-solid fa-plus icon"></i> Añadir Servicio</button>
+                <div class="col-lg-4 col-md-4 col-sm-12">
+                    <button class="btn btn-success add-service-btn float-end">
+                        <i class="fa-solid fa-plus icon"></i> Añadir Servicio
+                    </button>
                 </div>
 
             </div>
 
+            <hr>
+
             <!--  Nuevo servicio -->
-            <div class="row d-flex align-items-center">
+            <div class="col-12 d-flex flex-wrap align-items-center">
 
-                <div class="input-group" style="flex: 1;">
-                    <label>Categoría</label>
-                    <select class="input"><option>Categoría</option></select>
+                <div class="col-4">
+                    <label class="fw-bold">Categoría</label>
+                    <select class="input form-control"><option>Categoría</option></select>
                 </div>
 
-                <div class="input-group" style="flex: 1;">
-                    <label>Servicio</label>
-                    <select class="input"><option>Primero categoría</option></select>
+                <div class="col-4">
+                    <label class="fw-bold">Servicio</label>
+                    <select class="input form-control"><option>Primero categoría</option></select>
                 </div>
 
-                <div class="input-group" style="flex: 1;">
-                    <label>Tipo Vehículo</label>
-                    <select class="input"><option>Tipo</option></select>
+                <div class="col-4">
+                    <label class="fw-bold">Tipo Vehículo</label>
+                    <select class="input form-control"><option>Tipo</option></select>
                 </div>
 
-                <div class="input-group" style="flex: 1;">
-                    <label>Nivel Suciedad</label>
-                    <select class="input"><option>Nivel</option></select>
+                <div class="col-4">
+                    <label class="fw-bold">Nivel Suciedad</label>
+                    <select class="input form-control"><option>Nivel</option></select>
                 </div>
 
-                <div class="input-group" style="width: 100px;">
-                    <label>Cantidad</label>
-                    <input type="number" class="input" value="1">
+                <div class="col-4">
+                    <label class="fw-bold">Cantidad</label>
+                    <input type="number" class="input form-control" value="1">
                 </div>
                 
-                <div class="input-group" style="width: 100px;">
-                    <label>€ Total</label>
-                    <input type="number" class="input" value="0">
+                <div class="col-4">
+                    <label class="fw-bold">€ Total</label>
+                    <input type="number" class="input form-control" value="0">
                 </div>
 
-                <div class="input-group" style="width: auto;">
+                <div class="col-12 my-3">
                     <button class="remove-btn"><i class="fa-solid fa-times"></i></button>
                 </div>
 
@@ -171,88 +180,106 @@
             <h2 class="card-title">
                 <i class="fa-solid fa-calendar-check icon color-blue"></i> Fecha, Hora y Pago
             </h2>
+            <b class="text-muted">Selecciona la fecha y hora para el agendamiento del servicio.</b>
 
-            <div class="row" style="align-items: flex-start;">
+            <hr>
 
-                <div class="calendar-box calendar-enhanced">
-                    <div class="calendar-header">
-                        <button class="calendar-nav">&#60;</button>
-                        <span class="calendar-month">noviembre <span class="calendar-year">2025</span></span>
-                        <button class="calendar-nav">&#62;</button>
+            <div class="col-12 d-flex justify-content-center align-items-center">
+
+                <!-- Pagos Calendario -->
+                <div class="col-6 d-flex justify-content-center align-items-center">
+
+                    <div class="calendar-box calendar-enhanced">
+
+                        <div class="calendar-header">
+                            <button class="calendar-nav">&#60;</button>
+                            <span class="calendar-month">noviembre <span class="calendar-year">2025</span></span>
+                            <button class="calendar-nav">&#62;</button>
+                        </div>
+
+                        <table class="calendar-table">
+                            <thead>
+                                <tr>
+                                    <th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td></td><td></td><td></td><td></td><td></td><td class="calendar-muted">1</td><td class="calendar-muted">2</td></tr>
+                                <tr><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
+                                <tr><td>10</td><td>11</td><td class="calendar-active">12</td><td>13</td><td>14</td><td>15</td><td>16</td></tr>
+                                <tr><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
+                                <tr><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="calendar-footer">
+                            <span class="calendar-tip">Selecciona una fecha para agendar</span>
+                        </div>
                     </div>
 
-                    <table class="calendar-table">
-                        <thead>
-                            <tr>
-                                <th>Lu</th><th>Ma</th><th>Mi</th><th>Ju</th><th>Vi</th><th>Sa</th><th>Do</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td></td><td></td><td></td><td></td><td></td><td class="calendar-muted">1</td><td class="calendar-muted">2</td></tr>
-                            <tr><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td></tr>
-                            <tr><td>10</td><td>11</td><td class="calendar-active">12</td><td>13</td><td>14</td><td>15</td><td>16</td></tr>
-                            <tr><td>17</td><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td></tr>
-                            <tr><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td></tr>
-                        </tbody>
-                    </table>
-                    <div class="calendar-footer">
-                        <span class="calendar-tip">Selecciona una fecha para agendar</span>
-                    </div>
                 </div>
 
-                <div class="form-side">
+                <!-- Pagos Formulario -->
+                <div class="col-6">
 
-                    <div class="row">
+                    <div class="col-12 form-side d-flex flex-wrap">
 
-                        <div class="input-group">
-                            <label>Hora Entrada <span class="required">*</span></label>
-                            <select class="input"><option>Seleccionar</option></select>
+                        <div class="col-6">
+                            <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
+                            <select class="input form-control"><option>Seleccionar</option></select>
                         </div>
 
-                        <div class="input-group">
-                            <label>Hora Entrega</label>
-                            <select class="input"><option>Seleccionar</option></select>
+                        <div class="col-6">
+                            <label class="fw-bold">Hora Entrega</label>
+                            <select class="input form-control"><option>Seleccionar</option></select>
                         </div>
 
-                    </div>
-
-                    <div class="row">
-                        <div class="input-group" style="flex:2;">
-                            <label>Estado del Pago</label>
+                        <div class="col-12 my-3">
+                            <label class="fw-bold">Estado del Pago</label>
                             <div class="pay-status-group">
-                                <button class="pay-status-btn pay-status-active">Pendiente</button>
-                                <button class="pay-status-btn">Parcial</button>
-                                <button class="pay-status-btn">Pagado</button>
+                                <button class="btn btn-warning pay-status-btn pay-status-active">Pendiente</button>
+                                <button class="btn btn-primary pay-status-btn">Parcial</button>
+                                <button class="btn btn-success pay-status-btn">Pagado</button>
                             </div>
                         </div>
+
+                        <div class="col-6">
+                            <label class="fw-bold">Método de Pago</label>
+                            <select class="input form-control"><option>Efectivo</option></select>
+                        </div>
+
+                        <div class="col-6">
+                            <label class="fw-bold">Estado de la Cita</label>
+                            <select class="input form-control"><option>Confirmada</option></select>
+                        </div>
+
                     </div>
 
-                    <div class="row">
-                        <div class="input-group">
-                            <label>Método de Pago</label>
-                            <select class="input"><option>Efectivo</option></select>
-                        </div>
-                        <div class="input-group">
-                            <label>Estado de la Cita</label>
-                            <select class="input"><option>Confirmada</option></select>
-                        </div>
-                    </div>
                 </div>
 
-            </div>
-
-            <div class="row" style="margin-top:1.5rem; align-items:center;">
-                <label class="text-dark">
-                    <input type="checkbox">
-                    He leído y acepto los <a href="#" style="color:var(--color-amarillo-logo);text-decoration:underline;">Términos y Condiciones</a>
-                </label>
             </div>
 
         </div>
 
         <!-- Boton de envio -->
-        <div class="row" style="justify-content:center; margin-top:2rem;">
-            <button class="confirm-btn" disabled>Confirmar Agendamiento</button>
+        <div class="col-12 text-center my-5">
+
+            <label class="text-dark my-3">
+
+                <input type="checkbox">
+                He leído y acepto los 
+                <a href="#" style="color:var(--color-amarillo-logo);text-decoration:underline;">
+                    Términos y Condiciones
+                </a>
+
+            </label>
+
+            <br>
+
+            <button class="confirm-btn col-6" disabled>
+                <i class="fa-solid fa-check icon"></i>
+                Confirmar Agendamiento
+            </button>
+
         </div>
 
         <!-- Listado de citas agendamiento -->
