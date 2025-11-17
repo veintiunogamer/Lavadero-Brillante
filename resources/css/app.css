@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+/* @import 'tailwindcss'; */
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -22,7 +22,7 @@
 .app-bg {
     background: var(--color-azul-bg);
     min-height: 100vh;
-    color: var(--color-blanco);
+    /* color: var(--color-blanco); */
 }
 
 .main-header {
@@ -33,6 +33,20 @@
     background: var(--color-azul-bg);
     position: relative;
 }
+
+.text-dark {
+    color: black !important;
+}
+
+.text-primary {
+    color: var(--color-azul-logo) !important;
+
+}
+
+.color-blue {
+    color: var(--color-azul-logo) !important;
+}
+
 .logo {
     font-size: 2rem;
     font-weight: bold;
@@ -295,6 +309,27 @@ hr {
     margin-bottom: 1.2rem;
     box-shadow: 0 1px 4px rgba(0,0,0,0.03);
 }
+
+/* Inline layout for service rows (compact single-line fields) */
+.service-row-inline {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.75rem;
+    overflow-x: auto; /* allow horizontal scroll if viewport is small */
+}
+.service-row-inline .input-group {
+    /* Remove the default min-width to allow compact fields */
+    min-width: 0;
+    flex: 0 0 auto; /* don't force stretching, use auto width */
+}
+.service-row-inline .input-group.small {
+    width: 84px; /* fixed small size for Cant. and € */
+}
+.service-row-inline .input-group.select-tight select.input {
+    min-width: 130px; /* slightly tighter select width */
+}
+.service-row-inline::-webkit-scrollbar { height: 7px; }
+.service-row-inline::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 10px; }
 .add-service-btn {
     background: #e0e6ed;
     color: #222;
@@ -481,10 +516,10 @@ hr {
 .login-card {
     background: var(--color-blanco);
     border-radius: 18px;
-    box-shadow: 0 4px 24px rgba(51,102,255,0.08);
-    padding: 2.5rem 2rem;
+    box-shadow: 0 6px 32px rgba(51,102,255,0.10);
+    padding: 3rem 2.5rem;
     width: 100%;
-    max-width: 420px;
+    max-width: 500px; /* increased width for larger form */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -520,31 +555,32 @@ hr {
 }
 .input {
     width: 100%;
-    padding: 0.7rem 1rem;
-    border-radius: 10px;
+    padding: 0.9rem 1.2rem; /* increased padding for taller inputs */
+    border-radius: 12px;
     border: 1px solid #e0e0e0;
-    font-size: 1rem;
+    font-size: 1.05rem;
     background: #f8f9fa;
     color: #222;
-    margin-top: 0.2rem;
+    margin-top: 0.4rem;
     outline: none;
-    transition: border 0.2s;
+    transition: border 0.2s, box-shadow 0.12s;
 }
 .input:focus {
     border-color: var(--color-azul-logo);
 }
 .login-btn {
     width: 100%;
+    max-width: 520px; /* keep button centered but wider on large screens */
     background: var(--color-azul-logo);
     color: var(--color-blanco);
     border: none;
-    border-radius: 10px;
-    padding: 0.8rem 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+    border-radius: 12px;
+    padding: 1rem 0;
+    font-size: 1.15rem;
+    font-weight: 700;
     cursor: pointer;
-    margin-top: 0.5rem;
-    transition: background 0.2s;
+    margin-top: 1rem;
+    transition: background 0.2s, box-shadow 0.12s;
 }
 .login-btn:disabled {
     background: #b3c6ff;

@@ -15,7 +15,7 @@
 
     <div class="login-container">
 
-        <div class="login-card" x-data="loginForm()" style="max-width:500px;">
+    <div class="login-card" x-data="loginForm()">
             <div class="login-logo" style="text-align:center; font-size:1.5rem;">
                 <span class="lavadero">LAVADERO</span> <span class="brillante">BRILLANTE</span>
             </div>
