@@ -2,7 +2,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
@@ -14,34 +13,6 @@ class UserController extends Controller
      *
      * @return \Illuminate\View\View
     */
-    public function showLoginForm()
-    {
-        return view('auth.login');
-    }
-
-    public function login(Request $request)
-    {
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required',
-        ]);
-
-        $user = User::where('username', $request->username)->first();
-        if ($user && Hash::check($request->password, $user->password)) {
-            Auth::login($user);
-            return response()->json(['success' => true]);
-        }
-        return response()->json(['success' => false, 'message' => 'Credenciales incorrectas']);
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect('/login');
-    }
-
     public function index()
     {
         $users = User::with('role')->get();
@@ -51,6 +22,12 @@ class UserController extends Controller
         return view('usuarios.index', compact('users', 'roles'));
     }
 
+    /**
+     * Almacena un nuevo usuario.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+    */
     public function store(Request $request)
     {
         $request->validate([
@@ -76,6 +53,13 @@ class UserController extends Controller
         return response()->json(['success' => true, 'message' => 'Usuario creado exitosamente', 'user' => $user]);
     }
 
+    /**
+     * Actualiza un usuario existente.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
+    */
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -106,6 +90,12 @@ class UserController extends Controller
         return response()->json(['success' => true, 'message' => 'Usuario actualizado exitosamente', 'user' => $user->fresh()]);
     }
 
+    /**
+     * Elimina un usuario.
+     *
+     * @param  string  $id
+     * @return \Illuminate\Http\Response
+    */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
