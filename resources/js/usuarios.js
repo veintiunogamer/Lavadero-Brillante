@@ -4,7 +4,7 @@ function usuariosModuleActive() {
 }
 
 if (typeof window !== 'undefined' && usuariosModuleActive()) {
-    console.log('usuarios.js cargado');
+    console.log('Usuarios JS cargado');
 }
 
 // Exponer la función globalmente para Alpine

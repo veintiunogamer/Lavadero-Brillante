@@ -8,7 +8,12 @@ use App\Models\User;
 use App\Models\Role;
 
 class UserController extends Controller
-{
+{   
+    /**
+     * Muestra la lista de usuarios.
+     *
+     * @return \Illuminate\View\View
+    */
     public function showLoginForm()
     {
         return view('auth.login');

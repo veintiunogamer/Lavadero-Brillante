@@ -18,12 +18,12 @@
                     <span class="text-muted fw-bold">Información básica para agendar el servicio.</span>
                 </div>
 
-                <div class="col-6">
+                <div class="col-6 text-end">
 
                     <label class="fw-bold">Nº Orden / Factura</label>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" class="input" value="12112025" readonly style="width: 120px;">
-                        <input type="text" class="input" value="001" readonly style="width: 60px;">
+                    <div style="gap: 0.5rem;">
+                        <input type="text" class="input float-right" readonly style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
+                        <input type="text" class="input float-right" readonly style="width: 60px;" value="{{ $consecutive['sequence'] ?? '' }}">
                     </div>
 
                 </div>

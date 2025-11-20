@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    console.log('login.js cargado');
+    console.log('Login JS cargado');
 
     const form = document.getElementById('loginForm');
 

@@ -1,11 +1,14 @@
 // Small header toggle for mobile menu
 (function(){
+
     function isBrowser() {
         return typeof window !== 'undefined' && typeof document !== 'undefined';
     }
+
     if (!isBrowser()) return;
 
     document.addEventListener('DOMContentLoaded', function(){
+        
         var toggle = document.getElementById('nav-toggle');
         var header = document.querySelector('.main-header');
         var nav = document.querySelector('.main-nav');
@@ -58,4 +61,5 @@
             });
         }
     });
+    
 })();

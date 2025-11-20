@@ -4,7 +4,7 @@ function ordersModuleActive() {
 }
 
 if (typeof window !== 'undefined' && ordersModuleActive()) {
-	console.log('orders.js cargado');
+	console.log('Orders JS cargado');
 }
 
 // Aquí iría el resto del código específico de órdenes

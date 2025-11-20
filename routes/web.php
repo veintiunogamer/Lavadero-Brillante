@@ -5,15 +5,14 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ServicioController;
 use App\Http\Controllers\InformeController;
+use App\Http\Controllers\OrderController;
 
 Route::get('/login', [UserController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('index');
-    })->name('home');
+    Route::get('/', [OrderController::class, 'index'])->name('home');
     Route::get('/agendamiento', function () {
         return view('agendamiento.index');
     })->name('agendamiento.index');
