@@ -11,28 +11,26 @@ if (typeof window !== 'undefined' && usuariosModuleActive()) {
 if (typeof window !== 'undefined' && window.Cleave) {
 
     window.initPhoneMask = function(inputElement) {
-        console.log('Aplicando máscara a:', inputElement);
+
         new window.Cleave(inputElement, {
             phone: true
         });
+
     };
 
 } else {
     window.initPhoneMask = function(inputElement) {
-        console.log('Cleave no disponible, usando formatter JS');
+
         // Fallback a formatter JS
         inputElement.addEventListener('input', function(e) {
             e.target.value = window.formatPhoneInput(e.target.value);
         });
+
     };
 }
 
 // Exponer la función globalmente para Alpine
 window.usuariosApp = function() {
-
-    if (usuariosModuleActive()) {
-        console.log('window.usuariosApp definida');
-    }
 
     return {
         users: [],
@@ -40,8 +38,12 @@ window.usuariosApp = function() {
         showModal: false,
         isEditing: false,
         currentUserId: null,
+        showPassword: false,
+        showDeleteModal: false,
+        deleteUserId: null,
         errors: {
-            phone: ''
+            phone: '',
+            password: ''
         },
         form: {
             name: '',
@@ -83,7 +85,7 @@ window.usuariosApp = function() {
 
             // devolver foco al botón Crear
             this.$nextTick(() => {
-                const trigger = document.querySelector('#usuarios-root button[ @click="openModal()" ], #usuarios-root button.btn-primary');
+                const trigger = document.querySelector('#usuarios-root button[@click="openModal()"], #usuarios-root button.btn-primary');
                 if (trigger) trigger.focus();
             });
 
@@ -105,7 +107,8 @@ window.usuariosApp = function() {
 
         clearErrors() {
             this.errors = {
-                phone: ''
+                phone: '',
+                password: ''
             };
         },
 
@@ -117,12 +120,25 @@ window.usuariosApp = function() {
             }
         },
 
+        validatePassword() {
+            if (this.form.password && this.form.password.length < 8) {
+                this.errors.password = 'Mínimo 8 caracteres';
+            } else {
+                this.errors.password = '';
+            }
+        },
+
         validatePhoneForButton() {
             return !this.form.phone || validateSpanishPhoneJS(this.form.phone);
         },
 
+        togglePassword() {
+            this.showPassword = !this.showPassword;
+        },
+
         isFormValid() {
-            return this.form.name && this.form.email && this.form.username && (this.form.password || this.isEditing) && this.validatePhoneForButton();
+            const passwordValid = this.isEditing ? (this.form.password === '' || this.form.password.length >= 8) : (this.form.password && this.form.password.length >= 8);
+            return this.form.name && this.form.email && this.form.username && passwordValid && this.validatePhoneForButton();
         },
 
         editUser(user) {
@@ -150,11 +166,11 @@ window.usuariosApp = function() {
             this.validatePhone();
 
             if (this.errors.phone) {
-                alert(this.errors.phone);
+                window.notyf.error(this.errors.phone);
                 return;
             }
 
-            const url = this.isEditing ? `/usuarios/${this.currentUserId}` : '/usuarios';
+            const url = this.isEditing ? `/usuarios/update/${this.currentUserId}` : '/usuarios/store';
             const method = this.isEditing ? 'PUT' : 'POST';
 
             try {
@@ -163,6 +179,7 @@ window.usuariosApp = function() {
                     method: method,
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     },
                     body: JSON.stringify(this.form)
@@ -172,32 +189,55 @@ window.usuariosApp = function() {
 
                 if (result.success) {
 
+                    window.notyf.success(result.message || 'Usuario guardado exitosamente');
+
                     this.closeModal();
 
-                    // Recargar la página para actualizar la lista
-                    location.reload();
+                    setTimeout(() => {
+
+                        // Recargar la página para actualizar la lista
+                        location.reload();
+
+                    }, 3000);
+                    
 
                 } else {
-                    alert('Error: ' + (result.message || 'Ocurrió un error'));
+                    window.notyf.error('Error: ' + (result.message || 'Ocurrió un error'));
                 }
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Ocurrió un error al guardar el usuario');
+                window.notyf.error('Ocurrió un error al guardar el usuario');
             }
         },
 
-        async deleteUser(id) {
+        deleteUser(id) {
 
-            if (!confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-                return;
-            }
+            this.deleteUserId = id;
+            this.showDeleteModal = true;
+
+        },
+
+        cancelDelete() {
+
+            this.showDeleteModal = false;
+            this.deleteUserId = null;
+
+        },
+
+        async confirmDelete() {
+
+            const id = this.deleteUserId;
+
+            this.showDeleteModal = false;
+            this.deleteUserId = null;
 
             try {
 
-                const response = await fetch(`/usuarios/${id}`, {
+                const response = await fetch(`/usuarios/delete/${id}`, {
                     method: 'DELETE',
                     headers: {
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
                     }
                 });
@@ -206,16 +246,18 @@ window.usuariosApp = function() {
 
                 if (result.success) {
 
+                    window.notyf.success(result.message || 'Usuario eliminado exitosamente');
+
                     // Recargar la página para actualizar la lista
                     location.reload();
 
                 } else {
-                    alert('Error: ' + (result.message || 'Ocurrió un error'));
+                    window.notyf.error('Error: ' + (result.message || 'Ocurrió un error'));
                 }
                 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Ocurrió un error al eliminar el usuario');
+                window.notyf.error('Ocurrió un error al eliminar el usuario');
             }
         }
     }

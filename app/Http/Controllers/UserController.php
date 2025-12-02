@@ -17,7 +17,7 @@ class UserController extends Controller
     */
     public function index()
     {
-        $users = User::with('role')->get();
+        $users = User::where('status', true)->get();
         $roles = Role::where('status', Role::STATUS_ACTIVE)->get();
 
         return view('usuarios.index', compact('users', 'roles'));

@@ -15,10 +15,16 @@ console.log('App JS cargado');
 /**
  * Valida un número de teléfono español.
  * Formato esperado: +34 600 123 456 (o variantes sin espacios/prefijo).
+ * Solo permite dígitos, espacios, +, (, ), -.
  * @param {string} phone - El número de teléfono a validar.
  * @returns {boolean} - True si es válido.
  */
 window.validateSpanishPhoneJS = function(phone) {
+    // Verificar que solo contenga caracteres permitidos
+    if (!/^[\d\s\+\(\)\-]+$/.test(phone)) {
+        return false;
+    }
+
     const cleaned = phone.replace(/\D/g, '');
     return cleaned.length === 9 || (cleaned.length === 11 && cleaned.startsWith('34'));
 };

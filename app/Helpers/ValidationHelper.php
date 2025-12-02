@@ -14,12 +14,18 @@ class ValidationHelper
     /**
      * Valida un número de teléfono español.
      * Formato esperado: +34 600 123 456 (o variantes sin espacios/prefijo).
+     * Solo permite dígitos, espacios, +, (, ), -.
      *
      * @param string $phone
      * @return bool
      */
     public static function validateSpanishPhone(string $phone): bool
     {
+        // Verificar que solo contenga caracteres permitidos
+        if (!preg_match('/^[\d\s\+\(\)\-]+$/', $phone)) {
+            return false;
+        }
+
         $cleaned = preg_replace('/\D/', '', $phone);
         return strlen($cleaned) === 9 || (strlen($cleaned) === 11 && str_starts_with($cleaned, '34'));
     }
