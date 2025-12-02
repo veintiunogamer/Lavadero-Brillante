@@ -31,32 +31,39 @@ window.usuariosApp = function() {
         },
 
         initData(usersData, rolesData) {
+
             this.users = usersData;
             this.roles = rolesData;
-            console.log('usuariosApp: initData called, ensuring showModal=false');
+
             this.showModal = false;
+
         },
 
         openModal() {
-            console.log('usuariosApp: openModal called');
+
             this.showModal = true;
             this.isEditing = false;
+
             this.resetForm();
+
             this.$nextTick(() => {
                 const first = document.querySelector('#usuarios-root input, #usuarios-root select');
                 if (first) first.focus();
             });
+
         },
 
         closeModal() {
-            console.log('usuariosApp: closeModal called');
+
             this.showModal = false;
             this.resetForm();
+
             // devolver foco al botón Crear
             this.$nextTick(() => {
                 const trigger = document.querySelector('#usuarios-root button[ @click="openModal()" ], #usuarios-root button.btn-primary');
                 if (trigger) trigger.focus();
             });
+
         },
 
         resetForm() {
@@ -73,8 +80,10 @@ window.usuariosApp = function() {
         },
 
         editUser(user) {
+
             this.isEditing = true;
             this.currentUserId = user.id;
+
             this.form = {
                 name: user.name,
                 email: user.email,
@@ -84,7 +93,9 @@ window.usuariosApp = function() {
                 rol: user.rol,
                 status: user.status ? 1 : 0
             };
+
             this.showModal = true;
+
         },
 
         async saveUser() {

@@ -11,6 +11,7 @@ class AuthController extends Controller
     /**
      * Muestra el formulario de inicio de sesión.
      *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
     */
     public function showLoginForm()
@@ -21,8 +22,9 @@ class AuthController extends Controller
     /**
      * Maneja el inicio de sesión del usuario.
      *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
     */
     public function login(Request $request)
     {
@@ -45,8 +47,9 @@ class AuthController extends Controller
     /**
      * Maneja el cierre de sesión del usuario.
      *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
     */
     public function logout(Request $request)
     {

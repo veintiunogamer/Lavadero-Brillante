@@ -9,6 +9,7 @@ class OrderController extends Controller
     /**
      * Muestra la vista principal con el código de orden generado.
      *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
     */
     public function index()
@@ -19,9 +20,11 @@ class OrderController extends Controller
     }
 
     /**
-     * Genera el código de fecha y la secuencia diaria para las órdenes. 
-     * diamesaño - 20/11/2025 = 20112025
-     * 000 - Primer orden del día
+     * Genera el código de fecha y la secuencia diaria para las órdenes.
+     * Formato: diamesaño - 20/11/2025 = 20112025
+     * Secuencia: 000 - Primer orden del día
+     *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @return array
     */
     public function getConsecutive(): array

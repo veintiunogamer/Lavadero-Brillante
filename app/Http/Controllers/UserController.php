@@ -11,20 +11,21 @@ class UserController extends Controller
     /**
      * Muestra la lista de usuarios.
      *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
     */
     public function index()
     {
         $users = User::with('role')->get();
         $roles = Role::where('status', Role::STATUS_ACTIVE)->get();
-        // Debug: quitar después
-        // dd($users, $roles);
+
         return view('usuarios.index', compact('users', 'roles'));
     }
 
     /**
-     * Almacena un nuevo usuario.
+     * Almacena un nuevo usuario
      *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
     */
@@ -50,12 +51,17 @@ class UserController extends Controller
             'creation_date' => now(),
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Usuario creado exitosamente', 'user' => $user]);
+        return response()->json([
+            'success' => true, 
+            'message' => 'Usuario creado exitosamente', 
+            'user' => $user
+        ]);
     }
 
     /**
-     * Actualiza un usuario existente.
+     * Actualiza un usuario existente
      *
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $id
      * @return \Illuminate\Http\Response
@@ -87,12 +93,17 @@ class UserController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
-        return response()->json(['success' => true, 'message' => 'Usuario actualizado exitosamente', 'user' => $user->fresh()]);
+        return response()->json([
+            'success' => true, 
+            'message' => 'Usuario actualizado exitosamente', 
+            'user' => $user->fresh()
+        ]);
     }
 
     /**
-     * Elimina un usuario.
-     *
+     * Elimina un usuario
+     * 
+     * @author Jose Alzate <josealzate97@gmail.com>
      * @param  string  $id
      * @return \Illuminate\Http\Response
     */
@@ -101,6 +112,10 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return response()->json(['success' => true, 'message' => 'Usuario eliminado exitosamente']);
+        return response()->json([
+            'success' => true, 
+            'message' => 
+            'Usuario eliminado exitosamente'
+        ]);
     }
 }
