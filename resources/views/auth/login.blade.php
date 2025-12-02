@@ -7,6 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lavadero Brillante - Login</title>
 
+    <link rel="icon" href="{{ asset('/images/icon.png') }}" type="image/x-icon">
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/login.js'])
     
 </head>
@@ -16,30 +24,40 @@
     <div class="login-container">
 
     <div class="login-card" x-data="loginForm()">
+
             <div class="login-logo" style="text-align:center; font-size:1.5rem;">
-                <span class="lavadero">LAVADERO</span> <span class="brillante">BRILLANTE</span>
+                <span class="lavadero">LAVADERO</span> 
+                <span class="brillante">BRILLANTE</span>
             </div>
 
-            <h2 class="login-title" style="text-align:center; text-transform:uppercase;">Iniciar Sesión</h2>
+            <h2 class="login-title text-dark my-3" style="text-align:center;">Iniciar Sesión</h2>
 
             <form id="loginForm" @submit.prevent="submit">
 
                 @csrf
+
                 <div class="input-group">
-                    <label for="username">Usuario</label>
+                    <label class="text-muted" for="username">
+                        <i class="fa fa-user"></i>&nbsp;
+                        Usuario
+                    </label>
                     <input type="text" name="username" id="username" class="input" required>
                 </div>
 
                 <div class="input-group">
-                    <label for="password">Contraseña</label>
+                    <label class="text-muted" for="password">
+                        <i class="fa fa-lock"></i>&nbsp;
+                        Contraseña
+                    </label>
                     <input type="password" name="password" id="password" class="input" required>
                 </div>
 
                 <template x-if="loading">
                     <div class="spinner">Validando credenciales...</div>
                 </template>
+
                 <div class="input-group" style="margin-top:1rem;">
-                    <button type="submit" class="login-btn" :disabled="loading">Acceder</button>
+                    <button type="submit" class="login-btn" :disabled="loading">Ingresar</button>
                 </div>
 
                 <template x-if="error">

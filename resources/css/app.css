@@ -51,12 +51,15 @@
     font-size: 2rem;
     font-weight: bold;
 }
+
 .lavadero {
     color: var(--color-azul-logo);
 }
+
 .brillante {
     color: var(--color-amarillo-logo);
 }
+
 .main-nav {
     display: flex;
     gap: 2rem;
@@ -73,6 +76,7 @@
     align-items: center;
     justify-content: center;
 }
+
 .nav-toggle .hamburger {
     display: block;
     width: 22px;
@@ -80,6 +84,7 @@
     background: var(--color-blanco);
     position: relative;
 }
+
 .nav-toggle .hamburger::before,
 .nav-toggle .hamburger::after {
     content: '';
@@ -89,6 +94,7 @@
     height: 2px;
     background: var(--color-blanco);
 }
+
 .nav-toggle .hamburger::before { top: -7px; }
 .nav-toggle .hamburger::after { top: 7px; }
 
@@ -97,6 +103,7 @@
 
 /* User dropdown */
 .user-dropdown { position: relative; }
+
 .user-toggle {
     /* Make the whole control look like a badge */
     background: var(--color-amarillo-logo);
@@ -112,6 +119,7 @@
     font-size: 0.95rem;
     font-weight: 700;
 }
+
 .user-toggle .caret { font-size: 0.85rem; opacity: 0.95; color: var(--color-azul-logo); }
 
 /* Icon helper used in headers and buttons */
@@ -119,6 +127,7 @@
     margin-right: 0.6rem;
     display: inline-block;
 }
+
 .user-menu {
     position: absolute;
     right: 0.25rem;
@@ -132,6 +141,7 @@
     z-index: 120;
     padding: 0.6rem;
 }
+
 .user-dropdown.open .user-menu { display: block; }
 .user-menu .logout-btn { width: 100%; display: block; }
 .logout-inline { display: none; }
@@ -155,10 +165,12 @@
 }
 
 @media (max-width: 900px) {
+
     .main-header {
         padding: 0.75rem 1rem;
         gap: 1rem;
     }
+
     .main-nav {
         display: none;
         position: absolute;
@@ -172,11 +184,13 @@
         border-bottom: 1px solid rgba(255,255,255,0.04);
         z-index: 90;
     }
+
     .main-nav a {
         padding: 0.6rem 0.8rem;
         display: block;
         border-radius: 6px;
     }
+
     .nav-toggle { display: flex; }
     .user-info { order: 3; }
     .logo { order: 1; }
@@ -195,13 +209,17 @@
     /* Show inline logout on small screens and hide dropdown toggle username */
     .logout-inline { display: inline-flex; align-items: center; gap: 0.4rem; }
     .user-toggle .user-name { display: none; }
+
 }
 
 @media (max-width: 480px) {
+
     .logo { font-size: 1.25rem; }
     .main-nav a { font-size: 0.95rem; }
     .main-header { padding: 0.6rem 0.8rem; }
+
 }
+
 .main-nav a {
     color: var(--color-blanco);
     text-decoration: none;
@@ -210,12 +228,14 @@
     border-radius: 6px;
     transition: background 0.2s, color 0.2s;
 }
+
 .main-nav a:hover,
 .main-nav a.active {
     background: var(--color-amarillo-logo);
     color: var(--color-azul-logo);
     font-weight: 700;
 }
+
 .logout-btn {
     background: var(--color-rojo-btn);
     color: var(--color-blanco);
@@ -229,13 +249,16 @@
     gap: 0.5rem;
     transition: background 0.2s, box-shadow 0.2s;
 }
+
 .logout-btn:hover {
     background: #d32f2f;
     box-shadow: 0 2px 8px rgba(244,67,54,0.15);
 }
+
 .main-content {
     padding: 2rem;
 }
+
 .main-footer {
     text-align: center;
     padding: 1rem;
@@ -252,6 +275,7 @@
     margin: 2rem auto;
     max-width: 1150px;
 }
+
 .card-title {
     font-size: 2rem;
     font-weight: 600;
@@ -261,23 +285,27 @@
     gap: 0.5rem;
     color: #222;
 }
+
 .row {
     display: flex;
     gap: 2rem;
     margin-bottom: 1.2rem;
     flex-wrap: wrap;
 }
+
 .input-group {
     display: flex;
     flex-direction: column;
     flex: 1;
     min-width: 220px;
 }
+
 .input-group label {
     font-weight: 500;
     margin-bottom: 0.3rem;
     color: #222;
 }
+
 .input {
     border: 1px solid #dbe2ea;
     border-radius: 8px;
@@ -288,9 +316,11 @@
     outline: none;
     transition: border 0.2s;
 }
+
 .input:focus {
     border-color: var(--color-azul-logo);
 }
+
 .required {
     color: var(--color-rojo-btn);
     font-size: 1.1em;
@@ -317,14 +347,17 @@ hr {
     gap: 0.75rem;
     overflow-x: auto; /* allow horizontal scroll if viewport is small */
 }
+
 .service-row-inline .input-group {
     /* Remove the default min-width to allow compact fields */
     min-width: 0;
     flex: 0 0 auto; /* don't force stretching, use auto width */
 }
+
 .service-row-inline .input-group.small {
     width: 84px; /* fixed small size for Cant. and € */
 }
+
 .service-row-inline .input-group.select-tight select.input {
     min-width: 130px; /* slightly tighter select width */
 }
@@ -355,12 +388,14 @@ hr {
     flex-direction: column;
     align-items: center;
 }
+
 .calendar-enhanced {
     background: #f7f9fa;
     border: 2px solid var(--color-azul-logo);
     box-shadow: 0 2px 8px rgba(51,102,255,0.07);
     margin-bottom: 0.5rem;
 }
+
 .calendar-header {
     background: #e0e6ed;
     border-radius: 8px;
@@ -371,26 +406,31 @@ hr {
     color: var(--color-azul-logo);
     letter-spacing: 0.5px;
 }
+
 .calendar-month {
     font-weight: 700;
     color: var(--color-azul-logo);
 }
+
 .calendar-year {
     font-weight: 400;
     color: #888;
 }
+
 .calendar-table {
     width: 100%;
     border-collapse: collapse;
     text-align: center;
     font-size: 1rem;
 }
+
 .calendar-table th {
     color: var(--color-azul-logo);
     font-weight: 600;
     background: #f7f9fa;
     border-radius: 4px;
 }
+
 .calendar-table td {
     padding: 0.5rem;
     border-radius: 8px;
@@ -400,28 +440,34 @@ hr {
     background: #fff;
     transition: background 0.2s, color 0.2s;
 }
+
 .calendar-table td.calendar-active {
     background: var(--color-azul-logo);
     color: #fff;
     font-weight: 700;
     box-shadow: 0 2px 8px rgba(51,102,255,0.12);
 }
+
 .calendar-table td.calendar-muted {
     color: #bbb;
     background: #f7f9fa;
 }
+
 .calendar-table td:hover:not(.calendar-active):not(.calendar-muted) {
     background: #e0e6ed;
 }
+
 .calendar-footer {
     margin-top: 0.7rem;
     text-align: center;
 }
+
 .calendar-tip {
     color: var(--color-azul-logo);
     font-size: 0.95rem;
     font-weight: 500;
 }
+
 .confirm-btn {
     background: var(--color-azul-logo);
     color: #fff;
@@ -435,6 +481,7 @@ hr {
     opacity: 0.7;
     transition: opacity 0.2s, box-shadow 0.2s;
 }
+
 .confirm-btn:enabled {
     cursor: pointer;
     opacity: 1;
@@ -449,17 +496,20 @@ hr {
     margin: 2rem auto;
     max-width: 1150px;
 }
+
 .citas-title {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
     color: #222;
 }
+
 .citas-tabs {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 2rem;
 }
+
 .citas-tab {
     background: #f7f9fa;
     border: none;
@@ -474,15 +524,18 @@ hr {
     align-items: center;
     gap: 0.5rem;
 }
+
 .citas-tab-active {
     background: #eef3fa;
     color: var(--color-azul-logo);
     box-shadow: 0 2px 8px rgba(51,102,255,0.07);
 }
+
 .citas-content {
     text-align: center;
     margin-top: 2rem;
 }
+
 .citas-empty {
     color: #3a4a5a;
     font-size: 1.1rem;
@@ -497,6 +550,7 @@ hr {
     justify-content: center;
     background: var(--color-azul-bg);
 }
+
 .login-card {
     background: var(--color-blanco);
     border-radius: 18px;
@@ -504,32 +558,36 @@ hr {
     padding: 3rem 2.5rem;
     width: 100%;
     max-width: 500px; /* increased width for larger form */
-    display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 .login-logo {
     font-size: 2.2rem;
     font-weight: bold;
     margin-bottom: 1.2rem;
     letter-spacing: 1px;
 }
+
 .login-title {
     font-size: 1.3rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: var(--color-azul-logo);
 }
+
 .login-desc {
     font-size: 1rem;
     color: #333;
     margin-bottom: 1.2rem;
     text-align: center;
 }
+
 .input-group {
     width: 100%;
     margin-bottom: 1.1rem;
 }
+
 .input-group label {
     font-size: 1rem;
     color: var(--color-azul-logo);
@@ -537,6 +595,7 @@ hr {
     margin-bottom: 0.3rem;
     display: block;
 }
+
 .input {
     width: 100%;
     padding: 0.9rem 1.2rem; /* increased padding for taller inputs */
@@ -549,9 +608,11 @@ hr {
     outline: none;
     transition: border 0.2s, box-shadow 0.12s;
 }
+
 .input:focus {
     border-color: var(--color-azul-logo);
 }
+
 .login-btn {
     width: 100%;
     max-width: 520px; /* keep button centered but wider on large screens */

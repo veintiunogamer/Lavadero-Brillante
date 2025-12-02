@@ -6,7 +6,7 @@
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1200px;">
 
         <!-- Datos del Cliente y Vehículo -->
-        <div class="mb-5">
+        <div class="my-4">
 
             <div class="col-12 d-flex mb-4">
 
