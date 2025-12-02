@@ -41,6 +41,38 @@ class OrderController extends Controller
         ];
     }
 
+    /**
+     * Muestra la vista de agendamientos
+     *
+     * @author Jose Alzate <josealzate97@gmail.com>
+     * @return \Illuminate\View\View
+     */
+    public function agendamiento()
+    {
+        return view('agendamiento.index');
+    }
+
+    /**
+     * Obtiene los agendamientos por estado
+     *
+     * @author Jose Alzate <josealzate97@gmail.com>
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getByStatus($status)
+    {
+        $orders = Order::with(['client', 'service'])
+            ->where('status', $status)
+            ->orderBy('creation_date', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $orders,
+            'count' => $orders->count()
+        ]);
+    }
+
     
     // Métodos para crear, editar, eliminar órdenes se pueden agregar aquí
 }

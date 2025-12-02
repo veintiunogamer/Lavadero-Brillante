@@ -36,4 +36,20 @@ class Order extends Model
         'status', 
         'creation_date'
     ];
+
+    /**
+     * Relación con Cliente
+     */
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id', 'id');
+    }
+
+    /**
+     * Relación con Servicio
+     */
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id', 'id');
+    }
 }

@@ -19,9 +19,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [OrderController::class, 'index'])->name('home');
     
     # Rutas para la gestión de agendamientos
-    Route::get('/agendamiento', function () {
-        return view('agendamiento.index');
-    })->name('agendamiento.index');
+    Route::get('/agendamiento', [OrderController::class, 'agendamiento'])->name('agendamiento.index');
+    Route::get('/agendamiento/status/{status}', [OrderController::class, 'getByStatus'])->name('agendamiento.getByStatus');
 
     # Rutas para la gestión de clientes
     Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
