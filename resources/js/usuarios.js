@@ -7,6 +7,26 @@ if (typeof window !== 'undefined' && usuariosModuleActive()) {
     console.log('Usuarios JS cargado');
 }
 
+// Importar Cleave solo si está disponible
+if (typeof window !== 'undefined' && window.Cleave) {
+
+    window.initPhoneMask = function(inputElement) {
+        console.log('Aplicando máscara a:', inputElement);
+        new window.Cleave(inputElement, {
+            phone: true
+        });
+    };
+
+} else {
+    window.initPhoneMask = function(inputElement) {
+        console.log('Cleave no disponible, usando formatter JS');
+        // Fallback a formatter JS
+        inputElement.addEventListener('input', function(e) {
+            e.target.value = window.formatPhoneInput(e.target.value);
+        });
+    };
+}
+
 // Exponer la función globalmente para Alpine
 window.usuariosApp = function() {
 
@@ -20,6 +40,9 @@ window.usuariosApp = function() {
         showModal: false,
         isEditing: false,
         currentUserId: null,
+        errors: {
+            phone: ''
+        },
         form: {
             name: '',
             email: '',
@@ -77,6 +100,29 @@ window.usuariosApp = function() {
                 status: 1
             };
             this.currentUserId = null;
+            this.clearErrors();
+        },
+
+        clearErrors() {
+            this.errors = {
+                phone: ''
+            };
+        },
+
+        validatePhone() {
+            if (this.form.phone && !validateSpanishPhoneJS(this.form.phone)) {
+                this.errors.phone = 'Número de móvil no válido';
+            } else {
+                this.errors.phone = '';
+            }
+        },
+
+        validatePhoneForButton() {
+            return !this.form.phone || validateSpanishPhoneJS(this.form.phone);
+        },
+
+        isFormValid() {
+            return this.form.name && this.form.email && this.form.username && (this.form.password || this.isEditing) && this.validatePhoneForButton();
         },
 
         editUser(user) {
@@ -87,7 +133,7 @@ window.usuariosApp = function() {
             this.form = {
                 name: user.name,
                 email: user.email,
-                phone: user.phone || '',
+                phone: window.formatPhoneInput ? window.formatPhoneInput(user.phone || '') : (user.phone || ''),
                 username: user.username,
                 password: '',
                 rol: user.rol,
@@ -99,6 +145,14 @@ window.usuariosApp = function() {
         },
 
         async saveUser() {
+
+            // Validar teléfono antes de enviar
+            this.validatePhone();
+
+            if (this.errors.phone) {
+                alert(this.errors.phone);
+                return;
+            }
 
             const url = this.isEditing ? `/usuarios/${this.currentUserId}` : '/usuarios';
             const method = this.isEditing ? 'PUT' : 'POST';

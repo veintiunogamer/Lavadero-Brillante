@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
+use App\Helpers\ValidationHelper;
 
 class UserController extends Controller
 {   
@@ -39,6 +40,11 @@ class UserController extends Controller
             'password' => 'required|string|min:8',
             'rol' => 'required|uuid|exists:roles,id',
         ]);
+
+        // Validación adicional para teléfono español
+        if ($request->filled('phone') && !ValidationHelper::validateSpanishPhone($request->phone)) {
+            return response()->json(['success' => false, 'message' => 'Formato de teléfono inválido. Use formato español (ej: +34 600 123 456)']);
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -78,6 +84,11 @@ class UserController extends Controller
             'rol' => 'required|uuid|exists:roles,id',
             'status' => 'required|boolean',
         ]);
+
+        // Validación adicional para teléfono español
+        if ($request->filled('phone') && !ValidationHelper::validateSpanishPhone($request->phone)) {
+            return response()->json(['success' => false, 'message' => 'Formato de teléfono inválido. Use formato español (ej: +34 600 123 456)']);
+        }
 
         $user->update([
             'name' => $request->name,

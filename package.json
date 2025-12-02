@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "alpinejs": "^3.15.1",
+        "cleave.js": "^1.6.0",
         "notyf": "^3.10.0"
     }
 }

@@ -70,35 +70,42 @@
                 </div>
 
                 <form @submit.prevent="saveUser()">
+
                     <div class="row gx-3 gy-3 justify-content-center">
+
                         <div class="col-12 col-lg-3">
-                            <label class="form-label">Nombre</label>
+                            <label class="form-label fw-bold">Nombre</label>
                             <input type="text" x-model="form.name" class="form-control" required>
                         </div>
+
                         <div class="col-12 col-lg-3">
-                            <label class="form-label">Email</label>
+                            <label class="form-label fw-bold">Email</label>
                             <input type="email" x-model="form.email" class="form-control" required>
                         </div>
+
                         <div class="col-12 col-lg-3">
-                            <label class="form-label">Teléfono</label>
-                            <input type="text" x-model="form.phone" class="form-control">
+                            <label class="form-label fw-bold">Teléfono</label>
+                            <input type="text" :value="form.phone" @input="form.phone = formatPhoneInput($event.target.value)" @blur="validatePhone()" x-ref="phoneInput" class="form-control" maxlength="15">
+                            <span x-text="errors.phone" x-show="errors.phone" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
                         </div>
+
                         <div class="col-12 col-lg-3">
-                            <label class="form-label">Usuario</label>
+                            <label class="form-label fw-bold">Usuario</label>
                             <input type="text" x-model="form.username" class="form-control" required>
                         </div>
 
                         <div class="col-12 col-lg-3" x-show="!isEditing">
-                            <label class="form-label">Contraseña</label>
+                            <label class="form-label fw-bold">Contraseña</label>
                             <input type="password" x-model="form.password" class="form-control" required>
                         </div>
+
                         <div class="col-12 col-lg-3" x-show="isEditing">
-                            <label class="form-label">Nueva Contraseña (opcional)</label>
+                            <label class="form-label fw-bold">Nueva Contraseña (opcional)</label>
                             <input type="password" x-model="form.password" class="form-control">
                         </div>
 
                         <div class="col-12 col-lg-3">
-                            <label class="form-label">Rol</label>
+                            <label class="form-label fw-bold">Rol</label>
                             <select x-model="form.rol" class="form-select" required>
                                 <option value="">Seleccionar Rol</option>
                                 <template x-for="role in roles" :key="role.id">
@@ -116,13 +123,17 @@
                         </div>
 
                         <div class="col-12 d-flex justify-content-center mt-3">
-                            <button type="submit" class="btn btn-success" style="min-width: 180px;"> 
+                            <button type="submit" class="btn btn-success" style="min-width: 180px;" :disabled="!isFormValid()"> 
                                 <span x-text="isEditing ? 'Actualizar' : 'Crear'"></span>
                             </button>
                         </div>
+
                     </div>
+
                 </form>
+
             </div>
+
         </div>
 
     </div>

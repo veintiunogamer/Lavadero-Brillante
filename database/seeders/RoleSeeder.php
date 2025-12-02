@@ -7,12 +7,20 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('roles')->insert([
-            'id' => (string) Str::uuid(),
-            'name' => 'Administrador',
-            'type' => 1,
-            'status' => true,
-            'creation_date' => now(),
-        ]);
+        $roles = [
+            ['name' => 'Administrador', 'type' => 1],
+            ['name' => 'Operador', 'type' => 2],
+            ['name' => 'Cajero', 'type' => 3],
+        ];
+
+        foreach ($roles as $role) {
+            DB::table('roles')->insert([
+                'id' => (string) Str::uuid(),
+                'name' => $role['name'],
+                'type' => $role['type'],
+                'status' => true,
+                'creation_date' => now(),
+            ]);
+        }
     }
 }
