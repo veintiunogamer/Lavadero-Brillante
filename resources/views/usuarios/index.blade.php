@@ -37,7 +37,6 @@
                             <th>Teléfono</th>
                             <th>Usuario</th>
                             <th>Rol</th>
-                            <th>Estado</th>
                             <th>Fecha Creación</th>
                             <th>Acciones</th>
                         </tr>
@@ -51,9 +50,6 @@
                                 <td x-text="user.phone || 'N/A'"></td>
                                 <td x-text="user.username"></td>
                                 <td x-text="user.role ? user.role.name : 'N/A'"></td>
-                                <td>
-                                    <span :class="user.status ? 'badge bg-success' : 'badge bg-danger'" x-text="user.status ? 'Activo' : 'Inactivo'"></span>
-                                </td>
                                 <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
                                 <td>
                                     <button @click="editUser(user)" class="btn btn-sm btn-warning me-1">Editar</button>
@@ -114,30 +110,6 @@
                             <input type="text" x-model="form.username" class="form-control" required>
                         </div>
 
-                        <div class="col-12 col-lg-3" x-show="!isEditing">
-                            <label class="form-label fw-bold">
-                                Contraseña&nbsp; <span class="text-danger">*</span>
-                            </label>
-                            <div class="position-relative">
-                                <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5" required>
-                                <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
-                                    <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
-                                </button>
-                            </div>
-                            <span x-text="errors.password" x-show="errors.password" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
-                        </div>
-
-                        <div class="col-12 col-lg-3" x-show="isEditing">
-                            <label class="form-label fw-bold">Nueva Contraseña</label>
-                            <div class="position-relative">
-                                <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5">
-                                <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
-                                    <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
-                                </button>
-                            </div>
-                            <span x-text="errors.password" x-show="errors.password" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
-                        </div>
-
                         <div class="col-12 col-lg-3">
                             <label class="form-label fw-bold">
                                 Rol&nbsp; <span class="text-danger">*</span>
@@ -156,6 +128,30 @@
                                 <option value="1">Activo</option>
                                 <option value="0">Inactivo</option>
                             </select>
+                        </div>
+
+                        <div class="col-12 col-lg-3" x-show="!isEditing">
+                            <label class="form-label fw-bold">
+                                Contraseña&nbsp; <span class="text-danger">*</span>
+                            </label>
+                            <div class="position-relative">
+                                <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5" :required="!isEditing">
+                                <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
+                                    <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                </button>
+                            </div>
+                            <span x-text="errors.password" x-show="errors.password" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
+                        </div>
+
+                        <div class="col-12 col-lg-3" x-show="isEditing">
+                            <label class="form-label fw-bold">Nueva Contraseña</label>
+                            <div class="position-relative">
+                                <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5">
+                                <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
+                                    <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
+                                </button>
+                            </div>
+                            <span x-text="errors.password" x-show="errors.password" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
                         </div>
 
                         <div class="col-12 d-flex justify-content-center mt-3">

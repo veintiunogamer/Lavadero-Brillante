@@ -1,11 +1,13 @@
 <?php
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+
+use App\Helpers\ValidationHelper;
 use App\Models\User;
 use App\Models\Role;
-use App\Helpers\ValidationHelper;
 
 class UserController extends Controller
 {   
@@ -17,7 +19,7 @@ class UserController extends Controller
     */
     public function index()
     {
-        $users = User::where('status', true)->get();
+        $users = User::with('role')->where('status', true)->get();
         $roles = Role::where('status', Role::STATUS_ACTIVE)->get();
 
         return view('usuarios.index', compact('users', 'roles'));
@@ -46,7 +48,7 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => 'Formato de teléfono inválido. Use formato español (ej: +34 600 123 456)']);
         }
 
-        $user = User::create([
+        $user = new User([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -56,6 +58,8 @@ class UserController extends Controller
             'status' => true,
             'creation_date' => now(),
         ]);
+        $user->id = (string) Str::uuid();
+        $user->save();
 
         return response()->json([
             'success' => true, 
@@ -119,8 +123,9 @@ class UserController extends Controller
      * @return \Illuminate\Http\Response
     */
     public function destroy($id)
-    {
+    {   
         $user = User::findOrFail($id);
+        
         $user->delete();
 
         return response()->json([

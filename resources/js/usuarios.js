@@ -56,7 +56,7 @@ window.usuariosApp = function() {
         },
 
         initData(usersData, rolesData) {
-
+            
             this.users = usersData;
             this.roles = rolesData;
 
@@ -246,10 +246,10 @@ window.usuariosApp = function() {
 
                 if (result.success) {
 
-                    window.notyf.success(result.message || 'Usuario eliminado exitosamente');
+                    // Eliminar el usuario del array
+                    this.users = this.users.filter(user => user.id !== id);
 
-                    // Recargar la página para actualizar la lista
-                    location.reload();
+                    window.notyf.success(result.message || 'Usuario eliminado exitosamente');
 
                 } else {
                     window.notyf.error('Error: ' + (result.message || 'Ocurrió un error'));

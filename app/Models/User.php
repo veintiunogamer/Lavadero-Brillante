@@ -17,16 +17,19 @@ class User extends Authenticatable
     const USER_OPERATOR = 2;
     const USER_CASHIER = 3;
 
-    protected static function boot()
-    {
-        parent::boot();
+    /**
+     * Indica que el ID no es auto-incremental
+     *
+     * @var bool
+     */
+    public $incrementing = false;
 
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
-            }
-        });
-    }
+    /**
+     * El tipo de dato del ID
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
 
     /**
      * The attributes that are mass assignable.
