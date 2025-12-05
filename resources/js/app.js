@@ -61,3 +61,57 @@ window.formatPhoneInput = function(value) {
     if (digits.length <= 6) return '+34 ' + digits.slice(0, 3) + ' ' + digits.slice(3);
     return '+34 ' + digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6, 9);
 };
+
+/**
+ * Inicializa Cleave.js en todos los campos de teléfono.
+ * Busca inputs con label "Teléfono" o atributo data-phone="true".
+ * Se puede llamar después de cargar modales dinámicos.
+ */
+window.initPhoneMasks = function(container = document) {
+
+    const phoneInputs = container.querySelectorAll('input[data-phone="true"]');
+    
+    phoneInputs.forEach(input => {
+
+        // Evitar re-inicializar si ya tiene Cleave
+        if (input.dataset.cleaveInitialized) return;
+        
+        new Cleave(input, {
+            delimiters: [' ', ' '],
+            blocks: [3, 3, 3],
+            numericOnly: true
+        });
+        
+        input.dataset.cleaveInitialized = 'true';
+        
+        // Validación en tiempo real
+        input.addEventListener('input', function() {
+            const value = input.value.replace(/\s/g, '');
+            const regex = /^(6|7|9)[0-9]{8}$/;
+            
+            // Buscar elemento de error asociado
+            let errorDiv = input.parentElement.querySelector('.phone-error');
+            
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'phone-error text-danger small mt-1';
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = 'Número inválido. Debe ser un móvil de 9 dígitos.';
+                input.parentElement.appendChild(errorDiv);
+            }
+            
+            if (value.length < 9 && !regex.test(value)) {
+                errorDiv.style.display = 'block';
+                input.classList.add('is-invalid');
+            } else {
+                errorDiv.style.display = 'none';
+                input.classList.remove('is-invalid');
+            }
+        });
+    });
+};
+
+// Inicializar al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    window.initPhoneMasks();
+});

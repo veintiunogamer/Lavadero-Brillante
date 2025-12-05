@@ -340,6 +340,15 @@ hr {
     box-shadow: 0 1px 4px rgba(0,0,0,0.03);
 }
 
+.service-item {
+    background: #f7f9fa;
+    border-radius: 12px;
+    border: 1px solid #e0e6ed;
+    padding: 0.6em;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+
 /* Inline layout for service rows (compact single-line fields) */
 .service-row-inline {
     flex-wrap: nowrap;

@@ -4,7 +4,77 @@ function ordersModuleActive() {
 }
 
 if (typeof window !== 'undefined' && ordersModuleActive()) {
+
 	console.log('Orders JS cargado');
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+		const addServiceBtn = document.querySelector('.add-service-btn');
+		const serviceContainer = document.querySelector('.service-item').parentNode;
+		const originalService = document.querySelector('.service-item');
+
+		// Eliminar completamente el botón eliminar del original si existe
+		const originalRemoveBtn = originalService.querySelector('.remove-btn');
+
+		if (originalRemoveBtn) {
+			originalRemoveBtn.parentNode.removeChild(originalRemoveBtn);
+		}
+
+        // Evento para agregar un nuevo servicio
+		addServiceBtn.addEventListener('click', function () {
+
+			// Clonar el bloque de servicio
+			const clone = originalService.cloneNode(true);
+
+			// Limpiar los valores de los campos del clon
+			clone.querySelectorAll('input, select, textarea').forEach(el => {
+				if (el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+					el.value = '';
+				} else if (el.type === 'number' || el.type === 'text') {
+					el.value = el.defaultValue || '';
+				}
+			});
+
+			// Agregar botón eliminar solo al clon
+			let removeBtn = document.createElement('button');
+			removeBtn.className = 'remove-btn btn btn-sm btn-danger';
+			removeBtn.type = 'button';
+			removeBtn.innerHTML = '<i class="fa-solid fa-times"></i>';
+
+			// Buscar el contenedor adecuado para el botón
+			let btnCol = clone.querySelector('.col-1.d-flex');
+
+			if (!btnCol) {
+
+				// Si no existe, crear uno
+				btnCol = document.createElement('div');
+				btnCol.className = 'col-1 d-flex align-items-center';
+				btnCol.style.paddingTop = '1.7rem';
+				clone.appendChild(btnCol);
+
+			} else {
+
+				// Limpiar cualquier botón previo
+				btnCol.innerHTML = '';
+
+			}
+
+			btnCol.appendChild(removeBtn);
+
+			// Evento para eliminar el clon
+			removeBtn.onclick = function () {
+				clone.remove();
+			};
+
+			// Insertar el clon justo después del último .service-item
+			const serviceItems = serviceContainer.querySelectorAll('.service-item');
+			const lastItem = serviceItems[serviceItems.length - 1];
+			lastItem.insertAdjacentElement('afterend', clone);
+
+		});
+
+	});
+
 }
 
 // Verificar si estamos en la vista de agendamiento
@@ -34,6 +104,7 @@ window.agendamientoApp = function() {
         },
 
         async loadOrders(status) {
+
             this.loading = true;
             
             try {
@@ -103,5 +174,3 @@ window.agendamientoApp = function() {
     }
 
 }
-
-// Aquí iría el resto del código específico de órdenes

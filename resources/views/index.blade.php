@@ -25,7 +25,7 @@
                     <label class="fw-bold">Nº Orden / Factura</label>
                     <div style="gap: 0.5rem;">
                         <input type="text" class="input float-right" readonly style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
-                        <input type="text" class="input float-right" readonly style="width: 60px;" value="{{ $consecutive['sequence'] ?? '' }}">
+                        <input type="text" class="input float-right" readonly style="width: 70px;" value="{{ $consecutive['sequence'] ?? '' }}">
                     </div>
 
                 </div>
@@ -43,8 +43,8 @@
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <label class="fw-bold">Teléfono (para WhatsApp) <span class="required">*</span></label>
-                    <input type="text" class="input form-control" placeholder="Número de contacto">
+                    <label class="fw-bold">Teléfono <span class="required">*</span></label>
+                    <input type="text" id="telefono-whatsapp" class="input form-control" placeholder="Ej: +34 612 345 678" maxlength="12" data-phone="true" required>
                 </div>
 
                 <div class="col-md-3 mb-3">
@@ -319,3 +319,4 @@
     </div>
 
 @endsection
+

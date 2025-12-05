@@ -36,10 +36,10 @@ class OrderController extends Controller
     public function getConsecutive(): array
     {
         $today = Carbon::today();
-
         $dateCode = $today->format('dmY');
-        $todayOrders = Order::whereDate('creation_date', $today)->count() + 1;
-        $sequence = str_pad((string) $todayOrders, 3, '0', STR_PAD_LEFT);
+        
+        $todayOrders = Order::whereDate('creation_date', $today)->count();
+        $sequence = str_pad((string) ($todayOrders + 1), 3, '0', STR_PAD_LEFT);
 
         return [
             'date_code' => $dateCode,
