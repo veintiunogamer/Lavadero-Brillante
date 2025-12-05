@@ -3,11 +3,13 @@
 @section('content')
 
     <div id="orders-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;">
-        <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1200px;">
+        
+    <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1200px;">
 
         <!-- Datos del Cliente y Vehículo -->
         <div class="my-4">
 
+            <!-- Cabezera -->
             <div class="col-12 d-flex mb-4">
 
                 <div class="col-6">
@@ -32,30 +34,31 @@
 
             <hr>
 
-            <div class="col-12 d-flex flex-wrap">
 
-                <div class="col-3">
+            <div class="row">
+
+                <div class="col-md-3 mb-3">
                     <label class="fw-bold">Nombre Cliente <span class="required">*</span></label>
                     <input type="text" class="input form-control" placeholder="Nombre completo">
                 </div>
 
-                <div class="col-3">
+                <div class="col-md-3 mb-3">
                     <label class="fw-bold">Teléfono (para WhatsApp) <span class="required">*</span></label>
                     <input type="text" class="input form-control" placeholder="Número de contacto">
                 </div>
 
-                <div class="col-3">
+                <div class="col-md-3 mb-3">
                     <label class="fw-bold">Matrícula <span class="required">*</span></label>
                     <input type="text" class="input form-control" placeholder="Ej: 1234 ABC">
                 </div>
 
-                <div class="col-3">
+                <div class="col-md-3 mb-3">
                     <label class="fw-bold">Asignar Detallador <span class="required">*</span></label>
                     <select class="input form-control">
                         <option>Seleccionar</option>
                     </select>
                 </div>
-
+                
             </div>
 
             <div class="col-12">
@@ -99,42 +102,51 @@
             <hr>
 
             <!--  Nuevo servicio -->
-            <div class="col-12 d-flex flex-wrap align-items-center">
+            <div class="row align-items-end service-item mb-3">
 
-                <div class="col-4">
-                    <label class="fw-bold">Categoría</label>
-                    <select class="input form-control"><option>Categoría</option></select>
-                </div>
-
-                <div class="col-4">
-                    <label class="fw-bold">Servicio</label>
-                    <select class="input form-control"><option>Primero categoría</option></select>
-                </div>
-
-                <div class="col-4">
-                    <label class="fw-bold">Tipo Vehículo</label>
-                    <select class="input form-control"><option>Tipo</option></select>
-                </div>
-
-                <div class="col-4">
-                    <label class="fw-bold">Nivel Suciedad</label>
-                    <select class="input form-control"><option>Nivel</option></select>
-                </div>
-
-                <div class="col-4">
-                    <label class="fw-bold">Cantidad</label>
-                    <input type="number" class="input form-control" value="1">
+                <div class="col-2">
+                    <label class="fw-bold mb-1">Categoría</label>
+                    <select class="form-control input-tall">
+                        <option value="">Selecciona una categoría</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->cat_name }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 
-                <div class="col-4">
-                    <label class="fw-bold">€ Total</label>
-                    <input type="number" class="input form-control" value="0">
+                <div class="col-2">
+                    <label class="fw-bold mb-1">Servicio</label>
+                    <select class="form-control input-tall"><option>Primero categoría</option></select>
                 </div>
 
-                <div class="col-12 my-3">
-                    <button class="remove-btn"><i class="fa-solid fa-times"></i></button>
+                <div class="col-2">
+                    <label class="fw-bold mb-1">Tipo Vehículo</label>
+                    <select class="form-control input-tall">
+                        <option value="">Selecciona un tipo</option>
+                        @foreach($vehicleTypes as $type)
+                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
+                <div class="col-1">
+                    <label class="fw-bold mb-1">Suciedad</label>
+                    <select class="form-control input-tall"><option>Nivel</option></select>
+                </div>
+
+                <div class="col-1">
+                    <label class="fw-bold mb-1">Cant.</label>
+                    <input type="number" class="form-control input-tall" value="1">
+                </div>
+
+                <div class="col-1">
+                    <label class="fw-bold mb-1">€</label>
+                    <input type="number" class="form-control input-tall" value="0">
+                </div>
+
+                <div class="col-1 d-flex align-items-center" style="padding-top: 1.7rem;">
+                    <button class="remove-btn btn btn-sm btn-danger"><i class="fa-solid fa-times"></i></button>
+                </div>
             </div>
 
             <div class="service-box">

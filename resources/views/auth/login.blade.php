@@ -26,8 +26,7 @@
     <div class="login-card" x-data="loginForm()">
 
             <div class="login-logo" style="text-align:center; font-size:1.5rem;">
-                <span class="lavadero">LAVADERO</span> 
-                <span class="brillante">BRILLANTE</span>
+                <img src="{{ asset('/images/logo_alterno.png') }}" alt="Logo" class="login-image" width="60%">
             </div>
 
             <h2 class="login-title text-dark my-3" style="text-align:center;">Iniciar Sesión</h2>

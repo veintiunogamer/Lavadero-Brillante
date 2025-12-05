@@ -15,8 +15,14 @@ class OrderController extends Controller
     public function index()
     {
         $consecutive = $this->getConsecutive();
-
-        return view('index', ['consecutive' => $consecutive]);
+        $categories = \App\Models\Category::where('status', 1)->orderBy('cat_name')->get();
+        $vehicleTypes = \App\Models\VehicleType::orderBy('name')->get();
+        
+        return view('index', [
+            'consecutive' => $consecutive,
+            'categories' => $categories,
+            'vehicleTypes' => $vehicleTypes
+        ]);
     }
 
     /**
