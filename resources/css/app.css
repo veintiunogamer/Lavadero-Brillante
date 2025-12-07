@@ -26,9 +26,10 @@
 }
 
 .main-header {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    justify-content: space-between;
+    gap: 1rem;
     padding: 1rem 2rem;
     background: var(--color-azul-bg);
     position: relative;
@@ -48,8 +49,17 @@
 }
 
 .logo {
-    font-size: 2rem;
-    font-weight: bold;
+    display: flex;
+    align-items: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.logo-img {
+    height: 46px;
+    width: auto;
+    display: block;
+    object-fit: contain;
 }
 
 .lavadero {
@@ -62,7 +72,26 @@
 
 .main-nav {
     display: flex;
-    gap: 2rem;
+    gap: 1.6rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+}
+
+/* Give icons a little breathing room */
+.main-nav a i {
+    font-size: 1.05rem;
+}
+
+/* Ensure the user/admin block sticks to the right grid cell */
+.header-user {
+    justify-self: end;
 }
 
 /* Mobile styles for header */
@@ -218,6 +247,50 @@
     .main-nav a { font-size: 0.95rem; }
     .main-header { padding: 0.6rem 0.8rem; }
 
+}
+
+/* Header adjustments for large desktops (e.g., 1440x900) */
+@media (min-width: 1200px) {
+    .main-header {
+        padding: 1.2rem 3rem;
+        grid-template-columns: 220px 1fr 220px; /* wider left/right columns */
+    }
+
+    .main-nav {
+        gap: 2.4rem;
+    }
+
+    .main-nav a {
+        font-size: 1.05rem;
+        padding: 0.45rem 0.9rem;
+    }
+}
+
+/* Medium screens: slightly smaller spacing */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .main-header { padding: 1rem 2rem; grid-template-columns: 180px 1fr 180px; }
+    .main-nav { gap: 1.8rem; }
+}
+
+/* Small screens: collapse nav to hamburger (already present) */
+@media (max-width: 900px) {
+    .main-header { grid-template-columns: auto auto; grid-auto-rows: auto; }
+    .logo { order: 1; }
+    .nav-toggle { order: 2; }
+    .user-info { order: 3; }
+}
+
+/* Ensure contrast for active states in header links */
+.main-nav a.active {
+    background: rgba(255,255,255,0.12);
+    color: var(--color-blanco);
+    font-weight: 700;
+}
+
+/* Small screens: show icons only to save space */
+@media (max-width: 640px) {
+    .main-nav a { font-size: 0.95rem; }
+    .main-nav a span.nav-text { display: none; }
 }
 
 .main-nav a {
@@ -653,4 +726,21 @@ hr {
 /* Hide Alpine elements until Alpine initializes */
 [x-cloak] {
     display: none !important;
+}
+
+/* Estilos para tabs activos */
+.nav-tabs .nav-link.active {
+    background-color: var(--color-azul-bg) !important;
+    color: white !important;
+    border-color: var(--color-azul-bg) var(--color-azul-bg) #fff !important;
+}
+
+.nav-tabs .nav-link {
+    color: var(--color-azul-bg);
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.nav-tabs .nav-link:hover {
+    color: var(--color-azul-bg);
+    border-color: #adb5bd #adb5bd #fff;
 }

@@ -11,7 +11,7 @@
             <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
                 <div class="col-6">
                     <h2 class="card-title mb-3">
-                        <i class="fa-solid fa-cog icon color-blue"></i> 
+                        <i class="fa-solid fa-cog icon text-dark"></i> 
                         Configuraciones
                     </h2>
                     <p class="fw-bold">Configuraciones del sistema.</p>
@@ -22,19 +22,19 @@
             <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true">Categorías</button>
+                    <button class="nav-link active" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true"><i class="fa-solid fa-tags me-2"></i>Categorías</button>
                 </li>
 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services" aria-selected="false">Servicios</button>
+                    <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services" aria-selected="false"><i class="fa-solid fa-tools me-2"></i>Servicios</button>
                 </li>
 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="vehicle-types-tab" data-bs-toggle="tab" data-bs-target="#vehicle-types" type="button" role="tab" aria-controls="vehicle-types" aria-selected="false">Tipos de Vehículo</button>
+                    <button class="nav-link" id="vehicle-types-tab" data-bs-toggle="tab" data-bs-target="#vehicle-types" type="button" role="tab" aria-controls="vehicle-types" aria-selected="false"><i class="fa-solid fa-car me-2"></i>Tipos de Vehículo</button>
                 </li>
 
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients" type="button" role="tab" aria-controls="clients" aria-selected="false">Clientes</button>
+                    <button class="nav-link" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients" type="button" role="tab" aria-controls="clients" aria-selected="false"><i class="fa-solid fa-users me-2"></i>Clientes</button>
                 </li>
 
             </ul>

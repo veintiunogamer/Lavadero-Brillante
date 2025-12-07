@@ -9,7 +9,7 @@
             <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
                 <div class="col-6">
                     <h2 class="card-title mb-3">
-                        <i class="fa-solid fa-calendar-check icon color-blue"></i> 
+                        <i class="fa-solid fa-calendar-check icon text-dark"></i> 
                         Agendamiento
                     </h2>
                     <p class="fw-bold">Gestión de citas y agendamientos.</p>
@@ -19,13 +19,13 @@
             <!-- Tabs -->
             <ul class="nav nav-tabs" id="ordersTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button :class="currentTab === 1 ? 'nav-link active' : 'nav-link'" id="pending-tab" @click="changeTab(1)" type="button" role="tab" aria-controls="pending" :aria-selected="currentTab === 1">Pendientes</button>
+                    <button :class="currentTab === 1 ? 'nav-link active' : 'nav-link'" id="pending-tab" @click="changeTab(1)" type="button" role="tab" aria-controls="pending" :aria-selected="currentTab === 1"><i class="fa-solid fa-clock me-2"></i>Pendientes</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button :class="currentTab === 2 ? 'nav-link active' : 'nav-link'" id="in-process-tab" @click="changeTab(2)" type="button" role="tab" aria-controls="in-process" :aria-selected="currentTab === 2">En Proceso</button>
+                    <button :class="currentTab === 2 ? 'nav-link active' : 'nav-link'" id="in-process-tab" @click="changeTab(2)" type="button" role="tab" aria-controls="in-process" :aria-selected="currentTab === 2"><i class="fa-solid fa-spinner me-2"></i>En Proceso</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button :class="currentTab === 3 ? 'nav-link active' : 'nav-link'" id="completed-tab" @click="changeTab(3)" type="button" role="tab" aria-controls="completed" :aria-selected="currentTab === 3">Terminados</button>
+                    <button :class="currentTab === 3 ? 'nav-link active' : 'nav-link'" id="completed-tab" @click="changeTab(3)" type="button" role="tab" aria-controls="completed" :aria-selected="currentTab === 3"><i class="fa-solid fa-check-circle me-2"></i>Terminados</button>
                 </li>
             </ul>
 
