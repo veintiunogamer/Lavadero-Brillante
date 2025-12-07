@@ -7,6 +7,8 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\VehicleTypeController;
 
 # Rutas de autenticación
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -38,5 +40,24 @@ Route::middleware('auth')->group(function () {
     
     # Rutas para la gestión de informes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    
+    # Rutas para configuraciones
+    Route::get('/settings', function () {
+        return view('settings.index');
+    })->name('settings.index');
+    
+    # Rutas API para categorías
+    Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
+    
+    # Rutas API para tipos de vehículo
+    Route::resource('vehicle-types', VehicleTypeController::class)->except(['create', 'edit']);
+    
+    # Rutas API para clientes
+    Route::get('/api/clients', [ClientController::class, 'apiIndex'])->name('clients.api.index');
+    Route::resource('clients', ClientController::class)->except(['index', 'create', 'edit']);
+    
+    # Rutas API para servicios
+    Route::get('/api/services', [ServiceController::class, 'apiIndex'])->name('services.api.index');
+    Route::resource('services', ServiceController::class)->except(['index', 'create', 'edit']);
     
 });

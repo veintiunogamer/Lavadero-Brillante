@@ -6,7 +6,7 @@
         
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
-            <div class="col-12 d-flex justify-content-between align-items-center mb-3">
+            <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
                 <div class="col-6">
                     <h2 class="card-title mb-3">
                         <i class="fa-solid fa-calendar-check icon color-blue"></i> 
@@ -17,37 +17,33 @@
             </div>
 
             <!-- Tabs -->
-            <div class="mb-4 mt-4">
-                <div class="btn-group" role="group">
-                    <button @click="changeTab(1)" :class="currentTab === 1 ? 'btn btn-primary' : 'btn btn-outline-primary'">
-                        Pendientes
-                    </button>
-                    <button @click="changeTab(2)" :class="currentTab === 2 ? 'btn btn-primary' : 'btn btn-outline-primary'">
-                        En Proceso
-                    </button>
-                    <button @click="changeTab(3)" :class="currentTab === 3 ? 'btn btn-primary' : 'btn btn-outline-primary'">
-                        Terminados
-                    </button>
-                </div>
-            </div>
-
-            <hr>
+            <ul class="nav nav-tabs" id="ordersTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button :class="currentTab === 1 ? 'nav-link active' : 'nav-link'" id="pending-tab" @click="changeTab(1)" type="button" role="tab" aria-controls="pending" :aria-selected="currentTab === 1">Pendientes</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button :class="currentTab === 2 ? 'nav-link active' : 'nav-link'" id="in-process-tab" @click="changeTab(2)" type="button" role="tab" aria-controls="in-process" :aria-selected="currentTab === 2">En Proceso</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button :class="currentTab === 3 ? 'nav-link active' : 'nav-link'" id="completed-tab" @click="changeTab(3)" type="button" role="tab" aria-controls="completed" :aria-selected="currentTab === 3">Terminados</button>
+                </li>
+            </ul>
 
             <!-- Loading Spinner -->
-            <div x-show="loading" class="text-center py-5">
+            <div x-show="loading" class="text-center p-4">
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
             </div>
 
             <!-- Sin resultados -->
-            <div x-show="!loading && orders.length === 0" class="text-center py-5">
+            <div x-show="!loading && orders.length === 0" class="text-center py-5 p-4">
                 <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
                 <p class="text-muted">No hay agendamientos <span x-text="currentTab === 1 ? 'pendientes' : (currentTab === 2 ? 'en proceso' : 'terminados')"></span></p>
             </div>
 
             <!-- Tabla de agendamientos -->
-            <div x-show="!loading && orders.length > 0" class="table-responsive">
+            <div x-show="!loading && orders.length > 0" class="table-responsive p-4">
                 <table class="table table-striped table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>

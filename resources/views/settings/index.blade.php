@@ -1,0 +1,77 @@
+@extends('layouts.base')
+
+@section('title', 'Configuraciones')
+
+@section('content')
+
+    <div id="settings-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;">
+        
+        <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
+
+            <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
+                <div class="col-6">
+                    <h2 class="card-title mb-3">
+                        <i class="fa-solid fa-cog icon color-blue"></i> 
+                        Configuraciones
+                    </h2>
+                    <p class="fw-bold">Configuraciones del sistema.</p>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true">Categorías</button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services" aria-selected="false">Servicios</button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="vehicle-types-tab" data-bs-toggle="tab" data-bs-target="#vehicle-types" type="button" role="tab" aria-controls="vehicle-types" aria-selected="false">Tipos de Vehículo</button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients" type="button" role="tab" aria-controls="clients" aria-selected="false">Clientes</button>
+                </li>
+
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content mt-3" id="settingsTabContent">
+
+                <div class="tab-pane fade show active" id="categories" role="tabpanel" aria-labelledby="categories-tab">
+                    <div id="categories-content">
+                        <p>Cargando categorías...</p>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
+                    <div id="services-content">
+                        <p>Cargando servicios...</p>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="vehicle-types" role="tabpanel" aria-labelledby="vehicle-types-tab">
+                    <div id="vehicle-types-content">
+                        <p>Cargando tipos de vehículo...</p>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="clients" role="tabpanel" aria-labelledby="clients-tab">
+                    <div id="clients-content">
+                        <p>Cargando clientes...</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{ asset('js/settings.js') }}"></script>
+
+@endsection

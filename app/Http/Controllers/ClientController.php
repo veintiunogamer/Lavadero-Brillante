@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Client;
 
 class ClientController extends Controller
 {   
@@ -14,5 +15,79 @@ class ClientController extends Controller
     public function index()
     {
         return view('clients.index');
+    }
+
+    /**
+     * Muestra la lista de clientes en JSON.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function apiIndex()
+    {
+        $clients = Client::all();
+        return response()->json($clients);
+    }
+
+    /**
+     * Crea un nuevo cliente.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:clients',
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $client = Client::create($request->all());
+        return response()->json($client, 201);
+    }
+
+    /**
+     * Muestra un cliente específico.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        $client = Client::findOrFail($id);
+        return response()->json($client);
+    }
+
+    /**
+     * Actualiza un cliente.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $client = Client::findOrFail($id);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:clients,email,' . $id,
+            'phone' => 'nullable|string|max:20',
+        ]);
+
+        $client->update($request->all());
+        return response()->json($client);
+    }
+
+    /**
+     * Elimina un cliente.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        $client = Client::findOrFail($id);
+        $client->delete();
+        return response()->json(['message' => 'Cliente eliminado']);
     }
 }
