@@ -42,12 +42,16 @@
 
                 <!-- User Menu -->
                 <div class="user-menu" aria-hidden="true">
+
+                    <a href="#">Perfil</a>
+
                     <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display:block; margin:0;">
                         @csrf
                         <button type="submit" class="logout-btn logout-small" style="width:100%;">
-                            <i class="fa-solid fa-sign-out-alt"></i>&nbsp; Salir
+                            <i class="fa-solid fa-sign-out-alt"></i>&nbsp; Cerrar Sesión
                         </button>
                     </form>
+
                 </div>
 
             </div>

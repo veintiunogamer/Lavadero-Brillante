@@ -227,15 +227,16 @@
 
 .logout-btn {
     color: var(--color-rojo-btn);
+    background-color: white;
     font-size: 1rem;
+    border: none;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .logout-btn:hover {
-    background: #d32f2f;
-    box-shadow: 0 2px 8px rgba(244,67,54,0.15);
+    color: #e03d2b;
 }
 
 .main-content {

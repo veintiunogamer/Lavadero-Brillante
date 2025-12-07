@@ -8,16 +8,16 @@
 
             <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
                 <div class="col-6">
-                    <h2 class="card-title mb-3">
-                        <i class="fa-solid fa-calendar-check icon text-dark"></i> 
+                    <h3 class="card-title mb-3">
+                        <i class="fa-solid fa-calendar-check icon color-blue"></i> 
                         Agendamiento
-                    </h2>
-                    <p class="fw-bold">Gestión de citas y agendamientos.</p>
+                    </h3>
+                    <p class="fw-bold small text-muted">Gestión de citas y agendamientos.</p>
                 </div>
             </div>
 
             <!-- Tabs -->
-            <ul class="nav nav-tabs" id="ordersTabs" role="tablist">
+            <ul class="nav nav-tabs p-4" id="ordersTabs" role="tablist">
                 <li class="nav-item" role="presentation">
                     <button :class="currentTab === 1 ? 'nav-link active' : 'nav-link'" id="pending-tab" @click="changeTab(1)" type="button" role="tab" aria-controls="pending" :aria-selected="currentTab === 1"><i class="fa-solid fa-clock me-2"></i>Pendientes</button>
                 </li>

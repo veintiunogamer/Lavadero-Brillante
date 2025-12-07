@@ -10,11 +10,11 @@
 
             <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
                 <div class="col-6">
-                    <h2 class="card-title mb-3">
-                        <i class="fa-solid fa-cog icon text-dark"></i> 
+                    <h3 class="card-title mb-3">
+                        <i class="fa-solid fa-cog icon color-blue"></i> 
                         Configuraciones
-                    </h2>
-                    <p class="fw-bold">Configuraciones del sistema.</p>
+                    </h3>
+                    <p class="fw-bold small text-muted">Configuraciones del sistema.</p>
                 </div>
             </div>
 
