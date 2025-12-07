@@ -13,6 +13,6 @@ class InformeController extends Controller
     */
     public function index()
     {
-        return view('informes.index');
+        return view('reports.index');
     }
 }

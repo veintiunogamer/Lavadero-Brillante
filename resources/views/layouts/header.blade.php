@@ -12,7 +12,7 @@
 
         <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Inicio</a>
         
-        <a href="{{ route('agendamiento.index') }}" class="{{ request()->routeIs('agendamiento.*') ? 'active' : '' }}">Agenda</a>
+        <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.*') ? 'active' : '' }}">Agenda</a>
         
         <a href="{{ route('clients.index') }}" class="{{ request()->routeIs('clients.*') ? 'active' : '' }}">Clientes</a>
         
@@ -22,7 +22,7 @@
             <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">Usuarios</a>
         @endif
 
-        <a href="{{ route('informes.index') }}" class="{{ request()->routeIs('informes.*') ? 'active' : '' }}">Informes</a>
+        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}">Informes</a>
     
         <div class="user-info">
             @auth

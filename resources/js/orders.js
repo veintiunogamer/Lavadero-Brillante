@@ -108,7 +108,7 @@ window.agendamientoApp = function() {
             this.loading = true;
             
             try {
-                const response = await fetch(`/agendamiento/status/${status}`, {
+                const response = await fetch(`/orders/status/${status}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',

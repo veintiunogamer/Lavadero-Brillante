@@ -55,7 +55,7 @@ class OrderController extends Controller
      */
     public function agendamiento()
     {
-        return view('agendamiento.index');
+        return view('orders.index');
     }
 
     /**
