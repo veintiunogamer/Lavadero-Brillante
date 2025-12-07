@@ -10,7 +10,7 @@
     <div id="usuarios-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" x-data="typeof usuariosApp === 'function' ? usuariosApp() : {}" x-init='if (typeof usuariosApp === "function") initData(window.usersData, window.rolesData)'>
         
         <!-- Tabla con los usuarios -->
-        <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1200px;">
+        <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
         
             <div class="col-12 d-flex justify-content-between align-items-center mb-3">
 

@@ -87,6 +87,8 @@
 /* Give icons a little breathing room */
 .main-nav a i {
     font-size: 1.05rem;
+    color: var(--color-blanco);
+    transition: color 0.12s ease;
 }
 
 /* Ensure the user/admin block sticks to the right grid cell */
@@ -193,105 +195,7 @@
     line-height: 1;
 }
 
-@media (max-width: 900px) {
-
-    .main-header {
-        padding: 0.75rem 1rem;
-        gap: 1rem;
-    }
-
-    .main-nav {
-        display: none;
-        position: absolute;
-        top: 64px;
-        left: 0;
-        right: 0;
-        background: var(--color-azul-bg);
-        flex-direction: column;
-        gap: 0;
-        padding: 1rem 1rem 1.5rem 1rem;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-        z-index: 90;
-    }
-
-    .main-nav a {
-        padding: 0.6rem 0.8rem;
-        display: block;
-        border-radius: 6px;
-    }
-
-    .nav-toggle { display: flex; }
-    .user-info { order: 3; }
-    .logo { order: 1; }
-
-    /* When header has nav-open, show nav */
-    .main-header.nav-open .main-nav {
-        display: flex;
-    }
-
-    /* Make logout button smaller on mobile */
-    .logout-btn {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.95rem;
-    }
-
-    /* Show inline logout on small screens and hide dropdown toggle username */
-    .logout-inline { display: inline-flex; align-items: center; gap: 0.4rem; }
-    .user-toggle .user-name { display: none; }
-
-}
-
-@media (max-width: 480px) {
-
-    .logo { font-size: 1.25rem; }
-    .main-nav a { font-size: 0.95rem; }
-    .main-header { padding: 0.6rem 0.8rem; }
-
-}
-
-/* Header adjustments for large desktops (e.g., 1440x900) */
-@media (min-width: 1200px) {
-    .main-header {
-        padding: 1.2rem 3rem;
-        grid-template-columns: 220px 1fr 220px; /* wider left/right columns */
-    }
-
-    .main-nav {
-        gap: 2.4rem;
-    }
-
-    .main-nav a {
-        font-size: 1.05rem;
-        padding: 0.45rem 0.9rem;
-    }
-}
-
-/* Medium screens: slightly smaller spacing */
-@media (min-width: 992px) and (max-width: 1199px) {
-    .main-header { padding: 1rem 2rem; grid-template-columns: 180px 1fr 180px; }
-    .main-nav { gap: 1.8rem; }
-}
-
-/* Small screens: collapse nav to hamburger (already present) */
-@media (max-width: 900px) {
-    .main-header { grid-template-columns: auto auto; grid-auto-rows: auto; }
-    .logo { order: 1; }
-    .nav-toggle { order: 2; }
-    .user-info { order: 3; }
-}
-
-/* Ensure contrast for active states in header links */
-.main-nav a.active {
-    background: rgba(255,255,255,0.12);
-    color: var(--color-blanco);
-    font-weight: 700;
-}
-
-/* Small screens: show icons only to save space */
-@media (max-width: 640px) {
-    .main-nav a { font-size: 0.95rem; }
-    .main-nav a span.nav-text { display: none; }
-}
+/* Media queries consolidated at the end of the file (moved for clarity) */
 
 .main-nav a {
     color: var(--color-blanco);
@@ -307,6 +211,18 @@
     background: var(--color-amarillo-logo);
     color: var(--color-azul-logo);
     font-weight: 700;
+}
+
+/* Ensure icons turn blue on hover/active too */
+.main-nav a:hover i,
+.main-nav a.active i {
+    color: var(--color-azul-logo);
+}
+
+/* Ensure nav-text also follows color change (some browsers inherit better with explicit rule) */
+.main-nav a:hover .nav-text,
+.main-nav a.active .nav-text {
+    color: var(--color-azul-logo);
 }
 
 .logout-btn {
@@ -744,3 +660,55 @@ hr {
     color: var(--color-azul-bg);
     border-color: #adb5bd #adb5bd #fff;
 }
+
+/* Consolidated media queries (kept minimal and non-redundant) */
+
+/* Large desktops (>=1200px) - give header more horizontal space */
+@media (min-width: 1200px) {
+    .main-header {
+        padding: 1.2rem 3rem;
+        grid-template-columns: 220px 1fr 220px;
+    }
+    .main-nav { gap: 2.4rem; }
+    .main-nav a { font-size: 1.05rem; padding: 0.45rem 0.9rem; }
+    .logo-img { height: 48px; }
+}
+
+/* Medium screens (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+    .main-header { padding: 1rem 2rem; grid-template-columns: 180px 1fr 180px; }
+    .main-nav { gap: 1.8rem; }
+}
+
+/* Tablet / small desktop (<=900px) - collapse nav into hamburger layout */
+@media (max-width: 900px) {
+    .main-header { padding: 0.75rem 1rem; gap: 1rem; grid-template-columns: auto auto; grid-auto-rows: auto; }
+    .main-nav {
+        display: none; position: absolute; top: 64px; left: 0; right: 0;
+        background: var(--color-azul-bg); flex-direction: column; gap: 0;
+        padding: 1rem 1rem 1.5rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); z-index: 90;
+    }
+    .main-header.nav-open .main-nav { display: flex; }
+    .main-nav a { padding: 0.6rem 0.8rem; display: block; border-radius: 6px; }
+    .nav-toggle { display: flex; }
+    .header-user, .user-info { order: 3; }
+    .logo { order: 1; }
+    .logout-btn { padding: 0.4rem 0.8rem; font-size: 0.95rem; }
+    .logout-inline { display: inline-flex; align-items: center; gap: 0.4rem; }
+    .user-toggle .user-name { display: none; }
+}
+
+/* Small mobiles (<=640px) - show icons only in nav to save space */
+@media (max-width: 640px) {
+    .main-nav a { font-size: 0.95rem; }
+    .main-nav a span.nav-text { display: none; }
+    .logo-img { height: 40px; }
+}
+
+/* Very small devices (<=480px) - final tweaks */
+@media (max-width: 480px) {
+    .logo { font-size: 1rem; }
+    .main-nav a { font-size: 0.95rem; }
+    .main-header { padding: 0.6rem 0.8rem; }
+}
+
