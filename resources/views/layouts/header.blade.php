@@ -14,12 +14,12 @@
         
         <a href="{{ route('agendamiento.index') }}" class="{{ request()->routeIs('agendamiento.*') ? 'active' : '' }}">Agenda</a>
         
-        <a href="{{ route('clientes.index') }}" class="{{ request()->routeIs('clientes.*') ? 'active' : '' }}">Clientes</a>
+        <a href="{{ route('clients.index') }}" class="{{ request()->routeIs('clients.*') ? 'active' : '' }}">Clientes</a>
         
-        <a href="{{ route('servicios.index') }}" class="{{ request()->routeIs('servicios.*') ? 'active' : '' }}">Servicios</a>
+        <a href="{{ route('services.index') }}" class="{{ request()->routeIs('services.*') ? 'active' : '' }}">Servicios</a>
         
         @if(Auth::check() && Auth::user()->role && Auth::user()->role->type == 1)
-            <a href="{{ route('usuarios.index') }}" class="{{ request()->routeIs('usuarios.*') ? 'active' : '' }}">Usuarios</a>
+            <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}">Usuarios</a>
         @endif
 
         <a href="{{ route('informes.index') }}" class="{{ request()->routeIs('informes.*') ? 'active' : '' }}">Informes</a>

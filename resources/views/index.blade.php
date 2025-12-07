@@ -7,7 +7,7 @@
     <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1200px;">
 
         <!-- Datos del Cliente y Vehículo -->
-        <div class="my-4">
+        <div class="my-4 p-4">
 
             <!-- Cabezera -->
             <div class="col-12 d-flex mb-4">
@@ -35,7 +35,7 @@
             <hr>
 
 
-            <div class="row">
+            <div class="d-flex flex-wrap p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #0d6efd !important;">
 
                 <div class="col-md-3 mb-3">
                     <label class="fw-bold">Nombre Cliente <span class="required">*</span></label>
@@ -58,31 +58,88 @@
                         <option>Seleccionar</option>
                     </select>
                 </div>
-                
-            </div>
 
-            <div class="col-12">
-                <div class="col-12" style="width: 100%;">
-                    <label class="fw-bold">Observaciones</label>
-                    <textarea class="input form-control" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+                <div class="col-12">
+                    <div class="col-12" style="width: 100%;">
+                        <label class="fw-bold">Observaciones</label>
+                        <textarea class="input form-control" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+                    </div>
                 </div>
+                
             </div>
 
             <hr>
 
-            <div class="row" style="align-items: center;">
-                <label style="display: flex; align-items: center; gap: 0.5rem;">
-                    <input type="checkbox" style="accent-color: var(--color-azul-logo);">
-                    <b class="text-dark" style="color: black;">Solicitar Factura (Aplica 21% IVA)</b>
-                </label>
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <div class="form-check form-switch d-flex align-items-center" style="gap: 1rem;">
+                        <input class="form-check-input m-0" type="checkbox" role="switch" id="solicitar-factura" style="cursor: pointer; width: 3.5rem; height: 1.75rem;">
+                        <label class="form-check-label fw-bold m-0" for="solicitar-factura" style="cursor: pointer; font-size: 1.1rem;">
+                            Solicitar Factura (Aplica 21% IVA)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos de Facturación -->
+            <div id="datos-facturacion" class="mt-4 p-4 border rounded-3 bg-light" style="display: none; border-left: 4px solid #0d6efd !important;">
+                
+                <div class="d-flex flex-wrap">
+
+                    <div class="col-12 mb-4">
+                        <h5 class="fw-bold text-primary">
+                            <i class="fa-solid fa-file-invoice me-2"></i> Datos de Facturación
+                        </h5>
+                        <small class="text-muted">Complete la información fiscal para emitir la factura</small>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="fw-bold mb-1">
+                            <i class="fa-solid fa-building me-1 text-primary"></i> Razón Social <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="razon-social" placeholder="Nombre de la empresa">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="fw-bold mb-1">
+                            <i class="fa-solid fa-hashtag me-1 text-primary"></i> NIF / CIF <span class="required">*</span>
+                        </label>
+                        <input type="text" class="form-control" id="nif-cif" placeholder="Ej: B12345678">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="fw-bold mb-1">
+                            <i class="fa-solid fa-envelope me-1 text-primary"></i> Email para Factura
+                        </label>
+                        <input type="email" class="form-control" id="email-factura" placeholder="email@ejemplo.com">
+                    </div>
+
+                    <div class="col-12 mb-2">
+                        <label class="fw-bold mb-1">
+                            <i class="fa-solid fa-location-dot me-1 text-primary"></i> Dirección Fiscal <span class="required">*</span>
+                        </label>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <input type="text" class="form-control" id="direccion-calle" placeholder="Calle, número, puerta">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <input type="text" class="form-control" id="direccion-cp" placeholder="Código Postal">
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <input type="text" class="form-control" id="direccion-ciudad" placeholder="Ciudad">
+                    </div>
+                </div>
             </div>
 
         </div>
 
         <!-- Servicios -->
-        <div class="mb-5">
+        <div class="mb-5 p-4">
 
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex">
+            <div class="col-lg-12 col-md-12 col-sm-12 d-flex mb-3">
                 
                 <div class="col-lg-8 col-md-8 col-sm-12 p-0">
                     <h2 class="card-title">
@@ -102,9 +159,9 @@
             <hr>
 
             <!--  Nuevo servicio -->
-            <div class="row align-items-end service-item mb-3">
+            <div class="d-flex flex-wrap service-item p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #198754 !important;">
 
-                <div class="col-2">
+                <div class="col-lg-2 col-md-2 col-sm-12">
                     <label class="fw-bold mb-1">Categoría</label>
                     <select class="form-control input-tall">
                         <option value="">Selecciona una categoría</option>
@@ -114,12 +171,12 @@
                     </select>
                 </div>
                 
-                <div class="col-2">
+                <div class="col-lg-2 col-md-2 col-sm-12">
                     <label class="fw-bold mb-1">Servicio</label>
                     <select class="form-control input-tall"><option>Primero categoría</option></select>
                 </div>
 
-                <div class="col-2">
+                <div class="col-lg-2 col-md-2 col-sm-12">
                     <label class="fw-bold mb-1">Tipo Vehículo</label>
                     <select class="form-control input-tall">
                         <option value="">Selecciona un tipo</option>
@@ -129,38 +186,45 @@
                     </select>
                 </div>
 
-                <div class="col-1">
+                <div class="col-lg-1 col-md-1 col-sm-12">
                     <label class="fw-bold mb-1">Suciedad</label>
                     <select class="form-control input-tall"><option>Nivel</option></select>
                 </div>
 
-                <div class="col-1">
+                <div class="col-lg-1 col-md-1 col-sm-12">
                     <label class="fw-bold mb-1">Cant.</label>
                     <input type="number" class="form-control input-tall" value="1">
                 </div>
 
-                <div class="col-1">
+                <div class="col-lg-1 col-md-1 col-sm-12">
                     <label class="fw-bold mb-1">€</label>
                     <input type="number" class="form-control input-tall" value="0">
                 </div>
 
-                <div class="col-1 d-flex align-items-center" style="padding-top: 1.7rem;">
+                <div class="col-lg-1 col-md-1 col-sm-12 d-flex align-items-center" style="padding-top: 1.7rem;">
                     <button class="remove-btn btn btn-sm btn-danger"><i class="fa-solid fa-times"></i></button>
                 </div>
             </div>
 
-            <div class="service-box">
+            <div class="service-box p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #025bb5 !important;">
 
-                <div class="input-group" style="width:100%;">
-                    <label>Descripción de la cita (se genera automáticamente)</label>
-                    <textarea class="input" rows="2">Ninguno de nuestros precios incluye IVA.</textarea>
+                <div class="mb-3">
+                    <label class="fw-bold text-primary small mb-2">
+                        <i class="fa-solid fa-file-lines me-1"></i> Descripción de la cita (se genera automáticamente)
+                    </label>
+                    <textarea class="form-control" rows="2">Ninguno de nuestros precios incluye IVA.</textarea>
                 </div>
 
-                <small>Se actualiza automáticamente según los servicios elegidos. Puedes añadir notas adicionales abajo; se incorporan a la descripción.</small>
+                <small class="text-muted d-block mb-3">
+                    <i class="fa-solid fa-circle-info me-1"></i>
+                    Se actualiza automáticamente según los servicios elegidos. Puedes añadir notas adicionales abajo; se incorporan a la descripción.
+                </small>
                 
-                <div class="input-group" style="width:100%;margin-top:1rem;">
-                    <label>Notas adicionales</label>
-                    <textarea class="input" rows="2" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
+                <div class="mb-0">
+                    <label class="fw-bold mb-2 text-success small">
+                        <i class="fa-solid fa-pen me-1"></i> Notas adicionales
+                    </label>
+                    <textarea class="form-control" rows="2" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
                 </div>
 
             </div>
@@ -187,7 +251,7 @@
         </div>
 
         <!-- Pago & métodos de pago -->
-        <div class="mb-5">
+        <div class="mb-5 p-4 border rounded-3 bg-light" style="border-left: 4px solid #0d6efd !important;">
 
             <h2 class="card-title">
                 <i class="fa-solid fa-calendar-check icon color-blue"></i> Fecha, Hora y Pago
@@ -320,3 +384,31 @@
 
 @endsection
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Toggle de datos de facturación
+    var toggleFactura = document.getElementById('solicitar-factura');
+    var datosFacturacion = document.getElementById('datos-facturacion');
+    var fieldsFactura = ['razon-social', 'nif-cif', 'email-factura', 'direccion-calle', 'direccion-cp', 'direccion-ciudad'];
+
+    toggleFactura.addEventListener('change', function() {
+        if (this.checked) {
+            datosFacturacion.style.display = 'block';
+            // Agregar required a los campos obligatorios
+            document.getElementById('razon-social').required = true;
+            document.getElementById('nif-cif').required = true;
+            document.getElementById('direccion-calle').required = true;
+            document.getElementById('direccion-cp').required = true;
+            document.getElementById('direccion-ciudad').required = true;
+        } else {
+            datosFacturacion.style.display = 'none';
+            // Quitar required y limpiar valores
+            fieldsFactura.forEach(function(fieldId) {
+                var field = document.getElementById(fieldId);
+                field.required = false;
+                field.value = '';
+            });
+        }
+    });
+});
+</script>

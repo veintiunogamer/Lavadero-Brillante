@@ -170,7 +170,7 @@ window.usuariosApp = function() {
                 return;
             }
 
-            const url = this.isEditing ? `/usuarios/update/${this.currentUserId}` : '/usuarios/store';
+            const url = this.isEditing ? `/users/update/${this.currentUserId}` : '/users/store';
             const method = this.isEditing ? 'PUT' : 'POST';
 
             try {
@@ -234,7 +234,7 @@ window.usuariosApp = function() {
 
             try {
 
-                const response = await fetch(`/usuarios/delete/${id}`, {
+                const response = await fetch(`/users/delete/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Accept': 'application/json',

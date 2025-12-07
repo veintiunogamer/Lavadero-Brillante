@@ -23,17 +23,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/agendamiento/status/{status}', [OrderController::class, 'getByStatus'])->name('agendamiento.getByStatus');
 
     # Rutas para la gestión de clientes
-    Route::get('/clientes', [ClienteController::class, 'index'])->name('clientes.index');
+    Route::get('/clients', [ClienteController::class, 'index'])->name('clients.index');
     
     # Rutas para la gestión de servicios
-    Route::get('/servicios', [ServicioController::class, 'index'])->name('servicios.index');
+    Route::get('/services', [ServicioController::class, 'index'])->name('services.index');
     
     # Rutas para la gestión de usuarios (Solo Administradores)
     Route::middleware('admin')->group(function () {
-        Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
-        Route::post('/usuarios/store', [UserController::class, 'store'])->name('usuarios.store');
-        Route::put('/usuarios/update/{id}', [UserController::class, 'update'])->name('usuarios.update');
-        Route::delete('/usuarios/delete/{id}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+        Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     });
     
     # Rutas para la gestión de informes

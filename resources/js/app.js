@@ -1,5 +1,5 @@
 import './bootstrap';
-import './usuarios.js';
+import './users.js';
 import './orders.js';
 import './header.js';
 import './alpine.js';

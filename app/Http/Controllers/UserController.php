@@ -22,7 +22,7 @@ class UserController extends Controller
         $users = User::with('role')->where('status', true)->get();
         $roles = Role::where('status', Role::STATUS_ACTIVE)->get();
 
-        return view('usuarios.index', compact('users', 'roles'));
+        return view('users.index', compact('users', 'roles'));
     }
 
     /**
