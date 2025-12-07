@@ -3,16 +3,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ClienteController extends Controller
+class ServiceController extends Controller
 {   
     /**
-     * Muestra la lista de clientes.
+     * Muestra la lista de servicios.
      *
      * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
     */
     public function index()
     {
-        return view('clients.index');
+        return view('services.index');
     }
 }

@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ClienteController;
-use App\Http\Controllers\InformeController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\ServicioController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 
 # Rutas de autenticación
@@ -23,10 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/status/{status}', [OrderController::class, 'getByStatus'])->name('orders.getByStatus');
 
     # Rutas para la gestión de clientes
-    Route::get('/clients', [ClienteController::class, 'index'])->name('clients.index');
+    Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
     
     # Rutas para la gestión de servicios
-    Route::get('/services', [ServicioController::class, 'index'])->name('services.index');
+    Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
     
     # Rutas para la gestión de usuarios (Solo Administradores)
     Route::middleware('admin')->group(function () {
@@ -37,6 +37,6 @@ Route::middleware('auth')->group(function () {
     });
     
     # Rutas para la gestión de informes
-    Route::get('/reports', [InformeController::class, 'index'])->name('reports.index');
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
     
 });
