@@ -2,6 +2,7 @@
 
 @section('title', 'Configuraciones')
 
+
 @section('content')
 
     <div id="settings-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;">
@@ -27,7 +28,6 @@
 
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services" aria-selected="false"><i class="fa-solid fa-tools me-2"></i>Servicios</button>
-                </li>
 
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="vehicle-types-tab" data-bs-toggle="tab" data-bs-target="#vehicle-types" type="button" role="tab" aria-controls="vehicle-types" aria-selected="false"><i class="fa-solid fa-car me-2"></i>Tipos de Vehículo</button>
@@ -72,6 +72,6 @@
 
     </div>
 
-    <script src="{{ asset('js/settings.js') }}"></script>
+    @include('category.formCategory')
 
 @endsection
