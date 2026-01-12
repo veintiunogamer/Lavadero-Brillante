@@ -37,29 +37,29 @@
 
                 <div class="d-flex flex-wrap p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #0d6efd !important;">
 
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Nombre Cliente <span class="required">*</span></label>
                         <input type="text" class="input form-control" placeholder="Nombre completo">
                     </div>
 
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Teléfono <span class="required">*</span></label>
                         <input type="text" id="telefono-whatsapp" class="input form-control" placeholder="Ej: +34 612 345 678" maxlength="12" data-phone="true" required>
                     </div>
 
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Matrícula <span class="required">*</span></label>
                         <input type="text" class="input form-control" placeholder="Ej: 1234 ABC">
                     </div>
 
-                    <div class="col-md-3 mb-3">
+                    <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Asignar Detallador <span class="required">*</span></label>
                         <select class="input form-control">
                             <option>Seleccionar</option>
                         </select>
                     </div>
 
-                    <div class="col-12">
+                    <div class="col-12 px-2">
                         <div class="col-12" style="width: 100%;">
                             <label class="fw-bold">Observaciones</label>
                             <textarea class="input form-control" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
@@ -93,21 +93,21 @@
                             <small class="text-muted">Complete la información fiscal para emitir la factura</small>
                         </div>
                         
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3 px-2">
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-building me-1 text-primary"></i> Razón Social <span class="required">*</span>
                             </label>
                             <input type="text" class="form-control" id="razon-social" placeholder="Nombre de la empresa">
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3 px-2">
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-hashtag me-1 text-primary"></i> NIF / CIF <span class="required">*</span>
                             </label>
                             <input type="text" class="form-control" id="nif-cif" placeholder="Ej: B12345678">
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3 px-2">
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-envelope me-1 text-primary"></i> Email para Factura
                             </label>
@@ -120,15 +120,15 @@
                             </label>
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3 px-2">
                             <input type="text" class="form-control" id="direccion-calle" placeholder="Calle, número, puerta">
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3 px-2">
                             <input type="text" class="form-control" id="direccion-cp" placeholder="Código Postal">
                         </div>
 
-                        <div class="col-md-4 mb-3">
+                        <div class="col-md-4 mb-3 px-2">
                             <input type="text" class="form-control" id="direccion-ciudad" placeholder="Ciudad">
                         </div>
                     </div>
@@ -161,9 +161,9 @@
                 <!--  Nuevo servicio -->
                 <div class="d-flex flex-wrap service-item p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #198754 !important;">
 
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-2 col-md-2 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Categoría</label>
-                        <select class="form-control input-tall">
+                        <select class="form-control input-tall service-category" data-service-row="0">
                             <option value="">Selecciona una categoría</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->cat_name }}</option>
@@ -171,14 +171,16 @@
                         </select>
                     </div>
                     
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-2 col-md-2 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Servicio</label>
-                        <select class="form-control input-tall"><option>Primero categoría</option></select>
+                        <select class="form-control input-tall service-select" data-service-row="0" disabled>
+                            <option value="">Primero categoría</option>
+                        </select>
                     </div>
 
-                    <div class="col-lg-2 col-md-2 col-sm-12">
+                    <div class="col-lg-2 col-md-2 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Tipo Vehículo</label>
-                        <select class="form-control input-tall">
+                        <select class="form-control input-tall vehicle-type" data-service-row="0">
                             <option value="">Selecciona un tipo</option>
                             @foreach($vehicleTypes as $type)
                                 <option value="{{ $type->id }}">{{ $type->name }}</option>
@@ -186,22 +188,26 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-1 col-md-1 col-sm-12">
+                    <div class="col-lg-1 col-md-1 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Suciedad</label>
-                        <select class="form-control input-tall"><option>Nivel</option></select>
+                        <select class="form-control input-tall service-dirt" data-service-row="0">
+                            <option value="1">Bajo</option>
+                            <option value="2">Medio</option>
+                            <option value="3">Alto</option>
+                        </select>
                     </div>
 
-                    <div class="col-lg-1 col-md-1 col-sm-12">
+                    <div class="col-lg-1 col-md-1 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Cant.</label>
-                        <input type="number" class="form-control input-tall" value="1">
+                        <input type="number" class="form-control input-tall service-quantity" data-service-row="0" value="1" min="1">
                     </div>
 
-                    <div class="col-lg-1 col-md-1 col-sm-12">
+                    <div class="col-lg-1 col-md-1 col-sm-12 px-2">
                         <label class="fw-bold mb-1">€</label>
-                        <input type="number" class="form-control input-tall" value="0">
+                        <input type="number" class="form-control input-tall service-price" data-service-row="0" value="0" step="0.01" min="0" readonly>
                     </div>
 
-                    <div class="col-lg-1 col-md-1 col-sm-12 d-flex align-items-center" style="padding-top: 1.7rem;">
+                    <div class="col-lg-1 col-md-1 col-sm-12 d-flex align-items-center px-2" style="padding-top: 1.7rem;">
                         <button class="remove-btn btn btn-sm btn-danger"><i class="fa-solid fa-times"></i></button>
                     </div>
                 </div>
@@ -299,14 +305,32 @@
 
                         <div class="col-12 form-side d-flex flex-wrap">
 
-                            <div class="col-6">
+                            <div class="col-6 px-2">
                                 <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
-                                <select class="input form-control"><option>Seleccionar</option></select>
+                                <input type="text" class="input form-control time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly>
+                                <!-- Fallback select (oculto por defecto) -->
+                                <select class="input form-control time-picker-fallback" id="hora-entrada-fallback" style="display: none;">
+                                    <option value="">Seleccionar</option>
+                                    @for($h = 8; $h <= 20; $h++)
+                                        @foreach(['00', '30'] as $m)
+                                            <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
+                                        @endforeach
+                                    @endfor
+                                </select>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-6 px-2">
                                 <label class="fw-bold">Hora Entrega</label>
-                                <select class="input form-control"><option>Seleccionar</option></select>
+                                <input type="text" class="input form-control time-picker" id="hora-salida" placeholder="Selecciona hora" readonly>
+                                <!-- Fallback select (oculto por defecto) -->
+                                <select class="input form-control time-picker-fallback" id="hora-salida-fallback" style="display: none;">
+                                    <option value="">Seleccionar</option>
+                                    @for($h = 8; $h <= 20; $h++)
+                                        @foreach(['00', '30'] as $m)
+                                            <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
+                                        @endforeach
+                                    @endfor
+                                </select>
                             </div>
 
                             <div class="col-12 my-3">
@@ -318,14 +342,22 @@
                                 </div>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-6 px-2">
                                 <label class="fw-bold">Método de Pago</label>
-                                <select class="input form-control"><option>Efectivo</option></select>
+                                <select class="input form-control">
+                                    <option value="efectivo">Efectivo</option>
+                                    <option value="tarjeta">Tarjeta</option>
+                                    <option value="transferencia">Transferencia</option>
+                                </select>
                             </div>
 
-                            <div class="col-6">
+                            <div class="col-6 px-2">
                                 <label class="fw-bold">Estado de la Cita</label>
-                                <select class="input form-control"><option>Confirmada</option></select>
+                                <select class="input form-control">
+                                    <option value="1">Pendiente</option>
+                                    <option value="2">En Proceso</option>
+                                    <option value="3">Terminada</option>
+                                </select>
                             </div>
 
                         </div>

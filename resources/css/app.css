@@ -713,3 +713,75 @@ hr {
     .main-header { padding: 0.6rem 0.8rem; }
 }
 
+/* ==================== FLATPICKR TIME PICKER CUSTOMIZATION ==================== */
+
+/* Asegurar que el time picker esté por encima de otros elementos */
+.flatpickr-calendar {
+    z-index: 10001 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 8px !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+/* Estilo del input del time picker */
+.time-picker {
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+.time-picker:focus {
+    border-color: var(--color-azul-logo);
+    box-shadow: 0 0 0 0.2rem rgba(2, 91, 181, 0.25);
+    outline: 0;
+}
+
+.time-picker:hover {
+    border-color: var(--color-azul-logo);
+}
+
+/* Personalización del calendario de Flatpickr */
+.flatpickr-time input {
+    font-size: 16px !important;
+    font-weight: 600;
+}
+
+.flatpickr-time .flatpickr-am-pm {
+    display: none; /* Ocultar AM/PM ya que usamos formato 24h */
+}
+
+/* Flechas de incremento/decremento */
+.flatpickr-time .flatpickr-time-separator,
+.flatpickr-time .numInputWrapper {
+    font-weight: 600;
+}
+
+/* Hover en los inputs de hora */
+.flatpickr-time .numInputWrapper:hover {
+    background: rgba(2, 91, 181, 0.05);
+}
+
+/* Color primario para elementos activos */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: var(--color-azul-logo) !important;
+    border-color: var(--color-azul-logo) !important;
+}
+
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover {
+    background: var(--color-azul-bg) !important;
+    border-color: var(--color-azul-bg) !important;
+}
+
+/* Validación visual */
+.time-picker.is-invalid {
+    border-color: #dc3545;
+}
+
+.time-picker.is-valid {
+    border-color: #28a745;
+}

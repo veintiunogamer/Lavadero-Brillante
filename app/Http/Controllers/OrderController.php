@@ -79,6 +79,26 @@ class OrderController extends Controller
         ]);
     }
 
+    /**
+     * Obtiene los servicios filtrados por categoría
+     *
+     * @author Jose Alzate <josealzate97@gmail.com>
+     * @param  int  $categoryId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getServicesByCategory($categoryId)
+    {
+        $services = \App\Models\Service::where('cat_id', $categoryId)
+            ->where('status', 1)
+            ->orderBy('name')
+            ->get(['id', 'name', 'price']);
+
+        return response()->json([
+            'success' => true,
+            'data' => $services
+        ]);
+    }
+
     
     // Métodos para crear, editar, eliminar órdenes se pueden agregar aquí
 }

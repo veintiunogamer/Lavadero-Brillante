@@ -15,6 +15,10 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <!-- Flatpickr CSS para Time Picker -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" integrity="sha256-VGuxCGHzjL4szD/0B8d4SNZvJXBN/4pbyXwqDVH1nvg=" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/themes/material_blue.css" integrity="sha256-HKfNFcY6xACPrV8DEigUSTB8YsLgaImYpCJYPzp1vwc=" crossorigin="anonymous">
+
         <!-- Favicons -->
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/icon.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/icon.png') }}">
@@ -26,6 +30,10 @@
         
         <!-- Bootstrap 5 JS CDN -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Flatpickr JS para Time Picker con fallback -->
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js" integrity="sha256-X9/FlbcwNnevT+Rttv9+8KcxTYnmvCyW7rAV9tDSPTg=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/es.js" integrity="sha256-iqS4dwEN8lH/BazP196b+NQP5klTUJgvSJyoiz8YVs4=" crossorigin="anonymous"></script>
 
     </head>
 
