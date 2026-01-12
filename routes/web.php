@@ -36,7 +36,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
         Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::put('/users/activate/{id}', [UserController::class, 'activate'])->name('users.activate');
     });
+    
+    # Rutas para el perfil del usuario
+    Route::get('/profile', [UserController::class, 'profile'])->name('profile.index');
+    Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
     
     # Rutas para la gestión de informes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');

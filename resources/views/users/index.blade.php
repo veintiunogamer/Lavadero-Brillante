@@ -3,11 +3,12 @@
 @section('content')
 
     <script>
-        window.usersData = @json($users);
+        window.activeUsersData = @json($activeUsers);
+        window.inactiveUsersData = @json($inactiveUsers);
         window.rolesData = @json($roles);
     </script>
 
-    <div id="usuarios-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" x-data="typeof usuariosApp === 'function' ? usuariosApp() : {}" x-init='if (typeof usuariosApp === "function") initData(window.usersData, window.rolesData)'>
+    <div id="usuarios-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" x-data="typeof usuariosApp === 'function' ? usuariosApp() : {}" x-init='if (typeof usuariosApp === "function") initData(window.activeUsersData, window.inactiveUsersData, window.rolesData)'>
         
         <!-- Tabla con los usuarios -->
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
@@ -28,7 +29,24 @@
 
             </div>
 
-            <div class="table-responsive mt-4 p-4">
+            <!-- Tabs para Usuarios Activos e Inactivos -->
+            <ul class="nav nav-tabs px-4" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" :class="activeTab === 'active' ? 'active' : ''" @click="activeTab = 'active'" type="button" role="tab">
+                        <i class="fa-solid fa-check-circle me-1"></i>
+                        Activos (<span x-text="activeUsers.length"></span>)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" :class="activeTab === 'inactive' ? 'active' : ''" @click="activeTab = 'inactive'" type="button" role="tab">
+                        <i class="fa-solid fa-times-circle me-1"></i>
+                        Inactivos (<span x-text="inactiveUsers.length"></span>)
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content: Usuarios Activos -->
+            <div class="table-responsive mt-4 p-4" x-show="activeTab === 'active'">
                 <table class="table table-striped table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>
@@ -43,7 +61,7 @@
                     </thead>
 
                     <tbody>
-                        <template x-for="(user, index) in users" :key="index">
+                        <template x-for="(user, index) in activeUsers" :key="index">
                             <tr>
                                 <td x-text="user.name"></td>
                                 <td x-text="user.email"></td>
@@ -52,11 +70,58 @@
                                 <td x-text="user.role ? user.role.name : 'N/A'"></td>
                                 <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
                                 <td>
-                                    <button @click="editUser(user)" class="btn btn-sm btn-warning me-1">Editar</button>
-                                    <button @click="deleteUser(user.id)" class="btn btn-sm btn-danger">Eliminar</button>
+                                    <button @click="editUser(user)" class="btn btn-sm btn-warning me-1">
+                                        <i class="fa-solid fa-edit"></i> Editar
+                                    </button>
+                                    <button @click="deleteUser(user.id)" class="btn btn-sm btn-danger">
+                                        <i class="fa-solid fa-trash"></i> Desactivar
+                                    </button>
                                 </td>
                             </tr>
                         </template>
+                        <tr x-show="activeUsers.length === 0">
+                            <td colspan="7" class="text-center text-muted">No hay usuarios activos</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- Tab Content: Usuarios Inactivos -->
+            <div class="table-responsive mt-4 p-4" x-show="activeTab === 'inactive'">
+                <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Usuario</th>
+                            <th>Rol</th>
+                            <th>Fecha Creación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <template x-for="(user, index) in inactiveUsers" :key="index">
+                            <tr class="table-secondary">
+                                <td x-text="user.name"></td>
+                                <td x-text="user.email"></td>
+                                <td x-text="user.phone || 'N/A'"></td>
+                                <td x-text="user.username"></td>
+                                <td x-text="user.role ? user.role.name : 'N/A'"></td>
+                                <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
+                                <td>
+                                    <button @click="activateUser(user.id)" class="btn btn-sm btn-success">
+                                        <i class="fa-solid fa-check"></i> Activar
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                        <tr x-show="inactiveUsers.length === 0">
+                            <td colspan="7" class="text-center text-muted">No hay usuarios inactivos</td>
+                        </tr>
                     </tbody>
 
                 </table>
@@ -181,13 +246,13 @@
                     <button @click="cancelDelete()" type="button" class="btn-close" aria-label="Close"></button>
                 </div>
 
-                <p class="mb-4">¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer.</p>
+                <p class="mb-4">¿Estás seguro de que deseas desactivar este usuario? Podrás reactivarlo desde la pestaña de Inactivos.</p>
 
                 <div class="d-flex justify-content-end gap-2">
                     <button @click="cancelDelete()" class="btn btn-secondary">Cancelar</button>
                     <button @click="confirmDelete()" class="btn btn-danger">
-                        <i class="fa-solid fa-trash me-2"></i>
-                        Eliminar
+                        <i class="fa-solid fa-ban me-2"></i>
+                        Desactivar
                     </button>
                 </div>
 

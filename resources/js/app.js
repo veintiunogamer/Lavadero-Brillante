@@ -1,5 +1,6 @@
 import './bootstrap';
 import './users.js';
+import './profile.js';
 import './orders.js';
 import './settings.js';
 import './header.js';

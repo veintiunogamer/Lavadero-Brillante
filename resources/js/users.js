@@ -33,8 +33,10 @@ if (typeof window !== 'undefined' && window.Cleave) {
 window.usuariosApp = function() {
 
     return {
-        users: [],
+        activeUsers: [],
+        inactiveUsers: [],
         roles: [],
+        activeTab: 'active',
         showModal: false,
         isEditing: false,
         currentUserId: null,
@@ -55,9 +57,10 @@ window.usuariosApp = function() {
             status: 1
         },
 
-        initData(usersData, rolesData) {
+        initData(activeUsersData, inactiveUsersData, rolesData) {
             
-            this.users = usersData;
+            this.activeUsers = activeUsersData;
+            this.inactiveUsers = inactiveUsersData;
             this.roles = rolesData;
 
             this.showModal = false;
@@ -246,10 +249,15 @@ window.usuariosApp = function() {
 
                 if (result.success) {
 
-                    // Eliminar el usuario del array
-                    this.users = this.users.filter(user => user.id !== id);
+                    // Eliminar el usuario del array de activos y agregarlo a inactivos
+                    const userToDeactivate = this.activeUsers.find(user => user.id === id);
+                    if (userToDeactivate) {
+                        userToDeactivate.status = false;
+                        this.activeUsers = this.activeUsers.filter(user => user.id !== id);
+                        this.inactiveUsers.push(userToDeactivate);
+                    }
 
-                    window.notyf.success(result.message || 'Usuario eliminado exitosamente');
+                    window.notyf.success(result.message || 'Usuario desactivado exitosamente');
 
                 } else {
                     window.notyf.error('Error: ' + (result.message || 'Ocurrió un error'));
@@ -257,7 +265,44 @@ window.usuariosApp = function() {
                 
             } catch (error) {
                 console.error('Error:', error);
-                window.notyf.error('Ocurrió un error al eliminar el usuario');
+                window.notyf.error('Ocurrió un error al desactivar el usuario');
+            }
+        },
+
+        async activateUser(id) {
+
+            try {
+
+                const response = await fetch(`/users/activate/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+
+                    // Eliminar el usuario del array de inactivos y agregarlo a activos
+                    const userToActivate = this.inactiveUsers.find(user => user.id === id);
+                    if (userToActivate) {
+                        userToActivate.status = true;
+                        this.inactiveUsers = this.inactiveUsers.filter(user => user.id !== id);
+                        this.activeUsers.push(userToActivate);
+                    }
+
+                    window.notyf.success(result.message || 'Usuario activado exitosamente');
+
+                } else {
+                    window.notyf.error('Error: ' + (result.message || 'Ocurrió un error'));
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf.error('Ocurrió un error al activar el usuario');
             }
         }
     }

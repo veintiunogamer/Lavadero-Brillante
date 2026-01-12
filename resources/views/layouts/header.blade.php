@@ -43,7 +43,10 @@
                 <!-- User Menu -->
                 <div class="user-menu" aria-hidden="true">
 
-                    <a href="#">Perfil</a>
+                    <a href="{{ route('profile.index') }}">
+                        <i class="fa-solid fa-user-circle me-1"></i>
+                        Perfil
+                    </a>
 
                     <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display:block; margin:0;">
                         @csrf
