@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class Client extends Model
 {
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $keyType = 'string';
     protected $table = 'client';

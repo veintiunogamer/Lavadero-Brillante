@@ -29,7 +29,11 @@ class VehicleTypeController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $vehicleType = VehicleType::create($request->all());
+        $vehicleType = VehicleType::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'name' => $request->name,
+            'creation_date' => now(),
+        ]);
         return response()->json($vehicleType, 201);
     }
 
@@ -59,7 +63,9 @@ class VehicleTypeController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $vehicleType->update($request->all());
+        $vehicleType->update([
+            'name' => $request->name,
+        ]);
         return response()->json($vehicleType);
     }
 

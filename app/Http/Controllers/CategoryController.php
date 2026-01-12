@@ -26,10 +26,16 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'cat_name' => 'required|string|max:255',
+            'status' => 'nullable|boolean',
         ]);
 
-        $category = Category::create($request->all());
+        $category = Category::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'cat_name' => $request->cat_name,
+            'status' => $request->status ?? 1,
+            'creation_date' => now(),
+        ]);
         return response()->json($category, 201);
     }
 
@@ -56,10 +62,14 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
         $request->validate([
-            'name' => 'required|string|max:255',
+            'cat_name' => 'required|string|max:255',
+            'status' => 'nullable|boolean',
         ]);
 
-        $category->update($request->all());
+        $category->update([
+            'cat_name' => $request->cat_name,
+            'status' => $request->status ?? $category->status,
+        ]);
         return response()->json($category);
     }
 

@@ -38,12 +38,21 @@ class ServiceController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
+            'details' => 'required|string|max:255',
+            'value' => 'required|numeric|min:0',
+            'duration' => 'required|integer|min:1',
+            'category_id' => 'required|exists:category,id',
         ]);
 
-        $service = Service::create($request->all());
+        $service = Service::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'details' => $request->details,
+            'value' => $request->value,
+            'duration' => $request->duration,
+            'creation_date' => now(),
+        ]);
         return response()->json($service, 201);
     }
 
@@ -71,12 +80,19 @@ class ServiceController extends Controller
         $service = Service::findOrFail($id);
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'category_id' => 'required|exists:categories,id',
+            'details' => 'required|string|max:255',
+            'value' => 'required|numeric|min:0',
+            'duration' => 'required|integer|min:1',
+            'category_id' => 'required|exists:category,id',
         ]);
 
-        $service->update($request->all());
+        $service->update([
+            'category_id' => $request->category_id,
+            'name' => $request->name,
+            'details' => $request->details,
+            'value' => $request->value,
+            'duration' => $request->duration,
+        ]);
         return response()->json($service);
     }
 

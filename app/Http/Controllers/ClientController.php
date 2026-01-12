@@ -38,11 +38,17 @@ class ClientController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients',
             'phone' => 'nullable|string|max:20',
+            'license_plaque' => 'nullable|string|max:20',
         ]);
 
-        $client = Client::create($request->all());
+        $client = Client::create([
+            'id' => (string) \Illuminate\Support\Str::uuid(),
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'license_plaque' => $request->license_plaque,
+            'creation_date' => now(),
+        ]);
         return response()->json($client, 201);
     }
 
@@ -70,11 +76,15 @@ class ClientController extends Controller
         $client = Client::findOrFail($id);
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:clients,email,' . $id,
             'phone' => 'nullable|string|max:20',
+            'license_plaque' => 'nullable|string|max:20',
         ]);
 
-        $client->update($request->all());
+        $client->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'license_plaque' => $request->license_plaque,
+        ]);
         return response()->json($client);
     }
 

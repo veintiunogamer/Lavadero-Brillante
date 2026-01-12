@@ -1,331 +1,576 @@
+// Solo mostrar logs si estamos en la vista de settings
 function settingsModuleActive() {
-	return !!document.getElementById('settings-root');
+    return !!document.getElementById('settings-root');
 }
 
 if (typeof window !== 'undefined' && settingsModuleActive()) {
+    console.log('Settings JS cargado');
+}
 
-    document.addEventListener('DOMContentLoaded', function () {
+// Exponer la función globalmente para Alpine
+window.settingsApp = function() {
 
-        const tabs = document.querySelectorAll('#settingsTabs .nav-link');
+    return {
+        // Tab activo
+        activeTab: 'categories',
 
-        /*
-        * Función para cargar contenido de un tab
-        * @param {string} tabId - ID del tab (categories, services, vehicle-types, clients)
-        * @param {string} url - URL para obtener los datos
-        * @returns {void}
-        */
-        function loadTabContent(tabId, url) {
+        // Datos
+        categories: [],
+        services: [],
+        vehicleTypes: [],
+        clients: [],
+        categoriesForServices: [], // Para el select de categorías en servicios
 
-            const contentDiv = document.getElementById(tabId + '-content');
+        // Modales
+        showCategoryModal: false,
+        showServiceModal: false,
+        showVehicleTypeModal: false,
+        showClientModal: false,
 
-            fetch(url).then(response => response.json()).then(data => {
+        // Modales de confirmación de eliminación
+        showDeleteModal: false,
+        deleteItemId: null,
+        deleteItemType: null,
 
-                let html = '<button class="btn btn-success mb-3" onclick="showCreateForm(\'' + tabId + '\')">Crear Nuevo</button>';
-                function settingsModuleActive() {
-                    return !!document.getElementById('settings-root');
+        // Estados de edición
+        isEditingCategory: false,
+        isEditingService: false,
+        isEditingVehicleType: false,
+        isEditingClient: false,
+
+        currentEditId: null,
+
+        // Formularios
+        categoryForm: {
+            cat_name: '',
+            status: 1
+        },
+        serviceForm: {
+            category_id: '',
+            name: '',
+            details: '',
+            value: '',
+            duration: ''
+        },
+        vehicleTypeForm: {
+            name: ''
+        },
+        clientForm: {
+            name: '',
+            phone: '',
+            license_plaque: ''
+        },
+
+        // Errores de validación
+        errors: {
+            category: {},
+            service: {},
+            vehicleType: {},
+            client: {}
+        },
+
+        // Inicialización
+        async initData() {
+            await this.loadCategories();
+        },
+
+        // ====================
+        // CATEGORÍAS
+        // ====================
+        
+        async loadCategories() {
+            try {
+                const response = await fetch('/categories', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data = await response.json();
+                this.categories = data;
+                this.categoriesForServices = data.filter(c => c.status === 1);
+            } catch (error) {
+                console.error('Error cargando categorías:', error);
+                window.notyf.error('Error al cargar categorías');
+            }
+        },
+
+        openCategoryModal() {
+            this.showCategoryModal = true;
+            this.isEditingCategory = false;
+            this.currentEditId = null;
+            this.resetCategoryForm();
+            this.clearErrors('category');
+        },
+
+        async editCategory(category) {
+            this.isEditingCategory = true;
+            this.currentEditId = category.id;
+            this.categoryForm = {
+                cat_name: category.cat_name,
+                status: category.status ? 1 : 0
+            };
+            this.showCategoryModal = true;
+            this.clearErrors('category');
+        },
+
+        async saveCategory() {
+            this.clearErrors('category');
+
+            const url = this.isEditingCategory 
+                ? `/categories/${this.currentEditId}` 
+                : '/categories';
+            const method = this.isEditingCategory ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(this.categoryForm)
+                });
+
+                if (response.status === 422) {
+                    const result = await response.json();
+                    this.errors.category = result.errors || {};
+                    return;
                 }
 
-                // Reestructuramos el módulo para exponer un objeto `window.settings` con métodos async
-                // y mantener compatibilidad con handlers inline (exponiendo también funciones globales).
-                if (typeof window !== 'undefined' && settingsModuleActive()) {
+                const result = await response.json();
 
-                    console.log('Settings JS cargado');
+                if (response.ok) {
+                    window.notyf.success(this.isEditingCategory ? 'Categoría actualizada' : 'Categoría creada');
+                    this.closeCategoryModal();
+                    await this.loadCategories();
+                } else {
+                    window.notyf.error(result.message || 'Error al guardar categoría');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf.error('Error al guardar categoría');
+            }
+        },
 
-                    // Cargar datos para un tab (async)
-                    async function loadTabContent(tabId, url) {
-                        const contentDiv = document.getElementById(tabId + '-content');
+        deleteCategory(id) {
+            this.deleteItemId = id;
+            this.deleteItemType = 'category';
+            this.showDeleteModal = true;
+        },
 
-                        try {
-                            const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
-                            const data = await response.json();
+        closeCategoryModal() {
+            this.showCategoryModal = false;
+            this.resetCategoryForm();
+            this.clearErrors('category');
+        },
 
-                            let html = '<button class="btn btn-success mb-3" onclick="window.showCreateForm(\'' + tabId + '\')">Crear Nuevo</button>';
+        resetCategoryForm() {
+            this.categoryForm = {
+                cat_name: '',
+                status: 1
+            };
+        },
 
-                            if (!data || data.length === 0) {
+        // ====================
+        // SERVICIOS
+        // ====================
 
-                                let message = '';
+        async loadServices() {
+            try {
+                const response = await fetch('/api/services', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data = await response.json();
+                this.services = data;
+            } catch (error) {
+                console.error('Error cargando servicios:', error);
+                window.notyf.error('Error al cargar servicios');
+            }
+        },
 
-                                switch (tabId) {
-                                    case 'categories':
-                                        message = 'No hay categorías registradas';
-                                        break;
-                                    case 'services':
-                                        message = 'No hay servicios registrados';
-                                        break;
-                                    case 'vehicle-types':
-                                        message = 'No hay tipos de vehículo registrados';
-                                        break;
-                                    case 'clients':
-                                        message = 'No hay clientes registrados';
-                                        break;
-                                }
+        openServiceModal() {
+            this.showServiceModal = true;
+            this.isEditingService = false;
+            this.currentEditId = null;
+            this.resetServiceForm();
+            this.clearErrors('service');
+        },
 
-                                html += '<div class="text-center py-5 p-4">';
-                                html += '<i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>';
-                                html += '<p class="text-muted">' + message + '</p>';
-                                html += '</div>';
+        async editService(service) {
+            this.isEditingService = true;
+            this.currentEditId = service.id;
+            this.serviceForm = {
+                category_id: service.category_id,
+                name: service.name,
+                details: service.details,
+                value: service.value,
+                duration: service.duration
+            };
+            this.showServiceModal = true;
+            this.clearErrors('service');
+        },
 
-                            } else {
+        async saveService() {
+            this.clearErrors('service');
 
-                                html += '<table class="table table-striped">';
-                                html += '<thead><tr>';
+            const url = this.isEditingService 
+                ? `/services/${this.currentEditId}` 
+                : '/services';
+            const method = this.isEditingService ? 'PUT' : 'POST';
 
-                                Object.keys(data[0]).forEach(key => {
-                                    if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
-                                        html += '<th>' + key.charAt(0).toUpperCase() + key.slice(1) + '</th>';
-                                    }
-                                });
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(this.serviceForm)
+                });
 
-                                html += '<th>Acciones</th>';
-                                html += '</tr></thead><tbody>';
-
-                                data.forEach(item => {
-                                    html += '<tr>';
-
-                                    Object.keys(item).forEach(key => {
-                                        if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
-                                            html += '<td>' + item[key] + '</td>';
-                                        }
-                                    });
-
-                                    html += '<td>';
-                                    html += '<button class="btn btn-sm btn-warning" onclick="window.editItem(\'' + tabId + '\', ' + item.id + ')">Editar</button> ';
-                                    html += '<button class="btn btn-sm btn-danger" onclick="window.deleteItem(\'' + tabId + '\', ' + item.id + ')">Eliminar</button>';
-                                    html += '</td></tr>';
-                                });
-
-                                html += '</tbody></table>';
-                            }
-
-                            contentDiv.innerHTML = html;
-
-                        } catch (error) {
-                            contentDiv.innerHTML = '<p>Error al cargar los datos.</p>';
-                            console.error('Error:', error);
-                        }
-                    }
-
-                    // Funciones CRUD (async)
-                    async function showCreateForm(tabId) {
-                        if (tabId !== 'categories') {
-                            alert('Crear nuevo no implementado para: ' + tabId);
-                            return;
-                        }
-
-                        const form = document.getElementById('categoryForm');
-                        if (form) form.reset();
-                        const idEl = document.getElementById('category_id'); if (idEl) idEl.value = '';
-                        const nameErr = document.getElementById('category_name_error'); if (nameErr) nameErr.textContent = '';
-                        const statusErr = document.getElementById('category_status_error'); if (statusErr) statusErr.textContent = '';
-                        const genErr = document.getElementById('category_general_error'); if (genErr) genErr.classList.add('d-none');
-                        const label = document.getElementById('categoryModalLabel'); if (label) label.textContent = 'Crear categoría';
-
-                        const modalEl = document.getElementById('categoryModal');
-                        const modal = new bootstrap.Modal(modalEl);
-                        modal.show();
-                    }
-
-                    async function editItem(tabId, id) {
-                        if (tabId !== 'categories') {
-                            alert('Editar no implementado para: ' + tabId);
-                            return;
-                        }
-
-                        try {
-                            const response = await fetch('/categories/' + id, { headers: { 'Accept': 'application/json' } });
-                            if (!response.ok) throw new Error('Error al obtener categoría');
-                            const data = await response.json();
-
-                            const form = document.getElementById('categoryForm');
-                            if (form) form.reset();
-                            const idEl = document.getElementById('category_id'); if (idEl) idEl.value = data.id || '';
-                            const nameEl = document.getElementById('category_name'); if (nameEl) nameEl.value = data.name || '';
-                            const statusEl = document.getElementById('category_status'); if (statusEl) statusEl.value = data.status ?? 1;
-
-                            const nameErr = document.getElementById('category_name_error'); if (nameErr) nameErr.textContent = '';
-                            const statusErr = document.getElementById('category_status_error'); if (statusErr) statusErr.textContent = '';
-                            const genErr = document.getElementById('category_general_error'); if (genErr) genErr.classList.add('d-none');
-                            const label = document.getElementById('categoryModalLabel'); if (label) label.textContent = 'Editar categoría';
-
-                            const modalEl = document.getElementById('categoryModal');
-                            const modal = new bootstrap.Modal(modalEl);
-                            modal.show();
-
-                        } catch (err) {
-                            console.error(err);
-                            alert('No se pudo cargar la categoría.');
-                        }
-                    }
-
-                    async function deleteItem(tabId, id) {
-                        if (!confirm('¿Estás seguro de eliminar este item?')) return;
-
-                        let url;
-                        switch (tabId) {
-                            case 'categories': url = '/categories/' + id; break;
-                            case 'services': url = '/services/' + id; break;
-                            case 'vehicle-types': url = '/vehicle-types/' + id; break;
-                            case 'clients': url = '/clients/' + id; break;
-                        }
-
-                        try {
-                            const response = await fetch(url, {
-                                method: 'DELETE',
-                                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
-                            });
-
-                            const data = await response.json();
-                            alert(data.message || 'Eliminado');
-
-                            const activeTab = document.querySelector('#settingsTabs .nav-link.active');
-                            if (activeTab) activeTab.click();
-
-                        } catch (error) {
-                            alert('Error al eliminar');
-                            console.error('Error:', error);
-                        }
-                    }
-
-                    // Manejo del formulario de categoría (submit)
-                    async function setupCategoryForm() {
-                        const catForm = document.getElementById('categoryForm');
-                        if (!catForm) return;
-
-                        catForm.addEventListener('submit', async function (e) {
-                            e.preventDefault();
-                            const submitBtn = document.getElementById('categorySubmitBtn');
-                            if (submitBtn) submitBtn.disabled = true;
-
-                            const id = document.getElementById('category_id').value;
-
-                            const payload = {
-                                name: document.getElementById('category_name').value.trim(),
-                                status: document.getElementById('category_status').value
-                            };
-
-                            const url = id ? '/categories/' + id : '/categories';
-                            const method = id ? 'PUT' : 'POST';
-
-                            try {
-                                const res = await fetch(url, {
-                                    method: method,
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                    },
-                                    body: JSON.stringify(payload)
-                                });
-
-                                if (submitBtn) submitBtn.disabled = false;
-
-                                if (res.status === 422) {
-                                    const json = await res.json();
-                                    const nameErr = document.getElementById('category_name_error'); if (nameErr) nameErr.textContent = '';
-                                    const statusErr = document.getElementById('category_status_error'); if (statusErr) statusErr.textContent = '';
-                                    if (json.errors) {
-                                        if (json.errors.name) nameErr.textContent = json.errors.name.join(', ');
-                                        if (json.errors.status) statusErr.textContent = json.errors.status.join(', ');
-                                    }
-                                    return;
-                                }
-
-                                if (!res.ok) throw new Error('Error en servidor');
-
-                                const data = await res.json();
-
-                                const modalEl = document.getElementById('categoryModal');
-                                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-                                modal.hide();
-
-                                const categoriesTab = document.querySelector('#settingsTabs button[data-bs-target="#categories"]');
-                                if (categoriesTab) categoriesTab.click();
-
-                            } catch (err) {
-                                if (submitBtn) submitBtn.disabled = false;
-                                console.error(err);
-                                const gen = document.getElementById('category_general_error');
-                                if (gen) {
-                                    gen.textContent = 'Error de servidor, inténtalo nuevamente.';
-                                    gen.classList.remove('d-none');
-                                }
-                            }
-
-                        });
-                    }
-
-                    // Inicialización: asigna listeners y carga el tab inicial
-                    async function init() {
-                        const tabs = document.querySelectorAll('#settingsTabs .nav-link');
-
-                        // cargar inicial
-                        await loadTabContent('categories', '/categories');
-
-                        // listeners de tabs
-                        tabs.forEach(tab => {
-                            tab.addEventListener('shown.bs.tab', async function (event) {
-                                const target = event.target.getAttribute('data-bs-target').substring(1);
-                                let url;
-                                switch (target) {
-                                    case 'categories': url = '/categories'; break;
-                                    case 'services': url = '/api/services'; break;
-                                    case 'vehicle-types': url = '/vehicle-types'; break;
-                                    case 'clients': url = '/api/clients'; break;
-                                }
-                                await loadTabContent(target, url);
-                            });
-                        });
-
-                        // configurar formulario
-                        await setupCategoryForm();
-                    }
-
-                    // Ejecutar init una vez cargado el DOM
-                    document.addEventListener('DOMContentLoaded', function () { init().catch(console.error); });
-
-                    // Exponer API bajo window.settings y mantener compatibilidad global
-                    if (typeof window !== 'undefined') {
-                        window.settings = {
-                            init,
-                            loadTabContent,
-                            showCreateForm,
-                            editItem,
-                            deleteItem
-                        };
-
-                        // Compatibilidad con handlers inline previos
-                        window.showCreateForm = async function (tabId) { return window.settings.showCreateForm(tabId); };
-                        window.editItem = async function (tabId, id) { return window.settings.editItem(tabId, id); };
-                        window.deleteItem = async function (tabId, id) { return window.settings.deleteItem(tabId, id); };
-                    }
-
+                if (response.status === 422) {
+                    const result = await response.json();
+                    this.errors.service = result.errors || {};
+                    return;
                 }
 
-                // recargar tab categories
-                const categoriesTab = document.querySelector('#settingsTabs button[data-bs-target="#categories"]');
-                if (categoriesTab) categoriesTab.click();
+                const result = await response.json();
 
-            }).catch(err => {
+                if (response.ok) {
+                    window.notyf.success(this.isEditingService ? 'Servicio actualizado' : 'Servicio creado');
+                    this.closeServiceModal();
+                    await this.loadServices();
+                } else {
+                    window.notyf.error(result.message || 'Error al guardar servicio');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf.error('Error al guardar servicio');
+            }
+        },
 
-                submitBtn.disabled = false;
-                console.error(err);
+        deleteService(id) {
+            this.deleteItemId = id;
+            this.deleteItemType = 'service';
+            this.showDeleteModal = true;
+        },
 
-                const gen = document.getElementById('category_general_error');
-                gen.textContent = 'Error de servidor, inténtalo nuevamente.';
-                gen.classList.remove('d-none');
+        closeServiceModal() {
+            this.showServiceModal = false;
+            this.resetServiceForm();
+            this.clearErrors('service');
+        },
 
-            });
+        resetServiceForm() {
+            this.serviceForm = {
+                category_id: '',
+                name: '',
+                details: '',
+                value: '',
+                duration: ''
+            };
+        },
 
+        getCategoryName(categoryId) {
+            const category = this.categoriesForServices.find(c => c.id === categoryId);
+            return category ? category.cat_name : 'N/A';
+        },
+
+        // ====================
+        // TIPOS DE VEHÍCULO
+        // ====================
+
+        async loadVehicleTypes() {
+            try {
+                const response = await fetch('/vehicle-types', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data = await response.json();
+                this.vehicleTypes = data;
+            } catch (error) {
+                console.error('Error cargando tipos de vehículo:', error);
+                window.notyf.error('Error al cargar tipos de vehículo');
+            }
+        },
+
+        openVehicleTypeModal() {
+            this.showVehicleTypeModal = true;
+            this.isEditingVehicleType = false;
+            this.currentEditId = null;
+            this.resetVehicleTypeForm();
+            this.clearErrors('vehicleType');
+        },
+
+        async editVehicleType(vehicleType) {
+            this.isEditingVehicleType = true;
+            this.currentEditId = vehicleType.id;
+            this.vehicleTypeForm = {
+                name: vehicleType.name
+            };
+            this.showVehicleTypeModal = true;
+            this.clearErrors('vehicleType');
+        },
+
+        async saveVehicleType() {
+            this.clearErrors('vehicleType');
+
+            const url = this.isEditingVehicleType 
+                ? `/vehicle-types/${this.currentEditId}` 
+                : '/vehicle-types';
+            const method = this.isEditingVehicleType ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(this.vehicleTypeForm)
+                });
+
+                if (response.status === 422) {
+                    const result = await response.json();
+                    this.errors.vehicleType = result.errors || {};
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.notyf.success(this.isEditingVehicleType ? 'Tipo de vehículo actualizado' : 'Tipo de vehículo creado');
+                    this.closeVehicleTypeModal();
+                    await this.loadVehicleTypes();
+                } else {
+                    window.notyf.error(result.message || 'Error al guardar tipo de vehículo');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf.error('Error al guardar tipo de vehículo');
+            }
+        },
+
+        deleteVehicleType(id) {
+            this.deleteItemId = id;
+            this.deleteItemType = 'vehicleType';
+            this.showDeleteModal = true;
+        },
+
+        closeVehicleTypeModal() {
+            this.showVehicleTypeModal = false;
+            this.resetVehicleTypeForm();
+            this.clearErrors('vehicleType');
+        },
+
+        resetVehicleTypeForm() {
+            this.vehicleTypeForm = {
+                name: ''
+            };
+        },
+
+        // ====================
+        // CLIENTES
+        // ====================
+
+        async loadClients() {
+            try {
+                const response = await fetch('/api/clients', {
+                    headers: { 'Accept': 'application/json' }
+                });
+                const data = await response.json();
+                this.clients = data;
+            } catch (error) {
+                console.error('Error cargando clientes:', error);
+                window.notyf.error('Error al cargar clientes');
+            }
+        },
+
+        openClientModal() {
+            this.showClientModal = true;
+            this.isEditingClient = false;
+            this.currentEditId = null;
+            this.resetClientForm();
+            this.clearErrors('client');
+        },
+
+        async editClient(client) {
+            this.isEditingClient = true;
+            this.currentEditId = client.id;
+            this.clientForm = {
+                name: client.name,
+                phone: client.phone || '',
+                license_plaque: client.license_plaque || ''
+            };
+            this.showClientModal = true;
+            this.clearErrors('client');
+        },
+
+        async saveClient() {
+            this.clearErrors('client');
+
+            const url = this.isEditingClient 
+                ? `/clients/${this.currentEditId}` 
+                : '/clients';
+            const method = this.isEditingClient ? 'PUT' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(this.clientForm)
+                });
+
+                if (response.status === 422) {
+                    const result = await response.json();
+                    this.errors.client = result.errors || {};
+                    return;
+                }
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.notyf.success(this.isEditingClient ? 'Cliente actualizado' : 'Cliente creado');
+                    this.closeClientModal();
+                    await this.loadClients();
+                } else {
+                    window.notyf.error(result.message || 'Error al guardar cliente');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf.error('Error al guardar cliente');
+            }
+        },
+
+        deleteClient(id) {
+            this.deleteItemId = id;
+            this.deleteItemType = 'client';
+            this.showDeleteModal = true;
+        },
+
+        closeClientModal() {
+            this.showClientModal = false;
+            this.resetClientForm();
+            this.clearErrors('client');
+        },
+
+        resetClientForm() {
+            this.clientForm = {
+                name: '',
+                phone: '',
+                license_plaque: ''
+            };
+        },
+
+        // ====================
+        // ELIMINACIÓN GENERAL
+        // ====================
+
+        async confirmDelete() {
+            const id = this.deleteItemId;
+            const type = this.deleteItemType;
+
+            this.showDeleteModal = false;
+
+            let url, reloadFn;
+
+            switch (type) {
+                case 'category':
+                    url = `/categories/${id}`;
+                    reloadFn = () => this.loadCategories();
+                    break;
+                case 'service':
+                    url = `/services/${id}`;
+                    reloadFn = () => this.loadServices();
+                    break;
+                case 'vehicleType':
+                    url = `/vehicle-types/${id}`;
+                    reloadFn = () => this.loadVehicleTypes();
+                    break;
+                case 'client':
+                    url = `/clients/${id}`;
+                    reloadFn = () => this.loadClients();
+                    break;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.notyf.success(result.message || 'Eliminado exitosamente');
+                    await reloadFn();
+                } else {
+                    window.notyf.error(result.message || 'Error al eliminar');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf.error('Error al eliminar');
+            }
+
+            this.deleteItemId = null;
+            this.deleteItemType = null;
+        },
+
+        cancelDelete() {
+            this.showDeleteModal = false;
+            this.deleteItemId = null;
+            this.deleteItemType = null;
+        },
+
+        // ====================
+        // CAMBIO DE TAB
+        // ====================
+
+        async changeTab(tab) {
+            this.activeTab = tab;
+
+            // Cargar datos según el tab
+            switch (tab) {
+                case 'categories':
+                    await this.loadCategories();
+                    break;
+                case 'services':
+                    await this.loadServices();
+                    break;
+                case 'vehicle-types':
+                    await this.loadVehicleTypes();
+                    break;
+                case 'clients':
+                    await this.loadClients();
+                    break;
+            }
+        },
+
+        // ====================
+        // UTILIDADES
+        // ====================
+
+        clearErrors(type) {
+            this.errors[type] = {};
+        },
+
+        formatCurrency(value) {
+            return new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(value);
+        },
+
+        formatDate(date) {
+            if (!date) return 'N/A';
+            return new Date(date).toLocaleDateString('es-ES');
         }
-
-
-        // Exponer funciones globales para que los handlers inline (onclick="...")
-        // funcionen cuando el archivo se sirve como módulo (ej. Vite).
-        if (typeof window !== 'undefined') {
-            window.showCreateForm = showCreateForm;
-            window.editItem = editItem;
-            window.deleteItem = deleteItem;
-        }
-
-    });
-    
+    }
 }

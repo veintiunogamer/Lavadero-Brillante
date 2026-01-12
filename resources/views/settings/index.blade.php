@@ -1,11 +1,10 @@
 @extends('layouts.base')
 
-@section('title', 'Configuraciones')
-
-
 @section('content')
 
-    <div id="settings-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;">
+    <div id="settings-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" 
+         x-data="typeof settingsApp === 'function' ? settingsApp() : {}" 
+         x-init='if (typeof settingsApp === "function") initData()'>
         
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
@@ -19,59 +18,424 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
-            <ul class="nav nav-tabs" id="settingsTabs" role="tablist">
-
+            <!-- Tabs con Alpine.js -->
+            <ul class="nav nav-tabs px-4" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="categories-tab" data-bs-toggle="tab" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true"><i class="fa-solid fa-tags me-2"></i>Categorías</button>
+                    <button class="nav-link" :class="activeTab === 'categories' ? 'active' : ''" 
+                            @click="changeTab('categories')" type="button" role="tab">
+                        <i class="fa-solid fa-tags me-2"></i>Categorías
+                    </button>
                 </li>
-
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="services-tab" data-bs-toggle="tab" data-bs-target="#services" type="button" role="tab" aria-controls="services" aria-selected="false"><i class="fa-solid fa-tools me-2"></i>Servicios</button>
-
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="vehicle-types-tab" data-bs-toggle="tab" data-bs-target="#vehicle-types" type="button" role="tab" aria-controls="vehicle-types" aria-selected="false"><i class="fa-solid fa-car me-2"></i>Tipos de Vehículo</button>
+                    <button class="nav-link" :class="activeTab === 'services' ? 'active' : ''" 
+                            @click="changeTab('services')" type="button" role="tab">
+                        <i class="fa-solid fa-tools me-2"></i>Servicios
+                    </button>
                 </li>
-
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="clients-tab" data-bs-toggle="tab" data-bs-target="#clients" type="button" role="tab" aria-controls="clients" aria-selected="false"><i class="fa-solid fa-users me-2"></i>Clientes</button>
+                    <button class="nav-link" :class="activeTab === 'vehicle-types' ? 'active' : ''" 
+                            @click="changeTab('vehicle-types')" type="button" role="tab">
+                        <i class="fa-solid fa-car me-2"></i>Tipos de Vehículo
+                    </button>
                 </li>
-
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" :class="activeTab === 'clients' ? 'active' : ''" 
+                            @click="changeTab('clients')" type="button" role="tab">
+                        <i class="fa-solid fa-users me-2"></i>Clientes
+                    </button>
+                </li>
             </ul>
 
-            <!-- Tab Content -->
-            <div class="tab-content mt-3" id="settingsTabContent">
+            <!-- ==================== CATEGORÍAS ==================== -->
+            <div class="mt-4 p-4" x-show="activeTab === 'categories'">
+                <button @click="openCategoryModal()" class="btn btn-success mb-3">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Crear Categoría
+                </button>
 
-                <div class="tab-pane fade show active" id="categories" role="tabpanel" aria-labelledby="categories-tab">
-                    <div id="categories-content">
-                        <p>Cargando categorías...</p>
-                    </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Estado</th>
+                                <th>Fecha Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="category in categories" :key="category.id">
+                                <tr>
+                                    <td x-text="category.cat_name"></td>
+                                    <td>
+                                        <span class="badge" :class="category.status ? 'bg-success' : 'bg-secondary'" 
+                                              x-text="category.status ? 'Activo' : 'Inactivo'"></span>
+                                    </td>
+                                    <td x-text="formatDate(category.creation_date)"></td>
+                                    <td>
+                                        <button @click="editCategory(category)" class="btn btn-sm btn-warning me-1">
+                                            <i class="fa-solid fa-edit"></i> Editar
+                                        </button>
+                                        <button @click="deleteCategory(category.id)" class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="categories.length === 0">
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
+                                    No hay categorías registradas
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <div class="tab-pane fade" id="services" role="tabpanel" aria-labelledby="services-tab">
-                    <div id="services-content">
-                        <p>Cargando servicios...</p>
-                    </div>
+            <!-- ==================== SERVICIOS ==================== -->
+            <div class="mt-4 p-4" x-show="activeTab === 'services'">
+                <button @click="openServiceModal()" class="btn btn-success mb-3">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Crear Servicio
+                </button>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Detalles</th>
+                                <th>Precio</th>
+                                <th>Duración (min)</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="service in services" :key="service.id">
+                                <tr>
+                                    <td x-text="service.name"></td>
+                                    <td x-text="getCategoryName(service.category_id)"></td>
+                                    <td x-text="service.details"></td>
+                                    <td x-text="formatCurrency(service.value)"></td>
+                                    <td x-text="service.duration"></td>
+                                    <td>
+                                        <button @click="editService(service)" class="btn btn-sm btn-warning me-1">
+                                            <i class="fa-solid fa-edit"></i> Editar
+                                        </button>
+                                        <button @click="deleteService(service.id)" class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="services.length === 0">
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
+                                    No hay servicios registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <div class="tab-pane fade" id="vehicle-types" role="tabpanel" aria-labelledby="vehicle-types-tab">
-                    <div id="vehicle-types-content">
-                        <p>Cargando tipos de vehículo...</p>
-                    </div>
+            <!-- ==================== TIPOS DE VEHÍCULO ==================== -->
+            <div class="mt-4 p-4" x-show="activeTab === 'vehicle-types'">
+                <button @click="openVehicleTypeModal()" class="btn btn-success mb-3">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Crear Tipo de Vehículo
+                </button>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Fecha Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="vehicleType in vehicleTypes" :key="vehicleType.id">
+                                <tr>
+                                    <td x-text="vehicleType.name"></td>
+                                    <td x-text="formatDate(vehicleType.creation_date)"></td>
+                                    <td>
+                                        <button @click="editVehicleType(vehicleType)" class="btn btn-sm btn-warning me-1">
+                                            <i class="fa-solid fa-edit"></i> Editar
+                                        </button>
+                                        <button @click="deleteVehicleType(vehicleType.id)" class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="vehicleTypes.length === 0">
+                                <td colspan="3" class="text-center text-muted py-4">
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
+                                    No hay tipos de vehículo registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <div class="tab-pane fade" id="clients" role="tabpanel" aria-labelledby="clients-tab">
-                    <div id="clients-content">
-                        <p>Cargando clientes...</p>
-                    </div>
+            <!-- ==================== CLIENTES ==================== -->
+            <div class="mt-4 p-4" x-show="activeTab === 'clients'">
+                <button @click="openClientModal()" class="btn btn-success mb-3">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Crear Cliente
+                </button>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Matrícula</th>
+                                <th>Fecha Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="client in clients" :key="client.id">
+                                <tr>
+                                    <td x-text="client.name"></td>
+                                    <td x-text="client.phone || 'N/A'"></td>
+                                    <td x-text="client.license_plaque || 'N/A'"></td>
+                                    <td x-text="formatDate(client.creation_date)"></td>
+                                    <td>
+                                        <button @click="editClient(client)" class="btn btn-sm btn-warning me-1">
+                                            <i class="fa-solid fa-edit"></i> Editar
+                                        </button>
+                                        <button @click="deleteClient(client.id)" class="btn btn-sm btn-danger">
+                                            <i class="fa-solid fa-trash"></i> Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr x-show="clients.length === 0">
+                                <td colspan="5" class="text-center text-muted py-4">
+                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
+                                    No hay clientes registrados
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-
             </div>
 
         </div>
 
-    </div>
+        <!-- ==================== MODAL CATEGORÍA ==================== -->
+        <div x-cloak @click.self="closeCategoryModal()" @keydown.escape.window="closeCategoryModal()" 
+             :class="showCategoryModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+            
+            <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0 fw-bold" x-text="isEditingCategory ? 'Editar Categoría' : 'Crear Categoría'"></h4>
+                    <button @click="closeCategoryModal()" type="button" class="btn-close"></button>
+                </div>
 
-    @include('category.formCategory')
+                <form @submit.prevent="saveCategory()">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" x-model="categoryForm.cat_name" class="form-control" required>
+                        <span x-show="errors.category.cat_name" x-text="errors.category.cat_name?.[0]" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Estado</label>
+                        <select x-model="categoryForm.status" class="form-select">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                        <span x-show="errors.category.status" x-text="errors.category.status?.[0]" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" @click="closeCategoryModal()" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-save me-2"></i>
+                            <span x-text="isEditingCategory ? 'Actualizar' : 'Crear'"></span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ==================== MODAL SERVICIO ==================== -->
+        <div x-cloak @click.self="closeServiceModal()" @keydown.escape.window="closeServiceModal()" 
+             :class="showServiceModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+            
+            <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 700px; width: 95%;">
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0 fw-bold" x-text="isEditingService ? 'Editar Servicio' : 'Crear Servicio'"></h4>
+                    <button @click="closeServiceModal()" type="button" class="btn-close"></button>
+                </div>
+
+                <form @submit.prevent="saveService()">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" x-model="serviceForm.name" class="form-control" required>
+                            <span x-show="errors.service.name" x-text="errors.service.name?.[0]" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
+                            <select x-model="serviceForm.category_id" class="form-select" required>
+                                <option value="">Seleccionar categoría</option>
+                                <template x-for="cat in categoriesForServices" :key="cat.id">
+                                    <option :value="cat.id" x-text="cat.cat_name"></option>
+                                </template>
+                            </select>
+                            <span x-show="errors.service.category_id" x-text="errors.service.category_id?.[0]" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <label class="form-label fw-bold">Detalles <span class="text-danger">*</span></label>
+                            <textarea x-model="serviceForm.details" class="form-control" rows="2" required></textarea>
+                            <span x-show="errors.service.details" x-text="errors.service.details?.[0]" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Precio (€) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" x-model="serviceForm.value" class="form-control" required>
+                            <span x-show="errors.service.value" x-text="errors.service.value?.[0]" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Duración (min) <span class="text-danger">*</span></label>
+                            <input type="number" x-model="serviceForm.duration" class="form-control" required>
+                            <span x-show="errors.service.duration" x-text="errors.service.duration?.[0]" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" @click="closeServiceModal()" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-save me-2"></i>
+                            <span x-text="isEditingService ? 'Actualizar' : 'Crear'"></span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ==================== MODAL TIPO DE VEHÍCULO ==================== -->
+        <div x-cloak @click.self="closeVehicleTypeModal()" @keydown.escape.window="closeVehicleTypeModal()" 
+             :class="showVehicleTypeModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+            
+            <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0 fw-bold" x-text="isEditingVehicleType ? 'Editar Tipo de Vehículo' : 'Crear Tipo de Vehículo'"></h4>
+                    <button @click="closeVehicleTypeModal()" type="button" class="btn-close"></button>
+                </div>
+
+                <form @submit.prevent="saveVehicleType()">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                        <input type="text" x-model="vehicleTypeForm.name" class="form-control" required>
+                        <span x-show="errors.vehicleType.name" x-text="errors.vehicleType.name?.[0]" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" @click="closeVehicleTypeModal()" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-save me-2"></i>
+                            <span x-text="isEditingVehicleType ? 'Actualizar' : 'Crear'"></span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ==================== MODAL CLIENTE ==================== -->
+        <div x-cloak @click.self="closeClientModal()" @keydown.escape.window="closeClientModal()" 
+             :class="showClientModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+            
+            <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 600px; width: 95%;">
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="mb-0 fw-bold" x-text="isEditingClient ? 'Editar Cliente' : 'Crear Cliente'"></h4>
+                    <button @click="closeClientModal()" type="button" class="btn-close"></button>
+                </div>
+
+                <form @submit.prevent="saveClient()">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" x-model="clientForm.name" class="form-control" required>
+                            <span x-show="errors.client.name" x-text="errors.client.name?.[0]" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Teléfono</label>
+                            <input type="tel" x-model="clientForm.phone" class="form-control">
+                            <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Matrícula</label>
+                            <input type="text" x-model="clientForm.license_plaque" class="form-control">
+                            <span x-show="errors.client.license_plaque" x-text="errors.client.license_plaque?.[0]" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="button" @click="closeClientModal()" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-save me-2"></i>
+                            <span x-text="isEditingClient ? 'Actualizar' : 'Crear'"></span>
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ==================== MODAL DE CONFIRMACIÓN ELIMINAR ==================== -->
+        <div x-cloak :class="showDeleteModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+             style="background: rgba(0,0,0,0.5); z-index: 10000;" x-transition>
+            
+            <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 400px; width: 95%;">
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0 fw-bold text-danger">
+                        <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                        Confirmar Eliminación
+                    </h5>
+                    <button @click="cancelDelete()" type="button" class="btn-close"></button>
+                </div>
+
+                <p class="mb-4">¿Estás seguro de que deseas eliminar este elemento? Esta acción no se puede deshacer.</p>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button @click="cancelDelete()" class="btn btn-secondary">Cancelar</button>
+                    <button @click="confirmDelete()" class="btn btn-danger">
+                        <i class="fa-solid fa-trash me-2"></i>
+                        Eliminar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 
 @endsection
