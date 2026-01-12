@@ -56,13 +56,16 @@ Route::middleware('auth')->group(function () {
     
     # Rutas API para tipos de vehículo
     Route::resource('vehicle-types', VehicleTypeController::class)->except(['create', 'edit']);
+    Route::put('/vehicle-types/activate/{id}', [VehicleTypeController::class, 'activate'])->name('vehicle-types.activate');
     
     # Rutas API para clientes
     Route::get('/api/clients', [ClientController::class, 'apiIndex'])->name('clients.api.index');
     Route::resource('clients', ClientController::class)->except(['index', 'create', 'edit']);
+    Route::put('/clients/activate/{id}', [ClientController::class, 'activate'])->name('clients.activate');
     
     # Rutas API para servicios
     Route::get('/api/services', [ServiceController::class, 'apiIndex'])->name('services.api.index');
     Route::resource('services', ServiceController::class)->except(['index', 'create', 'edit']);
+    Route::put('/services/activate/{id}', [ServiceController::class, 'activate'])->name('services.activate');
     
 });

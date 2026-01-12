@@ -32,6 +32,7 @@ class VehicleTypeController extends Controller
         $vehicleType = VehicleType::create([
             'id' => (string) \Illuminate\Support\Str::uuid(),
             'name' => $request->name,
+            'status' => 1,
             'creation_date' => now(),
         ]);
         return response()->json($vehicleType, 201);
@@ -70,7 +71,7 @@ class VehicleTypeController extends Controller
     }
 
     /**
-     * Elimina un tipo de vehículo.
+     * Elimina un tipo de vehículo (soft delete).
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
@@ -78,7 +79,20 @@ class VehicleTypeController extends Controller
     public function destroy($id)
     {
         $vehicleType = VehicleType::findOrFail($id);
-        $vehicleType->delete();
-        return response()->json(['message' => 'Tipo de vehículo eliminado']);
+        $vehicleType->update(['status' => 0]);
+        return response()->json(['message' => 'Tipo de vehículo desactivado']);
+    }
+
+    /**
+     * Activa un tipo de vehículo.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function activate($id)
+    {
+        $vehicleType = VehicleType::findOrFail($id);
+        $vehicleType->update(['status' => 1]);
+        return response()->json(['message' => 'Tipo de vehículo activado']);
     }
 }

@@ -51,6 +51,7 @@ class ServiceController extends Controller
             'details' => $request->details,
             'value' => $request->value,
             'duration' => $request->duration,
+            'status' => 1,
             'creation_date' => now(),
         ]);
         return response()->json($service, 201);
@@ -97,7 +98,7 @@ class ServiceController extends Controller
     }
 
     /**
-     * Elimina un servicio.
+     * Elimina un servicio (soft delete).
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
@@ -105,7 +106,20 @@ class ServiceController extends Controller
     public function destroy($id)
     {
         $service = Service::findOrFail($id);
-        $service->delete();
-        return response()->json(['message' => 'Servicio eliminado']);
+        $service->update(['status' => 0]);
+        return response()->json(['message' => 'Servicio desactivado']);
+    }
+
+    /**
+     * Activa un servicio.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function activate($id)
+    {
+        $service = Service::findOrFail($id);
+        $service->update(['status' => 1]);
+        return response()->json(['message' => 'Servicio activado']);
     }
 }

@@ -15,6 +15,7 @@ class Client extends Model
         'name',
         'phone',
         'license_plaque',
+        'status',
         'creation_date'
     ];
 

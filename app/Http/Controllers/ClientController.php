@@ -47,6 +47,7 @@ class ClientController extends Controller
             'name' => $request->name,
             'phone' => $request->phone,
             'license_plaque' => $request->license_plaque,
+            'status' => 1,
             'creation_date' => now(),
         ]);
         return response()->json($client, 201);
@@ -89,7 +90,7 @@ class ClientController extends Controller
     }
 
     /**
-     * Elimina un cliente.
+     * Elimina un cliente (soft delete).
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
@@ -97,7 +98,20 @@ class ClientController extends Controller
     public function destroy($id)
     {
         $client = Client::findOrFail($id);
-        $client->delete();
-        return response()->json(['message' => 'Cliente eliminado']);
+        $client->update(['status' => 0]);
+        return response()->json(['message' => 'Cliente desactivado']);
+    }
+
+    /**
+     * Activa un cliente.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function activate($id)
+    {
+        $client = Client::findOrFail($id);
+        $client->update(['status' => 1]);
+        return response()->json(['message' => 'Cliente activado']);
     }
 }

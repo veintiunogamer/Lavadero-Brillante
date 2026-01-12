@@ -48,7 +48,7 @@
 
             <!-- ==================== CATEGORÍAS ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'categories'">
-                <button @click="openCategoryModal()" class="btn btn-success mb-3">
+                <button @click="openCategoryModal()" class="btn btn-success fw-bold mb-3">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Categoría
                 </button>
@@ -57,21 +57,27 @@
                     <table class="table table-striped table-bordered align-middle">
                         <thead class="table-dark">
                             <tr>
-                                <th>Nombre</th>
-                                <th>Estado</th>
-                                <th>Fecha Creación</th>
+                                <th @click="sortData('categories', 'cat_name')" style="cursor: pointer;">
+                                    Nombre <span x-html="getSortIcon('categories', 'cat_name')"></span>
+                                </th>
+                                <th @click="sortData('categories', 'status')" style="cursor: pointer;">
+                                    Estado <span x-html="getSortIcon('categories', 'status')"></span>
+                                </th>
+                                <th @click="sortData('categories', 'creation_date')" style="cursor: pointer;">
+                                    Fecha Creación <span x-html="getSortIcon('categories', 'creation_date')"></span>
+                                </th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="category in categories" :key="category.id">
-                                <tr>
+                                <tr :class="category.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="category.cat_name"></td>
                                     <td>
                                         <span class="badge" :class="category.status ? 'bg-success' : 'bg-secondary'" 
                                               x-text="category.status ? 'Activo' : 'Inactivo'"></span>
                                     </td>
-                                    <td x-text="formatDate(category.creation_date)"></td>
+                                    <td x-text="formatDateTime(category.creation_date)"></td>
                                     <td>
                                         <button @click="editCategory(category)" class="btn btn-sm btn-warning me-1">
                                             <i class="fa-solid fa-edit"></i> Editar
@@ -95,45 +101,71 @@
 
             <!-- ==================== SERVICIOS ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'services'">
-                <button @click="openServiceModal()" class="btn btn-success mb-3">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    Crear Servicio
-                </button>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <button @click="openServiceModal()" class="btn btn-success fw-bold">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Crear Servicio
+                    </button>
+                    <div class="position-relative" style="max-width: 350px;">
+                        <i class="fa-solid fa-search position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                        <input type="text" 
+                               class="form-control ps-5 shadow-sm" 
+                               placeholder="Buscar servicio..." 
+                               x-model="searchService"
+                               style="border-radius: 20px; border: 1px solid #dee2e6;">
+                    </div>
+                </div>
 
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered align-middle">
                         <thead class="table-dark">
                             <tr>
-                                <th>Nombre</th>
+                                <th @click="sortData('services', 'name')" style="cursor: pointer;">
+                                    Nombre <span x-html="getSortIcon('services', 'name')"></span>
+                                </th>
                                 <th>Categoría</th>
                                 <th>Detalles</th>
                                 <th>Precio</th>
                                 <th>Duración (min)</th>
+                                <th @click="sortData('services', 'status')" style="cursor: pointer;">
+                                    Estado <span x-html="getSortIcon('services', 'status')"></span>
+                                </th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <template x-for="service in services" :key="service.id">
-                                <tr>
+                            <template x-for="service in filteredServices" :key="service.id">
+                                <tr :class="service.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="service.name"></td>
                                     <td x-text="getCategoryName(service.category_id)"></td>
                                     <td x-text="service.details"></td>
                                     <td x-text="formatCurrency(service.value)"></td>
                                     <td x-text="service.duration"></td>
                                     <td>
+                                        <span class="badge" :class="service.status ? 'bg-success' : 'bg-secondary'" 
+                                              x-text="service.status ? 'Activo' : 'Inactivo'"></span>
+                                    </td>
+                                    <td>
                                         <button @click="editService(service)" class="btn btn-sm btn-warning me-1">
-                                            <i class="fa-solid fa-edit"></i> Editar
+                                            <i class="fa-solid fa-edit"></i>
                                         </button>
-                                        <button @click="deleteService(service.id)" class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i> Eliminar
-                                        </button>
+                                        <template x-if="service.status">
+                                            <button @click="deleteService(service.id)" class="btn btn-sm btn-danger">
+                                                <i class="fa-solid fa-times"></i>
+                                            </button>
+                                        </template>
+                                        <template x-if="!service.status">
+                                            <button @click="activateItem(service.id, 'service')" class="btn btn-sm btn-success">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </template>
                                     </td>
                                 </tr>
                             </template>
-                            <tr x-show="services.length === 0">
-                                <td colspan="6" class="text-center text-muted py-4">
+                            <tr x-show="filteredServices.length === 0">
+                                <td colspan="7" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    No hay servicios registrados
+                                    <span x-text="searchService ? 'No se encontraron servicios con ese criterio' : 'No hay servicios registrados'"></span>
                                 </td>
                             </tr>
                         </tbody>
@@ -143,7 +175,7 @@
 
             <!-- ==================== TIPOS DE VEHÍCULO ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'vehicle-types'">
-                <button @click="openVehicleTypeModal()" class="btn btn-success mb-3">
+                <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold mb-3">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Tipo de Vehículo
                 </button>
@@ -152,28 +184,46 @@
                     <table class="table table-striped table-bordered align-middle">
                         <thead class="table-dark">
                             <tr>
-                                <th>Nombre</th>
-                                <th>Fecha Creación</th>
+                                <th @click="sortData('vehicleTypes', 'name')" style="cursor: pointer;">
+                                    Nombre <span x-html="getSortIcon('vehicleTypes', 'name')"></span>
+                                </th>
+                                <th @click="sortData('vehicleTypes', 'status')" style="cursor: pointer;">
+                                    Estado <span x-html="getSortIcon('vehicleTypes', 'status')"></span>
+                                </th>
+                                <th @click="sortData('vehicleTypes', 'creation_date')" style="cursor: pointer;">
+                                    Fecha Creación <span x-html="getSortIcon('vehicleTypes', 'creation_date')"></span>
+                                </th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="vehicleType in vehicleTypes" :key="vehicleType.id">
-                                <tr>
+                                <tr :class="vehicleType.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="vehicleType.name"></td>
-                                    <td x-text="formatDate(vehicleType.creation_date)"></td>
+                                    <td>
+                                        <span class="badge" :class="vehicleType.status ? 'bg-success' : 'bg-secondary'" 
+                                              x-text="vehicleType.status ? 'Activo' : 'Inactivo'"></span>
+                                    </td>
+                                    <td x-text="formatDateTime(vehicleType.creation_date)"></td>
                                     <td>
                                         <button @click="editVehicleType(vehicleType)" class="btn btn-sm btn-warning me-1">
-                                            <i class="fa-solid fa-edit"></i> Editar
+                                            <i class="fa-solid fa-edit"></i>
                                         </button>
-                                        <button @click="deleteVehicleType(vehicleType.id)" class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i> Eliminar
-                                        </button>
+                                        <template x-if="vehicleType.status">
+                                            <button @click="deleteVehicleType(vehicleType.id)" class="btn btn-sm btn-danger">
+                                                <i class="fa-solid fa-times"></i>
+                                            </button>
+                                        </template>
+                                        <template x-if="!vehicleType.status">
+                                            <button @click="activateItem(vehicleType.id, 'vehicleType')" class="btn btn-sm btn-success">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </template>
                                     </td>
                                 </tr>
                             </template>
                             <tr x-show="vehicleTypes.length === 0">
-                                <td colspan="3" class="text-center text-muted py-4">
+                                <td colspan="4" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
                                     No hay tipos de vehículo registrados
                                 </td>
@@ -185,7 +235,7 @@
 
             <!-- ==================== CLIENTES ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'clients'">
-                <button @click="openClientModal()" class="btn btn-success mb-3">
+                <button @click="openClientModal()" class="btn btn-success fw-bold mb-3">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Cliente
                 </button>
@@ -194,32 +244,50 @@
                     <table class="table table-striped table-bordered align-middle">
                         <thead class="table-dark">
                             <tr>
-                                <th>Nombre</th>
+                                <th @click="sortData('clients', 'name')" style="cursor: pointer;">
+                                    Nombre <span x-html="getSortIcon('clients', 'name')"></span>
+                                </th>
                                 <th>Teléfono</th>
                                 <th>Matrícula</th>
-                                <th>Fecha Creación</th>
+                                <th @click="sortData('clients', 'status')" style="cursor: pointer;">
+                                    Estado <span x-html="getSortIcon('clients', 'status')"></span>
+                                </th>
+                                <th @click="sortData('clients', 'creation_date')" style="cursor: pointer;">
+                                    Fecha Creación <span x-html="getSortIcon('clients', 'creation_date')"></span>
+                                </th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             <template x-for="client in clients" :key="client.id">
-                                <tr>
+                                <tr :class="client.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="client.name"></td>
                                     <td x-text="client.phone || 'N/A'"></td>
                                     <td x-text="client.license_plaque || 'N/A'"></td>
+                                    <td>
+                                        <span class="badge" :class="client.status ? 'bg-success' : 'bg-secondary'" 
+                                              x-text="client.status ? 'Activo' : 'Inactivo'"></span>
+                                    </td>
                                     <td x-text="formatDate(client.creation_date)"></td>
                                     <td>
                                         <button @click="editClient(client)" class="btn btn-sm btn-warning me-1">
-                                            <i class="fa-solid fa-edit"></i> Editar
+                                            <i class="fa-solid fa-edit"></i>
                                         </button>
-                                        <button @click="deleteClient(client.id)" class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i> Eliminar
-                                        </button>
+                                        <template x-if="client.status">
+                                            <button @click="deleteClient(client.id)" class="btn btn-sm btn-danger">
+                                                <i class="fa-solid fa-times"></i>
+                                            </button>
+                                        </template>
+                                        <template x-if="!client.status">
+                                            <button @click="activateItem(client.id, 'client')" class="btn btn-sm btn-success">
+                                                <i class="fa-solid fa-check"></i>
+                                            </button>
+                                        </template>
                                     </td>
                                 </tr>
                             </template>
                             <tr x-show="clients.length === 0">
-                                <td colspan="5" class="text-center text-muted py-4">
+                                <td colspan="6" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
                                     No hay clientes registrados
                                 </td>

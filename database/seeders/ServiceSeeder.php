@@ -274,6 +274,7 @@ class ServiceSeeder extends Seeder
                     'details' => $serviceData['details'],
                     'value' => $serviceData['value'],
                     'duration' => $serviceData['duration'],
+                    'status' => 1,
                     'creation_date' => now(),
                 ]);
 

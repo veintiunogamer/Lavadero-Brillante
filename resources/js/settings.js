@@ -14,6 +14,23 @@ window.settingsApp = function() {
         // Tab activo
         activeTab: 'categories',
 
+        // Búsqueda
+        searchService: '',
+
+        // Sorting
+        sortBy: {
+            categories: 'status',
+            services: 'status',
+            vehicleTypes: 'status',
+            clients: 'status'
+        },
+        sortDirection: {
+            categories: 'desc',
+            services: 'desc',
+            vehicleTypes: 'desc',
+            clients: 'desc'
+        },
+
         // Datos
         categories: [],
         services: [],
@@ -86,6 +103,7 @@ window.settingsApp = function() {
                 const data = await response.json();
                 this.categories = data;
                 this.categoriesForServices = data.filter(c => c.status === 1);
+                this.applySorting('categories');
             } catch (error) {
                 console.error('Error cargando categorías:', error);
                 window.notyf.error('Error al cargar categorías');
@@ -181,6 +199,7 @@ window.settingsApp = function() {
                 });
                 const data = await response.json();
                 this.services = data;
+                this.applySorting('services');
             } catch (error) {
                 console.error('Error cargando servicios:', error);
                 window.notyf.error('Error al cargar servicios');
@@ -276,6 +295,18 @@ window.settingsApp = function() {
             return category ? category.cat_name : 'N/A';
         },
 
+        // Filtrar servicios por búsqueda
+        get filteredServices() {
+            if (!this.searchService.trim()) {
+                return this.services;
+            }
+            const search = this.searchService.toLowerCase();
+            return this.services.filter(service => 
+                service.name.toLowerCase().includes(search) ||
+                this.getCategoryName(service.category_id).toLowerCase().includes(search)
+            );
+        },
+
         // ====================
         // TIPOS DE VEHÍCULO
         // ====================
@@ -287,6 +318,7 @@ window.settingsApp = function() {
                 });
                 const data = await response.json();
                 this.vehicleTypes = data;
+                this.applySorting('vehicleTypes');
             } catch (error) {
                 console.error('Error cargando tipos de vehículo:', error);
                 window.notyf.error('Error al cargar tipos de vehículo');
@@ -380,6 +412,7 @@ window.settingsApp = function() {
                 });
                 const data = await response.json();
                 this.clients = data;
+                this.applySorting('clients');
             } catch (error) {
                 console.error('Error cargando clientes:', error);
                 window.notyf.error('Error al cargar clientes');
@@ -557,6 +590,126 @@ window.settingsApp = function() {
         // UTILIDADES
         // ====================
 
+        // Ordenar datos
+        sortData(type, field) {
+            const currentSort = this.sortBy[type];
+            const currentDirection = this.sortDirection[type];
+
+            // Si es el mismo campo, invertir dirección
+            if (currentSort === field) {
+                this.sortDirection[type] = currentDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                // Si es otro campo, establecer como ascendente
+                this.sortBy[type] = field;
+                this.sortDirection[type] = 'asc';
+            }
+
+            // Aplicar el ordenamiento
+            this.applySorting(type);
+        },
+
+        applySorting(type) {
+            const field = this.sortBy[type];
+            const direction = this.sortDirection[type];
+            let dataArray;
+
+            switch (type) {
+                case 'categories':
+                    dataArray = this.categories;
+                    break;
+                case 'services':
+                    dataArray = this.services;
+                    break;
+                case 'vehicleTypes':
+                    dataArray = this.vehicleTypes;
+                    break;
+                case 'clients':
+                    dataArray = this.clients;
+                    break;
+            }
+
+            dataArray.sort((a, b) => {
+                let aVal = a[field];
+                let bVal = b[field];
+
+                // Para status, ordenar activos primero cuando es desc
+                if (field === 'status') {
+                    aVal = a.status ? 1 : 0;
+                    bVal = b.status ? 1 : 0;
+                }
+
+                // Para nombres, usar comparación de strings
+                if (field === 'name' || field === 'cat_name') {
+                    aVal = (aVal || '').toLowerCase();
+                    bVal = (bVal || '').toLowerCase();
+                }
+
+                // Para fechas, convertir a timestamp
+                if (field === 'creation_date') {
+                    aVal = new Date(aVal).getTime();
+                    bVal = new Date(bVal).getTime();
+                }
+
+                if (direction === 'asc') {
+                    return aVal > bVal ? 1 : aVal < bVal ? -1 : 0;
+                } else {
+                    return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
+                }
+            });
+        },
+
+        getSortIcon(type, field) {
+            if (this.sortBy[type] !== field) {
+                return '<i class="fa-solid fa-sort"></i>';
+            }
+            return this.sortDirection[type] === 'asc' ? '<i class="fa-solid fa-sort-up"></i>' : '<i class="fa-solid fa-sort-down"></i>';
+        },
+
+        // Activar/Desactivar items
+        async activateItem(id, type) {
+            let url, reloadFn, itemName;
+
+            switch (type) {
+                case 'service':
+                    url = `/services/activate/${id}`;
+                    reloadFn = () => this.loadServices();
+                    itemName = 'Servicio';
+                    break;
+                case 'vehicleType':
+                    url = `/vehicle-types/activate/${id}`;
+                    reloadFn = () => this.loadVehicleTypes();
+                    itemName = 'Tipo de vehículo';
+                    break;
+                case 'client':
+                    url = `/clients/activate/${id}`;
+                    reloadFn = () => this.loadClients();
+                    itemName = 'Cliente';
+                    break;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    window.notyf.success(result.message || `${itemName} activado`);
+                    await reloadFn();
+                } else {
+                    window.notyf.error(result.message || `Error al activar ${itemName}`);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf.error(`Error al activar ${itemName}`);
+            }
+        },
+
         clearErrors(type) {
             this.errors[type] = {};
         },
@@ -571,6 +724,12 @@ window.settingsApp = function() {
         formatDate(date) {
             if (!date) return 'N/A';
             return new Date(date).toLocaleDateString('es-ES');
+        },
+
+        formatDateTime(date) {
+            if (!date) return 'N/A';
+            const d = new Date(date);
+            return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
         }
     }
 }

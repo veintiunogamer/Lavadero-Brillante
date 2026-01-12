@@ -16,7 +16,8 @@ class Service extends Model
         'name',
         'details', 
         'value', 
-        'duration', 
+        'duration',
+        'status',
         'creation_date'
     ];
     
