@@ -19,7 +19,7 @@ class CategorySeeder extends Seeder
             'Pulidos',
             'Desinfección',
             'Accesorios',
-            'Mecánica / Limpiezas',
+            'Mecánica / Limpieza',
         ];
 
         foreach ($categories as $cat_name) {
