@@ -7,6 +7,7 @@
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
             <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
+                
                 <div class="col-6">
                     <h3 class="card-title mb-3">
                         <i class="fa-solid fa-calendar-check icon color-blue"></i> 
@@ -14,6 +15,7 @@
                     </h3>
                     <p class="fw-bold small text-muted">Gestión de citas y agendamientos.</p>
                 </div>
+
             </div>
 
             <!-- Tabs -->

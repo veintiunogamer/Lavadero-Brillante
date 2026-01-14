@@ -3,8 +3,8 @@
 @section('content')
 
     <div id="settings-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" 
-         x-data="typeof settingsApp === 'function' ? settingsApp() : {}" 
-         x-init='if (typeof settingsApp === "function") initData()'>
+    x-data="typeof settingsApp === 'function' ? settingsApp() : {}" 
+    x-init='if (typeof settingsApp === "function") initData()'>
         
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
@@ -20,41 +20,49 @@
 
             <!-- Tabs con Alpine.js -->
             <ul class="nav nav-tabs px-4" role="tablist">
+
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" :class="activeTab === 'categories' ? 'active' : ''" 
                             @click="changeTab('categories')" type="button" role="tab">
                         <i class="fa-solid fa-tags me-2"></i>Categorías
                     </button>
                 </li>
+
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" :class="activeTab === 'services' ? 'active' : ''" 
                             @click="changeTab('services')" type="button" role="tab">
                         <i class="fa-solid fa-tools me-2"></i>Servicios
                     </button>
                 </li>
+
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" :class="activeTab === 'vehicle-types' ? 'active' : ''" 
                             @click="changeTab('vehicle-types')" type="button" role="tab">
                         <i class="fa-solid fa-car me-2"></i>Tipos de Vehículo
                     </button>
                 </li>
+
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" :class="activeTab === 'clients' ? 'active' : ''" 
                             @click="changeTab('clients')" type="button" role="tab">
                         <i class="fa-solid fa-users me-2"></i>Clientes
                     </button>
                 </li>
+
             </ul>
 
             <!-- ==================== CATEGORÍAS ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'categories'">
+                
                 <button @click="openCategoryModal()" class="btn btn-success fw-bold mb-3">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Categoría
                 </button>
 
                 <div class="table-responsive">
+
                     <table class="table table-striped table-bordered align-middle">
+
                         <thead class="table-dark">
                             <tr>
                                 <th @click="sortData('categories', 'cat_name')" style="cursor: pointer;">
@@ -69,8 +77,11 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
+
                         <tbody>
+
                             <template x-for="category in categories" :key="category.id">
+
                                 <tr :class="category.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="category.cat_name"></td>
                                     <td>
@@ -87,37 +98,49 @@
                                         </button>
                                     </td>
                                 </tr>
+
                             </template>
+
                             <tr x-show="categories.length === 0">
                                 <td colspan="4" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
                                     No hay categorías registradas
                                 </td>
                             </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
 
             <!-- ==================== SERVICIOS ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'services'">
+
                 <div class="d-flex justify-content-between align-items-center mb-3">
+
                     <button @click="openServiceModal()" class="btn btn-success fw-bold">
                         <i class="fa-solid fa-plus me-2"></i>
                         Crear Servicio
                     </button>
+
                     <div class="position-relative" style="max-width: 350px;">
                         <i class="fa-solid fa-search position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
                         <input type="text" 
-                               class="form-control ps-5 shadow-sm" 
-                               placeholder="Buscar servicio..." 
-                               x-model="searchService"
-                               style="border-radius: 20px; border: 1px solid #dee2e6;">
+                        class="form-control ps-5 shadow-sm" 
+                        placeholder="Buscar servicio..." 
+                        x-model="searchService"
+                        style="border-radius: 20px; border: 1px solid #dee2e6;">
                     </div>
+
                 </div>
 
                 <div class="table-responsive">
+
                     <table class="table table-striped table-bordered align-middle">
+
                         <thead class="table-dark">
                             <tr>
                                 <th @click="sortData('services', 'name')" style="cursor: pointer;">
@@ -133,8 +156,11 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
+
                         <tbody>
+
                             <template x-for="service in filteredServices" :key="service.id">
+
                                 <tr :class="service.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="service.name"></td>
                                     <td x-text="getCategoryName(service.category_id)"></td>
@@ -161,27 +187,36 @@
                                         </template>
                                     </td>
                                 </tr>
+
                             </template>
+
                             <tr x-show="filteredServices.length === 0">
                                 <td colspan="7" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
                                     <span x-text="searchService ? 'No se encontraron servicios con ese criterio' : 'No hay servicios registrados'"></span>
                                 </td>
                             </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
 
             <!-- ==================== TIPOS DE VEHÍCULO ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'vehicle-types'">
+
                 <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold mb-3">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Tipo de Vehículo
                 </button>
 
                 <div class="table-responsive">
+
                     <table class="table table-striped table-bordered align-middle">
+
                         <thead class="table-dark">
                             <tr>
                                 <th @click="sortData('vehicleTypes', 'name')" style="cursor: pointer;">
@@ -196,8 +231,11 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
+
                         <tbody>
+
                             <template x-for="vehicleType in vehicleTypes" :key="vehicleType.id">
+
                                 <tr :class="vehicleType.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="vehicleType.name"></td>
                                     <td>
@@ -221,27 +259,36 @@
                                         </template>
                                     </td>
                                 </tr>
+
                             </template>
+
                             <tr x-show="vehicleTypes.length === 0">
                                 <td colspan="4" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
                                     No hay tipos de vehículo registrados
                                 </td>
                             </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
 
             <!-- ==================== CLIENTES ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'clients'">
+
                 <button @click="openClientModal()" class="btn btn-success fw-bold mb-3">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Cliente
                 </button>
 
                 <div class="table-responsive">
+
                     <table class="table table-striped table-bordered align-middle">
+
                         <thead class="table-dark">
                             <tr>
                                 <th @click="sortData('clients', 'name')" style="cursor: pointer;">
@@ -258,8 +305,11 @@
                                 <th>Acciones</th>
                             </tr>
                         </thead>
+
                         <tbody>
+
                             <template x-for="client in clients" :key="client.id">
+
                                 <tr :class="client.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="client.name"></td>
                                     <td x-text="client.phone || 'N/A'"></td>
@@ -285,24 +335,30 @@
                                         </template>
                                     </td>
                                 </tr>
+
                             </template>
+
                             <tr x-show="clients.length === 0">
                                 <td colspan="6" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
                                     No hay clientes registrados
                                 </td>
                             </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </div>
 
         </div>
 
         <!-- ==================== MODAL CATEGORÍA ==================== -->
         <div x-cloak @click.self="closeCategoryModal()" @keydown.escape.window="closeCategoryModal()" 
-             :class="showCategoryModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
-             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showCategoryModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
             
             <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
                 
@@ -341,8 +397,8 @@
 
         <!-- ==================== MODAL SERVICIO ==================== -->
         <div x-cloak @click.self="closeServiceModal()" @keydown.escape.window="closeServiceModal()" 
-             :class="showServiceModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
-             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showServiceModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
             
             <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 700px; width: 95%;">
                 
@@ -353,13 +409,13 @@
 
                 <form @submit.prevent="saveService()">
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3 px-2">
                             <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                            <input type="text" x-model="serviceForm.name" class="form-control" required>
+                            <input type="text" x-model="serviceForm.name" class="form-control" placeholder="Ej: Lavado Premium" required>
                             <span x-show="errors.service.name" x-text="errors.service.name?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3 px-2">
                             <label class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
                             <select x-model="serviceForm.category_id" class="form-select" required>
                                 <option value="">Seleccionar categoría</option>
@@ -370,21 +426,21 @@
                             <span x-show="errors.service.category_id" x-text="errors.service.category_id?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-12 mb-3">
+                        <div class="col-12 mb-3 px-2">
                             <label class="form-label fw-bold">Detalles <span class="text-danger">*</span></label>
-                            <textarea x-model="serviceForm.details" class="form-control" rows="2" required></textarea>
+                            <textarea x-model="serviceForm.details" class="form-control" rows="3" placeholder="Descripción del servicio..." required></textarea>
                             <span x-show="errors.service.details" x-text="errors.service.details?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3 px-2">
                             <label class="form-label fw-bold">Precio (€) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" x-model="serviceForm.value" class="form-control" required>
+                            <input type="number" step="0.01" min="0" x-model="serviceForm.value" class="form-control" placeholder="0.00" required>
                             <span x-show="errors.service.value" x-text="errors.service.value?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3 px-2">
                             <label class="form-label fw-bold">Duración (min) <span class="text-danger">*</span></label>
-                            <input type="number" x-model="serviceForm.duration" class="form-control" required>
+                            <input type="number" min="1" x-model="serviceForm.duration" class="form-control" placeholder="60" required>
                             <span x-show="errors.service.duration" x-text="errors.service.duration?.[0]" class="text-danger small"></span>
                         </div>
                     </div>
@@ -403,8 +459,8 @@
 
         <!-- ==================== MODAL TIPO DE VEHÍCULO ==================== -->
         <div x-cloak @click.self="closeVehicleTypeModal()" @keydown.escape.window="closeVehicleTypeModal()" 
-             :class="showVehicleTypeModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
-             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showVehicleTypeModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
             
             <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
                 
@@ -434,8 +490,8 @@
 
         <!-- ==================== MODAL CLIENTE ==================== -->
         <div x-cloak @click.self="closeClientModal()" @keydown.escape.window="closeClientModal()" 
-             :class="showClientModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
-             style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showClientModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
+        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
             
             <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 600px; width: 95%;">
                 
@@ -479,7 +535,7 @@
 
         <!-- ==================== MODAL DE CONFIRMACIÓN ELIMINAR ==================== -->
         <div x-cloak :class="showDeleteModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" 
-             style="background: rgba(0,0,0,0.5); z-index: 10000;" x-transition>
+        style="background: rgba(0,0,0,0.5); z-index: 10000;" x-transition>
             
             <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 400px; width: 95%;">
                 
