@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tax extends Model
 {
     public $incrementing = false;
+    public $timestamps = false;
 
     const ACTIVE = 1;
     const INACTIVE = 0;

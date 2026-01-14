@@ -20,7 +20,8 @@ class Order extends Model
 
     protected $fillable = [
         'id', 
-        'client_id', 
+        'client_id',
+        'user_id', 
         'service_id', 
         'quantity', 
         'dirt_level', 
@@ -51,5 +52,13 @@ class Order extends Model
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id', 'id');
+    }
+
+    /**
+     * Relación con Usuario
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }
