@@ -729,7 +729,7 @@ window.settingsApp = function() {
         formatDateTime(date) {
             if (!date) return 'N/A';
             const d = new Date(date);
-            return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
+            return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true });
         }
     }
 }

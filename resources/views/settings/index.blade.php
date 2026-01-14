@@ -54,7 +54,7 @@
             <!-- ==================== CATEGORÍAS ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'categories'">
                 
-                <button @click="openCategoryModal()" class="btn btn-success fw-bold mb-3">
+                <button @click="openCategoryModal()" class="btn btn-success fw-bold mb-4">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Categoría
                 </button>
@@ -66,15 +66,16 @@
                         <thead class="table-dark">
                             <tr>
                                 <th @click="sortData('categories', 'cat_name')" style="cursor: pointer;">
-                                    Nombre <span x-html="getSortIcon('categories', 'cat_name')"></span>
+                                    Nombre&nbsp; <span x-html="getSortIcon('categories', 'cat_name')"></span>
                                 </th>
                                 <th @click="sortData('categories', 'status')" style="cursor: pointer;">
-                                    Estado <span x-html="getSortIcon('categories', 'status')"></span>
+                                    Estado&nbsp; <span x-html="getSortIcon('categories', 'status')"></span>
                                 </th>
                                 <th @click="sortData('categories', 'creation_date')" style="cursor: pointer;">
-                                    Fecha Creación <span x-html="getSortIcon('categories', 'creation_date')"></span>
+                                    Fecha Creación&nbsp; <span x-html="getSortIcon('categories', 'creation_date')"></span>
                                 </th>
-                                <th>Acciones</th>
+
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
 
@@ -89,7 +90,7 @@
                                               x-text="category.status ? 'Activo' : 'Inactivo'"></span>
                                     </td>
                                     <td x-text="formatDateTime(category.creation_date)"></td>
-                                    <td>
+                                    <td class="text-center">
                                         <button @click="editCategory(category)" class="btn btn-sm btn-warning me-1">
                                             <i class="fa-solid fa-edit"></i> Editar
                                         </button>
@@ -121,7 +122,7 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
 
-                    <button @click="openServiceModal()" class="btn btn-success fw-bold">
+                    <button @click="openServiceModal()" class="btn btn-success fw-bold mb-4">
                         <i class="fa-solid fa-plus me-2"></i>
                         Crear Servicio
                     </button>
@@ -146,14 +147,14 @@
                                 <th @click="sortData('services', 'name')" style="cursor: pointer;">
                                     Nombre <span x-html="getSortIcon('services', 'name')"></span>
                                 </th>
-                                <th>Categoría</th>
+                                
                                 <th>Detalles</th>
                                 <th>Precio</th>
-                                <th>Duración (min)</th>
+                                <th>Duración</th>
                                 <th @click="sortData('services', 'status')" style="cursor: pointer;">
                                     Estado <span x-html="getSortIcon('services', 'status')"></span>
                                 </th>
-                                <th>Acciones</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
 
@@ -162,8 +163,8 @@
                             <template x-for="service in filteredServices" :key="service.id">
 
                                 <tr :class="service.status ? '' : 'table-secondary opacity-75'">
-                                    <td x-text="service.name"></td>
-                                    <td x-text="getCategoryName(service.category_id)"></td>
+                                    <td x-html="service.name + '<br>' + '<span class=\'badge bg-secondary\'>' + getCategoryName(service.category_id) + '</span>'"></td>
+                                    
                                     <td x-text="service.details"></td>
                                     <td x-text="formatCurrency(service.value)"></td>
                                     <td x-text="service.duration"></td>
@@ -171,7 +172,7 @@
                                         <span class="badge" :class="service.status ? 'bg-success' : 'bg-secondary'" 
                                               x-text="service.status ? 'Activo' : 'Inactivo'"></span>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <button @click="editService(service)" class="btn btn-sm btn-warning me-1">
                                             <i class="fa-solid fa-edit"></i>
                                         </button>
@@ -228,7 +229,7 @@
                                 <th @click="sortData('vehicleTypes', 'creation_date')" style="cursor: pointer;">
                                     Fecha Creación <span x-html="getSortIcon('vehicleTypes', 'creation_date')"></span>
                                 </th>
-                                <th>Acciones</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
 
@@ -243,7 +244,7 @@
                                               x-text="vehicleType.status ? 'Activo' : 'Inactivo'"></span>
                                     </td>
                                     <td x-text="formatDateTime(vehicleType.creation_date)"></td>
-                                    <td>
+                                    <td class="text-center">
                                         <button @click="editVehicleType(vehicleType)" class="btn btn-sm btn-warning me-1">
                                             <i class="fa-solid fa-edit"></i>
                                         </button>
@@ -280,7 +281,7 @@
             <!-- ==================== CLIENTES ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'clients'">
 
-                <button @click="openClientModal()" class="btn btn-success fw-bold mb-3">
+                <button @click="openClientModal()" class="btn btn-success fw-bold mb-4">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Cliente
                 </button>
@@ -302,7 +303,7 @@
                                 <th @click="sortData('clients', 'creation_date')" style="cursor: pointer;">
                                     Fecha Creación <span x-html="getSortIcon('clients', 'creation_date')"></span>
                                 </th>
-                                <th>Acciones</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
 
@@ -319,7 +320,7 @@
                                               x-text="client.status ? 'Activo' : 'Inactivo'"></span>
                                     </td>
                                     <td x-text="formatDate(client.creation_date)"></td>
-                                    <td>
+                                    <td class="text-center">
                                         <button @click="editClient(client)" class="btn btn-sm btn-warning me-1">
                                             <i class="fa-solid fa-edit"></i>
                                         </button>

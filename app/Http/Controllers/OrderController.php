@@ -88,10 +88,10 @@ class OrderController extends Controller
      */
     public function getServicesByCategory($categoryId)
     {
-        $services = \App\Models\Service::where('cat_id', $categoryId)
+        $services = \App\Models\Service::where('category_id', $categoryId)
             ->where('status', 1)
             ->orderBy('name')
-            ->get(['id', 'name', 'price']);
+            ->get(['id', 'name', 'value']);
 
         return response()->json([
             'success' => true,

@@ -161,7 +161,7 @@
                 <!--  Nuevo servicio -->
                 <div class="d-flex flex-wrap service-item p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #198754 !important;">
 
-                    <div class="col-lg-2 col-md-2 col-sm-12 px-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Categoría</label>
                         <select class="form-control input-tall service-category" data-service-row="0">
                             <option value="">Selecciona una categoría</option>
@@ -171,7 +171,7 @@
                         </select>
                     </div>
                     
-                    <div class="col-lg-2 col-md-2 col-sm-12 px-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Servicio</label>
                         <select class="form-control input-tall service-select" data-service-row="0" disabled>
                             <option value="">Primero categoría</option>
@@ -273,9 +273,11 @@
 
                         <div class="calendar-box calendar-enhanced">
 
-                            <div class="calendar-header">
+                            <div class="calendar-header col-12">
                                 <button class="calendar-nav">&#60;</button>
-                                <span class="calendar-month">noviembre <span class="calendar-year">2025</span></span>
+                                &nbsp;&nbsp;
+                                <span class="calendar-month">noviembre <span class="calendar-year">2026</span></span>
+                                &nbsp;&nbsp;
                                 <button class="calendar-nav">&#62;</button>
                             </div>
 
@@ -320,7 +322,7 @@
                             </div>
 
                             <div class="col-6 px-2">
-                                <label class="fw-bold">Hora Entrega</label>
+                                <label class="fw-bold">Hora Entrega <span class="required">*</span></label>
                                 <input type="text" class="input form-control time-picker" id="hora-salida" placeholder="Selecciona hora" readonly>
                                 <!-- Fallback select (oculto por defecto) -->
                                 <select class="input form-control time-picker-fallback" id="hora-salida-fallback" style="display: none;">
@@ -333,17 +335,17 @@
                                 </select>
                             </div>
 
-                            <div class="col-12 my-3">
-                                <label class="fw-bold">Estado del Pago</label>
-                                <div class="pay-status-group">
-                                    <button class="btn btn-warning pay-status-btn pay-status-active">Pendiente</button>
-                                    <button class="btn btn-primary pay-status-btn">Parcial</button>
-                                    <button class="btn btn-success pay-status-btn">Pagado</button>
+                            <div class="col-12 my-5">
+                                <label class="fw-bold px-3">Estado del Pago <span class="required">*</span></label>
+                                <div class="pay-status-group mt-1 px-3 d-flex" style="gap: 1rem;">
+                                    <button type="button" class="btn btn-outline-warning pay-status-btn pay-status-active">Pendiente</button>
+                                    <button type="button" class="btn btn-outline-primary pay-status-btn">Parcial</button>
+                                    <button type="button" class="btn btn-outline-success pay-status-btn">Pagado</button>
                                 </div>
                             </div>
 
-                            <div class="col-6 px-2">
-                                <label class="fw-bold">Método de Pago</label>
+                            <div class="col-6 px-2 mt-2">
+                                <label class="fw-bold">Método de Pago <span class="required">*</span></label>
                                 <select class="input form-control">
                                     <option value="efectivo">Efectivo</option>
                                     <option value="tarjeta">Tarjeta</option>
@@ -351,8 +353,8 @@
                                 </select>
                             </div>
 
-                            <div class="col-6 px-2">
-                                <label class="fw-bold">Estado de la Cita</label>
+                            <div class="col-6 px-2 mt-2">
+                                <label class="fw-bold">Estado de la Cita <span class="required">*</span></label>
                                 <select class="input form-control">
                                     <option value="1">Pendiente</option>
                                     <option value="2">En Proceso</option>

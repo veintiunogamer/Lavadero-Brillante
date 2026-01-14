@@ -28,12 +28,22 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		 */
 		async function loadServicesByCategory(categorySelect, serviceSelect) {
 			const categoryId = categorySelect.value;
+			const serviceRow = categorySelect.closest('.service-item');
 
 			// Limpiar el select de servicios
 			serviceSelect.innerHTML = '<option value="">Selecciona un servicio</option>';
 			serviceSelect.disabled = true;
 
+			// Resetear cantidad a 1 y precio a 0
+			if (serviceRow) {
+				const quantityInput = serviceRow.querySelector('.service-quantity');
+				const priceInput = serviceRow.querySelector('.service-price');
+				if (quantityInput) quantityInput.value = 1;
+				if (priceInput) priceInput.value = '0.00';
+			}
+
 			if (!categoryId) {
+				calculateTotals();
 				return;
 			}
 
@@ -52,7 +62,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 						const option = document.createElement('option');
 						option.value = service.id;
 						option.textContent = service.name;
-						option.dataset.price = service.price;
+						option.dataset.value = service.value;
 						serviceSelect.appendChild(option);
 					});
 					serviceSelect.disabled = false;
@@ -70,8 +80,16 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		 */
 		function updateServicePrice(serviceSelect, priceInput) {
 			const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
-			const price = selectedOption?.dataset?.price || 0;
-			priceInput.value = parseFloat(price).toFixed(2);
+			const basePrice = selectedOption?.dataset?.value || 0;
+			const serviceRow = serviceSelect.closest('.service-item');
+			const quantityInput = serviceRow?.querySelector('.service-quantity');
+			const quantity = parseFloat(quantityInput?.value || 1);
+			
+			// Guardar el precio base como data attribute
+			if (priceInput) {
+				priceInput.dataset.basePrice = basePrice;
+				priceInput.value = (parseFloat(basePrice) * quantity).toFixed(2);
+			}
 			calculateTotals();
 		}
 
@@ -79,8 +97,11 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		 * Calcula precio al cambiar cantidad
 		 */
 		function updateQuantityPrice(quantityInput, priceInput) {
-			// El precio ya está establecido por el servicio
-			// Solo recalcular totales
+			const quantity = parseFloat(quantityInput.value || 1);
+			const basePrice = parseFloat(priceInput.dataset.basePrice || 0);
+			
+			// Calcular el precio total: cantidad * precio base
+			priceInput.value = (quantity * basePrice).toFixed(2);
 			calculateTotals();
 		}
 
@@ -97,17 +118,21 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 				subtotal += quantity * price;
 			});
 
-			// Mostrar subtotal y total
-			const subtotalDisplay = document.querySelector('.input-group:has(label:contains("Subtotal")) div');
-			const totalDisplay = document.querySelector('.input-group:has(label:contains("Total")) div');
-
-			if (subtotalDisplay) {
-				subtotalDisplay.textContent = subtotal.toFixed(2) + '€';
-			}
-
-			if (totalDisplay) {
-				totalDisplay.textContent = subtotal.toFixed(2) + '€';
-			}
+			// Buscar y actualizar subtotal y total
+			const inputGroups = document.querySelectorAll('.input-group');
+			inputGroups.forEach(group => {
+				const label = group.querySelector('label');
+				const display = group.querySelector('div');
+				
+				if (label && display) {
+					if (label.textContent.includes('Subtotal')) {
+						display.textContent = subtotal.toFixed(2) + '€';
+					}
+					if (label.textContent.includes('Total')) {
+						display.textContent = subtotal.toFixed(2) + '€';
+					}
+				}
+			});
 		}
 
 		/**
@@ -328,6 +353,22 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		if (calendarBox) {
 			renderCalendar(currentDate);
 		}
+
+		// ==================== BOTONES DE ESTADO DE PAGO ====================
+		
+		const payStatusButtons = document.querySelectorAll('.pay-status-btn');
+		
+		payStatusButtons.forEach(btn => {
+			btn.addEventListener('click', function(e) {
+				e.preventDefault();
+				
+				// Remover clase activa de todos los botones
+				payStatusButtons.forEach(b => b.classList.remove('pay-status-active'));
+				
+				// Agregar clase activa al botón clickeado
+				this.classList.add('pay-status-active');
+			});
+		});
 
 		// ==================== TIME PICKER CON FLATPICKR Y FALLBACK ====================
 
