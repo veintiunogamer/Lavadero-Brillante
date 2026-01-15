@@ -1,11 +1,16 @@
-// JS para funcionalidades de órdenes
+/**
+ * Order Main JS - Gestión del formulario de órdenes (index principal)
+ * Este archivo maneja toda la lógica del formulario de creación de órdenes en la vista principal
+ */
+
+// Verificar si estamos en la vista de órdenes (formulario principal)
 function ordersModuleActive() {
 	return !!document.getElementById('orders-root');
 }
 
 if (typeof window !== 'undefined' && ordersModuleActive()) {
 
-	console.log('Orders JS cargado');
+	console.log('Order Main JS cargado');
 
     document.addEventListener('DOMContentLoaded', function () {
 
@@ -237,6 +242,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 		let currentDate = new Date();
 		let selectedDate = null;
+		window.selectedOrderDate = null; // Variable global para Alpine
 
 		function renderCalendar(date) {
 			const year = date.getFullYear();
@@ -310,6 +316,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 							// Guardar fecha seleccionada
 							selectedDate = new Date(year, month, parseInt(cell.textContent));
+							window.selectedOrderDate = selectedDate; // Actualizar variable global
 
 							// Actualizar el footer del calendario
 							const calendarFooter = calendarBox.querySelector('.calendar-footer .calendar-tip');
@@ -381,7 +388,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			
 			// Verificar si Flatpickr está disponible
 			if (typeof flatpickr !== 'undefined') {
-				console.log('Flatpickr cargado correctamente - Usando time picker visual');
+				console.log('Flatpickr cargado correctamente');
 				
 				timePickers.forEach(input => {
 					try {
@@ -487,38 +494,42 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 }
 
-// Verificar si estamos en la vista de agendamiento
-function agendamientoModuleActive() {
-    return !!document.getElementById('agendamiento-root');
-}
-
-if (typeof window !== 'undefined' && agendamientoModuleActive()) {
-    console.log('Agendamiento JS cargado');
-}
-
-// Exponer la función globalmente para Alpine - Vista de Agendamiento
-window.agendamientoApp = function() {
-
+/**
+ * Componente Alpine.js para el formulario de órdenes
+ * Maneja el estado del formulario, validación y envío
+ */
+window.orderFormApp = function() {
     return {
-        currentTab: 1, // 1 = Pendientes, 2 = En Proceso, 3 = Terminados
+        // Estado del formulario
+        currentTab: 'pending',
         orders: [],
-        loading: false,
+        loadingOrders: false,
+        submitting: false,
 
+        /**
+         * Inicializa el componente
+         */
         async init() {
-            await this.loadOrders(this.currentTab);
+            await this.loadOrders();
+            this.setupFormSubmit();
         },
 
-        async changeTab(status) {
-            this.currentTab = status;
-            await this.loadOrders(status);
+        /**
+         * Cambia el tab y recarga las órdenes
+         */
+        async changeTab(tab) {
+            this.currentTab = tab;
+            await this.loadOrders();
         },
 
-        async loadOrders(status) {
-
-            this.loading = true;
+        /**
+         * Carga las órdenes según el tab actual
+         */
+        async loadOrders() {
+            this.loadingOrders = true;
             
             try {
-                const response = await fetch(`/orders/status/${status}`, {
+                const response = await fetch(`/orders/tab/${this.currentTab}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -531,17 +542,275 @@ window.agendamientoApp = function() {
                 if (result.success) {
                     this.orders = result.data;
                 } else {
-                    window.notyf.error('Error al cargar los agendamientos');
+                    window.notyf?.error('Error al cargar las órdenes');
                 }
 
             } catch (error) {
                 console.error('Error:', error);
-                window.notyf.error('Ocurrió un error al cargar los agendamientos');
+                window.notyf?.error('Error al cargar las órdenes');
             } finally {
-                this.loading = false;
+                this.loadingOrders = false;
             }
         },
 
+        /**
+         * Configura el evento de envío del formulario
+         */
+        setupFormSubmit() {
+            const confirmBtn = document.querySelector('.confirm-btn');
+            const termsCheckbox = document.querySelector('input[type="checkbox"]');
+            
+            // Habilitar/deshabilitar botón según checkbox
+            termsCheckbox?.addEventListener('change', function() {
+                if (confirmBtn) {
+                    confirmBtn.disabled = !this.checked;
+                }
+            });
+
+            // Evento del botón de confirmación
+            confirmBtn?.addEventListener('click', async () => {
+                await this.submitOrder();
+            });
+        },
+
+        /**
+         * Recopila los datos del formulario
+         */
+        collectFormData() {
+            // Datos del cliente
+            const clientName = document.querySelector('input[placeholder="Nombre completo"]')?.value;
+            const clientPhone = document.getElementById('telefono-whatsapp')?.value;
+            const licensePlaque = document.querySelector('input[placeholder*="1234 ABC"]')?.value;
+            const assignedUser = document.querySelector('select.input.form-control')?.value;
+
+            // Datos de servicios
+            const services = [];
+            document.querySelectorAll('.service-item').forEach(item => {
+                const serviceId = item.querySelector('.service-select')?.value;
+                const quantity = item.querySelector('.service-quantity')?.value;
+                const dirtLevel = item.querySelector('.service-dirt')?.value;
+                const price = item.querySelector('.service-price')?.value;
+
+                if (serviceId) {
+                    services.push({
+                        service_id: serviceId,
+                        quantity: parseInt(quantity),
+                        dirt_level: parseInt(dirtLevel),
+                        price: parseFloat(price)
+                    });
+                }
+            });
+
+            // Notas
+            const vehicleNotes = document.querySelector('textarea[placeholder*="Anotaciones internas"]')?.value;
+            const orderNotes = document.querySelector('textarea[rows="2"]')?.value;
+            const extraNotes = document.querySelectorAll('textarea[rows="2"]')[1]?.value;
+
+            // Totales
+            const discount = 0; // TODO: implementar descuento
+            const subtotalText = document.querySelector('.input-group div')?.textContent;
+            const totalText = document.querySelectorAll('.input-group div')[1]?.textContent;
+            const subtotal = parseFloat(subtotalText?.replace('€', '').replace(',', '.')) || 0;
+            const total = parseFloat(totalText?.replace('€', '').replace(',', '.')) || 0;
+
+            // Fecha y horas
+            const selectedDate = window.selectedOrderDate ? 
+                window.selectedOrderDate.toISOString().split('T')[0] : 
+                new Date().toISOString().split('T')[0];
+            
+            const hourIn = document.getElementById('hora-entrada')?.value || 
+                          document.getElementById('hora-entrada-fallback')?.value;
+            const hourOut = document.getElementById('hora-salida')?.value || 
+                           document.getElementById('hora-salida-fallback')?.value;
+
+            // Estado de pago
+            const activePayBtn = document.querySelector('.pay-status-btn.pay-status-active');
+            const paymentStatusText = activePayBtn?.textContent.trim();
+            const paymentStatus = paymentStatusText === 'Pagado' ? 1 : 
+                                 paymentStatusText === 'Parcial' ? 2 : 0;
+
+            const paymentMethod = document.querySelector('select[class*="input form-control"]')?.value || 'efectivo';
+            const orderStatus = document.querySelectorAll('select.input.form-control')[1]?.value || 1;
+
+            // Facturación
+            const invoiceRequired = document.getElementById('solicitar-factura')?.checked;
+            const invoiceData = invoiceRequired ? {
+                invoice_required: true,
+                invoice_business_name: document.getElementById('razon-social')?.value,
+                invoice_tax_id: document.getElementById('nif-cif')?.value,
+                invoice_email: document.getElementById('email-factura')?.value,
+                invoice_address: document.getElementById('direccion-calle')?.value,
+                invoice_postal_code: document.getElementById('direccion-cp')?.value,
+                invoice_city: document.getElementById('direccion-ciudad')?.value,
+            } : {};
+
+            return {
+                client_name: clientName,
+                client_phone: clientPhone,
+                license_plaque: licensePlaque,
+                assigned_user: assignedUser,
+                services: services,
+                vehicle_notes: vehicleNotes,
+                order_notes: orderNotes,
+                extra_notes: extraNotes,
+                discount: discount,
+                subtotal: subtotal,
+                total: total,
+                selected_date: selectedDate,
+                hour_in: hourIn,
+                hour_out: hourOut,
+                payment_status: paymentStatus,
+                payment_method: paymentMethod,
+                order_status: parseInt(orderStatus),
+                ...invoiceData
+            };
+        },
+
+        /**
+         * Envía el formulario de orden
+         */
+        async submitOrder() {
+            if (this.submitting) return;
+
+            // Validar con OrderFormValidator
+            const form = document.getElementById('orders-root');
+            const validator = new window.OrderFormValidator(form);
+
+            if (!validator.validateOrderForm()) {
+                validator.showErrors();
+                return;
+            }
+
+            this.submitting = true;
+
+            try {
+                const formData = this.collectFormData();
+
+                const response = await fetch('/orders/store', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.notyf?.success('¡Orden creada exitosamente!');
+                    
+                    // Recargar las órdenes
+                    await this.loadOrders();
+                    
+                    // Limpiar formulario
+                    this.resetForm();
+                } else {
+                    if (result.errors) {
+                        Object.values(result.errors).forEach(errors => {
+                            errors.forEach(error => window.notyf?.error(error));
+                        });
+                    } else {
+                        window.notyf?.error(result.message || 'Error al crear la orden');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf?.error('Error al enviar la orden');
+            } finally {
+                this.submitting = false;
+            }
+        },
+
+        /**
+         * Limpia el formulario después de enviar
+         */
+        resetForm() {
+            // Limpiar campos de cliente
+            document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(input => {
+                input.value = '';
+            });
+
+            // Resetear servicios
+            const serviceItems = document.querySelectorAll('.service-item');
+            if (serviceItems.length > 1) {
+                // Eliminar servicios adicionales
+                for (let i = 1; i < serviceItems.length; i++) {
+                    serviceItems[i].remove();
+                }
+            }
+
+            // Resetear primer servicio
+            const firstService = serviceItems[0];
+            if (firstService) {
+                firstService.querySelectorAll('select').forEach(select => select.value = '');
+                firstService.querySelector('.service-quantity').value = 1;
+                firstService.querySelector('.service-price').value = '0.00';
+            }
+
+            // Limpiar estado de pago
+            document.querySelectorAll('.pay-status-btn').forEach(btn => {
+                btn.classList.remove('pay-status-active');
+            });
+            document.querySelector('.pay-status-btn')?.classList.add('pay-status-active');
+
+            // Limpiar checkbox de términos
+            const termsCheckbox = document.querySelector('input[type="checkbox"]');
+            if (termsCheckbox) {
+                termsCheckbox.checked = false;
+            }
+
+            // Deshabilitar botón de confirmación
+            const confirmBtn = document.querySelector('.confirm-btn');
+            if (confirmBtn) {
+                confirmBtn.disabled = true;
+            }
+
+            // Limpiar fecha seleccionada
+            window.selectedOrderDate = null;
+
+            // Limpiar facturación
+            document.getElementById('solicitar-factura').checked = false;
+            document.getElementById('datos-facturacion').style.display = 'none';
+
+            window.notyf?.success('Formulario limpiado');
+        },
+
+        /**
+         * Formatea una fecha
+         */
+        formatDate(date) {
+            return new Date(date).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        },
+
+        /**
+         * Formatea una hora
+         */
+        formatTime(time) {
+            if (!time) return 'N/A';
+            const date = new Date(time);
+            return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+        },
+
+        /**
+         * Formatea moneda
+         */
+        formatCurrency(amount) {
+            return new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'EUR'
+            }).format(amount);
+        },
+
+        /**
+         * Obtiene el texto del estado
+         */
         getStatusText(status) {
             const statuses = {
                 1: 'Pendiente',
@@ -552,35 +821,17 @@ window.agendamientoApp = function() {
             return statuses[status] || 'Desconocido';
         },
 
+        /**
+         * Obtiene la clase CSS del badge según el estado
+         */
         getStatusBadge(status) {
             const badges = {
-                1: 'badge bg-warning',
-                2: 'badge bg-info',
+                1: 'badge bg-warning text-dark',
+                2: 'badge bg-info text-dark',
                 3: 'badge bg-success',
                 4: 'badge bg-danger'
             };
             return badges[status] || 'badge bg-secondary';
-        },
-
-        formatDate(date) {
-            return new Date(date).toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-        },
-
-        formatTime(time) {
-            if (!time) return 'N/A';
-            return time.substring(0, 5); // HH:MM
-        },
-
-        formatCurrency(amount) {
-            return new Intl.NumberFormat('es-ES', {
-                style: 'currency',
-                currency: 'EUR'
-            }).format(amount);
         }
     }
-
 }

@@ -22,7 +22,9 @@ Route::middleware('auth')->group(function () {
     
     # Rutas para la gestión de agendamientos
     Route::get('/orders', [OrderController::class, 'agendamiento'])->name('orders.index');
+    Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/status/{status}', [OrderController::class, 'getByStatus'])->name('orders.getByStatus');
+    Route::get('/orders/tab/{tab}', [OrderController::class, 'getOrdersByTab'])->name('orders.getByTab');
     Route::get('/api/services/category/{categoryId}', [OrderController::class, 'getServicesByCategory'])->name('orders.servicesByCategory');
 
     # Rutas para la gestión de clientes

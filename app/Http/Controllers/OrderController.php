@@ -17,11 +17,13 @@ class OrderController extends Controller
         $consecutive = $this->getConsecutive();
         $categories = \App\Models\Category::where('status', 1)->orderBy('cat_name')->get();
         $vehicleTypes = \App\Models\VehicleType::orderBy('name')->get();
+        $users = \App\Models\User::where('status', 1)->orderBy('name')->get();
         
         return view('index', [
             'consecutive' => $consecutive,
             'categories' => $categories,
-            'vehicleTypes' => $vehicleTypes
+            'vehicleTypes' => $vehicleTypes,
+            'users' => $users
         ]);
     }
 
@@ -99,6 +101,215 @@ class OrderController extends Controller
         ]);
     }
 
-    
-    // Métodos para crear, editar, eliminar órdenes se pueden agregar aquí
+    /**
+     * Almacena una nueva orden
+     *
+     * @author Jose Alzate <josealzate97@gmail.com>
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(\Illuminate\Http\Request $request)
+    {
+        try {
+
+            \DB::beginTransaction();
+
+            // Validar datos básicos
+            $validated = $request->validate([
+                'client_name' => 'required|string|max:100',
+                'client_phone' => 'required|string|max:20',
+                'license_plaque' => 'required|string|max:10',
+                'assigned_user' => 'required|uuid|exists:users,id',
+                'services' => 'required|array|min:1',
+                'services.*.service_id' => 'required|uuid|exists:services,id',
+                'services.*.quantity' => 'required|integer|min:1',
+                'services.*.dirt_level' => 'required|integer|min:1|max:3',
+                'services.*.price' => 'required|numeric|min:0',
+                'vehicle_notes' => 'nullable|string|max:250',
+                'order_notes' => 'nullable|string|max:250',
+                'extra_notes' => 'nullable|string|max:250',
+                'discount' => 'nullable|numeric|min:0',
+                'subtotal' => 'required|numeric|min:0',
+                'total' => 'required|numeric|min:0',
+                'selected_date' => 'required|date',
+                'hour_in' => 'required|date_format:H:i',
+                'hour_out' => 'required|date_format:H:i|after:hour_in',
+                'payment_status' => 'required|integer|in:0,1,2', // 0=Pendiente, 1=Pagado, 2=Parcial
+                'payment_method' => 'required|string|in:efectivo,tarjeta,transferencia',
+                'order_status' => 'required|integer|in:1,2,3',
+                'tax_id' => 'nullable|uuid|exists:taxes,id',
+                // Datos de facturación (opcionales)
+                'invoice_required' => 'nullable|boolean',
+                'invoice_business_name' => 'required_if:invoice_required,true|nullable|string|max:200',
+                'invoice_tax_id' => 'required_if:invoice_required,true|nullable|string|max:50',
+                'invoice_email' => 'nullable|email|max:100',
+                'invoice_address' => 'required_if:invoice_required,true|nullable|string|max:250',
+                'invoice_postal_code' => 'required_if:invoice_required,true|nullable|string|max:10',
+                'invoice_city' => 'required_if:invoice_required,true|nullable|string|max:100',
+            ]);
+
+            // 1. Buscar o crear cliente
+            $client = \App\Models\Client::where('phone', $validated['client_phone'])->first();
+            
+            if (!$client) {
+
+                $client = \App\Models\Client::create([
+                    'id' => \Illuminate\Support\Str::uuid(),
+                    'name' => $validated['client_name'],
+                    'phone' => $validated['client_phone'],
+                    'license_plaque' => $validated['license_plaque'],
+                    'creation_date' => now(),
+                ]);
+
+            } else {
+
+                // Actualizar datos del cliente si ya existe
+                $client->update([
+                    'name' => $validated['client_name'],
+                    'license_plaque' => $validated['license_plaque'],
+                ]);
+
+            }
+
+            // 2. Crear órdenes (una por cada servicio)
+            $orders = [];
+
+            foreach ($validated['services'] as $service) {
+
+                $orderId = \Illuminate\Support\Str::uuid();
+                
+                // Combinar fecha con horas
+                $hourIn = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_in']);
+                $hourOut = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_out']);
+
+                $order = Order::create([
+                    'id' => $orderId,
+                    'client_id' => $client->id,
+                    'user_id' => $validated['assigned_user'],
+                    'service_id' => $service['service_id'],
+                    'quantity' => $service['quantity'],
+                    'dirt_level' => $service['dirt_level'],
+                    'hour_in' => $hourIn,
+                    'hour_out' => $hourOut,
+                    'vehicle_notes' => $validated['vehicle_notes'] ?? '',
+                    'discount' => $validated['discount'] ?? 0,
+                    'subtotal' => $validated['subtotal'],
+                    'taxes' => $validated['tax_id'] ?? null,
+                    'total' => $validated['total'],
+                    'order_notes' => $validated['order_notes'] ?? '',
+                    'extra_notes' => $validated['extra_notes'] ?? '',
+                    'status' => $validated['order_status'],
+                    'creation_date' => now(),
+                ]);
+
+                // 3. Crear pago asociado
+                \App\Models\Payment::create([
+                    'id' => \Illuminate\Support\Str::uuid(),
+                    'service_id' => $order->id, // En realidad debería ser order_id
+                    'type' => $this->getPaymentTypeFromMethod($validated['payment_method']),
+                    'subtotal' => $validated['subtotal'],
+                    'total' => $validated['total'],
+                    'status' => $validated['payment_status'],
+                    'creation_date' => now(),
+                ]);
+
+                $orders[] = $order;
+            }
+
+            \DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Orden creada exitosamente',
+                'data' => [
+                    'orders' => $orders,
+                    'client' => $client,
+                ]
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            \DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+
+            \DB::rollBack();
+
+            \Log::error('Error al crear orden: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al crear la orden: ' . $e->getMessage()
+            ], 500);
+
+        }
+    }
+
+    /**
+     * Convierte el método de pago string a tipo numérico
+     *
+     * @param string $method
+     * @return int
+     */
+    private function getPaymentTypeFromMethod(string $method): int
+    {
+        return match($method) {
+            'efectivo' => 1,
+            'tarjeta' => 2,
+            'transferencia' => 3,
+            default => 1,
+        };
+    }
+
+    /**
+     * Obtiene órdenes para los tabs (Pendientes vs Historial)
+     *
+     * @author Jose Alzate <josealzate97@gmail.com>
+     * @param  string  $tab
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getOrdersByTab($tab)
+    {
+        try {
+
+            if ($tab === 'pending') {
+
+                // Tab 1: Solo pendientes
+                $orders = Order::with(['client', 'service', 'user'])
+                ->where('status', Order::STATUS_PENDING)
+                ->orderBy('creation_date', 'desc')
+                ->get();
+
+            } else {
+
+                // Tab 2: Historial completo (En Proceso, Terminadas, Canceladas)
+                $orders = Order::with(['client', 'service', 'user'])
+                ->whereIn('status', [Order::STATUS_IN_PROGRESS, Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
+                ->orderBy('creation_date', 'desc')
+                ->get();
+
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => $orders,
+                'count' => $orders->count()
+            ]);
+
+        } catch (\Exception $e) {
+
+            \Log::error('Error al obtener órdenes por tab: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al cargar las órdenes'
+            ], 500);
+
+        }
+    }
 }

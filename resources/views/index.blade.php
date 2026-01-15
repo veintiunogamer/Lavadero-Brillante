@@ -2,7 +2,9 @@
 
 @section('content')
 
-    <div id="orders-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;">
+    <div id="orders-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" 
+         x-data="typeof orderFormApp === 'function' ? orderFormApp() : {}" 
+         x-init="init()">
         
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
@@ -54,8 +56,11 @@
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Asignar Detallador <span class="required">*</span></label>
-                        <select class="input form-control">
-                            <option>Seleccionar</option>
+                        <select class="input form-control required-field" data-field-name="Detallador">
+                            <option value="">Seleccionar</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
                         </select>
                     </div>
 
@@ -401,14 +406,69 @@
                 </h2>
 
                 <div class="citas-tabs">
-                    <button class="citas-tab citas-tab-active"><i class="fa-solid fa-calendar icon"></i> Citas Pendientes</button>
-                    <button class="citas-tab"><i class="fa-solid fa-clock icon"></i> Historial Completo</button>
+
+                    <button class="citas-tab" 
+                            :class="currentTab === 'pending' ? 'citas-tab-active' : ''" 
+                            @click="changeTab('pending')">
+                        <i class="fa-solid fa-calendar icon"></i> Citas Pendientes
+                    </button>
+
+                    <button class="citas-tab" 
+                            :class="currentTab === 'history' ? 'citas-tab-active' : ''" 
+                            @click="changeTab('history')">
+                        <i class="fa-solid fa-clock icon"></i> Historial Completo
+                    </button>
+
                 </div>
 
                 <hr>
 
-                <div class="citas-content">
-                    <p class="citas-empty">No hay citas pendientes.</p>
+                <!-- Loading spinner -->
+                <div x-show="loadingOrders" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+
+                <!-- Sin resultados -->
+                <div x-show="!loadingOrders && orders.length === 0" class="citas-content">
+                    <p class="citas-empty" x-text="currentTab === 'pending' ? 'No hay citas pendientes.' : 'No hay citas en el historial.'"></p>
+                </div>
+
+                <!-- Tabla de citas -->
+                <div x-show="!loadingOrders && orders.length > 0" class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Matrícula</th>
+                                <th>Fecha</th>
+                                <th>Hora Entrada</th>
+                                <th>Hora Salida</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Detallador</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="order in orders" :key="order.id">
+                                <tr>
+                                    <td x-text="order.client ? order.client.name : 'N/A'"></td>
+                                    <td x-text="order.service ? order.service.name : 'N/A'"></td>
+                                    <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
+                                    <td x-text="formatDate(order.creation_date)"></td>
+                                    <td x-text="formatTime(order.hour_in)"></td>
+                                    <td x-text="formatTime(order.hour_out)"></td>
+                                    <td x-text="formatCurrency(order.total)"></td>
+                                    <td>
+                                        <span :class="getStatusBadge(order.status)" x-text="getStatusText(order.status)"></span>
+                                    </td>
+                                    <td x-text="order.user ? order.user.name : 'N/A'"></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -419,30 +479,42 @@
 @endsection
 
 <script>
+
 document.addEventListener('DOMContentLoaded', function () {
+
     // Toggle de datos de facturación
     var toggleFactura = document.getElementById('solicitar-factura');
     var datosFacturacion = document.getElementById('datos-facturacion');
     var fieldsFactura = ['razon-social', 'nif-cif', 'email-factura', 'direccion-calle', 'direccion-cp', 'direccion-ciudad'];
 
     toggleFactura.addEventListener('change', function() {
+
         if (this.checked) {
+
             datosFacturacion.style.display = 'block';
+
             // Agregar required a los campos obligatorios
             document.getElementById('razon-social').required = true;
             document.getElementById('nif-cif').required = true;
             document.getElementById('direccion-calle').required = true;
             document.getElementById('direccion-cp').required = true;
             document.getElementById('direccion-ciudad').required = true;
+            
         } else {
+
             datosFacturacion.style.display = 'none';
+
             // Quitar required y limpiar valores
             fieldsFactura.forEach(function(fieldId) {
                 var field = document.getElementById(fieldId);
                 field.required = false;
                 field.value = '';
             });
+
         }
+
     });
+
 });
+
 </script>
