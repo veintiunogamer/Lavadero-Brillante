@@ -217,6 +217,7 @@
                     </div>
                 </div>
 
+                <!-- Descripción de la cita y notas adicionales -->
                 <div class="service-box p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #025bb5 !important;">
 
                     <div class="mb-3">
@@ -240,21 +241,32 @@
 
                 </div>
 
+                <!-- Resumen de precios -->
                 <div class="row" style="align-items: center; margin-top:1.5rem;">
 
-                    <div class="input-group" style="max-width:180px;">
+                    <div class="input-group">
                         <label>% Aplicar Descuento</label>
-                        <select class="input"><option>0%</option></select>
+                        <select class="input form-control" id="discount-select">
+                            <option value="">Selecciona Descuento</option>
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="15">15%</option>
+                        </select>
                     </div>
 
-                    <div class="input-group" style="max-width:180px;">
+                    <div class="input-group">
                         <label>Subtotal</label>
-                        <div style="font-size:1.3rem;font-weight:600;">0.00€</div>
+                        <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
                     </div>
 
-                    <div class="input-group" style="max-width:180px;">
+                    <div class="input-group">
+                        <label>Descuento</label>
+                        <div class="discount-section" style="font-size:1.3rem;font-weight:600;color:#dc3545;">-0.00€</div>
+                    </div>
+
+                    <div class="input-group">
                         <label>Total</label>
-                        <div style="font-size:1.3rem;font-weight:700;">0.00€</div>
+                        <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
                     </div>
 
                 </div>
@@ -267,6 +279,7 @@
                 <h2 class="card-title">
                     <i class="fa-solid fa-calendar-check icon color-blue"></i> Fecha, Hora y Pago
                 </h2>
+                
                 <b class="text-muted">Selecciona la fecha y hora para el agendamiento del servicio.</b>
 
                 <hr>

@@ -117,13 +117,30 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			const allServiceItems = document.querySelectorAll('.service-item');
 			let subtotal = 0;
 
+			// Calcular subtotal
 			allServiceItems.forEach(item => {
 				const quantity = parseFloat(item.querySelector('.service-quantity')?.value || 0);
 				const price = parseFloat(item.querySelector('.service-price')?.value || 0);
 				subtotal += quantity * price;
 			});
 
-			// Buscar y actualizar subtotal y total
+			// Habilitar/deshabilitar el select de descuento según si hay servicios
+			const discountSelect = document.getElementById('discount-select');
+			if (discountSelect) {
+				if (subtotal > 0) {
+					discountSelect.disabled = false;
+				} else {
+					discountSelect.disabled = true;
+					discountSelect.value = ''; // Resetear el descuento
+				}
+			}
+
+			// Obtener el porcentaje de descuento seleccionado
+			const discountPercent = parseFloat(discountSelect?.value || 0);
+			const discountAmount = (subtotal * discountPercent) / 100;
+			const total = subtotal - discountAmount;
+
+			// Buscar y actualizar subtotal, descuento y total
 			const inputGroups = document.querySelectorAll('.input-group');
 			inputGroups.forEach(group => {
 				const label = group.querySelector('label');
@@ -133,8 +150,11 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 					if (label.textContent.includes('Subtotal')) {
 						display.textContent = subtotal.toFixed(2) + '€';
 					}
+					if (label.textContent.includes('Descuento')) {
+						display.textContent = '-' + discountAmount.toFixed(2) + '€';
+					}
 					if (label.textContent.includes('Total')) {
-						display.textContent = subtotal.toFixed(2) + '€';
+						display.textContent = total.toFixed(2) + '€';
 					}
 				}
 			});
@@ -167,6 +187,19 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 		// Inicializar eventos para el servicio original
 		initServiceRowEvents(originalService);
+
+		// Evento para el select de descuento
+		const discountSelect = document.getElementById('discount-select');
+
+		if (discountSelect) {
+			
+			discountSelect.addEventListener('change', function() {
+				calculateTotals();
+			});
+
+			// Inicialmente deshabilitar el select de descuento
+			discountSelect.disabled = true;
+		}
 
         // Evento para agregar un nuevo servicio
 		addServiceBtn.addEventListener('click', function () {
