@@ -25,7 +25,8 @@ class Order extends Model
         'quantity', 
         'dirt_level', 
         'hour_in', 
-        'hour_out', 
+        'hour_out',
+        'vehicle_type_id', 
         'vehicle_notes', 
         'discount', 
         'subtotal', 
@@ -51,8 +52,8 @@ class Order extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class, 'order_services', 'order_id', 'service_id')
-                    ->withPivot('id', 'subtotal', 'total', 'created_at')
-                    ->using(OrderService::class);
+        ->withPivot('id', 'subtotal', 'total', 'created_at')
+        ->using(OrderService::class);
     }
 
     /**
@@ -69,5 +70,13 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relación con Tipo de Vehículo
+     */
+    public function vehicleType()
+    {
+        return $this->belongsTo(VehicleType::class, 'vehicle_type_id', 'id');
     }
 }

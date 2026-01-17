@@ -665,8 +665,9 @@ window.orderFormApp = function() {
             const paymentMethod = document.querySelector('select[class*="input form-control"]')?.value || 'efectivo';
             const orderStatus = document.querySelectorAll('select.input.form-control')[1]?.value || 1;
 
-            // Facturación
+            // Facturación (SI/NO)
             const invoiceRequired = document.getElementById('solicitar-factura')?.checked;
+
             const invoiceData = invoiceRequired ? {
                 invoice_required: true,
                 invoice_business_name: document.getElementById('razon-social')?.value,

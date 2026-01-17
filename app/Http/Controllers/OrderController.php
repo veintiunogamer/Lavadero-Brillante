@@ -120,12 +120,13 @@ class OrderController extends Controller
                 'client_phone' => 'required|string|max:20',
                 'license_plaque' => 'required|string|max:10',
                 'assigned_user' => 'required|uuid|exists:users,id',
+                'vehicle_type_id' => 'required|uuid|exists:vehicle_types,id',
+                'dirt_level' => 'required|integer|min:1|max:3',
+                'vehicle_notes' => 'nullable|string|max:250',
                 'services' => 'required|array|min:1',
                 'services.*.service_id' => 'required|uuid|exists:services,id',
                 'services.*.quantity' => 'required|integer|min:1',
-                'services.*.dirt_level' => 'required|integer|min:1|max:3',
                 'services.*.price' => 'required|numeric|min:0',
-                'vehicle_notes' => 'nullable|string|max:250',
                 'order_notes' => 'nullable|string|max:250',
                 'extra_notes' => 'nullable|string|max:250',
                 'discount' => 'nullable|numeric|min:0',
@@ -147,6 +148,8 @@ class OrderController extends Controller
                 'invoice_postal_code' => 'required_if:invoice_required,true|nullable|string|max:10',
                 'invoice_city' => 'required_if:invoice_required,true|nullable|string|max:100',
             ]);
+
+            dump($validated);die;
 
             // 1. Buscar o crear cliente
             $client = \App\Models\Client::where('phone', $validated['client_phone'])->first();

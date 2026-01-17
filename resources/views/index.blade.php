@@ -35,28 +35,47 @@
                 </div>
 
                 <hr>
-
-
+                <!-- Formulario Cliente -->
                 <div class="d-flex flex-wrap p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #0d6efd !important;">
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Nombre Cliente <span class="required">*</span></label>
-                        <input type="text" class="input form-control" placeholder="Nombre completo">
+                        <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo">
                     </div>
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Teléfono <span class="required">*</span></label>
-                        <input type="text" id="telefono-whatsapp" class="input form-control" placeholder="Ej: +34 612 345 678" maxlength="12" data-phone="true" required>
+                        <input type="text" id="telefono-whatsapp" class="input form-control required-field phone-field" name="client_phone" placeholder="Ej: +34 612 345 678" maxlength="12" data-phone="true" required>
                     </div>
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Matrícula <span class="required">*</span></label>
-                        <input type="text" class="input form-control" placeholder="Ej: 1234 ABC">
+                        <input type="text" class="input form-control required-field" name="license_plaque" placeholder="Ej: 1234 ABC">
+                    </div>
+
+                    <div class="col-md-3 mb-3 px-2">
+                        <label class="fw-bold">Tipo Vehículo  <span class="required">*</span></label>
+                        <select class="input form-control required-field vehicle-type" name="vehicle_type_id" data-field-name="Tipo de Vehículo">
+                            <option value="">Selecciona un tipo</option>
+                            @foreach($vehicleTypes as $type)
+                                <option value="{{ $type->id }}">{{ $type->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-3 col-sm-12 px-2">
+                        <label class="fw-bold">Suciedad  <span class="required">*</span></label>
+                        <select class="input form-control required-field service-dirt" name="dirt_level" data-field-name="Suciedad">
+                            <option value="1">Bajo</option>
+                            <option value="2">Medio</option>
+                            <option value="3">Alto</option>
+                        </select>
                     </div>
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Asignar Detallador <span class="required">*</span></label>
-                        <select class="input form-control required-field" data-field-name="Detallador">
+                        <select class="input form-control required-field" name="assigned_user" data-field-name="Detallador">
                             <option value="">Seleccionar</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
@@ -67,7 +86,7 @@
                     <div class="col-12 px-2">
                         <div class="col-12" style="width: 100%;">
                             <label class="fw-bold">Observaciones</label>
-                            <textarea class="input form-control" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+                            <textarea class="input form-control" name="order_notes" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
                         </div>
                     </div>
                     
@@ -76,14 +95,18 @@
                 <hr>
 
                 <div class="row align-items-center">
+
                     <div class="col-12">
+
                         <div class="form-check form-switch d-flex align-items-center" style="gap: 1rem;">
-                            <input class="form-check-input m-0" type="checkbox" role="switch" id="solicitar-factura" style="cursor: pointer; width: 3.5rem; height: 1.75rem;">
+                            <input class="form-check-input m-0" type="checkbox" role="switch" name="invoice_required" id="solicitar-factura" style="cursor: pointer; width: 3.5rem; height: 1.75rem;">
                             <label class="form-check-label fw-bold m-0" for="solicitar-factura" style="cursor: pointer; font-size: 1.1rem;">
                                 Solicitar Factura (Aplica 21% IVA)
                             </label>
                         </div>
+
                     </div>
+
                 </div>
 
                 <!-- Datos de Facturación -->
@@ -102,21 +125,21 @@
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-building me-1 text-primary"></i> Razón Social <span class="required">*</span>
                             </label>
-                            <input type="text" class="form-control" id="razon-social" placeholder="Nombre de la empresa">
+                            <input type="text" class="form-control" name="invoice_business_name" id="razon-social" placeholder="Nombre de la empresa">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-hashtag me-1 text-primary"></i> NIF / CIF <span class="required">*</span>
                             </label>
-                            <input type="text" class="form-control" id="nif-cif" placeholder="Ej: B12345678">
+                            <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-envelope me-1 text-primary"></i> Email para Factura
                             </label>
-                            <input type="email" class="form-control" id="email-factura" placeholder="email@ejemplo.com">
+                            <input type="email" class="form-control email-field" name="invoice_email" id="email-factura" placeholder="email@ejemplo.com">
                         </div>
 
                         <div class="col-12 mb-2">
@@ -126,17 +149,19 @@
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
-                            <input type="text" class="form-control" id="direccion-calle" placeholder="Calle, número, puerta">
+                            <input type="text" class="form-control" name="invoice_address" id="direccion-calle" placeholder="Calle, número, puerta">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
-                            <input type="text" class="form-control" id="direccion-cp" placeholder="Código Postal">
+                            <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp" placeholder="Código Postal">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
-                            <input type="text" class="form-control" id="direccion-ciudad" placeholder="Ciudad">
+                            <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad" placeholder="Ciudad">
                         </div>
+
                     </div>
+
                 </div>
 
             </div>
@@ -168,7 +193,7 @@
 
                     <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Categoría</label>
-                        <select class="form-control input-tall service-category" data-service-row="0">
+                        <select class="form-control input-tall required-field service-category" data-service-row="0">
                             <option value="">Selecciona una categoría</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->cat_name }}</option>
@@ -178,38 +203,19 @@
                     
                     <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Servicio</label>
-                        <select class="form-control input-tall service-select" data-service-row="0" disabled>
-                            <option value="">Primero categoría</option>
+                        <select class="form-control input-tall required-field service-select" name="service_id" data-service-row="0" disabled>
+                            <option value="">Seleccionar servicio</option>
                         </select>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-12 px-2">
+                        <label class="fw-bold mb-1">Cant.</label>
+                        <input type="number" class="form-control required-field input-tall service-quantity" name="quantity" data-service-row="0" value="1" min="1">
                     </div>
 
                     <div class="col-lg-2 col-md-2 col-sm-12 px-2">
-                        <label class="fw-bold mb-1">Tipo Vehículo</label>
-                        <select class="form-control input-tall vehicle-type" data-service-row="0">
-                            <option value="">Selecciona un tipo</option>
-                            @foreach($vehicleTypes as $type)
-                                <option value="{{ $type->id }}">{{ $type->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div class="col-lg-1 col-md-1 col-sm-12 px-2">
-                        <label class="fw-bold mb-1">Suciedad</label>
-                        <select class="form-control input-tall service-dirt" data-service-row="0">
-                            <option value="1">Bajo</option>
-                            <option value="2">Medio</option>
-                            <option value="3">Alto</option>
-                        </select>
-                    </div>
-
-                    <div class="col-lg-1 col-md-1 col-sm-12 px-2">
-                        <label class="fw-bold mb-1">Cant.</label>
-                        <input type="number" class="form-control input-tall service-quantity" data-service-row="0" value="1" min="1">
-                    </div>
-
-                    <div class="col-lg-1 col-md-1 col-sm-12 px-2">
                         <label class="fw-bold mb-1">€</label>
-                        <input type="number" class="form-control input-tall service-price" data-service-row="0" value="0" step="0.01" min="0" readonly>
+                        <input type="number" class="form-control required-field input-tall service-price" name="price" data-service-row="0" value="0" step="0.01" min="0" readonly>
                     </div>
 
                     <div class="col-lg-1 col-md-1 col-sm-12 d-flex align-items-center px-2" style="padding-top: 1.7rem;">
@@ -224,7 +230,7 @@
                         <label class="fw-bold text-primary small mb-2">
                             <i class="fa-solid fa-file-lines me-1"></i> Descripción de la cita (se genera automáticamente)
                         </label>
-                        <textarea class="form-control" rows="2">Ninguno de nuestros precios incluye IVA.</textarea>
+                        <textarea class="form-control" name="order_notes" rows="2">Ninguno de nuestros precios incluye IVA.</textarea>
                     </div>
 
                     <small class="text-muted d-block mb-3">
@@ -236,7 +242,7 @@
                         <label class="fw-bold mb-2 text-success small">
                             <i class="fa-solid fa-pen me-1"></i> Notas adicionales
                         </label>
-                        <textarea class="form-control" rows="2" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
+                        <textarea class="form-control" name="extra_notes" rows="2" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
                     </div>
 
                 </div>
@@ -246,7 +252,7 @@
 
                     <div class="input-group">
                         <label>% Aplicar Descuento</label>
-                        <select class="input form-control" id="discount-select">
+                        <select class="input form-control" name="discount" id="discount-select">
                             <option value="">Selecciona Descuento</option>
                             <option value="5">5%</option>
                             <option value="10">10%</option>
