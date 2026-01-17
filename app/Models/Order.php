@@ -22,7 +22,6 @@ class Order extends Model
         'id', 
         'client_id',
         'user_id', 
-        'service_id', 
         'quantity', 
         'dirt_level', 
         'hour_in', 
@@ -47,11 +46,21 @@ class Order extends Model
     }
 
     /**
-     * Relación con Servicio
+     * Relación muchos a muchos con Servicios a través de la tabla intermedia order_services
      */
-    public function service()
+    public function services()
     {
-        return $this->belongsTo(Service::class, 'service_id', 'id');
+        return $this->belongsToMany(Service::class, 'order_services', 'order_id', 'service_id')
+                    ->withPivot('id', 'subtotal', 'total', 'created_at')
+                    ->using(OrderService::class);
+    }
+
+    /**
+     * Relación con OrderServices (tabla intermedia)
+     */
+    public function orderServices()
+    {
+        return $this->hasMany(OrderService::class, 'order_id', 'id');
     }
 
     /**
