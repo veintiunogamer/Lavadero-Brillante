@@ -14,8 +14,20 @@ window.settingsApp = function() {
         // Tab activo
         activeTab: 'categories',
 
-        // Búsqueda
-        searchService: '',
+        // Búsqueda y paginación
+        searchTerms: {
+            categories: '',
+            services: '',
+            vehicleTypes: '',
+            clients: ''
+        },
+        currentPage: {
+            categories: 1,
+            services: 1,
+            vehicleTypes: 1,
+            clients: 1
+        },
+        perPage: 15,
 
         // Sorting
         sortBy: {
@@ -78,12 +90,68 @@ window.settingsApp = function() {
             license_plaque: ''
         },
 
+        // Estados de validación
+        licensePlateExists: false,
+
         // Errores de validación
         errors: {
             category: {},
             service: {},
             vehicleType: {},
             client: {}
+        },
+
+        // ====================
+        // BÚSQUEDA Y PAGINACIÓN
+        // ====================
+
+        getFilteredData(type) {
+            const data = this[type];
+            const searchTerm = this.searchTerms[type].toLowerCase();
+
+            if (!searchTerm) return data;
+
+            return data.filter(item => {
+                // Búsqueda según el tipo de dato
+                switch(type) {
+                    case 'categories':
+                        return item.cat_name.toLowerCase().includes(searchTerm);
+                    case 'services':
+                        return item.name.toLowerCase().includes(searchTerm) ||
+                               item.details?.toLowerCase().includes(searchTerm);
+                    case 'vehicleTypes':
+                        return item.name.toLowerCase().includes(searchTerm);
+                    case 'clients':
+                        return item.name.toLowerCase().includes(searchTerm) ||
+                               item.phone?.toLowerCase().includes(searchTerm) ||
+                               item.license_plaque?.toLowerCase().includes(searchTerm);
+                    default:
+                        return true;
+                }
+            });
+        },
+
+        getPaginatedData(type) {
+            const filteredData = this.getFilteredData(type);
+            const start = (this.currentPage[type] - 1) * this.perPage;
+            const end = start + this.perPage;
+            return filteredData.slice(start, end);
+        },
+
+        getTotalPages(type) {
+            const filteredData = this.getFilteredData(type);
+            return Math.ceil(filteredData.length / this.perPage);
+        },
+
+        goToPage(type, page) {
+            const totalPages = this.getTotalPages(type);
+            if (page >= 1 && page <= totalPages) {
+                this.currentPage[type] = page;
+            }
+        },
+
+        resetPagination(type) {
+            this.currentPage[type] = 1;
         },
 
         // Inicialización
@@ -423,13 +491,22 @@ window.settingsApp = function() {
             this.showClientModal = true;
             this.isEditingClient = false;
             this.currentEditId = null;
+            this.licensePlateExists = false;
             this.resetClientForm();
             this.clearErrors('client');
+            
+            // Inicializar máscaras de teléfono después de que el modal esté visible
+            setTimeout(() => {
+                if (typeof window.initPhoneMasks === 'function') {
+                    window.initPhoneMasks();
+                }
+            }, 100);
         },
 
         async editClient(client) {
             this.isEditingClient = true;
             this.currentEditId = client.id;
+            this.licensePlateExists = false;
             this.clientForm = {
                 name: client.name,
                 phone: client.phone || '',
@@ -437,10 +514,47 @@ window.settingsApp = function() {
             };
             this.showClientModal = true;
             this.clearErrors('client');
+            
+            // Inicializar máscaras de teléfono después de que el modal esté visible
+            setTimeout(() => {
+                if (typeof window.initPhoneMasks === 'function') {
+                    window.initPhoneMasks();
+                }
+            }, 100);
+        },
+
+        async checkLicensePlate(licensePlate) {
+            if (!licensePlate || licensePlate.trim() === '') {
+                this.licensePlateExists = false;
+                return;
+            }
+
+            // Si estamos editando, no validar si es la misma matrícula
+            if (this.isEditingClient) {
+                const currentClient = this.clients.find(c => c.id === this.currentEditId);
+                if (currentClient && currentClient.license_plaque === licensePlate.toUpperCase()) {
+                    this.licensePlateExists = false;
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch(`/api/clients/check-license-plate?license_plate=${encodeURIComponent(licensePlate)}`);
+                const result = await response.json();
+                this.licensePlateExists = result.exists;
+            } catch (error) {
+                console.error('Error verificando matrícula:', error);
+            }
         },
 
         async saveClient() {
             this.clearErrors('client');
+
+            // Validar que la matrícula no exista
+            if (this.licensePlateExists) {
+                window.notyf.error('Esta matrícula ya está registrada');
+                return;
+            }
 
             const url = this.isEditingClient 
                 ? `/clients/${this.currentEditId}` 
@@ -730,6 +844,67 @@ window.settingsApp = function() {
             if (!date) return 'N/A';
             const d = new Date(date);
             return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true });
+        },
+
+        /**
+         * Valida matrícula al escribir
+         */
+        async checkLicensePlate(licensePlate) {
+            if (!licensePlate || licensePlate.length < 4) {
+                this.licensePlateExists = false;
+                return;
+            }
+
+            // Si estamos editando, no validar si es la misma matrícula
+            if (this.isEditingClient && this.currentEditId) {
+                const currentClient = this.clients.find(c => c.id === this.currentEditId);
+                if (currentClient && currentClient.license_plaque === licensePlate) {
+                    this.licensePlateExists = false;
+                    return;
+                }
+            }
+
+            try {
+                const response = await fetch(`/api/clients/check-license-plate?license_plate=${encodeURIComponent(licensePlate)}`);
+                const result = await response.json();
+                this.licensePlateExists = result.exists;
+            } catch (error) {
+                console.error('Error validando matrícula:', error);
+                this.licensePlateExists = false;
+            }
         }
     }
+}
+
+// Inicializar máscaras de teléfono y eventos en settings
+if (typeof window !== 'undefined' && settingsModuleActive()) {
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // Convertir matrícula a mayúsculas automáticamente
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('license-plate-input')) {
+                e.target.value = e.target.value.toUpperCase();
+            }
+        });
+
+        // Observer para inicializar máscaras cuando se abran modales
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                mutation.addedNodes.forEach(function(node) {
+                    if (node.nodeType === 1 && node.classList && node.classList.contains('phone-mask')) {
+                        // Re-inicializar máscaras de teléfono
+                        if (typeof window.initPhoneMasks === 'function') {
+                            window.initPhoneMasks(node.parentElement);
+                        }
+                    }
+                });
+            });
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+    });
 }

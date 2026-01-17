@@ -238,6 +238,7 @@ class OrderFormValidator extends FormValidator {
             
             const razonSocial = document.getElementById('razon-social');
             const nifCif = document.getElementById('nif-cif');
+            const emailFactura = document.getElementById('email-factura');
             const direccionCalle = document.getElementById('direccion-calle');
             const direccionCp = document.getElementById('direccion-cp');
             const direccionCiudad = document.getElementById('direccion-ciudad');
@@ -251,6 +252,13 @@ class OrderFormValidator extends FormValidator {
             if (!nifCif?.value) {
                 this.errors.push('El NIF/CIF es obligatorio para facturar');
                 this.markFieldAsError(nifCif);
+                valid = false;
+            }
+
+            // Validar email de factura si tiene valor
+            if (emailFactura?.value && !this.validateEmail(emailFactura.value)) {
+                this.errors.push('El Email para factura no tiene un formato válido');
+                this.markFieldAsError(emailFactura);
                 valid = false;
             }
 
@@ -269,6 +277,30 @@ class OrderFormValidator extends FormValidator {
             if (!direccionCiudad?.value) {
                 this.errors.push('La Ciudad es obligatoria para facturar');
                 this.markFieldAsError(direccionCiudad);
+                valid = false;
+            }
+        }
+
+        // Validar abono parcial si el estado de pago es "Parcial"
+        const paymentStatus = document.querySelector('.payment-status-input')?.value;
+        const partialPaymentContainer = document.getElementById('partial-payment-container');
+        const partialPaymentInput = document.getElementById('partial-payment-input');
+
+        if (paymentStatus === '2' && partialPaymentContainer && partialPaymentContainer.style.display !== 'none') {
+            
+            if (!partialPaymentInput?.value || parseFloat(partialPaymentInput.value) <= 0) {
+                this.errors.push('Debes ingresar el monto del abono parcial');
+                this.markFieldAsError(partialPaymentInput);
+                valid = false;
+            }
+
+            // Validar que el abono parcial no sea mayor que el total
+            const totalValue = parseFloat(document.querySelector('.total-value')?.value || 0);
+            const partialValue = parseFloat(partialPaymentInput?.value || 0);
+
+            if (partialValue >= totalValue) {
+                this.errors.push('El abono parcial debe ser menor que el total');
+                this.markFieldAsError(partialPaymentInput);
                 valid = false;
             }
         }

@@ -5,20 +5,29 @@ class Payment extends Model
 {
     public $incrementing = false;
 
-    const STATUS_PAGADO = 1;
-    const STATUS_PARCIAL = 2;
+    const STATUS_PENDING = 1;
+    const STATUS_PARTIAL = 2;
+    const STATUS_PAID = 3;
 
     protected $keyType = 'string';
     protected $table = 'payments';
 
     protected $fillable = [
         'id',
-        'service_id', 
+        'order_id', 
         'type',
         'subtotal', 
         'total', 
         'status', 
         'creation_date'
     ];
+
+    /**
+     * Relación con Order
+     */
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_id', 'id');
+    }
 
 }

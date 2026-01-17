@@ -63,6 +63,7 @@ Route::middleware('auth')->group(function () {
     
     # Rutas API para clientes
     Route::get('/api/clients', [ClientController::class, 'apiIndex'])->name('clients.api.index');
+    Route::get('/api/clients/check-license-plate', [ClientController::class, 'findByLicensePlate'])->name('clients.check.license');
     Route::resource('clients', ClientController::class)->except(['index', 'create', 'edit']);
     Route::put('/clients/activate/{id}', [ClientController::class, 'activate'])->name('clients.activate');
     

@@ -103,6 +103,40 @@ class ClientController extends Controller
     }
 
     /**
+     * Busca un cliente por matrícula.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function findByLicensePlate(Request $request)
+    {
+        $licensePlate = $request->query('license_plate');
+        
+        if (!$licensePlate) {
+            return response()->json(['exists' => false, 'client' => null]);
+        }
+
+        $client = Client::where('license_plaque', strtoupper($licensePlate))
+        ->where('status', 1)
+        ->first();
+
+        if ($client) {
+            return response()->json([
+                'exists' => true,
+                'client' => [
+                    'id' => $client->id,
+                    'name' => $client->name,
+                    'phone' => $client->phone,
+                    'license_plaque' => $client->license_plaque
+                ]
+            ]);
+        }
+
+        return response()->json(['exists' => false, 'client' => null]);
+
+    }
+
+    /**
      * Activa un cliente.
      *
      * @param int $id

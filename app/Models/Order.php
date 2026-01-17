@@ -24,6 +24,7 @@ class Order extends Model
         'user_id', 
         'quantity', 
         'dirt_level', 
+        'date',
         'hour_in', 
         'hour_out',
         'vehicle_type_id', 
@@ -32,6 +33,7 @@ class Order extends Model
         'subtotal', 
         'taxes', 
         'total', 
+        'partial_payment',
         'order_notes', 
         'extra_notes', 
         'status', 
@@ -78,5 +80,13 @@ class Order extends Model
     public function vehicleType()
     {
         return $this->belongsTo(VehicleType::class, 'vehicle_type_id', 'id');
+    }
+
+    /**
+     * Relación con Pagos
+     */
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'order_id', 'id');
     }
 }

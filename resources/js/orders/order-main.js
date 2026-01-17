@@ -26,12 +26,82 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			originalRemoveBtn.parentNode.removeChild(originalRemoveBtn);
 		}
 
+		// ==================== VALIDACIÓN DE MATRÍCULA ====================
+		const licensePlateInput = document.getElementById('license-plaque-input');
+		const clientNameInput = document.querySelector('input[name="client_name"]');
+		const clientPhoneInput = document.getElementById('telefono-whatsapp');
+		const licensePlateInfo = document.getElementById('license-plate-info');
+		let debounceTimer;
+
+		if (licensePlateInput) {
+			licensePlateInput.addEventListener('input', function(e) {
+				// Convertir a mayúsculas
+				e.target.value = e.target.value.toUpperCase();
+
+				// Limpiar el temporizador anterior
+				clearTimeout(debounceTimer);
+
+				// Ocultar mensaje
+				if (licensePlateInfo) {
+					licensePlateInfo.style.display = 'none';
+				}
+
+				// Esperar 500ms después de que el usuario deje de escribir
+				debounceTimer = setTimeout(async () => {
+					const licensePlate = e.target.value.trim();
+
+					if (licensePlate.length >= 4) {
+						try {
+							const response = await fetch(`/api/clients/check-license-plate?license_plate=${encodeURIComponent(licensePlate)}`);
+							
+							if (!response.ok) {
+								console.error('Error en la respuesta:', response.status);
+								return;
+							}
+
+							const result = await response.json();
+
+							if (result.exists && result.client) {
+								// Auto-completar campos del cliente
+								if (clientNameInput) {
+									clientNameInput.value = result.client.name;
+								}
+
+								if (clientPhoneInput) {
+									clientPhoneInput.value = result.client.phone || '';
+									// Reinicializar máscara de teléfono si existe
+									if (typeof window.initPhoneMasks === 'function') {
+										window.initPhoneMasks(clientPhoneInput.parentElement);
+									}
+								}
+
+								// Mostrar mensaje de éxito
+								if (licensePlateInfo) {
+									licensePlateInfo.style.display = 'block';
+								}
+
+								if (window.notyf) {
+									window.notyf.success('Cliente encontrado - datos cargados automáticamente');
+								}
+							}
+						} catch (error) {
+							console.error('Error verificando matrícula:', error);
+							if (window.notyf) {
+								window.notyf.error('Error al verificar la matrícula');
+							}
+						}
+					}
+				}, 500);
+			});
+		}
+
 		// ==================== FUNCIONES AUXILIARES ====================
 
 		/**
 		 * Carga los servicios según la categoría seleccionada
 		 */
 		async function loadServicesByCategory(categorySelect, serviceSelect) {
+
 			const categoryId = categorySelect.value;
 			const serviceRow = categorySelect.closest('.service-item');
 
@@ -41,10 +111,13 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 			// Resetear cantidad a 1 y precio a 0
 			if (serviceRow) {
+
 				const quantityInput = serviceRow.querySelector('.service-quantity');
 				const priceInput = serviceRow.querySelector('.service-price');
+
 				if (quantityInput) quantityInput.value = 1;
 				if (priceInput) priceInput.value = '0.00';
+
 			}
 
 			if (!categoryId) {
@@ -53,6 +126,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			}
 
 			try {
+
 				const response = await fetch(`/api/services/category/${categoryId}`, {
 					headers: {
 						'Accept': 'application/json',
@@ -63,17 +137,25 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 				const result = await response.json();
 
 				if (result.success && result.data.length > 0) {
+
 					result.data.forEach(service => {
+
 						const option = document.createElement('option');
+
 						option.value = service.id;
 						option.textContent = service.name;
 						option.dataset.value = service.value;
+
 						serviceSelect.appendChild(option);
+
 					});
+
 					serviceSelect.disabled = false;
+
 				} else {
 					serviceSelect.innerHTML = '<option value="">No hay servicios disponibles</option>';
 				}
+
 			} catch (error) {
 				console.error('Error cargando servicios:', error);
 				serviceSelect.innerHTML = '<option value="">Error al cargar servicios</option>';
@@ -84,6 +166,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		 * Actualiza el precio cuando se selecciona un servicio
 		 */
 		function updateServicePrice(serviceSelect, priceInput) {
+
 			const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
 			const basePrice = selectedOption?.dataset?.value || 0;
 			const serviceRow = serviceSelect.closest('.service-item');
@@ -95,6 +178,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 				priceInput.dataset.basePrice = basePrice;
 				priceInput.value = (parseFloat(basePrice) * quantity).toFixed(2);
 			}
+
 			calculateTotals();
 		}
 
@@ -102,11 +186,13 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		 * Calcula precio al cambiar cantidad
 		 */
 		function updateQuantityPrice(quantityInput, priceInput) {
+
 			const quantity = parseFloat(quantityInput.value || 1);
 			const basePrice = parseFloat(priceInput.dataset.basePrice || 0);
 			
 			// Calcular el precio total: cantidad * precio base
 			priceInput.value = (quantity * basePrice).toFixed(2);
+
 			calculateTotals();
 		}
 
@@ -114,25 +200,32 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		 * Calcula los totales generales
 		 */
 		function calculateTotals() {
+
 			const allServiceItems = document.querySelectorAll('.service-item');
 			let subtotal = 0;
 
 			// Calcular subtotal
 			allServiceItems.forEach(item => {
+
 				const quantity = parseFloat(item.querySelector('.service-quantity')?.value || 0);
 				const price = parseFloat(item.querySelector('.service-price')?.value || 0);
+
 				subtotal += quantity * price;
+
 			});
 
 			// Habilitar/deshabilitar el select de descuento según si hay servicios
 			const discountSelect = document.getElementById('discount-select');
+			
 			if (discountSelect) {
+
 				if (subtotal > 0) {
 					discountSelect.disabled = false;
 				} else {
 					discountSelect.disabled = true;
 					discountSelect.value = ''; // Resetear el descuento
 				}
+
 			}
 
 			// Obtener el porcentaje de descuento seleccionado
@@ -140,30 +233,33 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			const discountAmount = (subtotal * discountPercent) / 100;
 			const total = subtotal - discountAmount;
 
-			// Buscar y actualizar subtotal, descuento y total
-			const inputGroups = document.querySelectorAll('.input-group');
-			inputGroups.forEach(group => {
-				const label = group.querySelector('label');
-				const display = group.querySelector('div');
-				
-				if (label && display) {
-					if (label.textContent.includes('Subtotal')) {
-						display.textContent = subtotal.toFixed(2) + '€';
-					}
-					if (label.textContent.includes('Descuento')) {
-						display.textContent = '-' + discountAmount.toFixed(2) + '€';
-					}
-					if (label.textContent.includes('Total')) {
-						display.textContent = total.toFixed(2) + '€';
-					}
-				}
-			});
+			// Actualizar subtotal - display y input hidden
+			const subtotalSection = document.querySelector('.subtotal-section');
+			const subtotalInput = document.querySelector('.subtotal-value');
+
+			if (subtotalSection) subtotalSection.textContent = subtotal.toFixed(2) + '€';
+			if (subtotalInput) subtotalInput.value = subtotal.toFixed(2);
+
+			// Actualizar descuento - display y input hidden
+			const discountSection = document.querySelector('.discount-section');
+			const discountInput = document.querySelector('.discount-value');
+
+			if (discountSection) discountSection.textContent = '-' + discountAmount.toFixed(2) + '€';
+			if (discountInput) discountInput.value = discountAmount.toFixed(2);
+
+			// Actualizar total - display y input hidden
+			const totalSection = document.querySelector('.total-section');
+			const totalInput = document.querySelector('.total-value');
+
+			if (totalSection) totalSection.textContent = total.toFixed(2) + '€';
+			if (totalInput) totalInput.value = total.toFixed(2);
 		}
 
 		/**
-		 * Inicializa eventos para una fila de servicio
+		 * Inicializa los eventos de una fila de servicio
 		 */
 		function initServiceRowEvents(serviceRow) {
+
 			const categorySelect = serviceRow.querySelector('.service-category');
 			const serviceSelect = serviceRow.querySelector('.service-select');
 			const quantityInput = serviceRow.querySelector('.service-quantity');
@@ -185,23 +281,26 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			});
 		}
 
+		// ==================== INICIALIZACIÓN DE EVENTOS ====================
+
 		// Inicializar eventos para el servicio original
 		initServiceRowEvents(originalService);
 
-		// Evento para el select de descuento
+		// Evento del select de descuento
 		const discountSelect = document.getElementById('discount-select');
 
 		if (discountSelect) {
-			
+
 			discountSelect.addEventListener('change', function() {
 				calculateTotals();
 			});
 
 			// Inicialmente deshabilitar el select de descuento
 			discountSelect.disabled = true;
+
 		}
 
-        // Evento para agregar un nuevo servicio
+		// Evento para agregar un nuevo servicio
 		addServiceBtn.addEventListener('click', function () {
 
 			// Clonar el bloque de servicio
@@ -209,21 +308,28 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 			// Limpiar los valores de los campos del clon
 			clone.querySelectorAll('input, select, textarea').forEach(el => {
+
 				if (el.tagName === 'SELECT' || el.tagName === 'TEXTAREA') {
+
 					el.value = '';
+
 				} else if (el.type === 'number' || el.type === 'text') {
+
 					el.value = el.defaultValue || '';
 				}
+
 			});
 
 			// Actualizar data-service-row
 			serviceRowCounter++;
+
 			clone.querySelectorAll('[data-service-row]').forEach(el => {
 				el.dataset.serviceRow = serviceRowCounter;
 			});
 
 			// Agregar botón eliminar solo al clon
 			let removeBtn = document.createElement('button');
+
 			removeBtn.className = 'remove-btn btn btn-sm btn-danger';
 			removeBtn.type = 'button';
 			removeBtn.innerHTML = '<i class="fa-solid fa-times"></i>';
@@ -278,12 +384,15 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		window.selectedOrderDate = null; // Variable global para Alpine
 
 		function renderCalendar(date) {
+
 			const year = date.getFullYear();
 			const month = date.getMonth();
 
 			// Actualizar cabecera
-			const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
-			                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+			const monthNames = [
+				'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+				'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+			];
 			
 			if (calendarMonthSpan) {
 				calendarMonthSpan.childNodes[0].textContent = monthNames[month] + ' ';
@@ -312,19 +421,26 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 			// Generar 6 semanas para cubrir todos los casos
 			for (let week = 0; week < 6; week++) {
+
 				const row = document.createElement('tr');
 
 				for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++) {
+
 					const cell = document.createElement('td');
 
 					if (week === 0 && dayOfWeek < startDayOfWeek) {
+
 						// Días del mes anterior (vacíos o marcados como muted)
 						cell.textContent = '';
+
 					} else if (day > daysInMonth) {
+
 						// Días del mes siguiente (opcional: mostrarlos como muted)
 						cell.textContent = '';
 						nextMonthDay++;
+
 					} else {
+
 						// Días del mes actual
 						cell.textContent = day;
 						cell.style.cursor = 'pointer';
@@ -339,6 +455,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 						// Evento click
 						cell.addEventListener('click', function() {
+
 							// Remover clase activa de todas las celdas
 							calendarTbody.querySelectorAll('td').forEach(td => {
 								td.classList.remove('calendar-active');
@@ -353,6 +470,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 							// Actualizar el footer del calendario
 							const calendarFooter = calendarBox.querySelector('.calendar-footer .calendar-tip');
+
 							if (calendarFooter) {
 								const formattedDate = selectedDate.toLocaleDateString('es-ES', {
 									day: '2-digit',
@@ -397,8 +515,12 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		// ==================== BOTONES DE ESTADO DE PAGO ====================
 		
 		const payStatusButtons = document.querySelectorAll('.pay-status-btn');
-		
+		const paymentStatusInput = document.querySelector('.payment-status-input');
+		const partialPaymentContainer = document.getElementById('partial-payment-container');
+		const partialPaymentInput = document.getElementById('partial-payment-input');
+	
 		payStatusButtons.forEach(btn => {
+
 			btn.addEventListener('click', function(e) {
 				e.preventDefault();
 				
@@ -407,83 +529,102 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 				
 				// Agregar clase activa al botón clickeado
 				this.classList.add('pay-status-active');
+				
+				// Actualizar el valor del input hidden con el valor numérico del botón
+				if (paymentStatusInput) {
+					paymentStatusInput.value = this.getAttribute('data-value');
+				}
+
+				// Mostrar/ocultar campo de abono parcial según el estado seleccionado
+				const paymentStatus = this.getAttribute('data-value');
+				
+				if (partialPaymentContainer && partialPaymentInput) {
+					if (paymentStatus === '2') { // Estado "Parcial"
+						partialPaymentContainer.style.display = 'block';
+						partialPaymentInput.required = true;
+						partialPaymentInput.classList.add('required-field');
+					} else {
+						partialPaymentContainer.style.display = 'none';
+						partialPaymentInput.value = ''; // Limpiar el valor
+						partialPaymentInput.required = false;
+						partialPaymentInput.classList.remove('required-field', 'is-invalid', 'is-valid');
+					}
+				}
+
 			});
+
 		});
 
 		// ==================== TIME PICKER CON FLATPICKR Y FALLBACK ====================
-
-		/**
-		 * Inicializa Flatpickr para los time pickers
-		 * Si Flatpickr no está disponible (CDN falla), usa el fallback de selects
-		 */
 		function initTimePickers() {
-			const timePickers = document.querySelectorAll('.time-picker');
-			
-			// Verificar si Flatpickr está disponible
+
 			if (typeof flatpickr !== 'undefined') {
-				console.log('Flatpickr cargado correctamente');
-				
-				timePickers.forEach(input => {
-					try {
-						flatpickr(input, {
-							enableTime: true,
-							noCalendar: true,
-							dateFormat: "H:i",
-							time_24hr: true,
-							minuteIncrement: 30,
-							minTime: "08:00",
-							maxTime: "20:30",
-							locale: {
-								firstDayOfWeek: 1,
-								weekdays: {
-									shorthand: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
-									longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
-								},
-								months: {
-									shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-									longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-								}
+
+				try {
+
+					flatpickr(".time-picker", {
+						enableTime: true,
+						noCalendar: true,
+						dateFormat: "H:i",
+						time_24hr: true,
+						minuteIncrement: 30,
+						minTime: "08:00",
+						maxTime: "20:30",
+						locale: {
+							firstDayOfWeek: 1,
+							weekdays: {
+								shorthand: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+								longhand: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
 							},
-							onReady: function(dateObj, dateStr, instance) {
-								// Personalización adicional si es necesaria
-								instance.calendarContainer.style.zIndex = 10000;
-							},
-							onChange: function(selectedDates, dateStr, instance) {
-								// Validación: la hora de salida debe ser mayor que la hora de entrada
-								if (instance.element.id === 'hora-entrada') {
-									const horaSalida = document.getElementById('hora-salida')._flatpickr;
-									if (horaSalida && horaSalida.selectedDates.length > 0) {
-										const entrada = selectedDates[0];
-										const salida = horaSalida.selectedDates[0];
-										
-										if (salida <= entrada) {
-											window.notyf?.error('La hora de salida debe ser posterior a la hora de entrada');
-											horaSalida.clear();
-										}
-									}
-								}
+							months: {
+								shorthand: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+								longhand: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+							}
+						},
+						onReady: function(dateObj, dateStr, instance) {
+							// Personalización adicional si es necesaria
+							instance.calendarContainer.style.zIndex = 10000;
+						},
+						onChange: function(selectedDates, dateStr, instance) {
+							// Validación: la hora de salida debe ser mayor que la hora de entrada
+							if (instance.element.id === 'hora-entrada') {
+								const horaSalida = document.getElementById('hora-salida')._flatpickr;
 								
-								if (instance.element.id === 'hora-salida') {
-									const horaEntrada = document.getElementById('hora-entrada')._flatpickr;
-									if (horaEntrada && horaEntrada.selectedDates.length > 0) {
-										const entrada = horaEntrada.selectedDates[0];
-										const salida = selectedDates[0];
-										
-										if (salida <= entrada) {
-											window.notyf?.error('La hora de salida debe ser posterior a la hora de entrada');
-											instance.clear();
-										}
+								if (horaSalida && horaSalida.selectedDates.length > 0) {
+									const entrada = selectedDates[0];
+									const salida = horaSalida.selectedDates[0];
+									
+									if (salida <= entrada) {
+										window.notyf?.error('La hora de salida debe ser posterior a la hora de entrada');
+										horaSalida.clear();
 									}
 								}
 							}
-						});
-					} catch (error) {
-						console.error('Error inicializando Flatpickr:', error);
-						activateFallback();
-					}
-				});
+							
+							if (instance.element.id === 'hora-salida') {
+								const horaEntrada = document.getElementById('hora-entrada')._flatpickr;
+								
+								if (horaEntrada && horaEntrada.selectedDates.length > 0) {
+									const entrada = horaEntrada.selectedDates[0];
+									const salida = selectedDates[0];
+									
+									if (salida <= entrada) {
+										window.notyf?.error('La hora de salida debe ser posterior a la hora de entrada');
+										instance.clear();
+									}
+								}
+							}
+						}
+					});
+					
+				} catch (error) {
+					console.error('Error inicializando Flatpickr:', error);
+					activateFallback();
+
+				}
+
 			} else {
-				console.warn('Flatpickr no disponible - Usando fallback de selects');
+				console.warn('Flatpickr no está disponible, activando fallback de selects');
 				activateFallback();
 			}
 		}
@@ -762,6 +903,7 @@ window.orderFormApp = function() {
          * Limpia el formulario después de enviar
          */
         resetForm() {
+
             // Limpiar campos de cliente
             document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(input => {
                 input.value = '';
@@ -769,6 +911,7 @@ window.orderFormApp = function() {
 
             // Resetear servicios
             const serviceItems = document.querySelectorAll('.service-item');
+
             if (serviceItems.length > 1) {
                 // Eliminar servicios adicionales
                 for (let i = 1; i < serviceItems.length; i++) {
@@ -778,6 +921,7 @@ window.orderFormApp = function() {
 
             // Resetear primer servicio
             const firstService = serviceItems[0];
+
             if (firstService) {
                 firstService.querySelectorAll('select').forEach(select => select.value = '');
                 firstService.querySelector('.service-quantity').value = 1;
@@ -788,16 +932,32 @@ window.orderFormApp = function() {
             document.querySelectorAll('.pay-status-btn').forEach(btn => {
                 btn.classList.remove('pay-status-active');
             });
+
             document.querySelector('.pay-status-btn')?.classList.add('pay-status-active');
+
+            // Ocultar y limpiar campo de abono parcial
+            const partialPaymentContainer = document.getElementById('partial-payment-container');
+            const partialPaymentInput = document.getElementById('partial-payment-input');
+
+            if (partialPaymentContainer) {
+                partialPaymentContainer.style.display = 'none';
+            }
+
+            if (partialPaymentInput) {
+                partialPaymentInput.value = '';
+                partialPaymentInput.required = false;
+            }
 
             // Limpiar checkbox de términos
             const termsCheckbox = document.querySelector('input[type="checkbox"]');
+
             if (termsCheckbox) {
                 termsCheckbox.checked = false;
             }
 
             // Deshabilitar botón de confirmación
             const confirmBtn = document.querySelector('.confirm-btn');
+
             if (confirmBtn) {
                 confirmBtn.disabled = true;
             }

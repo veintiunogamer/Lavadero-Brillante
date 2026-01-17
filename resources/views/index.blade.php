@@ -40,17 +40,27 @@
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Nombre Cliente <span class="required">*</span></label>
-                        <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo">
+                        <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo" data-field-name="Nombre del Cliente">
                     </div>
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Teléfono <span class="required">*</span></label>
-                        <input type="text" id="telefono-whatsapp" class="input form-control required-field phone-field" name="client_phone" placeholder="Ej: +34 612 345 678" maxlength="12" data-phone="true" required>
+                        <input type="text" id="telefono-whatsapp" class="input form-control required-field phone-field" name="client_phone" placeholder="Ej: +34 612 345 678" maxlength="12" data-phone="true" required data-field-name="Teléfono">
                     </div>
 
                     <div class="col-md-3 mb-3 px-2">
                         <label class="fw-bold">Matrícula <span class="required">*</span></label>
-                        <input type="text" class="input form-control required-field" name="license_plaque" placeholder="Ej: 1234 ABC">
+                        <input type="text" 
+                               class="input form-control required-field license-plate-order" 
+                               name="license_plaque" 
+                               id="license-plaque-input"
+                               placeholder="Ej: 1234 ABC" 
+                               data-field-name="Matrícula"
+                               maxlength="7"
+                               style="text-transform: uppercase;">
+                        <small id="license-plate-info" class="text-success" style="display: none;">
+                            <i class="fa-solid fa-check-circle"></i> Cliente encontrado
+                        </small>
                     </div>
 
                     <div class="col-md-3 mb-3 px-2">
@@ -125,21 +135,21 @@
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-building me-1 text-primary"></i> Razón Social <span class="required">*</span>
                             </label>
-                            <input type="text" class="form-control" name="invoice_business_name" id="razon-social" placeholder="Nombre de la empresa">
+                            <input type="text" class="form-control" name="invoice_business_name" id="razon-social" placeholder="Nombre de la empresa" data-field-name="Razón Social">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-hashtag me-1 text-primary"></i> NIF / CIF <span class="required">*</span>
                             </label>
-                            <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678">
+                            <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678" data-field-name="NIF/CIF">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
                             <label class="fw-bold mb-1">
                                 <i class="fa-solid fa-envelope me-1 text-primary"></i> Email para Factura
                             </label>
-                            <input type="email" class="form-control email-field" name="invoice_email" id="email-factura" placeholder="email@ejemplo.com">
+                            <input type="email" class="form-control email-field" name="invoice_email" id="email-factura" placeholder="email@ejemplo.com" data-field-name="Email de Factura">
                         </div>
 
                         <div class="col-12 mb-2">
@@ -149,15 +159,15 @@
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
-                            <input type="text" class="form-control" name="invoice_address" id="direccion-calle" placeholder="Calle, número, puerta">
+                            <input type="text" class="form-control" name="invoice_address" id="direccion-calle" placeholder="Calle, número, puerta" data-field-name="Dirección">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
-                            <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp" placeholder="Código Postal">
+                            <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp" placeholder="Código Postal" data-field-name="Código Postal">
                         </div>
 
                         <div class="col-md-4 mb-3 px-2">
-                            <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad" placeholder="Ciudad">
+                            <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad" placeholder="Ciudad" data-field-name="Ciudad">
                         </div>
 
                     </div>
@@ -193,7 +203,7 @@
 
                     <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Categoría</label>
-                        <select class="form-control input-tall required-field service-category" data-service-row="0">
+                        <select class="form-control input-tall required-field service-category" data-service-row="0" data-field-name="Categoría">
                             <option value="">Selecciona una categoría</option>
                             @foreach($categories as $cat)
                                 <option value="{{ $cat->id }}">{{ $cat->cat_name }}</option>
@@ -203,19 +213,19 @@
                     
                     <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Servicio</label>
-                        <select class="form-control input-tall required-field service-select" name="service_id" data-service-row="0" disabled>
+                        <select class="form-control input-tall required-field service-select" name="service_id" data-service-row="0" disabled data-field-name="Servicio">
                             <option value="">Seleccionar servicio</option>
                         </select>
                     </div>
 
                     <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">Cant.</label>
-                        <input type="number" class="form-control required-field input-tall service-quantity" name="quantity" data-service-row="0" value="1" min="1">
+                        <input type="number" class="form-control required-field input-tall service-quantity" name="quantity" data-service-row="0" value="1" min="1" data-field-name="Cantidad">
                     </div>
 
                     <div class="col-lg-2 col-md-2 col-sm-12 px-2">
                         <label class="fw-bold mb-1">€</label>
-                        <input type="number" class="form-control required-field input-tall service-price" name="price" data-service-row="0" value="0" step="0.01" min="0" readonly>
+                        <input type="number" class="form-control required-field input-tall service-price" name="price" data-service-row="0" value="0" step="0.01" min="0" readonly data-field-name="Precio">
                     </div>
 
                     <div class="col-lg-1 col-md-1 col-sm-12 d-flex align-items-center px-2" style="padding-top: 1.7rem;">
@@ -250,9 +260,9 @@
                 <!-- Resumen de precios -->
                 <div class="row" style="align-items: center; margin-top:1.5rem;">
 
-                    <div class="input-group">
+                    <div class="input-group" style="min-width: 200px;">
                         <label>% Aplicar Descuento</label>
-                        <select class="input form-control" name="discount" id="discount-select">
+                        <select class="input form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 42px;">
                             <option value="">Selecciona Descuento</option>
                             <option value="5">5%</option>
                             <option value="10">10%</option>
@@ -263,16 +273,19 @@
                     <div class="input-group">
                         <label>Subtotal</label>
                         <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
+                        <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
                     </div>
 
                     <div class="input-group">
                         <label>Descuento</label>
                         <div class="discount-section" style="font-size:1.3rem;font-weight:600;color:#dc3545;">-0.00€</div>
+                        <input type="hidden" class="discount-value" name="discount_value" value="0.00">
                     </div>
 
                     <div class="input-group">
                         <label>Total</label>
                         <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
+                        <input type="hidden" class="total-value" name="total" value="0.00">
                     </div>
 
                 </div>
@@ -333,9 +346,9 @@
 
                             <div class="col-6 px-2">
                                 <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
-                                <input type="text" class="input form-control time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly>
+                                <input type="text" class="input form-control time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
                                 <!-- Fallback select (oculto por defecto) -->
-                                <select class="input form-control time-picker-fallback" id="hora-entrada-fallback" style="display: none;">
+                                <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hora-entrada-fallback" style="display: none;" data-field-name="Hora de Entrada">
                                     <option value="">Seleccionar</option>
                                     @for($h = 8; $h <= 20; $h++)
                                         @foreach(['00', '30'] as $m)
@@ -347,9 +360,9 @@
 
                             <div class="col-6 px-2">
                                 <label class="fw-bold">Hora Entrega <span class="required">*</span></label>
-                                <input type="text" class="input form-control time-picker" id="hora-salida" placeholder="Selecciona hora" readonly>
+                                <input type="text" class="input form-control time-picker" id="hora-salida" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
                                 <!-- Fallback select (oculto por defecto) -->
-                                <select class="input form-control time-picker-fallback" id="hora-salida-fallback" style="display: none;">
+                                <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hora-salida-fallback" style="display: none;" data-field-name="Hora de Salida">
                                     <option value="">Seleccionar</option>
                                     @for($h = 8; $h <= 20; $h++)
                                         @foreach(['00', '30'] as $m)
@@ -362,15 +375,23 @@
                             <div class="col-12 my-5">
                                 <label class="fw-bold px-3">Estado del Pago <span class="required">*</span></label>
                                 <div class="pay-status-group mt-1 px-3 d-flex" style="gap: 1rem;">
-                                    <button type="button" class="btn btn-outline-warning pay-status-btn pay-status-active">Pendiente</button>
-                                    <button type="button" class="btn btn-outline-primary pay-status-btn">Parcial</button>
-                                    <button type="button" class="btn btn-outline-success pay-status-btn">Pagado</button>
+                                    <button type="button" class="btn btn-outline-warning pay-status-btn pay-status-active" data-value="1">Pendiente</button>
+                                    <button type="button" class="btn btn-outline-primary pay-status-btn" data-value="2">Parcial</button>
+                                    <button type="button" class="btn btn-outline-success pay-status-btn" data-value="3">Pagado</button>
                                 </div>
+
+                                <input type="hidden" name="payment_status" class="payment-status-input" value="1">
+                            </div>
+
+                            <div class="col-6 px-2 mt-2" id="partial-payment-container" style="display: none;">
+                                <label class="fw-bold">Abono Parcial <span class="required">*</span></label>
+                                <input type="number" class="input form-control" name="partial_payment" id="partial-payment-input" placeholder="0.00" step="0.01" min="0" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Abono Parcial">
+                                <small class="text-muted">Ingresa el monto del pago parcial</small>
                             </div>
 
                             <div class="col-6 px-2 mt-2">
                                 <label class="fw-bold">Método de Pago <span class="required">*</span></label>
-                                <select class="input form-control">
+                                <select class="input form-control required-field" name="payment_method" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Método de Pago">
                                     <option value="efectivo">Efectivo</option>
                                     <option value="tarjeta">Tarjeta</option>
                                     <option value="transferencia">Transferencia</option>
@@ -379,7 +400,7 @@
 
                             <div class="col-6 px-2 mt-2">
                                 <label class="fw-bold">Estado de la Cita <span class="required">*</span></label>
-                                <select class="input form-control">
+                                <select class="input form-control required-field" name="status" data-field-name="Estado de la Cita">
                                     <option value="1">Pendiente</option>
                                     <option value="2">En Proceso</option>
                                     <option value="3">Terminada</option>
@@ -399,7 +420,7 @@
 
                 <label class="text-dark my-3">
 
-                    <input type="checkbox">
+                    <input type="checkbox" class="me-2" id="terms-checkbox" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
                     He leído y acepto los 
                     <a href="#" style="color:var(--color-amarillo-logo);text-decoration:underline;">
                         Términos y Condiciones
@@ -456,7 +477,9 @@
 
                 <!-- Tabla de citas -->
                 <div x-show="!loadingOrders && orders.length > 0" class="table-responsive">
+
                     <table class="table table-hover align-middle">
+
                         <thead class="table-light">
                             <tr>
                                 <th>Cliente</th>
@@ -470,7 +493,9 @@
                                 <th>Detallador</th>
                             </tr>
                         </thead>
+
                         <tbody>
+
                             <template x-for="order in orders" :key="order.id">
                                 <tr>
                                     <td x-text="order.client ? order.client.name : 'N/A'"></td>
@@ -486,13 +511,17 @@
                                     <td x-text="order.user ? order.user.name : 'N/A'"></td>
                                 </tr>
                             </template>
+
                         </tbody>
+
                     </table>
+
                 </div>
 
             </div>
 
         </div>
+
     </div>
 
 @endsection
@@ -512,21 +541,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
             datosFacturacion.style.display = 'block';
 
-            // Agregar required a los campos obligatorios
+            // Agregar required y clase de validación a los campos obligatorios
             document.getElementById('razon-social').required = true;
+            document.getElementById('razon-social').classList.add('required-field');
+            
             document.getElementById('nif-cif').required = true;
+            document.getElementById('nif-cif').classList.add('required-field');
+            
             document.getElementById('direccion-calle').required = true;
+            document.getElementById('direccion-calle').classList.add('required-field');
+            
             document.getElementById('direccion-cp').required = true;
+            document.getElementById('direccion-cp').classList.add('required-field');
+            
             document.getElementById('direccion-ciudad').required = true;
+            document.getElementById('direccion-ciudad').classList.add('required-field');
             
         } else {
 
             datosFacturacion.style.display = 'none';
 
-            // Quitar required y limpiar valores
+            // Quitar required, clase de validación y limpiar valores
             fieldsFactura.forEach(function(fieldId) {
                 var field = document.getElementById(fieldId);
                 field.required = false;
+                field.classList.remove('required-field', 'is-invalid', 'is-valid');
                 field.value = '';
             });
 

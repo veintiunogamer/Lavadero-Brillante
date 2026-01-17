@@ -54,13 +54,22 @@
             <!-- ==================== CATEGORÍAS ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'categories'">
                 
-                <button @click="openCategoryModal()" class="btn btn-success fw-bold mb-4">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    Crear Categoría
-                </button>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <button @click="openCategoryModal()" class="btn btn-success fw-bold">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Crear Categoría
+                    </button>
 
-                <div class="table-responsive">
-
+                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                        <input type="text" 
+                               x-model="searchTerms.categories" 
+                               @input="resetPagination('categories')"
+                               class="form-control pe-5" 
+                               placeholder="Buscar categorías...">
+                        <i class="fa-solid fa-search position-absolute" 
+                           style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                    </div>
+                </div>
                     <table class="table table-striped table-bordered align-middle">
 
                         <thead class="table-dark">
@@ -81,7 +90,7 @@
 
                         <tbody>
 
-                            <template x-for="category in categories" :key="category.id">
+                            <template x-for="category in getPaginatedData('categories')" :key="category.id">
 
                                 <tr :class="category.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="category.cat_name"></td>
@@ -102,16 +111,38 @@
 
                             </template>
 
-                            <tr x-show="categories.length === 0">
+                            <tr x-show="getFilteredData('categories').length === 0">
                                 <td colspan="4" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    No hay categorías registradas
+                                    <span x-text="searchTerms.categories ? 'No se encontraron resultados' : 'No hay categorías registradas'"></span>
                                 </td>
                             </tr>
 
                         </tbody>
 
                     </table>
+
+                    <!-- Paginador -->
+                    <div x-show="getTotalPages('categories') > 1" class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Página <span x-text="currentPage.categories"></span> de <span x-text="getTotalPages('categories')"></span>
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item" :class="currentPage.categories === 1 ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('categories', currentPage.categories - 1)">«</button>
+                                </li>
+                                <template x-for="page in getTotalPages('categories')" :key="page">
+                                    <li class="page-item" :class="page === currentPage.categories ? 'active' : ''">
+                                        <button class="page-link" @click="goToPage('categories', page)" x-text="page"></button>
+                                    </li>
+                                </template>
+                                <li class="page-item" :class="currentPage.categories === getTotalPages('categories') ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('categories', currentPage.categories + 1)">»</button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
                 </div>
 
@@ -120,22 +151,21 @@
             <!-- ==================== SERVICIOS ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'services'">
 
-                <div class="d-flex justify-content-between align-items-center mb-3">
-
-                    <button @click="openServiceModal()" class="btn btn-success fw-bold mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <button @click="openServiceModal()" class="btn btn-success fw-bold">
                         <i class="fa-solid fa-plus me-2"></i>
                         Crear Servicio
                     </button>
 
-                    <div class="position-relative" style="max-width: 350px;">
-                        <i class="fa-solid fa-search position-absolute" style="left: 12px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                    <div class="position-relative" style="max-width: 350px; width: 100%;">
                         <input type="text" 
-                        class="form-control ps-5 shadow-sm" 
-                        placeholder="Buscar servicio..." 
-                        x-model="searchService"
-                        style="border-radius: 20px; border: 1px solid #dee2e6;">
+                               x-model="searchTerms.services" 
+                               @input="resetPagination('services')"
+                               class="form-control pe-5" 
+                               placeholder="Buscar servicios...">
+                        <i class="fa-solid fa-search position-absolute" 
+                           style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
-
                 </div>
 
                 <div class="table-responsive">
@@ -160,7 +190,7 @@
 
                         <tbody>
 
-                            <template x-for="service in filteredServices" :key="service.id">
+                            <template x-for="service in getPaginatedData('services')" :key="service.id">
 
                                 <tr :class="service.status ? '' : 'table-secondary opacity-75'">
                                     <td x-html="service.name + '<br>' + '<span class=\'badge bg-secondary\'>' + getCategoryName(service.category_id) + '</span>'"></td>
@@ -191,16 +221,38 @@
 
                             </template>
 
-                            <tr x-show="filteredServices.length === 0">
-                                <td colspan="7" class="text-center text-muted py-4">
+                            <tr x-show="getFilteredData('services').length === 0">
+                                <td colspan="6" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    <span x-text="searchService ? 'No se encontraron servicios con ese criterio' : 'No hay servicios registrados'"></span>
+                                    <span x-text="searchTerms.services ? 'No se encontraron resultados' : 'No hay servicios registrados'"></span>
                                 </td>
                             </tr>
 
                         </tbody>
 
                     </table>
+
+                    <!-- Paginador -->
+                    <div x-show="getTotalPages('services') > 1" class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Página <span x-text="currentPage.services"></span> de <span x-text="getTotalPages('services')"></span>
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item" :class="currentPage.services === 1 ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('services', currentPage.services - 1)">«</button>
+                                </li>
+                                <template x-for="page in getTotalPages('services')" :key="page">
+                                    <li class="page-item" :class="page === currentPage.services ? 'active' : ''">
+                                        <button class="page-link" @click="goToPage('services', page)" x-text="page"></button>
+                                    </li>
+                                </template>
+                                <li class="page-item" :class="currentPage.services === getTotalPages('services') ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('services', currentPage.services + 1)">»</button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
                 </div>
 
@@ -209,10 +261,22 @@
             <!-- ==================== TIPOS DE VEHÍCULO ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'vehicle-types'">
 
-                <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold mb-3">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    Crear Tipo de Vehículo
-                </button>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Crear Tipo de Vehículo
+                    </button>
+
+                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                        <input type="text" 
+                               x-model="searchTerms.vehicleTypes" 
+                               @input="resetPagination('vehicleTypes')"
+                               class="form-control pe-5" 
+                               placeholder="Buscar tipos de vehículos...">
+                        <i class="fa-solid fa-search position-absolute" 
+                           style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                    </div>
+                </div>
 
                 <div class="table-responsive">
 
@@ -235,7 +299,7 @@
 
                         <tbody>
 
-                            <template x-for="vehicleType in vehicleTypes" :key="vehicleType.id">
+                            <template x-for="vehicleType in getPaginatedData('vehicleTypes')" :key="vehicleType.id">
 
                                 <tr :class="vehicleType.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="vehicleType.name"></td>
@@ -263,9 +327,38 @@
 
                             </template>
 
-                            <tr x-show="vehicleTypes.length === 0">
+                            <tr x-show="getFilteredData('vehicleTypes').length === 0">
                                 <td colspan="4" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
+                                    <span x-text="searchTerms.vehicleTypes ? 'No se encontraron resultados' : 'No hay tipos de vehículos registrados'"></span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                    <!-- Paginador -->
+                    <div x-show="getTotalPages('vehicleTypes') > 1" class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Página <span x-text="currentPage.vehicleTypes"></span> de <span x-text="getTotalPages('vehicleTypes')"></span>
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item" :class="currentPage.vehicleTypes === 1 ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes - 1)">«</button>
+                                </li>
+                                <template x-for="page in getTotalPages('vehicleTypes')" :key="page">
+                                    <li class="page-item" :class="page === currentPage.vehicleTypes ? 'active' : ''">
+                                        <button class="page-link" @click="goToPage('vehicleTypes', page)" x-text="page"></button>
+                                    </li>
+                                </template>
+                                <li class="page-item" :class="currentPage.vehicleTypes === getTotalPages('vehicleTypes') ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes + 1)">»</button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                                     No hay tipos de vehículo registrados
                                 </td>
                             </tr>
@@ -281,10 +374,22 @@
             <!-- ==================== CLIENTES ==================== -->
             <div class="mt-4 p-4" x-show="activeTab === 'clients'">
 
-                <button @click="openClientModal()" class="btn btn-success fw-bold mb-4">
-                    <i class="fa-solid fa-plus me-2"></i>
-                    Crear Cliente
-                </button>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <button @click="openClientModal()" class="btn btn-success fw-bold">
+                        <i class="fa-solid fa-plus me-2"></i>
+                        Crear Cliente
+                    </button>
+
+                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                        <input type="text" 
+                               x-model="searchTerms.clients" 
+                               @input="resetPagination('clients')"
+                               class="form-control pe-5" 
+                               placeholder="Buscar clientes...">
+                        <i class="fa-solid fa-search position-absolute" 
+                           style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                    </div>
+                </div>
 
                 <div class="table-responsive">
 
@@ -309,7 +414,7 @@
 
                         <tbody>
 
-                            <template x-for="client in clients" :key="client.id">
+                            <template x-for="client in getPaginatedData('clients')" :key="client.id">
 
                                 <tr :class="client.status ? '' : 'table-secondary opacity-75'">
                                     <td x-text="client.name"></td>
@@ -339,16 +444,38 @@
 
                             </template>
 
-                            <tr x-show="clients.length === 0">
+                            <tr x-show="getFilteredData('clients').length === 0">
                                 <td colspan="6" class="text-center text-muted py-4">
                                     <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    No hay clientes registrados
+                                    <span x-text="searchTerms.clients ? 'No se encontraron resultados' : 'No hay clientes registrados'"></span>
                                 </td>
                             </tr>
 
                         </tbody>
 
                     </table>
+
+                    <!-- Paginador -->
+                    <div x-show="getTotalPages('clients') > 1" class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="text-muted">
+                            Página <span x-text="currentPage.clients"></span> de <span x-text="getTotalPages('clients')"></span>
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item" :class="currentPage.clients === 1 ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('clients', currentPage.clients - 1)">«</button>
+                                </li>
+                                <template x-for="page in getTotalPages('clients')" :key="page">
+                                    <li class="page-item" :class="page === currentPage.clients ? 'active' : ''">
+                                        <button class="page-link" @click="goToPage('clients', page)" x-text="page"></button>
+                                    </li>
+                                </template>
+                                <li class="page-item" :class="currentPage.clients === getTotalPages('clients') ? 'disabled' : ''">
+                                    <button class="page-link" @click="goToPage('clients', currentPage.clients + 1)">»</button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
 
                 </div>
 
@@ -511,14 +638,23 @@
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Teléfono</label>
-                            <input type="tel" x-model="clientForm.phone" class="form-control">
+                            <input type="tel" x-model="clientForm.phone" class="form-control" data-phone="true" placeholder="612 345 678" maxlength="11">
                             <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
                         </div>
 
                         <div class="col-md-6 mb-3">
                             <label class="form-label fw-bold">Matrícula</label>
-                            <input type="text" x-model="clientForm.license_plaque" class="form-control">
+                            <input type="text" 
+                                   x-model="clientForm.license_plaque" 
+                                   @input.debounce.500ms="checkLicensePlate($event.target.value)"
+                                   class="form-control license-plate-input" 
+                                   placeholder="1234 ABC" 
+                                   maxlength="10" 
+                                   style="text-transform: uppercase;">
                             <span x-show="errors.client.license_plaque" x-text="errors.client.license_plaque?.[0]" class="text-danger small"></span>
+                            <small x-show="licensePlateExists" class="text-danger">
+                                <i class="fa-solid fa-exclamation-triangle"></i> Esta matrícula ya está registrada
+                            </small>
                         </div>
                     </div>
 

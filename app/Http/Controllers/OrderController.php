@@ -135,7 +135,7 @@ class OrderController extends Controller
                 'selected_date' => 'required|date',
                 'hour_in' => 'required|date_format:H:i',
                 'hour_out' => 'required|date_format:H:i|after:hour_in',
-                'payment_status' => 'required|integer|in:0,1,2', // 0=Pendiente, 1=Pagado, 2=Parcial
+                'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
                 'payment_method' => 'required|string|in:efectivo,tarjeta,transferencia',
                 'order_status' => 'required|integer|in:1,2,3',
                 'tax_id' => 'nullable|uuid|exists:taxes,id',
