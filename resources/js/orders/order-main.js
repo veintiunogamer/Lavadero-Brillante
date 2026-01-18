@@ -34,7 +34,9 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		let debounceTimer;
 
 		if (licensePlateInput) {
+
 			licensePlateInput.addEventListener('input', function(e) {
+
 				// Convertir a mayúsculas
 				e.target.value = e.target.value.toUpperCase();
 
@@ -48,31 +50,52 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 				// Esperar 500ms después de que el usuario deje de escribir
 				debounceTimer = setTimeout(async () => {
+					
 					const licensePlate = e.target.value.trim();
 
 					if (licensePlate.length >= 4) {
+
 						try {
+
 							const response = await fetch(`/api/clients/check-license-plate?license_plate=${encodeURIComponent(licensePlate)}`);
 							
 							if (!response.ok) {
+
 								console.error('Error en la respuesta:', response.status);
 								return;
+
 							}
 
 							const result = await response.json();
-
+						
 							if (result.exists && result.client) {
+
 								// Auto-completar campos del cliente
 								if (clientNameInput) {
 									clientNameInput.value = result.client.name;
 								}
 
 								if (clientPhoneInput) {
-									clientPhoneInput.value = result.client.phone || '';
-									// Reinicializar máscara de teléfono si existe
+
+									// Establecer el valor del teléfono
+									const phoneValue = result.client.phone || '';
+									
+									// Si Cleave ya está inicializado, necesitamos destruirlo y reinicializar
+									if (clientPhoneInput.dataset.cleaveInitialized) {
+										delete clientPhoneInput.dataset.cleaveInitialized;
+									}
+									
+									// Limpiar el input primero
+									clientPhoneInput.value = '';
+									
+									// Reinicializar la máscara
 									if (typeof window.initPhoneMasks === 'function') {
 										window.initPhoneMasks(clientPhoneInput.parentElement);
 									}
+									
+									// Establecer el valor después de inicializar Cleave
+									// Cleave formateará automáticamente el valor
+									clientPhoneInput.value = phoneValue.replace(/\D/g, '').slice(-9); // Solo los últimos 9 dígitos
 								}
 
 								// Mostrar mensaje de éxito
@@ -83,14 +106,27 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 								if (window.notyf) {
 									window.notyf.success('Cliente encontrado - datos cargados automáticamente');
 								}
+
+							} else {
+
+								// No se encontró cliente
+								clientNameInput.value = '';
+								clientPhoneInput.value = '';
+
 							}
+
 						} catch (error) {
+
 							console.error('Error verificando matrícula:', error);
+
 							if (window.notyf) {
 								window.notyf.error('Error al verificar la matrícula');
 							}
+
 						}
+
 					}
+
 				}, 500);
 			});
 		}
@@ -673,7 +709,9 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
  * Maneja el estado del formulario, validación y envío
  */
 window.orderFormApp = function() {
+
     return {
+
         // Estado del formulario
         currentTab: 'pending',
         orders: [],
@@ -751,6 +789,7 @@ window.orderFormApp = function() {
          * Recopila los datos del formulario
          */
         collectFormData() {
+
             // Datos del cliente
             const clientName = document.querySelector('input[placeholder="Nombre completo"]')?.value;
             const clientPhone = document.getElementById('telefono-whatsapp')?.value;

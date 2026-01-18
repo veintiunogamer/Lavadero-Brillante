@@ -96,7 +96,7 @@
                     <div class="col-12 px-2">
                         <div class="col-12" style="width: 100%;">
                             <label class="fw-bold">Observaciones</label>
-                            <textarea class="input form-control" name="order_notes" rows="3" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+                            <textarea class="input form-control form-control-lg" name="order_notes" rows="5" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
                         </div>
                     </div>
                     
@@ -240,7 +240,7 @@
                         <label class="fw-bold text-primary small mb-2">
                             <i class="fa-solid fa-file-lines me-1"></i> Descripción de la cita (se genera automáticamente)
                         </label>
-                        <textarea class="form-control" name="order_notes" rows="2">Ninguno de nuestros precios incluye IVA.</textarea>
+                        <textarea class="form-control form-control-lg" name="order_notes" rows="4">Ninguno de nuestros precios incluye IVA.</textarea>
                     </div>
 
                     <small class="text-muted d-block mb-3">
@@ -252,7 +252,7 @@
                         <label class="fw-bold mb-2 text-success small">
                             <i class="fa-solid fa-pen me-1"></i> Notas adicionales
                         </label>
-                        <textarea class="form-control" name="extra_notes" rows="2" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
+                        <textarea class="form-control form-control-lg" name="extra_notes" rows="4" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
                     </div>
 
                 </div>
@@ -260,8 +260,8 @@
                 <!-- Resumen de precios -->
                 <div class="row" style="align-items: center; margin-top:1.5rem;">
 
-                    <div class="input-group" style="min-width: 200px;">
-                        <label>% Aplicar Descuento</label>
+                    <div class="col-3">
+                        <label class="fw-bold">% Aplicar Descuento</label>
                         <select class="input form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 42px;">
                             <option value="">Selecciona Descuento</option>
                             <option value="5">5%</option>
@@ -270,20 +270,20 @@
                         </select>
                     </div>
 
-                    <div class="input-group">
-                        <label>Subtotal</label>
+                    <div class="col-2">
+                        <label class="fw-bold">Subtotal</label>
                         <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
                         <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
                     </div>
 
-                    <div class="input-group">
-                        <label>Descuento</label>
+                    <div class="col-2">
+                        <labe class="fw-bold">Descuento</label>
                         <div class="discount-section" style="font-size:1.3rem;font-weight:600;color:#dc3545;">-0.00€</div>
                         <input type="hidden" class="discount-value" name="discount_value" value="0.00">
                     </div>
 
-                    <div class="input-group">
-                        <label>Total</label>
+                    <div class="col-2">
+                        <label class="fw-bold">Total</label>
                         <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
                         <input type="hidden" class="total-value" name="total" value="0.00">
                     </div>

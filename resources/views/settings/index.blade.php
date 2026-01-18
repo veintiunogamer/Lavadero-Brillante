@@ -52,7 +52,8 @@
             </ul>
 
             <!-- ==================== CATEGORÍAS ==================== -->
-            <div class="mt-4 p-4" x-show="activeTab === 'categories'">
+            <div class="mt-4 p-0" x-show="activeTab === 'categories'">
+                <div class="card shadow-sm rounded-4 p-4 mb-4">
                 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <button @click="openCategoryModal()" class="btn btn-success fw-bold">
@@ -149,7 +150,8 @@
             </div>
 
             <!-- ==================== SERVICIOS ==================== -->
-            <div class="mt-4 p-4" x-show="activeTab === 'services'">
+            <div class="mt-4 p-0" x-show="activeTab === 'services'">
+                <div class="card shadow-sm rounded-4 p-4 mb-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <button @click="openServiceModal()" class="btn btn-success fw-bold">
@@ -255,124 +257,105 @@
                     </div>
 
                 </div>
-
+                </div>
             </div>
 
             <!-- ==================== TIPOS DE VEHÍCULO ==================== -->
-            <div class="mt-4 p-4" x-show="activeTab === 'vehicle-types'">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold">
-                        <i class="fa-solid fa-plus me-2"></i>
-                        Crear Tipo de Vehículo
-                    </button>
-
-                    <div class="position-relative" style="max-width: 350px; width: 100%;">
-                        <input type="text" 
-                               x-model="searchTerms.vehicleTypes" 
-                               @input="resetPagination('vehicleTypes')"
-                               class="form-control pe-5" 
-                               placeholder="Buscar tipos de vehículos...">
-                        <i class="fa-solid fa-search position-absolute" 
-                           style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+            <div class="mt-4 p-0" x-show="activeTab === 'vehicle-types'">
+                <div class="card shadow-sm rounded-4 p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold">
+                            <i class="fa-solid fa-plus me-2"></i>
+                            Crear Tipo de Vehículo
+                        </button>
+                        <div class="position-relative" style="max-width: 350px; width: 100%;">
+                            <input type="text" 
+                                   x-model="searchTerms.vehicleTypes" 
+                                   @input="resetPagination('vehicleTypes')"
+                                   class="form-control pe-5" 
+                                   placeholder="Buscar tipos de vehículos...">
+                            <i class="fa-solid fa-search position-absolute" 
+                               style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                        </div>
                     </div>
-                </div>
-
-                <div class="table-responsive">
-
-                    <table class="table table-striped table-bordered align-middle">
-
-                        <thead class="table-dark">
-                            <tr>
-                                <th @click="sortData('vehicleTypes', 'name')" style="cursor: pointer;">
-                                    Nombre <span x-html="getSortIcon('vehicleTypes', 'name')"></span>
-                                </th>
-                                <th @click="sortData('vehicleTypes', 'status')" style="cursor: pointer;">
-                                    Estado <span x-html="getSortIcon('vehicleTypes', 'status')"></span>
-                                </th>
-                                <th @click="sortData('vehicleTypes', 'creation_date')" style="cursor: pointer;">
-                                    Fecha Creación <span x-html="getSortIcon('vehicleTypes', 'creation_date')"></span>
-                                </th>
-                                <th class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <template x-for="vehicleType in getPaginatedData('vehicleTypes')" :key="vehicleType.id">
-
-                                <tr :class="vehicleType.status ? '' : 'table-secondary opacity-75'">
-                                    <td x-text="vehicleType.name"></td>
-                                    <td>
-                                        <span class="badge" :class="vehicleType.status ? 'bg-success' : 'bg-secondary'" 
-                                              x-text="vehicleType.status ? 'Activo' : 'Inactivo'"></span>
-                                    </td>
-                                    <td x-text="formatDateTime(vehicleType.creation_date)"></td>
-                                    <td class="text-center">
-                                        <button @click="editVehicleType(vehicleType)" class="btn btn-sm btn-warning me-1">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </button>
-                                        <template x-if="vehicleType.status">
-                                            <button @click="deleteVehicleType(vehicleType.id)" class="btn btn-sm btn-danger">
-                                                <i class="fa-solid fa-times"></i>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th @click="sortData('vehicleTypes', 'name')" style="cursor: pointer;">
+                                        Nombre <span x-html="getSortIcon('vehicleTypes', 'name')"></span>
+                                    </th>
+                                    <th @click="sortData('vehicleTypes', 'status')" style="cursor: pointer;">
+                                        Estado <span x-html="getSortIcon('vehicleTypes', 'status')"></span>
+                                    </th>
+                                    <th @click="sortData('vehicleTypes', 'creation_date')" style="cursor: pointer;">
+                                        Fecha Creación <span x-html="getSortIcon('vehicleTypes', 'creation_date')"></span>
+                                    </th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="vehicleType in getPaginatedData('vehicleTypes')" :key="vehicleType.id">
+                                    <tr :class="vehicleType.status ? '' : 'table-secondary opacity-75'">
+                                        <td x-text="vehicleType.name"></td>
+                                        <td>
+                                            <span class="badge" :class="vehicleType.status ? 'bg-success' : 'bg-secondary'" 
+                                                  x-text="vehicleType.status ? 'Activo' : 'Inactivo'"></span>
+                                        </td>
+                                        <td x-text="formatDateTime(vehicleType.creation_date)"></td>
+                                        <td class="text-center">
+                                            <button @click="editVehicleType(vehicleType)" class="btn btn-sm btn-warning me-1">
+                                                <i class="fa-solid fa-edit"></i>
                                             </button>
-                                        </template>
-                                        <template x-if="!vehicleType.status">
-                                            <button @click="activateItem(vehicleType.id, 'vehicleType')" class="btn btn-sm btn-success">
-                                                <i class="fa-solid fa-check"></i>
-                                            </button>
-                                        </template>
+                                            <template x-if="vehicleType.status">
+                                                <button @click="deleteVehicleType(vehicleType.id)" class="btn btn-sm btn-danger">
+                                                    <i class="fa-solid fa-times"></i>
+                                                </button>
+                                            </template>
+                                            <template x-if="!vehicleType.status">
+                                                <button @click="activateItem(vehicleType.id, 'vehicleType')" class="btn btn-sm btn-success">
+                                                    <i class="fa-solid fa-check"></i>
+                                                </button>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                                <tr x-show="getFilteredData('vehicleTypes').length === 0">
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
+                                        <span x-text="searchTerms.vehicleTypes ? 'No se encontraron resultados' : 'No hay tipos de vehículos registrados'" ></span>
                                     </td>
                                 </tr>
-
-                            </template>
-
-                            <tr x-show="getFilteredData('vehicleTypes').length === 0">
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    <span x-text="searchTerms.vehicleTypes ? 'No se encontraron resultados' : 'No hay tipos de vehículos registrados'"></span>
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                    <!-- Paginador -->
-                    <div x-show="getTotalPages('vehicleTypes') > 1" class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="text-muted">
-                            Página <span x-text="currentPage.vehicleTypes"></span> de <span x-text="getTotalPages('vehicleTypes')"></span>
-                        </div>
-                        <nav>
-                            <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" :class="currentPage.vehicleTypes === 1 ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes - 1)">«</button>
-                                </li>
-                                <template x-for="page in getTotalPages('vehicleTypes')" :key="page">
-                                    <li class="page-item" :class="page === currentPage.vehicleTypes ? 'active' : ''">
-                                        <button class="page-link" @click="goToPage('vehicleTypes', page)" x-text="page"></button>
+                            </tbody>
+                        </table>
+                        <!-- Paginador -->
+                        <div x-show="getTotalPages('vehicleTypes') > 1" class="d-flex justify-content-between align-items-center mt-3">
+                            <div class="text-muted">
+                                Página <span x-text="currentPage.vehicleTypes"></span> de <span x-text="getTotalPages('vehicleTypes')"></span>
+                            </div>
+                            <nav>
+                                <ul class="pagination pagination-sm mb-0">
+                                    <li class="page-item" :class="currentPage.vehicleTypes === 1 ? 'disabled' : ''">
+                                        <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes - 1)">«</button>
                                     </li>
-                                </template>
-                                <li class="page-item" :class="currentPage.vehicleTypes === getTotalPages('vehicleTypes') ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes + 1)">»</button>
-                                </li>
-                            </ul>
-                        </nav>
+                                    <template x-for="page in getTotalPages('vehicleTypes')" :key="page">
+                                        <li class="page-item" :class="page === currentPage.vehicleTypes ? 'active' : ''">
+                                            <button class="page-link" @click="goToPage('vehicleTypes', page)" x-text="page"></button>
+                                        </li>
+                                    </template>
+                                    <li class="page-item" :class="currentPage.vehicleTypes === getTotalPages('vehicleTypes') ? 'disabled' : ''">
+                                        <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes + 1)">»</button>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
                     </div>
-                                    No hay tipos de vehículo registrados
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
                 </div>
-
             </div>
 
             <!-- ==================== CLIENTES ==================== -->
-            <div class="mt-4 p-4" x-show="activeTab === 'clients'">
+            <div class="mt-4 p-0" x-show="activeTab === 'clients'">
+                <div class="card shadow-sm rounded-4 p-4 mb-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <button @click="openClientModal()" class="btn btn-success fw-bold">
@@ -476,9 +459,8 @@
                             </ul>
                         </nav>
                     </div>
-
                 </div>
-
+                </div>
             </div>
 
         </div>
@@ -511,9 +493,9 @@
                         <span x-show="errors.category.status" x-text="errors.category.status?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" @click="closeCategoryModal()" class="btn btn-secondary">Cancelar</button>
-                        <button type="submit" class="btn btn-success">
+                    <div class="d-flex justify-content-center gap-2 my-4">
+                        <button type="button" @click="closeCategoryModal()" class="btn btn-danger col-5">Cancelar</button>
+                        <button type="submit" class="btn btn-success col-5">
                             <i class="fa-solid fa-save me-2"></i>
                             <span x-text="isEditingCategory ? 'Actualizar' : 'Crear'"></span>
                         </button>
@@ -521,6 +503,7 @@
                 </form>
 
             </div>
+            
         </div>
 
         <!-- ==================== MODAL SERVICIO ==================== -->
@@ -536,14 +519,16 @@
                 </div>
 
                 <form @submit.prevent="saveService()">
-                    <div class="row">
-                        <div class="col-12 col-md-6 mb-3 px-2">
+
+                    <div class="col-12 d-flex flex-wrap mx-n2">
+
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                             <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
                             <input type="text" x-model="serviceForm.name" class="form-control" placeholder="Ej: Lavado Premium" required>
                             <span x-show="errors.service.name" x-text="errors.service.name?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-12 col-md-6 mb-3 px-2">
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                             <label class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
                             <select x-model="serviceForm.category_id" class="form-select" required>
                                 <option value="">Seleccionar categoría</option>
@@ -560,22 +545,22 @@
                             <span x-show="errors.service.details" x-text="errors.service.details?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-12 col-md-6 mb-3 px-2">
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                             <label class="form-label fw-bold">Precio (€) <span class="text-danger">*</span></label>
                             <input type="number" step="0.01" min="0" x-model="serviceForm.value" class="form-control" placeholder="0.00" required>
                             <span x-show="errors.service.value" x-text="errors.service.value?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-12 col-md-6 mb-3 px-2">
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                             <label class="form-label fw-bold">Duración (min) <span class="text-danger">*</span></label>
                             <input type="number" min="1" x-model="serviceForm.duration" class="form-control" placeholder="60" required>
                             <span x-show="errors.service.duration" x-text="errors.service.duration?.[0]" class="text-danger small"></span>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" @click="closeServiceModal()" class="btn btn-secondary">Cancelar</button>
-                        <button type="submit" class="btn btn-success">
+                    <div class="col-12 d-flex justify-content-center gap-2 my-4">
+                        <button type="button" @click="closeServiceModal()" class="btn btn-danger col-5">Cancelar</button>
+                        <button type="submit" class="btn btn-success col-5">
                             <i class="fa-solid fa-save me-2"></i>
                             <span x-text="isEditingService ? 'Actualizar' : 'Crear'"></span>
                         </button>
@@ -604,9 +589,9 @@
                         <span x-show="errors.vehicleType.name" x-text="errors.vehicleType.name?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" @click="closeVehicleTypeModal()" class="btn btn-secondary">Cancelar</button>
-                        <button type="submit" class="btn btn-success">
+                    <div class="d-flex col-12 justify-content-center gap-2 my-4">
+                        <button type="button" @click="closeVehicleTypeModal()" class="btn btn-danger col-5">Cancelar</button>
+                        <button type="submit" class="btn btn-success col-5">
                             <i class="fa-solid fa-save me-2"></i>
                             <span x-text="isEditingVehicleType ? 'Actualizar' : 'Crear'"></span>
                         </button>
@@ -629,20 +614,22 @@
                 </div>
 
                 <form @submit.prevent="saveClient()">
-                    <div class="row">
-                        <div class="col-12 mb-3">
+
+                    <div class="col-12 d-flex flex-wrap mx-n2">
+
+                        <div class="col-12 mb-3 px-2">
                             <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
                             <input type="text" x-model="clientForm.name" class="form-control" required>
                             <span x-show="errors.client.name" x-text="errors.client.name?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                             <label class="form-label fw-bold">Teléfono</label>
                             <input type="tel" x-model="clientForm.phone" class="form-control" data-phone="true" placeholder="612 345 678" maxlength="11">
                             <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                             <label class="form-label fw-bold">Matrícula</label>
                             <input type="text" 
                                    x-model="clientForm.license_plaque" 
@@ -658,9 +645,9 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2">
-                        <button type="button" @click="closeClientModal()" class="btn btn-secondary">Cancelar</button>
-                        <button type="submit" class="btn btn-success">
+                    <div class="d-flex col-12 justify-content-center gap-2 my-4">
+                        <button type="button" @click="closeClientModal()" class="btn btn-danger col-5">Cancelar</button>
+                        <button type="submit" class="btn btn-success col-5">
                             <i class="fa-solid fa-save me-2"></i>
                             <span x-text="isEditingClient ? 'Actualizar' : 'Crear'"></span>
                         </button>
