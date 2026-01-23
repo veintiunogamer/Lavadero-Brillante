@@ -1,6 +1,6 @@
 # Lavadero Brillante
 
-**Lavadero Brillante** es una **aplicación web para agendar y vender servicios de lavado de coches de forma rápida y sencilla**, desarrollada con Laravel y tecnologías web modernas. :contentReference[oaicite:1]{index=1}
+**Lavadero Brillante** es una **aplicación web para agendar y vender servicios de lavado de coches de forma rápida y sencilla**, desarrollada con Laravel y tecnologías web modernas.
 
 ---
 
