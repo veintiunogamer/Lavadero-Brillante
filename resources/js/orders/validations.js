@@ -28,10 +28,20 @@ class FormValidator {
 
         this.errors = [];
         
-        // Validar campos obligatorios
+        // Validar campos obligatorios (excluyendo campos ocultos y fallbacks)
         const requiredFields = this.form.querySelectorAll('.required-field');
 
         requiredFields.forEach(field => {
+
+            // Omitir campos ocultos (display:none en el campo o su contenedor)
+            if (field.style.display === 'none' || field.closest('[style*="display: none"]') || field.closest('[style*="display:none"]')) {
+                return;
+            }
+            
+            // Omitir fallbacks de time-picker (se validan por separado)
+            if (field.classList.contains('time-picker-fallback')) {
+                return;
+            }
 
             if (!this.validateRequired(field)) {
 
@@ -311,17 +321,44 @@ class OrderFormValidator extends FormValidator {
             valid = false;
         }
 
-        // Validar horas
-        const horaEntrada = document.getElementById('hora-entrada')?.value || document.getElementById('hora-entrada-fallback')?.value;
-        const horaSalida = document.getElementById('hora-salida')?.value || document.getElementById('hora-salida-fallback')?.value;
+        // Validar horas - verificar input visible o select fallback
+        const horaEntradaInput = document.getElementById('hora-entrada');
+        const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
+        const horaSalidaInput = document.getElementById('hora-salida');
+        const horaSalidaFallback = document.getElementById('hora-salida-fallback');
 
-        if (!horaEntrada) {
+        // Usar el valor del campo visible (input si está visible, si no el fallback)
+        const horaEntrada = (horaEntradaInput && horaEntradaInput.style.display !== 'none') 
+            ? horaEntradaInput.value 
+            : horaEntradaFallback?.value;
+        
+        const horaSalida = (horaSalidaInput && horaSalidaInput.style.display !== 'none') 
+            ? horaSalidaInput.value 
+            : horaSalidaFallback?.value;
+
+        if (!horaEntrada || horaEntrada.trim() === '') {
+
             this.errors.push('Debes seleccionar la hora de entrada');
+
+            if (horaEntradaInput && horaEntradaInput.style.display !== 'none') {
+                this.markFieldAsError(horaEntradaInput);
+            } else if (horaEntradaFallback) {
+                this.markFieldAsError(horaEntradaFallback);
+            }
+
             valid = false;
         }
 
-        if (!horaSalida) {
+        if (!horaSalida || horaSalida.trim() === '') {
+
             this.errors.push('Debes seleccionar la hora de salida');
+            
+            if (horaSalidaInput && horaSalidaInput.style.display !== 'none') {
+                this.markFieldAsError(horaSalidaInput);
+            } else if (horaSalidaFallback) {
+                this.markFieldAsError(horaSalidaFallback);
+            }
+
             valid = false;
         }
 
@@ -332,6 +369,7 @@ class OrderFormValidator extends FormValidator {
      * Valida el formulario completo de orden
      */
     validateOrderForm() {
+
         // Primero las validaciones básicas
         const basicValid = this.validateAll();
         
@@ -344,6 +382,8 @@ class OrderFormValidator extends FormValidator {
 
 // Exportar para usar en otros archivos
 if (typeof window !== 'undefined') {
+
     window.FormValidator = FormValidator;
     window.OrderFormValidator = OrderFormValidator;
+
 }

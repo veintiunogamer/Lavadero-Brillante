@@ -1,3 +1,4 @@
+
 /**
  * Order Main JS - Gestión del formulario de órdenes (index principal)
  * Este archivo maneja toda la lógica del formulario de creación de órdenes en la vista principal
@@ -216,6 +217,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			}
 
 			calculateTotals();
+			updateOrderDescription();
 		}
 
 		/**
@@ -230,6 +232,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			priceInput.value = (quantity * basePrice).toFixed(2);
 
 			calculateTotals();
+			updateOrderDescription();
 		}
 
 		/**
@@ -289,6 +292,34 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 
 			if (totalSection) totalSection.textContent = total.toFixed(2) + '€';
 			if (totalInput) totalInput.value = total.toFixed(2);
+		}
+
+		// Actualiza el textarea de descripción de la cita con los servicios seleccionados
+		function updateOrderDescription() {
+
+			const descriptionTextarea = document.querySelector('.service-box textarea[name="order_notes"]');
+
+			if (!descriptionTextarea) return;
+
+			const serviceItems = document.querySelectorAll('.service-item');
+			let lines = [];
+
+			serviceItems.forEach(item => {
+
+				const serviceSelect = item.querySelector('.service-select');
+				const quantityInput = item.querySelector('.service-quantity');
+				const serviceName = serviceSelect?.options[serviceSelect.selectedIndex]?.textContent?.trim();
+				const quantity = quantityInput?.value || 1;
+
+				if (serviceName && serviceName !== 'Seleccionar servicio') {
+					lines.push(`• ${serviceName} x${quantity}`);
+				}
+
+			});
+
+			let serviciosText = lines.length > 0 ? lines.join('\n') + '\n' : '';
+
+			descriptionTextarea.value = serviciosText + 'Ninguno de nuestros precios incluye IVA.';
 		}
 
 		/**
@@ -394,6 +425,7 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 			removeBtn.onclick = function () {
 				clone.remove();
 				calculateTotals();
+				updateOrderDescription();
 			};
 
 			// Inicializar eventos para el nuevo clon
@@ -416,8 +448,8 @@ if (typeof window !== 'undefined' && ordersModuleActive()) {
 		const nextBtn = calendarBox?.querySelectorAll('.calendar-nav')[1];
 
 		let currentDate = new Date();
-		let selectedDate = null;
-		window.selectedOrderDate = null; // Variable global para Alpine
+		let selectedDate = new Date(); // Inicializar con fecha actual
+		window.selectedOrderDate = new Date(); // Variable global para Alpine - fecha actual por defecto
 
 		function renderCalendar(date) {
 
@@ -791,59 +823,76 @@ window.orderFormApp = function() {
         collectFormData() {
 
             // Datos del cliente
-            const clientName = document.querySelector('input[placeholder="Nombre completo"]')?.value;
+            const clientName = document.querySelector('input[name="client_name"]')?.value;
             const clientPhone = document.getElementById('telefono-whatsapp')?.value;
-            const licensePlaque = document.querySelector('input[placeholder*="1234 ABC"]')?.value;
-            const assignedUser = document.querySelector('select.input.form-control')?.value;
+            const licensePlaque = document.querySelector('input[name="license_plaque"]')?.value;
+            const assignedUser = document.querySelector('select[name="assigned_user"]')?.value;
+            const vehicleTypeId = document.querySelector('select[name="vehicle_type_id"]')?.value;
+            const dirtLevel = document.querySelector('select[name="dirt_level"]')?.value;
 
             // Datos de servicios
             const services = [];
             document.querySelectorAll('.service-item').forEach(item => {
                 const serviceId = item.querySelector('.service-select')?.value;
                 const quantity = item.querySelector('.service-quantity')?.value;
-                const dirtLevel = item.querySelector('.service-dirt')?.value;
                 const price = item.querySelector('.service-price')?.value;
 
                 if (serviceId) {
                     services.push({
                         service_id: serviceId,
                         quantity: parseInt(quantity),
-                        dirt_level: parseInt(dirtLevel),
                         price: parseFloat(price)
                     });
                 }
             });
 
             // Notas
-            const vehicleNotes = document.querySelector('textarea[placeholder*="Anotaciones internas"]')?.value;
-            const orderNotes = document.querySelector('textarea[rows="2"]')?.value;
-            const extraNotes = document.querySelectorAll('textarea[rows="2"]')[1]?.value;
+            const vehicleNotes = document.querySelector('textarea[name="vehicle_notes"]')?.value || '';
+            const orderNotes = document.querySelector('.service-box textarea[name="order_notes"]')?.value || '';
+            const extraNotes = document.querySelector('textarea[name="extra_notes"]')?.value || '';
 
             // Totales
-            const discount = 0; // TODO: implementar descuento
-            const subtotalText = document.querySelector('.input-group div')?.textContent;
-            const totalText = document.querySelectorAll('.input-group div')[1]?.textContent;
-            const subtotal = parseFloat(subtotalText?.replace('€', '').replace(',', '.')) || 0;
-            const total = parseFloat(totalText?.replace('€', '').replace(',', '.')) || 0;
+            const discountSelect = document.getElementById('discount-select');
+            const discountPercent = parseFloat(discountSelect?.value || 0);
+            const subtotal = parseFloat(document.querySelector('.subtotal-value')?.value || 0);
+            const total = parseFloat(document.querySelector('.total-value')?.value || 0);
 
             // Fecha y horas
             const selectedDate = window.selectedOrderDate ? 
                 window.selectedOrderDate.toISOString().split('T')[0] : 
                 new Date().toISOString().split('T')[0];
             
-            const hourIn = document.getElementById('hora-entrada')?.value || 
-                          document.getElementById('hora-entrada-fallback')?.value;
-            const hourOut = document.getElementById('hora-salida')?.value || 
-                           document.getElementById('hora-salida-fallback')?.value;
+            // Obtener horas del input visible o del fallback
+            const horaEntradaInput = document.getElementById('hora-entrada');
+            const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
+            const horaSalidaInput = document.getElementById('hora-salida');
+            const horaSalidaFallback = document.getElementById('hora-salida-fallback');
+            
+            let hourIn = (horaEntradaInput && horaEntradaInput.style.display !== 'none') 
+                ? horaEntradaInput.value 
+                : horaEntradaFallback?.value;
+            
+            let hourOut = (horaSalidaInput && horaSalidaInput.style.display !== 'none') 
+                ? horaSalidaInput.value 
+                : horaSalidaFallback?.value;
+            
+            // Formatear horas a HH:mm si vienen con segundos
+            if (hourIn && hourIn.length > 5) hourIn = hourIn.substring(0, 5);
+            if (hourOut && hourOut.length > 5) hourOut = hourOut.substring(0, 5);
 
-            // Estado de pago
+            // Estado de pago (1=Pendiente, 2=Parcial, 3=Pagado según backend)
             const activePayBtn = document.querySelector('.pay-status-btn.pay-status-active');
-            const paymentStatusText = activePayBtn?.textContent.trim();
-            const paymentStatus = paymentStatusText === 'Pagado' ? 1 : 
-                                 paymentStatusText === 'Parcial' ? 2 : 0;
+            const paymentStatusValue = activePayBtn?.dataset?.value;
+            const paymentStatus = parseInt(paymentStatusValue) || 1;
 
-            const paymentMethod = document.querySelector('select[class*="input form-control"]')?.value || 'efectivo';
-            const orderStatus = document.querySelectorAll('select.input.form-control')[1]?.value || 1;
+            // Obtener abono parcial si el estado de pago es "Parcial" (2)
+            const partialPaymentInput = document.getElementById('partial-payment-input');
+            const partialPayment = (paymentStatus === 2 && partialPaymentInput?.value) 
+                ? parseFloat(partialPaymentInput.value) 
+                : null;
+
+            const paymentMethod = document.querySelector('select[name="payment_method"]')?.value || 'efectivo';
+            const orderStatus = document.querySelector('select[name="status"]')?.value || 1;
 
             // Facturación (SI/NO)
             const invoiceRequired = document.getElementById('solicitar-factura')?.checked;
@@ -856,24 +905,27 @@ window.orderFormApp = function() {
                 invoice_address: document.getElementById('direccion-calle')?.value,
                 invoice_postal_code: document.getElementById('direccion-cp')?.value,
                 invoice_city: document.getElementById('direccion-ciudad')?.value,
-            } : {};
+            } : { invoice_required: false };
 
             return {
                 client_name: clientName,
                 client_phone: clientPhone,
                 license_plaque: licensePlaque,
                 assigned_user: assignedUser,
+                vehicle_type_id: vehicleTypeId,
+                dirt_level: parseInt(dirtLevel) || 1,
                 services: services,
                 vehicle_notes: vehicleNotes,
                 order_notes: orderNotes,
                 extra_notes: extraNotes,
-                discount: discount,
+                discount: discountPercent,
                 subtotal: subtotal,
                 total: total,
                 selected_date: selectedDate,
                 hour_in: hourIn,
                 hour_out: hourOut,
                 payment_status: paymentStatus,
+                partial_payment: partialPayment,
                 payment_method: paymentMethod,
                 order_status: parseInt(orderStatus),
                 ...invoiceData

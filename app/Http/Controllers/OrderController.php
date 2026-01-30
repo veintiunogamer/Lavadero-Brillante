@@ -120,7 +120,7 @@ class OrderController extends Controller
                 'client_phone' => 'required|string|max:20',
                 'license_plaque' => 'required|string|max:10',
                 'assigned_user' => 'required|uuid|exists:users,id',
-                'vehicle_type_id' => 'required|uuid|exists:vehicle_types,id',
+                'vehicle_type_id' => 'required|uuid|exists:vehicle_type,id',
                 'dirt_level' => 'required|integer|min:1|max:3',
                 'vehicle_notes' => 'nullable|string|max:250',
                 'services' => 'required|array|min:1',
@@ -136,7 +136,8 @@ class OrderController extends Controller
                 'hour_in' => 'required|date_format:H:i',
                 'hour_out' => 'required|date_format:H:i|after:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
-                'payment_method' => 'required|string|in:efectivo,tarjeta,transferencia',
+                'partial_payment' => 'nullable|numeric|min:0',
+                'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='tarjeta', 3='transferencia'
                 'order_status' => 'required|integer|in:1,2,3',
                 'tax_id' => 'nullable|uuid|exists:taxes,id',
                 // Datos de facturación (opcionales)
@@ -164,59 +165,56 @@ class OrderController extends Controller
                     'creation_date' => now(),
                 ]);
 
-            } else {
-
-                // Actualizar datos del cliente si ya existe
-                $client->update([
-                    'name' => $validated['client_name'],
-                    'license_plaque' => $validated['license_plaque'],
-                ]);
-
             }
 
-            // 2. Crear órdenes (una por cada servicio)
-            $orders = [];
+            $orderId = \Illuminate\Support\Str::uuid();
+            
+            // Combinar fecha con horas
+            $hourIn = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_in']);
+            $hourOut = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_out']);
+
+            $order = Order::create([
+                'id' => $orderId,
+                'client_id' => $client->id,
+                'user_id' => $validated['assigned_user'],
+                'dirt_level' => $validated['dirt_level'],
+                'date' => $validated['selected_date'],
+                'hour_in' => $hourIn,
+                'hour_out' => $hourOut,
+                'vehicle_type_id' => $validated['vehicle_type_id'],
+                'vehicle_notes' => $validated['vehicle_notes'] ?? '',
+                'discount' => $validated['discount'] ?? 0,
+                'subtotal' => $validated['subtotal'],
+                'taxes' => $validated['tax_id'] ?? null,
+                'total' => $validated['total'],
+                'partial_payment' => $validated['partial_payment'] ?? null,
+                'order_notes' => $validated['order_notes'] ?? '',
+                'extra_notes' => $validated['extra_notes'] ?? '',
+                'status' => $validated['order_status'],
+                'creation_date' => now(),
+            ]);
+
+            // 3. Crear pago asociado
+            \App\Models\Payment::create([
+                'id' => \Illuminate\Support\Str::uuid(),
+                'order_id' => $order->id,
+                'type' => $this->getPaymentTypeFromMethod($validated['payment_method']),
+                'subtotal' => $validated['subtotal'],
+                'total' => $validated['total'],
+                'status' => $validated['payment_status'],
+                'creation_date' => now(),
+            ]);
 
             foreach ($validated['services'] as $service) {
 
-                $orderId = \Illuminate\Support\Str::uuid();
-                
-                // Combinar fecha con horas
-                $hourIn = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_in']);
-                $hourOut = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_out']);
-
-                $order = Order::create([
-                    'id' => $orderId,
-                    'client_id' => $client->id,
-                    'user_id' => $validated['assigned_user'],
+                \App\Models\OrderService::create([
+                    'id' => \Illuminate\Support\Str::uuid(),
+                    'order_id' => $orderId,
                     'service_id' => $service['service_id'],
                     'quantity' => $service['quantity'],
-                    'dirt_level' => $service['dirt_level'],
-                    'hour_in' => $hourIn,
-                    'hour_out' => $hourOut,
-                    'vehicle_notes' => $validated['vehicle_notes'] ?? '',
-                    'discount' => $validated['discount'] ?? 0,
-                    'subtotal' => $validated['subtotal'],
-                    'taxes' => $validated['tax_id'] ?? null,
-                    'total' => $validated['total'],
-                    'order_notes' => $validated['order_notes'] ?? '',
-                    'extra_notes' => $validated['extra_notes'] ?? '',
-                    'status' => $validated['order_status'],
-                    'creation_date' => now(),
+                    'price' => $service['price'],
                 ]);
-
-                // 3. Crear pago asociado
-                \App\Models\Payment::create([
-                    'id' => \Illuminate\Support\Str::uuid(),
-                    'service_id' => $order->id, // En realidad debería ser order_id
-                    'type' => $this->getPaymentTypeFromMethod($validated['payment_method']),
-                    'subtotal' => $validated['subtotal'],
-                    'total' => $validated['total'],
-                    'status' => $validated['payment_status'],
-                    'creation_date' => now(),
-                ]);
-
-                $orders[] = $order;
+                
             }
 
             \DB::commit();
@@ -225,7 +223,7 @@ class OrderController extends Controller
                 'success' => true,
                 'message' => 'Orden creada exitosamente',
                 'data' => [
-                    'orders' => $orders,
+                    'order' => $order,
                     'client' => $client,
                 ]
             ], 201);

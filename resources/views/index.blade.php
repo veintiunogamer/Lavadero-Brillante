@@ -96,7 +96,7 @@
                     <div class="col-12 px-2">
                         <div class="col-12" style="width: 100%;">
                             <label class="fw-bold">Observaciones</label>
-                            <textarea class="input form-control form-control-lg" name="order_notes" rows="5" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+                            <textarea class="input form-control form-control-lg" name="vehicle_notes" rows="5" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
                         </div>
                     </div>
                     
@@ -345,8 +345,10 @@
                         <div class="col-12 form-side d-flex flex-wrap">
 
                             <div class="col-6 px-2">
+
                                 <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
-                                <input type="text" class="input form-control time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
+                                <input type="text" class="input form-control required-field time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
+                                
                                 <!-- Fallback select (oculto por defecto) -->
                                 <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hora-entrada-fallback" style="display: none;" data-field-name="Hora de Entrada">
                                     <option value="">Seleccionar</option>
@@ -356,11 +358,14 @@
                                         @endforeach
                                     @endfor
                                 </select>
+
                             </div>
 
                             <div class="col-6 px-2">
+
                                 <label class="fw-bold">Hora Entrega <span class="required">*</span></label>
-                                <input type="text" class="input form-control time-picker" id="hora-salida" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
+                                <input type="text" class="input form-control required-field time-picker" id="hora-salida" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
+                                
                                 <!-- Fallback select (oculto por defecto) -->
                                 <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hora-salida-fallback" style="display: none;" data-field-name="Hora de Salida">
                                     <option value="">Seleccionar</option>
@@ -370,6 +375,7 @@
                                         @endforeach
                                     @endfor
                                 </select>
+
                             </div>
 
                             <div class="col-12 my-5">
@@ -392,9 +398,9 @@
                             <div class="col-6 px-2 mt-2">
                                 <label class="fw-bold">Método de Pago <span class="required">*</span></label>
                                 <select class="input form-control required-field" name="payment_method" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Método de Pago">
-                                    <option value="efectivo">Efectivo</option>
-                                    <option value="tarjeta">Tarjeta</option>
-                                    <option value="transferencia">Transferencia</option>
+                                    <option value="1">Efectivo</option>
+                                    <option value="2">Tarjeta</option>
+                                    <option value="3">Transferencia</option>
                                 </select>
                             </div>
 
