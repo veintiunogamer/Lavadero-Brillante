@@ -4,6 +4,7 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     public $incrementing = false;
+    public $timestamps = false;
 
     const STATUS_PENDING = 1;
     const STATUS_PARTIAL = 2;

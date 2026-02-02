@@ -150,7 +150,6 @@ class OrderController extends Controller
                 'invoice_city' => 'required_if:invoice_required,true|nullable|string|max:100',
             ]);
 
-            dump($validated);die;
 
             // 1. Buscar o crear cliente
             $client = \App\Models\Client::where('phone', $validated['client_phone'])->first();
@@ -162,6 +161,7 @@ class OrderController extends Controller
                     'name' => $validated['client_name'],
                     'phone' => $validated['client_phone'],
                     'license_plaque' => $validated['license_plaque'],
+                    'status' => \App\Models\Client::STATUS_ACTIVE,
                     'creation_date' => now(),
                 ]);
 
@@ -173,6 +173,7 @@ class OrderController extends Controller
             $hourIn = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_in']);
             $hourOut = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_out']);
 
+            // 2. Crear orden
             $order = Order::create([
                 'id' => $orderId,
                 'client_id' => $client->id,
@@ -181,6 +182,7 @@ class OrderController extends Controller
                 'date' => $validated['selected_date'],
                 'hour_in' => $hourIn,
                 'hour_out' => $hourOut,
+                'quantity' => $validated['quantity'] ?? 1,
                 'vehicle_type_id' => $validated['vehicle_type_id'],
                 'vehicle_notes' => $validated['vehicle_notes'] ?? '',
                 'discount' => $validated['discount'] ?? 0,
@@ -198,13 +200,14 @@ class OrderController extends Controller
             \App\Models\Payment::create([
                 'id' => \Illuminate\Support\Str::uuid(),
                 'order_id' => $order->id,
-                'type' => $this->getPaymentTypeFromMethod($validated['payment_method']),
+                'type' => $validated['payment_method'],
                 'subtotal' => $validated['subtotal'],
                 'total' => $validated['total'],
                 'status' => $validated['payment_status'],
                 'creation_date' => now(),
             ]);
 
+            // 4. Asociar servicios a la orden
             foreach ($validated['services'] as $service) {
 
                 \App\Models\OrderService::create([
@@ -212,7 +215,8 @@ class OrderController extends Controller
                     'order_id' => $orderId,
                     'service_id' => $service['service_id'],
                     'quantity' => $service['quantity'],
-                    'price' => $service['price'],
+                    'subtotal' => 0,
+                    'total' => $service['price'],
                 ]);
                 
             }
@@ -250,22 +254,6 @@ class OrderController extends Controller
             ], 500);
 
         }
-    }
-
-    /**
-     * Convierte el método de pago string a tipo numérico
-     *
-     * @param string $method
-     * @return int
-     */
-    private function getPaymentTypeFromMethod(string $method): int
-    {
-        return match($method) {
-            'efectivo' => 1,
-            'tarjeta' => 2,
-            'transferencia' => 3,
-            default => 1,
-        };
     }
 
     /**

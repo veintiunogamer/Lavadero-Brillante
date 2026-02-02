@@ -201,8 +201,15 @@ class FormValidator {
 
         if (this.errors.length > 0 && window.notyf) {
 
-            this.errors.forEach(error => {
-                window.notyf.error(error);
+            // Mensaje de errores
+            const textError = "Algunos campos no han sido diligenciados correctamente.";
+
+            window.notyf.open({
+                type: 'error',
+                message: textError,
+                duration: 6000,
+                dismissible: true,
+                ripple: true
             });
 
         }

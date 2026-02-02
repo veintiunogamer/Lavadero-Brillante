@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     public $incrementing = false;
+    public $timestamps = false;
 
     const STATUS_PENDING = 1;
     const STATUS_IN_PROGRESS = 2;

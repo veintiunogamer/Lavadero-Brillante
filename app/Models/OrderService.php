@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class OrderService extends Pivot
 {
     public $incrementing = false;
+    public $timestamps = false;
 
     protected $keyType = 'string';
     protected $table = 'order_services';

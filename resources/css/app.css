@@ -579,6 +579,13 @@ hr {
     box-shadow: 0 4px 16px rgba(51,102,255,0.18);
 }
 
+/* Notificaciones de validación consolidadas */
+.input-tall {
+    height: 40px !important;
+    min-height: 40px !important;
+    font-size: 1rem;
+}
+
 .card-citas {
     background: #e5e5e5;
     border-radius: 20px;
