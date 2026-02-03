@@ -145,6 +145,8 @@ class OrderController extends Controller
                 'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='tarjeta', 3='transferencia'
                 'order_status' => 'required|integer|in:1,2,3',
                 'tax_id' => 'nullable|uuid|exists:taxes,id',
+                'consecutive_serial' => 'nullable|string|max:9',
+                'consecutive_number' => 'nullable|string|max:9',
                 // Datos de facturación (opcionales)
                 'invoice_required' => 'nullable|boolean',
                 'invoice_business_name' => 'required_if:invoice_required,true|nullable|string|max:200',
@@ -224,6 +226,7 @@ class OrderController extends Controller
                     'quantity' => $service['quantity'],
                     'subtotal' => 0,
                     'total' => $service['price'],
+                    'created_at' => now(),
                 ]);
                 
             }

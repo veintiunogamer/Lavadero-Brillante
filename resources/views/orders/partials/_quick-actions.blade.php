@@ -16,7 +16,7 @@
 
                 <h4 class="mb-0 fw-bold">
                     <i class="fa fa-list color-blue me-2"></i>
-                    Detalle de Orden
+                    Detalle de Orden <span class="text-primary" x-text="selectedOrder ? (selectedOrder.consecutive_serial + ' - ' + selectedOrder.consecutive_number) : ''"></span>
                 </h4>
 
                 <div>

@@ -27,7 +27,7 @@
                         <label class="fw-bold">Nº Orden / Factura</label>
                         <div style="gap: 0.5rem;">
                             <input type="text" class="input float-right" name="consecutive_serial" readonly style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
-                            <input type="text" class="input float-right" name="consecutive_sequence" readonly style="width: 70px;" value="{{ $consecutive['sequence'] ?? '' }}">
+                            <input type="text" class="input float-right" name="consecutive_number" readonly style="width: 70px;" value="{{ $consecutive['sequence'] ?? '' }}">
                         </div>
 
                     </div>
