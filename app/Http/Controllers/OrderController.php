@@ -280,7 +280,7 @@ class OrderController extends Controller
 
                 // Tab 2: Historial completo (En Proceso, Terminadas, Canceladas)
                 $orders = Order::with(['client', 'services', 'user'])
-                ->whereIn('status', [Order::STATUS_IN_PROGRESS, Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
+                ->whereIn('status', [Order::STATUS_PENDING, Order::STATUS_IN_PROGRESS, Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
                 ->orderBy('creation_date', 'desc')
                 ->get();
 

@@ -624,8 +624,8 @@ hr {
 }
 
 .citas-tab-active {
-    background: #eef3fa;
-    color: var(--color-azul-logo);
+    background: #0e64dd;
+    color: var(--color-blanco);
     box-shadow: 0 2px 8px rgba(51,102,255,0.07);
 }
 

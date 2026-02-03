@@ -486,7 +486,7 @@
 
                     <table class="table table-hover align-middle">
 
-                        <thead class="table-light">
+                        <thead class="table-dark">
                             <tr>
                                 <th>Cliente</th>
                                 <th>Servicio</th>
@@ -505,7 +505,7 @@
                             <template x-for="order in orders" :key="order.id">
                                 <tr>
                                     <td x-text="order.client ? order.client.name : 'N/A'"></td>
-                                    <td x-text="order.service ? order.service.name : 'N/A'"></td>
+                                    <td x-text="order.order_notes ? order.order_notes : 'N/A'"></td>
                                     <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
                                     <td x-text="formatDate(order.creation_date)"></td>
                                     <td x-text="formatTime(order.hour_in)"></td>
