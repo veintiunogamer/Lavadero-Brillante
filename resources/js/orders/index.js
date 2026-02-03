@@ -14,7 +14,7 @@ import { TimePickerManager } from './modules/timepicker/TimePickerManager.js';
 import { LicensePlateValidator } from './modules/client/LicensePlateValidator.js';
 import { FormDataCollector } from './modules/form/FormDataCollector.js';
 import { FormSubmitHandler } from './modules/form/FormSubmitHandler.js';
-import { apiGet, apiPost } from './utils/api.js';
+import { apiGet, apiPost, apiPut, apiPatch } from './utils/api.js';
 import * as formatters from './utils/formatters.js';
 
 // Flag para prevenir inicialización múltiple
@@ -50,6 +50,17 @@ function createOrderFormApp() {
         orders: [],
         loadingOrders: false,
         submitting: false,
+        isEditMode: false,
+        editOrderId: null,
+
+        // Estado para modales
+        showQuickViewModal: false,
+        selectedOrder: null,
+        showStatusModal: false,
+        statusModalOrder: null,
+        newStatus: null,
+        statusChangeNote: '',
+        changingStatus: false,
 
         /**
          * Inicialización del componente Alpine
@@ -70,6 +81,107 @@ function createOrderFormApp() {
 
             // Cargar órdenes
             await this.loadOrders();
+
+            // Verificar si hay una orden para editar
+            if (window.editOrderData) {
+                this.loadEditOrder(window.editOrderData);
+            }
+        },
+
+        /**
+         * Carga los datos de una orden para edición
+         * @param {Object} order 
+         */
+        loadEditOrder(order) {
+
+            this.isEditMode = true;
+            this.editOrderId = order.id;
+
+            // Pre-llenar datos del cliente
+            const clientName = document.querySelector('[name="client_name"]');
+            const clientPhone = document.querySelector('[name="client_phone"]');
+            const licensePlateInput = document.querySelector('[name="license_plaque"]');
+            
+            if (clientName && order.client) clientName.value = order.client.name || '';
+            if (clientPhone && order.client) clientPhone.value = order.client.phone || '';
+            if (licensePlateInput && order.client) licensePlateInput.value = order.client.license_plaque || '';
+
+            // Pre-llenar tipo de vehículo
+            const vehicleType = document.querySelector('[name="vehicle_type_id"]');
+            if (vehicleType) vehicleType.value = order.vehicle_type_id || '';
+
+            // Pre-llenar suciedad
+            const dirtLevel = document.querySelector('[name="dirt_level"]');
+            if (dirtLevel) dirtLevel.value = order.dirt_level || 1;
+
+            // Pre-llenar detallador asignado
+            const assignedUser = document.querySelector('[name="assigned_user"]');
+            if (assignedUser) assignedUser.value = order.user_id || '';
+
+            // Pre-llenar observaciones del vehículo
+            const vehicleNotes = document.querySelector('[name="vehicle_notes"]');
+            if (vehicleNotes) vehicleNotes.value = order.vehicle_notes || '';
+
+            // Pre-llenar notas
+            const orderNotes = document.querySelector('[name="order_notes"]');
+            const extraNotes = document.querySelector('[name="extra_notes"]');
+            if (orderNotes) orderNotes.value = order.order_notes || '';
+            if (extraNotes) extraNotes.value = order.extra_notes || '';
+
+            // Pre-llenar descuento
+            const discount = document.querySelector('[name="discount"]');
+            if (discount) discount.value = order.discount || '';
+
+            // Pre-llenar estado de pago
+            const paymentStatus = document.querySelector('[name="payment_status"]');
+            if (paymentStatus) paymentStatus.value = order.payment?.status || 1;
+
+            // Activar el botón de estado de pago correspondiente
+            document.querySelectorAll('.pay-status-btn').forEach(btn => {
+                btn.classList.remove('pay-status-active');
+                if (parseInt(btn.dataset.value) === (order.payment?.status || 1)) {
+                    btn.classList.add('pay-status-active');
+                }
+            });
+
+            // Pre-llenar pago parcial si aplica
+            if (order.partial_payment) {
+                const partialPayment = document.querySelector('[name="partial_payment"]');
+                const partialContainer = document.getElementById('partial-payment-container');
+                if (partialPayment) partialPayment.value = order.partial_payment;
+                if (partialContainer) partialContainer.style.display = 'block';
+            }
+
+            // Pre-llenar método de pago
+            const paymentMethod = document.querySelector('[name="payment_method"]');
+            if (paymentMethod) paymentMethod.value = order.payment?.type || 1;
+
+            // Pre-llenar estado de la cita
+            const status = document.querySelector('[name="status"]');
+            if (status) status.value = order.status || 1;
+
+            // Pre-llenar servicios (primero el existente)
+            if (order.services && order.services.length > 0) {
+                services.loadExistingServices(order.services);
+            }
+
+            // Actualizar totales
+            payment.updateTotals();
+
+            // Cambiar texto del botón
+            const confirmBtn = document.querySelector('.confirm-btn');
+            if (confirmBtn) {
+                confirmBtn.innerHTML = '<i class="fa-solid fa-save icon"></i> Guardar Cambios';
+            }
+
+            // Auto-check términos en edición
+            const termsCheckbox = document.getElementById('terms-checkbox');
+            if (termsCheckbox) {
+                termsCheckbox.checked = true;
+                termsCheckbox.dispatchEvent(new Event('change'));
+            }
+
+            console.log('📝 Modo edición activado para orden:', order.id);
         },
 
         /**
@@ -123,8 +235,129 @@ function createOrderFormApp() {
             }
         },
 
+        // ==================== MODAL VISTA RÁPIDA ====================
+
         /**
-         * Envía el formulario de orden
+         * Abre el modal de vista rápida
+         * @param {Object} order 
+         */
+        openQuickView(order) {
+            this.selectedOrder = order;
+            this.showQuickViewModal = true;
+        },
+
+        /**
+         * Cierra el modal de vista rápida
+         */
+        closeQuickViewModal() {
+            this.showQuickViewModal = false;
+            this.selectedOrder = null;
+        },
+
+        /**
+         * Imprime la orden
+         * @param {string} orderId 
+         */
+        printOrder(orderId) {
+            window.open(`/orders/${orderId}/print`, '_blank');
+        },
+
+        // ==================== MODAL CAMBIO DE ESTADO ====================
+
+        /**
+         * Abre el modal de cambio de estado
+         * @param {Object} order 
+         */
+        openStatusModal(order) {
+            this.statusModalOrder = order;
+            this.newStatus = order.status;
+            this.statusChangeNote = '';
+            this.showStatusModal = true;
+        },
+
+        /**
+         * Cierra el modal de cambio de estado
+         */
+        closeStatusModal() {
+            this.showStatusModal = false;
+            this.statusModalOrder = null;
+            this.newStatus = null;
+            this.statusChangeNote = '';
+        },
+
+        /**
+         * Confirma el cambio de estado
+         */
+        async confirmStatusChange() {
+
+            if (!this.statusModalOrder || !this.newStatus) return;
+            if (this.newStatus === this.statusModalOrder.status) return;
+
+            this.changingStatus = true;
+
+            try {
+
+                const result = await apiPatch(`/orders/${this.statusModalOrder.id}/status`, {
+                    status: this.newStatus,
+                    note: this.statusChangeNote
+                });
+
+                if (result.success) {
+                    window.notyf?.success('Estado actualizado correctamente');
+                    await this.loadOrders();
+                    this.closeStatusModal();
+                } else {
+                    window.notyf?.error(result.message || 'Error al actualizar el estado');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf?.error('Error al actualizar el estado');
+            } finally {
+                this.changingStatus = false;
+            }
+        },
+
+        // ==================== HELPERS DE PAGO ====================
+
+        /**
+         * Obtiene el texto del estado de pago
+         * @param {number} status 
+         * @returns {string}
+         */
+        getPaymentStatusText(status) {
+            const statuses = { 1: 'Pendiente', 2: 'Parcial', 3: 'Pagado' };
+            return statuses[status] || 'Desconocido';
+        },
+
+        /**
+         * Obtiene la clase del badge de estado de pago
+         * @param {number} status 
+         * @returns {string}
+         */
+        getPaymentStatusBadge(status) {
+            const badges = {
+                1: 'bg-danger',
+                2: 'bg-warning text-dark',
+                3: 'bg-success'
+            };
+            return badges[status] || 'bg-secondary';
+        },
+
+        /**
+         * Obtiene el texto del método de pago
+         * @param {number} method 
+         * @returns {string}
+         */
+        getPaymentMethodText(method) {
+            const methods = { 1: 'Efectivo', 2: 'Tarjeta', 3: 'Transferencia', 4: 'Bizum' };
+            return methods[method] || 'N/A';
+        },
+
+        // ==================== ENVÍO DE FORMULARIO ====================
+
+        /**
+         * Envía el formulario de orden (crear o actualizar)
          */
         async submitOrder() {
 
@@ -144,13 +377,33 @@ function createOrderFormApp() {
             try {
 
                 const formData = dataCollector.collect();
-                const result = await apiPost('/orders/store', formData);
+                let result;
+
+                if (this.isEditMode && this.editOrderId) {
+                    // Modo edición: usar PUT
+                    result = await apiPut(`/orders/${this.editOrderId}`, formData);
+                } else {
+                    // Modo creación: usar POST
+                    result = await apiPost('/orders/store', formData);
+                }
 
                 if (result.success) {
 
-                    window.notyf?.success('¡Orden creada exitosamente!');
-                    await this.loadOrders();
-                    this.resetForm();
+                    const message = this.isEditMode 
+                        ? '¡Orden actualizada exitosamente!' 
+                        : '¡Orden creada exitosamente!';
+                    
+                    window.notyf?.success(message);
+
+                    if (this.isEditMode) {
+                        // Redirigir al inicio después de editar
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1500);
+                    } else {
+                        await this.loadOrders();
+                        this.resetForm();
+                    }
 
                 } else {
                     this.handleSubmitErrors(result);
@@ -219,7 +472,7 @@ function createOrderFormApp() {
 
                 // Quitar las clases de .is-valid / .is-invalid
                 select.classList.remove('is-valid', 'is-invalid');
-                
+
             });
 
             // Resetear módulos
@@ -252,19 +505,161 @@ function createOrderFormApp() {
 }
 
 /**
+ * Crea el componente Alpine para EDITAR órdenes
+ * @returns {Object}
+ */
+function createOrderEditApp() {
+
+    // Módulos (se inicializan una sola vez)
+    const calendar = new CalendarManager();
+    const services = new ServiceManager();
+    const payment = new PaymentManager();
+    const timepicker = new TimePickerManager();
+    const licensePlate = new LicensePlateValidator();
+    const dataCollector = new FormDataCollector();
+
+    return {
+
+        // Estado reactivo
+        submitting: false,
+        orderId: null,
+
+        /**
+         * Inicialización del componente Alpine para edición
+         */
+        async init() {
+
+            // Obtener datos de la orden desde window
+            const orderData = window.orderData;
+            this.orderId = orderData?.id;
+
+            // Inicializar módulos
+            calendar.init();
+            services.init();
+            payment.init();
+            timepicker.init();
+            licensePlate.init();
+
+            // Precargar servicios de la orden si existen
+            if (window.orderServices && window.orderServices.length > 0) {
+                await this.preloadServices();
+            }
+
+            // Configurar botón de guardar
+            const confirmBtn = document.querySelector('.confirm-btn');
+            if (confirmBtn) {
+                confirmBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.updateOrder();
+                });
+            }
+        },
+
+        /**
+         * Precarga los servicios de la orden existente
+         */
+        async preloadServices() {
+            // Los servicios ya están renderizados por Blade
+            // Solo necesitamos asegurar que los precios estén actualizados
+            console.log('Servicios precargados:', window.orderServices.length);
+        },
+
+        /**
+         * Envía la actualización de la orden
+         */
+        async updateOrder() {
+
+            if (this.submitting || !this.orderId) return;
+
+            // Validar formulario
+            const form = document.getElementById('orders-root');
+            if (window.OrderFormValidator) {
+                const validator = new window.OrderFormValidator(form);
+                if (!validator.validateOrderForm()) {
+                    validator.showErrors();
+                    return;
+                }
+            }
+
+            this.submitting = true;
+
+            try {
+
+                const formData = dataCollector.collect();
+                
+                const response = await fetch(`/orders/${this.orderId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.notyf?.success('¡Orden actualizada exitosamente!');
+                    // Redirigir a la lista después de un momento
+                    setTimeout(() => {
+                        window.location.href = '/orders';
+                    }, 1500);
+                } else {
+                    this.handleSubmitErrors(result);
+                }
+
+            } catch (error) {
+
+                console.error('Error:', error);
+                window.notyf?.error('Error al actualizar la orden');
+
+            } finally {
+
+                this.submitting = false;
+            }
+        },
+
+        /**
+         * Maneja errores del envío
+         * @param {Object} result 
+         */
+        handleSubmitErrors(result) {
+
+            if (result.errors) {
+                Object.values(result.errors).forEach(errors => {
+                    errors.forEach(error => window.notyf?.error(error));
+                });
+            } else {
+                window.notyf?.error(result.message || 'Error al actualizar la orden');
+            }
+
+        },
+
+        // Métodos de formateo
+        formatDate: (date) => formatters.formatDate(date),
+        formatTime: (time) => formatters.formatTime(time),
+        formatCurrency: (amount) => formatters.formatCurrency(amount),
+        getStatusText: (status) => formatters.getStatusText(status),
+        getStatusBadge: (status) => formatters.getStatusBadge(status)
+    };
+}
+
+/**
  * Inicializa el módulo de órdenes
  */
 function initOrdersModule() {
 
-    // Solo ejecutar si estamos en la vista correcta
+    // Exponer los componentes Alpine globalmente SIEMPRE
+    // (Alpine los necesita disponibles antes de parsear el DOM)
+    window.orderFormApp = createOrderFormApp;
+
+    // Solo continuar si estamos en la vista correcta
     if (!isOrdersView()) return;
     
     // Prevenir inicialización múltiple
     if (isInitialized) return;
     isInitialized = true;
-
-    // Exponer el componente Alpine globalmente
-    window.orderFormApp = createOrderFormApp;
 
     console.log('Orders module loaded');
 }
@@ -273,5 +668,5 @@ function initOrdersModule() {
 initOrdersModule();
 
 // Exportar para uso como módulo ES6
-export { createOrderFormApp };
+export { createOrderFormApp, createOrderEditApp };
 export default initOrdersModule;

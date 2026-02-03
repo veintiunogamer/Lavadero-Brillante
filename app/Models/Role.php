@@ -9,9 +9,11 @@ class Role extends Model
     protected $keyType = 'string';
     protected $table = 'roles';
 
+    // Estados de rol
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 0;
-
+    
+    // Tipos de rol
     const TYPE_ADMIN = 1;
     const TYPE_USER = 2;
 

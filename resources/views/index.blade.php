@@ -3,8 +3,8 @@
 @section('content')
 
     <div id="orders-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" 
-         x-data="typeof orderFormApp === 'function' ? orderFormApp() : {}" 
-         x-init="init()">
+         x-data="typeof orderFormApp === 'function' ? orderFormApp() : { showQuickViewModal: false, showStatusModal: false }" 
+         x-init="typeof init === 'function' && init()">
         
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
@@ -26,8 +26,8 @@
 
                         <label class="fw-bold">Nº Orden / Factura</label>
                         <div style="gap: 0.5rem;">
-                            <input type="text" class="input float-right" readonly style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
-                            <input type="text" class="input float-right" readonly style="width: 70px;" value="{{ $consecutive['sequence'] ?? '' }}">
+                            <input type="text" class="input float-right" name="consecutive_serial" readonly style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
+                            <input type="text" class="input float-right" name="consecutive_sequence" readonly style="width: 70px;" value="{{ $consecutive['sequence'] ?? '' }}">
                         </div>
 
                     </div>
@@ -497,6 +497,7 @@
                                 <th>Total</th>
                                 <th>Estado</th>
                                 <th>Detallador</th>
+                                <th class="text-center">Acciones</th>
                             </tr>
                         </thead>
 
@@ -519,6 +520,19 @@
                                         <span :class="getStatusBadge(order.status)" x-text="getStatusText(order.status)"></span>
                                     </td>
                                     <td x-text="order.user ? order.user.name : 'N/A'"></td>
+                                    <td class="text-center">
+                                        <div class="btn-group btn-group-sm">
+                                            <button @click="openQuickView(order)" class="btn btn-info" title="Ver detalles">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </button>
+                                            <button @click="openStatusModal(order)" class="btn btn-warning" title="Cambiar estado">
+                                                <i class="fa-solid fa-exchange-alt"></i>
+                                            </button>
+                                            <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             </template>
 
@@ -532,7 +546,18 @@
 
         </div>
 
+        <!-- Modales -->
+        @include('orders.partials._quick-actions')
+        @include('orders.modals._change-status')
+
     </div>
+
+    <!-- Datos de la orden a editar (si existe) -->
+    @if(isset($editOrder))
+    <script>
+        window.editOrderData = @json($editOrder);
+    </script>
+    @endif
 
 @endsection
 

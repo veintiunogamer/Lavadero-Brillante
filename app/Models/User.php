@@ -13,9 +13,14 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    // Tipos de usuarios - Roles
     const USER_ADMIN = 1;
     const USER_OPERATOR = 2;
     const USER_CASHIER = 3;
+
+    // Estado del usuario
+    const STATUS_ACTIVE = 1;
+    const STATUS_INACTIVE = 0;
 
     /**
      * Indica que el ID no es auto-incremental

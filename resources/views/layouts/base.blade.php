@@ -19,6 +19,11 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/themes/material_blue.css">
 
+        <!-- Alpine.js x-cloak: ocultar elementos hasta que Alpine esté listo -->
+        <style>
+            [x-cloak] { display: none !important; }
+        </style>
+
         <!-- Favicons -->
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/icon.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/icon.png') }}">

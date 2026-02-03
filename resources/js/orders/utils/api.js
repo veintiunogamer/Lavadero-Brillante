@@ -55,6 +55,51 @@ export const apiPost = async (url, data) => {
 };
 
 /**
+ * Realiza una petición PUT a la API
+ * @param {string} url - URL del endpoint
+ * @param {Object} data - Datos a enviar
+ * @returns {Promise<Object>}
+ */
+export const apiPut = async (url, data) => {
+    const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCsrfToken()
+        },
+        body: JSON.stringify(data)
+    });
+    return response.json();
+};
+
+/**
+ * Realiza una petición PATCH a la API
+ * @param {string} url - URL del endpoint
+ * @param {Object} data - Datos a enviar
+ * @returns {Promise<Object>}
+ */
+export const apiPatch = async (url, data = {}) => {
+    try {
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': getCsrfToken()
+            },
+            body: JSON.stringify(data)
+        });
+
+        return await response.json();
+
+    } catch (error) {
+        console.error('API PATCH Error:', error);
+        throw error;
+    }
+};
+
+/**
  * Carga servicios por categoría
  * @param {string} categoryId - ID de la categoría
  * @returns {Promise<Object>}
@@ -93,6 +138,8 @@ export const createOrder = async (orderData) => {
 export default {
     get: apiGet,
     post: apiPost,
+    patch: apiPatch,
+    put: apiPut,
     fetchServicesByCategory,
     checkLicensePlate,
     fetchOrdersByTab,

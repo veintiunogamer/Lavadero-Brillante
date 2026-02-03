@@ -238,6 +238,101 @@ export class ServiceManager {
     getCalculator() {
         return this.calculator;
     }
+
+    /**
+     * Carga servicios existentes (para edición)
+     * @param {Array} existingServices - Array de servicios de la orden
+     */
+    async loadExistingServices(existingServices) {
+        if (!existingServices || existingServices.length === 0) return;
+
+        // Limpiar filas existentes primero
+        const serviceItems = document.querySelectorAll('.service-item');
+        for (let i = serviceItems.length - 1; i > 0; i--) {
+            serviceItems[i].remove();
+        }
+
+        // Cargar cada servicio
+        for (let i = 0; i < existingServices.length; i++) {
+            const service = existingServices[i];
+            let row;
+
+            if (i === 0) {
+                // Usar la primera fila existente
+                row = document.querySelector('.service-item');
+            } else {
+                // Agregar nueva fila
+                this.addRow();
+                const rows = document.querySelectorAll('.service-item');
+                row = rows[rows.length - 1];
+            }
+
+            if (!row) continue;
+
+            const categorySelect = row.querySelector('.service-category');
+            const serviceSelect = row.querySelector('.service-select');
+            const quantityInput = row.querySelector('.service-quantity');
+            const priceInput = row.querySelector('.service-price');
+
+            // Seleccionar categoría
+            if (categorySelect && service.category_id) {
+                categorySelect.value = service.category_id;
+                
+                // Cargar servicios de esa categoría
+                await this.loadServicesForCategory(categorySelect, serviceSelect, service.id);
+            }
+
+            // Establecer cantidad
+            if (quantityInput && service.pivot) {
+                quantityInput.value = service.pivot.quantity || 1;
+            }
+
+            // Establecer precio
+            if (priceInput && service.pivot) {
+                priceInput.value = service.pivot.total || service.value || 0;
+                priceInput.dataset.basePrice = service.value || 0;
+            }
+        }
+
+        // Recalcular totales
+        this.calculator.recalculate();
+    }
+
+    /**
+     * Carga servicios de una categoría y selecciona uno
+     * @param {HTMLSelectElement} categorySelect 
+     * @param {HTMLSelectElement} serviceSelect 
+     * @param {string} selectedServiceId - ID del servicio a seleccionar
+     */
+    async loadServicesForCategory(categorySelect, serviceSelect, selectedServiceId) {
+        const categoryId = categorySelect.value;
+        if (!categoryId) return;
+
+        try {
+            const result = await fetchServicesByCategory(categoryId);
+
+            if (result.success && result.data.length > 0) {
+                serviceSelect.innerHTML = '<option value="">Selecciona un servicio</option>';
+                
+                result.data.forEach(service => {
+                    const option = document.createElement('option');
+                    option.value = service.id;
+                    option.textContent = service.name;
+                    option.dataset.value = service.value;
+                    
+                    if (service.id === selectedServiceId) {
+                        option.selected = true;
+                    }
+                    
+                    serviceSelect.appendChild(option);
+                });
+                
+                serviceSelect.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error cargando servicios para edición:', error);
+        }
+    }
 }
 
 export default ServiceManager;

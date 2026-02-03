@@ -7,11 +7,13 @@ class Order extends Model
     public $incrementing = false;
     public $timestamps = false;
 
+    // Estados de orden
     const STATUS_PENDING = 1;
     const STATUS_IN_PROGRESS = 2;
     const STATUS_COMPLETED = 3;
     const STATUS_CANCELED = 4;
 
+    // Niveles de suciedad
     const DIRTY_LEVEL_LOW = 1;
     const DIRTY_LEVEL_MEDIUM = 2;
     const DIRTY_LEVEL_HIGH = 3;
@@ -38,7 +40,9 @@ class Order extends Model
         'order_notes', 
         'extra_notes', 
         'status', 
-        'creation_date'
+        'creation_date',
+        'consecutive_serial',
+        'consecutive_number'
     ];
 
     /**

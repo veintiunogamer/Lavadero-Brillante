@@ -27,6 +27,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/tab/{tab}', [OrderController::class, 'getOrdersByTab'])->name('orders.getByTab');
     Route::get('/api/services/category/{categoryId}', [OrderController::class, 'getServicesByCategory'])->name('orders.servicesByCategory');
 
+    # Nuevas rutas para edición y acciones rápidas
+    Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+    Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+
     # Rutas para la gestión de clientes
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
     
