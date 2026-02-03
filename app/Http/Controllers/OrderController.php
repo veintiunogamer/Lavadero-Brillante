@@ -265,12 +265,13 @@ class OrderController extends Controller
      */
     public function getOrdersByTab($tab)
     {
+
         try {
 
             if ($tab === 'pending') {
 
                 // Tab 1: Solo pendientes
-                $orders = Order::with(['client', 'service', 'user'])
+                $orders = Order::with(['client', 'services', 'user'])
                 ->where('status', Order::STATUS_PENDING)
                 ->orderBy('creation_date', 'desc')
                 ->get();
@@ -278,7 +279,7 @@ class OrderController extends Controller
             } else {
 
                 // Tab 2: Historial completo (En Proceso, Terminadas, Canceladas)
-                $orders = Order::with(['client', 'service', 'user'])
+                $orders = Order::with(['client', 'services', 'user'])
                 ->whereIn('status', [Order::STATUS_IN_PROGRESS, Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
                 ->orderBy('creation_date', 'desc')
                 ->get();
@@ -294,6 +295,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
 
             \Log::error('Error al obtener órdenes por tab: ' . $e->getMessage());
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Error al cargar las órdenes'

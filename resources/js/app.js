@@ -2,7 +2,7 @@ import './bootstrap';
 import './users.js';
 import './profile.js';
 import './orders/validations.js';
-import './orders/order-main.js';
+import './orders/index.js';  // Módulo principal de órdenes (reemplaza order-main.js)
 import './orders/orders.js';
 import './settings.js';
 import './header.js';

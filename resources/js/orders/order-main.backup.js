@@ -23,6 +23,7 @@
     // ==================== FUNCIONES AUXILIARES ====================
 
     async function loadServicesByCategory(categorySelect, serviceSelect) {
+
         const categoryId = categorySelect.value;
         const serviceRow = categorySelect.closest('.service-item');
 
@@ -30,8 +31,10 @@
         serviceSelect.disabled = true;
 
         if (serviceRow) {
+
             const quantityInput = serviceRow.querySelector('.service-quantity');
             const priceInput = serviceRow.querySelector('.service-price');
+
             if (quantityInput) quantityInput.value = 1;
             if (priceInput) priceInput.value = '0.00';
         }
@@ -42,6 +45,7 @@
         }
 
         try {
+
             const response = await fetch(`/api/services/category/${categoryId}`, {
                 headers: {
                     'Accept': 'application/json',
@@ -52,6 +56,7 @@
             const result = await response.json();
 
             if (result.success && result.data.length > 0) {
+
                 result.data.forEach(service => {
                     const option = document.createElement('option');
                     option.value = service.id;
@@ -59,10 +64,14 @@
                     option.dataset.value = service.value;
                     serviceSelect.appendChild(option);
                 });
+
                 serviceSelect.disabled = false;
+				
             } else {
+
                 serviceSelect.innerHTML = '<option value="">No hay servicios disponibles</option>';
             }
+
         } catch (error) {
             console.error('Error cargando servicios:', error);
             serviceSelect.innerHTML = '<option value="">Error al cargar servicios</option>';
@@ -70,6 +79,7 @@
     }
 
     function updateServicePrice(serviceSelect, priceInput) {
+
         const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
         const basePrice = selectedOption?.dataset?.value || 0;
         const serviceRow = serviceSelect.closest('.service-item');
@@ -86,14 +96,18 @@
     }
 
     function updateQuantityPrice(quantityInput, priceInput) {
+
         const quantity = parseFloat(quantityInput.value || 1);
         const basePrice = parseFloat(priceInput.dataset.basePrice || 0);
         priceInput.value = (quantity * basePrice).toFixed(2);
+
         calculateTotals();
         updateOrderDescription();
+
     }
 
     function calculateTotals() {
+
         const allServiceItems = document.querySelectorAll('.service-item');
         let subtotal = 0;
 
@@ -117,16 +131,19 @@
         // Actualizar displays
         const subtotalSection = document.querySelector('.subtotal-section');
         const subtotalInput = document.querySelector('.subtotal-value');
+
         if (subtotalSection) subtotalSection.textContent = subtotal.toFixed(2) + '€';
         if (subtotalInput) subtotalInput.value = subtotal.toFixed(2);
 
         const discountSection = document.querySelector('.discount-section');
         const discountInput = document.querySelector('.discount-value');
+
         if (discountSection) discountSection.textContent = '-' + discountAmount.toFixed(2) + '€';
         if (discountInput) discountInput.value = discountAmount.toFixed(2);
 
         const totalSection = document.querySelector('.total-section');
         const totalInput = document.querySelector('.total-value');
+
         if (totalSection) totalSection.textContent = total.toFixed(2) + '€';
         if (totalInput) totalInput.value = total.toFixed(2);
     }
