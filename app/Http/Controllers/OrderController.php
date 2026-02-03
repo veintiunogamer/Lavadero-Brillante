@@ -69,7 +69,7 @@ class OrderController extends Controller
      */
     public function getByStatus($status)
     {
-        $orders = Order::with(['client', 'service'])
+        $orders = Order::with(['client', 'services'])
             ->where('status', $status)
             ->orderBy('creation_date', 'desc')
             ->get();
@@ -109,7 +109,8 @@ class OrderController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(\Illuminate\Http\Request $request)
-    {
+    {   
+        
         try {
 
             \DB::beginTransaction();

@@ -489,11 +489,11 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Cliente</th>
+                                <th>Placa</th>
                                 <th>Servicio</th>
-                                <th>Matrícula</th>
                                 <th>Fecha</th>
-                                <th>Hora Entrada</th>
-                                <th>Hora Salida</th>
+                                <th>Entrada</th>
+                                <th>Salida</th>
                                 <th>Total</th>
                                 <th>Estado</th>
                                 <th>Detallador</th>
@@ -505,8 +505,12 @@
                             <template x-for="order in orders" :key="order.id">
                                 <tr>
                                     <td x-text="order.client ? order.client.name : 'N/A'"></td>
-                                    <td x-text="order.order_notes ? order.order_notes : 'N/A'"></td>
                                     <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
+                                    <td>
+                                        <template x-for="service in order.services" :key="service.id">
+                                            <div x-text="service.name"></div>
+                                        </template>
+                                    </td>
                                     <td x-text="formatDate(order.creation_date)"></td>
                                     <td x-text="formatTime(order.hour_in)"></td>
                                     <td x-text="formatTime(order.hour_out)"></td>

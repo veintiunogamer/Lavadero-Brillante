@@ -49,12 +49,12 @@
                 <table class="table table-striped table-bordered align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th>ID</th>
                             <th>Cliente</th>
+                            <th>Placa</th>
                             <th>Servicio</th>
                             <th>Fecha</th>
-                            <th>Hora Entrada</th>
-                            <th>Hora Salida</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
                             <th>Total</th>
                             <th>Estado</th>
                             <th>Acciones</th>
@@ -63,9 +63,13 @@
                     <tbody>
                         <template x-for="(order, index) in orders" :key="index">
                             <tr>
-                                <td x-text="order.id"></td>
                                 <td x-text="order.client ? order.client.name : 'N/A'"></td>
-                                <td x-text="order.service ? order.service.name : 'N/A'"></td>
+                                <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
+                                <td>
+                                    <template x-for="service in order.services" :key="service.id">
+                                        <div x-text="service.name"></div>
+                                    </template>
+                                </td>
                                 <td x-text="formatDate(order.creation_date)"></td>
                                 <td x-text="formatTime(order.hour_in)"></td>
                                 <td x-text="formatTime(order.hour_out)"></td>

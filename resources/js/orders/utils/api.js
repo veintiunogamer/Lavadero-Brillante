@@ -42,13 +42,15 @@ export const apiGet = async (url) => {
  * @returns {Promise<Object>}
  */
 export const apiPost = async (url, data) => {
-    const response = await fetch(url, getBaseConfig({
+    const response = await fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': getCsrfToken()
         },
         body: JSON.stringify(data)
-    }));
+    });
     return response.json();
 };
 
