@@ -190,9 +190,36 @@ function createOrderFormApp() {
          */
         resetForm() {
 
-            // Limpiar campos de texto
+            // Limpiar campos de texto y email
             document.querySelectorAll('#orders-root input[type="text"], #orders-root input[type="email"], #orders-root textarea').forEach(input => {
                 if (!input.readOnly) input.value = '';
+            });
+
+            // Resetear campos numéricos (excepto cantidad que va a 1)
+            document.querySelectorAll('#orders-root input[type="number"]').forEach(input => {
+                
+                if (input.classList.contains('service-quantity')) {
+                    input.value = 1;
+                } else {
+                    input.value = '';
+                }
+
+                // Quitar las clases de .is-valid / .is-invalid
+                input.classList.remove('is-valid', 'is-invalid');
+
+            });
+
+            // Resetear todos los selects a su primera opción
+            document.querySelectorAll('#orders-root select').forEach(select => {
+
+                // No resetear si es un select del sistema (como hora fallback)
+                if (!select.classList.contains('time-picker-fallback')) {
+                    select.selectedIndex = 0;
+                }
+
+                // Quitar las clases de .is-valid / .is-invalid
+                select.classList.remove('is-valid', 'is-invalid');
+                
             });
 
             // Resetear módulos
@@ -209,6 +236,9 @@ function createOrderFormApp() {
 
             if (solicitarFactura) solicitarFactura.checked = false;
             if (datosFacturacion) datosFacturacion.style.display = 'none';
+
+            // Scroll al inicio del formulario
+            document.getElementById('orders-root')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
         },
 
