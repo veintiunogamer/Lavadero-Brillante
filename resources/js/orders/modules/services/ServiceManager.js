@@ -209,20 +209,26 @@ export class ServiceManager {
      * Resetea todas las filas de servicio
      */
     reset() {
+
         // Eliminar filas extra
         const serviceItems = document.querySelectorAll('.service-item');
+
         for (let i = serviceItems.length - 1; i > 0; i--) {
             serviceItems[i].remove();
         }
 
         // Resetear primera fila
         const firstService = serviceItems[0];
+
         if (firstService) {
+
             firstService.querySelectorAll('select').forEach(select => {
                 select.value = '';
             });
+
             const quantityInput = firstService.querySelector('.service-quantity');
             const priceInput = firstService.querySelector('.service-price');
+            
             if (quantityInput) quantityInput.value = 1;
             if (priceInput) priceInput.value = '0.00';
         }

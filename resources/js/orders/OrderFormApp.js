@@ -178,7 +178,19 @@ export class OrderFormApp {
 
                 // Limpiar campos de texto
                 document.querySelectorAll('#orders-root input[type="text"], #orders-root input[type="email"], #orders-root textarea').forEach(input => {
+                    
+                    // Limpiar valor
                     if (!input.readOnly) input.value = '';
+                    
+                    // Remover clases de validación
+                    if (input.classList.contains('is-valid')) {
+                        input.classList.remove('is-valid');
+                    }
+
+                    if (input.classList.contains('is-invalid')) {
+                        input.classList.remove('is-invalid');
+                    }
+
                 });
 
                 // Resetear módulos
@@ -195,6 +207,14 @@ export class OrderFormApp {
                 
                 if (solicitarFactura) solicitarFactura.checked = false;
                 if (datosFacturacion) datosFacturacion.style.display = 'none';
+
+                // Sumar el numero del consecutivo
+                const consecutiveNumberInput = document.querySelector('input[name="consecutive_number"]');
+
+                if (consecutiveNumberInput) {
+                    let currentNumber = parseInt(consecutiveNumberInput.value) || 0;
+                    consecutiveNumberInput.value = (currentNumber + 1).toString().padStart(6, '0');
+                }
 
             },
 

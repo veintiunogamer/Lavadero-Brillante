@@ -118,6 +118,7 @@ export class PaymentManager {
      * Resetea el estado de pago a pendiente
      */
     reset() {
+        
         this.buttons.forEach((btn, index) => {
             btn.classList.toggle('pay-status-active', index === 0);
         });

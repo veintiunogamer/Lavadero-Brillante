@@ -14,6 +14,7 @@ export class FormDataCollector {
      */
     collect() {
         return {
+            ...this.getConsecutiveData(),
             ...this.getClientData(),
             ...this.getVehicleData(),
             ...this.getServicesData(),
@@ -22,6 +23,17 @@ export class FormDataCollector {
             ...this.getScheduleData(),
             ...this.getPaymentData(),
             ...this.getInvoiceData()
+        };
+    }
+
+    /**
+     * Obtiene los consecutivos del formulario
+     * @returns {Object}
+     */
+    getConsecutiveData() {
+        return {
+            consecutive_serial: document.querySelector('input[name="consecutive_serial"]')?.value || '',
+            consecutive_number: document.querySelector('input[name="consecutive_number"]')?.value || ''
         };
     }
 

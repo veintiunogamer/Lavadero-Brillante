@@ -82,8 +82,6 @@ export class LicensePlateValidator {
                 this.fillClientData(result.client);
                 window.notyf?.success('Cliente encontrado - datos cargados automáticamente');
             
-            } else {
-                this.clearClientData();
             }
 
             // Notificar cambio para actualizar estado del botón
