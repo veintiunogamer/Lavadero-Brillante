@@ -20,15 +20,19 @@
 
             <!-- Tabs -->
             <ul class="nav nav-tabs p-4" id="ordersTabs" role="tablist">
+
                 <li class="nav-item" role="presentation">
                     <button :class="currentTab === 1 ? 'nav-link active' : 'nav-link'" id="pending-tab" @click="changeTab(1)" type="button" role="tab" aria-controls="pending" :aria-selected="currentTab === 1"><i class="fa-solid fa-clock me-2"></i>Pendientes</button>
                 </li>
+
                 <li class="nav-item" role="presentation">
                     <button :class="currentTab === 2 ? 'nav-link active' : 'nav-link'" id="in-process-tab" @click="changeTab(2)" type="button" role="tab" aria-controls="in-process" :aria-selected="currentTab === 2"><i class="fa-solid fa-spinner me-2"></i>En Proceso</button>
                 </li>
+                
                 <li class="nav-item" role="presentation">
                     <button :class="currentTab === 3 ? 'nav-link active' : 'nav-link'" id="completed-tab" @click="changeTab(3)" type="button" role="tab" aria-controls="completed" :aria-selected="currentTab === 3"><i class="fa-solid fa-check-circle me-2"></i>Terminados</button>
                 </li>
+
             </ul>
 
             <!-- Loading Spinner -->
@@ -46,7 +50,9 @@
 
             <!-- Tabla de agendamientos -->
             <div x-show="!loading && orders.length > 0" class="table-responsive p-4">
+
                 <table class="table table-striped table-bordered align-middle">
+
                     <thead class="table-dark">
                         <tr>
                             <th>Cliente</th>
@@ -60,7 +66,9 @@
                             <th>Acciones</th>
                         </tr>
                     </thead>
+
                     <tbody>
+
                         <template x-for="(order, index) in orders" :key="index">
                             <tr>
                                 <td x-text="order.client ? order.client.name : 'N/A'"></td>
@@ -78,17 +86,24 @@
                                     <span :class="getStatusBadge(order.status)" x-text="getStatusText(order.status)"></span>
                                 </td>
                                 <td>
+                                    
                                     <button class="btn btn-sm btn-info me-1">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
+
                                     <button class="btn btn-sm btn-warning">
                                         <i class="fa-solid fa-edit"></i>
                                     </button>
+
                                 </td>
                             </tr>
+
                         </template>
+
                     </tbody>
+
                 </table>
+
             </div>
 
         </div>

@@ -61,7 +61,7 @@ class OrderController extends Controller
      */
     public function agendamiento()
     {
-        return redirect()->route('home');
+        return view('orders.index');
     }
 
     /**

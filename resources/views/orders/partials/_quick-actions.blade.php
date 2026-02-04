@@ -163,10 +163,9 @@
                             Pago
                         </h5>
 
-                        <template class="row" x-for="payment in (selectedOrder?.payments || [])" :key="payment.id">
+                        <div class="row" x-for="payment in (selectedOrder?.payments || [])" :key="payment.id">
 
                             <div class="col-3">
-
                                 <label class="fw-bold small">Estado</label>
                                 <p class="mb-2">
                                     <span class="badge" :class="getPaymentStatusBadge(payment.status)" 
@@ -176,20 +175,20 @@
 
                             <div class="col-3">
                                 <label class="fw-bold small">Método</label>
-                                <p class="mb-2" x-text="getPaymentMethodText(payment.type)"></p>
+                                <span class="mb-2" x-text="getPaymentMethodText(payment.type)"></span>
                             </div>
 
                             <div class="col-3">
                                 <label class="fw-bold small">Total Pagado</label>
-                                <p class="mb-2 text-success" x-text="formatCurrency(payment.total || 0)"></p>
+                                <span class="mb-2 text-success" x-text="formatCurrency(payment.total || 0)"></span>
                             </div>
 
                             <div class="col-3" x-show="selectedOrder?.partial_payment > 0">
                                 <label class="fw-bold small">Abono Parcial</label>
-                                <p class="mb-2 text-primary" x-text="formatCurrency(selectedOrder?.partial_payment || 0)"></p>
+                                <span class="mb-2 text-primary" x-text="formatCurrency(selectedOrder?.partial_payment || 0)"></span>
                             </div>
 
-                        </template>
+                        </div>
 
                     </div>
 
@@ -220,26 +219,28 @@
                         <p class="small" x-text="selectedOrder?.order_notes"></p>
                     </div>
 
-                    
-
                 </div>
 
             </div>
 
             <!-- Footer -->
-            <div class="d-flex justify-content-between p-4 border-top bg-light rounded-bottom-4">
+            <div class="col-12 p-4 border-top bg-light rounded-bottom-4">
 
-                <button @click="closeQuickViewModal()" class="btn btn-danger">
-                    <i class="fa-solid fa-times me-1"></i> Cerrar
-                </button>
+                <div class="d-flex gap-2 flex-wrap align-items-center justify-content-center">
 
-                <a :href="'/orders/' + selectedOrder?.id + '/edit'" class="btn btn-warning">
-                    <i class="fa-solid fa-edit me-1"></i> Editar
-                </a>
+                    <button @click="closeQuickViewModal()" class="btn btn-danger">
+                        <i class="fa-solid fa-times me-1"></i> Cerrar
+                    </button>
 
-                <button @click="printOrder(selectedOrder?.id)" class="btn btn-info">
-                    <i class="fa-solid fa-print me-1"></i> Imprimir
-                </button>
+                    <a :href="'/orders/' + selectedOrder?.id + '/edit'" class="btn btn-warning">
+                        <i class="fa-solid fa-edit me-1"></i> Editar
+                    </a>
+
+                    <button @click="printOrder(selectedOrder?.id)" class="btn btn-info">
+                        <i class="fa-solid fa-print me-1"></i> Imprimir
+                    </button>
+
+                </div>
 
             </div>
 
