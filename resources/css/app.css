@@ -640,6 +640,134 @@ hr {
     margin-top: 2rem;
 }
 
+/* =========================
+   Reports
+========================= */
+.reports-shell {
+    border: 1px solid #20364f;
+    color: #0f0f0f !important;
+    padding: 1.5rem;
+}
+
+.reports-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+
+.reports-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.reports-controls .form-select {
+    background: #1a2d45;
+    border: 1px solid #2a3f57;
+    color: #e6edf7;
+    min-width: 160px;
+}
+
+.reports-controls .form-select:disabled {
+    opacity: 0.6;
+}
+
+.reports-tabs {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    border: 1px solid #213852;
+    border-radius: 12px;
+}
+
+.reports-tab {
+    flex: 1;
+    border: 1px solid transparent;
+    background: transparent;
+    color: #c5d2e4;
+    font-weight: 600;
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.reports-tab.active {
+    background: #2563eb;
+    border-color: #2f6dff;
+    color: #ffffff;
+}
+
+.reports-panel {
+    background: #1a2b40;
+    border: 1px solid #243d57;
+    border-radius: 12px;
+    padding: 1.25rem;
+    min-height: 280px;
+}
+
+.reports-section-title {
+    font-weight: 700;
+    color: #f1f5f9;
+}
+
+.reports-section-hint {
+    color: #9fb1c7;
+    font-size: 0.95rem;
+}
+
+.reports-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #c6d2e3;
+}
+
+.reports-empty h5 {
+    color: #f1f5f9;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.reports-table {
+    color: #e6edf7;
+}
+
+.reports-table thead th {
+    background: #1e344b;
+    color: #e6edf7;
+    border-color: #2a405a;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.reports-table tbody td {
+    background: #1a2b40;
+    border-color: #2a405a;
+    color: #e6edf7;
+}
+
+.reports-footer {
+    border-top: 1px solid #2a405a;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.reports-shell .pagination .page-link {
+    background: #1b2f45;
+    border-color: #2a405a;
+    color: #e6edf7;
+}
+
+.reports-shell .pagination .page-item.active .page-link {
+    background: #2563eb;
+    border-color: #2f6dff;
+}
+
 /* LOGIN FORM STYLES */
 .login-container {
     min-height: 100vh;

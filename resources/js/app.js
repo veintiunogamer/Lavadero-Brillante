@@ -5,6 +5,7 @@ import './orders/validations.js';
 import './orders/index.js';  // Módulo principal de órdenes (reemplaza order-main.js)
 import './orders/orders.js';
 import './settings.js';
+import './reports/index.js';
 import './header.js';
 import './alpine.js';
 import './notyf.js';

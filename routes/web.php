@@ -55,6 +55,10 @@ Route::middleware('auth')->group(function () {
     
     # Rutas para la gestión de informes
     Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/clients', [ReportController::class, 'clients'])->name('reports.clients');
+    Route::get('/reports/pdf/daily', [ReportController::class, 'dailyPdf'])->name('reports.pdf.daily');
+    Route::get('/reports/pdf/current', [ReportController::class, 'currentPdf'])->name('reports.pdf.current');
     
     # Rutas para configuraciones
     Route::get('/settings', function () {
