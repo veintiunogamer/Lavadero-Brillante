@@ -313,11 +313,6 @@ window.reportsApp = function() {
         // PDF
         // ====================
 
-        downloadDailyPdf() {
-            const url = '/reports/pdf/daily';
-            window.open(url, '_blank');
-        },
-
         downloadCurrentPdf() {
 
             let url = `/reports/pdf/current?tab=${this.activeTab}`;

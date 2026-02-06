@@ -28,11 +28,6 @@
                         <option value="week">Esta Semana</option>
                     </select>
 
-                    <button class="btn btn-success btn-sm" @click="downloadDailyPdf()">
-                        <i class="fa-solid fa-file-pdf me-1"></i>
-                        Generar Cierre Diario (PDF)
-                    </button>
-
                     <button class="btn btn-primary btn-sm" @click="downloadCurrentPdf()">
                         <i class="fa-solid fa-download me-1"></i>
                         Descargar Informe Actual

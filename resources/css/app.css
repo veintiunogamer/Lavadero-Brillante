@@ -678,9 +678,10 @@ hr {
 
 .reports-controls {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    flex-wrap: nowrap;
+    gap: 0.75rem;
     align-items: center;
+    justify-content: flex-end;
 }
 
 .reports-controls .form-select {
@@ -688,6 +689,8 @@ hr {
     border: 1px solid #d1d5db;
     color: #111827;
     min-width: 160px;
+    width: 180px;
+    flex: 0 0 auto;
 }
 
 .reports-controls .form-select:disabled {
@@ -784,6 +787,18 @@ hr {
 .reports-shell .pagination .page-item.active .page-link {
     background: #2563eb;
     border-color: #2f6dff;
+}
+
+@media (max-width: 768px) {
+    .reports-controls {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .reports-controls .form-select {
+        width: 100%;
+    }
 }
 
 /* LOGIN FORM STYLES */
