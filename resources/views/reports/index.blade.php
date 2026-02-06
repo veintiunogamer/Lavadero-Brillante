@@ -23,6 +23,7 @@
                             x-model="salesRange"
                             @change="changeSalesRange()"
                             :disabled="activeTab !== 'sales'">
+                        <option value="today">Hoy</option>
                         <option value="month">Este Mes</option>
                         <option value="week">Esta Semana</option>
                     </select>

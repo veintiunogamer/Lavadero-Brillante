@@ -27,7 +27,7 @@ window.reportsApp = function() {
             sales: 1,
             clients: 1
         },
-        perPage: 12,
+        perPage: 10,
         loadingSales: false,
         loadingClients: false,
 
@@ -249,6 +249,10 @@ window.reportsApp = function() {
 
         getRangeLabel() {
 
+            if (this.salesRange === 'today') {
+                return 'Resumen de hoy';
+            }
+
             return this.salesRange === 'week'
             ? 'Resumen de esta semana'
             : 'Resumen del mes actual';
@@ -327,7 +331,7 @@ window.reportsApp = function() {
             }
 
             window.open(url, '_blank');
-            
+
         }
     };
 };

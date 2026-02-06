@@ -27,7 +27,7 @@ window.settingsApp = function() {
             vehicleTypes: 1,
             clients: 1
         },
-        perPage: 15,
+        perPage: 10,
 
         // Sorting
         sortBy: {

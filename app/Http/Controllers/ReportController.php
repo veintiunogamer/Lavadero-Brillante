@@ -26,7 +26,7 @@ class ReportController extends Controller
     {
         $range = $request->query('range', 'month');
 
-        if (!in_array($range, ['week', 'month'], true)) {
+        if (!in_array($range, ['today', 'week', 'month'], true)) {
             $range = 'month';
         }
 
@@ -166,7 +166,7 @@ class ReportController extends Controller
 
         if ($tab === 'sales') {
             $range = $request->query('range', 'month');
-            if (!in_array($range, ['week', 'month'], true)) {
+            if (!in_array($range, ['today', 'week', 'month'], true)) {
                 $range = 'month';
             }
 
@@ -180,9 +180,15 @@ class ReportController extends Controller
                 'total' => $orders->sum('total'),
             ];
 
+            $periodLabel = match ($range) {
+                'today' => 'Hoy',
+                'week' => 'Esta semana',
+                default => 'Este mes',
+            };
+
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.pdf.sales', [
                 'title' => 'Ventas y Facturación',
-                'periodLabel' => $range === 'week' ? 'Esta semana' : 'Este mes',
+                'periodLabel' => $periodLabel,
                 'orders' => $orders,
                 'summary' => $summary,
                 'statusLabels' => $this->getOrderStatusLabels(),
@@ -217,6 +223,10 @@ class ReportController extends Controller
     private function getRangeDates(string $range): array
     {
         $now = Carbon::now();
+
+        if ($range === 'today') {
+            return [$now->copy()->startOfDay(), $now->copy()->endOfDay()];
+        }
 
         if ($range === 'week') {
             $start = $now->copy()->startOfWeek(Carbon::MONDAY);

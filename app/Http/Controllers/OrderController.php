@@ -158,18 +158,33 @@ class OrderController extends Controller
             ]);
 
 
-            // 1. Buscar o crear cliente
-            $client = \App\Models\Client::where('phone', $validated['client_phone'])->first();
+            // 1. Buscar o crear cliente (prioriza matrícula para evitar duplicados)
+            $licensePlaque = strtoupper(trim($validated['license_plaque']));
+            $clientPhone = trim($validated['client_phone']);
+
+            $client = \App\Models\Client::whereRaw('UPPER(license_plaque) = ?', [$licensePlaque])->first();
+
+            if (!$client && $clientPhone) {
+                $client = \App\Models\Client::where('phone', $clientPhone)->first();
+            }
             
             if (!$client) {
 
                 $client = \App\Models\Client::create([
                     'id' => \Illuminate\Support\Str::uuid(),
                     'name' => $validated['client_name'],
-                    'phone' => $validated['client_phone'],
-                    'license_plaque' => $validated['license_plaque'],
+                    'phone' => $clientPhone,
+                    'license_plaque' => $licensePlaque,
                     'status' => \App\Models\Client::STATUS_ACTIVE,
                     'creation_date' => now(),
+                ]);
+
+            } else {
+
+                $client->update([
+                    'name' => $validated['client_name'],
+                    'phone' => $clientPhone,
+                    'license_plaque' => $licensePlaque,
                 ]);
 
             }
