@@ -27,7 +27,8 @@
                         <label class="fw-bold">Nº Orden / Factura</label>
                         <div style="gap: 0.5rem;">
                             <input type="text" class="input float-right" name="consecutive_serial" readonly data-field-name="Serial" style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
-                            <input type="text" class="input float-right" name="consecutive_number" readonly data-field-name="Número" style="width: 70px;" value="{{ $consecutive['sequence'] ?? '' }}">
+                            <input type="text" class="input float-right" name="consecutive_number" 
+                            id="consecutive_number" readonly value="{{ $consecutive['sequence'] ?? '' }}" data-field-name="Número" style="width: 70px;">
                         </div>
 
                     </div>
@@ -446,10 +447,21 @@
             <!-- Listado de citas agendamiento -->
             <div class="card mt-4 p-4 rounded-4">
 
-                <h2 class="citas-title">
-                    <i class="fa-solid fa-list-check icon color-blue"></i>
-                    Registro de Citas
-                </h2>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                    <h2 class="citas-title mb-0">
+                        <i class="fa-solid fa-list-check icon color-blue"></i>
+                        Registro de Citas
+                    </h2>
+                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                        <input type="text"
+                               x-model="searchTerms[currentTab]"
+                               @input="resetPagination(currentTab)"
+                               class="form-control pe-5"
+                               placeholder="Buscar citas...">
+                        <i class="fa-solid fa-search position-absolute"
+                           style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                    </div>
+                </div>
 
                 <div class="citas-tabs">
 
@@ -477,12 +489,12 @@
                 </div>
 
                 <!-- Sin resultados -->
-                <div x-show="!loadingOrders && orders.length === 0" class="citas-content">
-                    <p class="citas-empty" x-text="currentTab === 'pending' ? 'No hay citas pendientes.' : 'No hay citas en el historial.'"></p>
+                <div x-show="!loadingOrders && getFilteredOrders().length === 0" class="citas-content">
+                    <p class="citas-empty" x-text="searchTerms[currentTab] ? 'No se encontraron resultados.' : (currentTab === 'pending' ? 'No hay citas pendientes.' : 'No hay citas en el historial.')"></p>
                 </div>
 
                 <!-- Tabla de citas -->
-                <div x-show="!loadingOrders && orders.length > 0" class="table-responsive">
+                <div x-show="!loadingOrders && getFilteredOrders().length > 0" class="table-responsive">
 
                     <table class="table table-hover align-middle">
 
@@ -503,7 +515,7 @@
 
                         <tbody>
 
-                            <template x-for="order in orders" :key="order.id">
+                            <template x-for="order in getPaginatedOrders()" :key="order.id">
                                 <tr>
                                     <td x-text="order.client ? order.client.name : 'N/A'"></td>
                                     <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
@@ -542,6 +554,28 @@
 
                 </div>
 
+                <!-- Paginador -->
+                <div x-show="!loadingOrders && getTotalPages() > 1" class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        Página <span x-text="currentPage[currentTab]"></span> de <span x-text="getTotalPages()"></span>
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item" :class="currentPage[currentTab] === 1 ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage(currentTab, currentPage[currentTab] - 1)">«</button>
+                            </li>
+                            <template x-for="page in getTotalPages()" :key="page">
+                                <li class="page-item" :class="page === currentPage[currentTab] ? 'active' : ''">
+                                    <button class="page-link" @click="goToPage(currentTab, page)" x-text="page"></button>
+                                </li>
+                            </template>
+                            <li class="page-item" :class="currentPage[currentTab] === getTotalPages() ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage(currentTab, currentPage[currentTab] + 1)">»</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
             </div>
 
         </div>
@@ -554,60 +588,60 @@
 
     <!-- Datos de la orden a editar (si existe) -->
     @if(isset($editOrder))
-    <script>
-        window.editOrderData = @json($editOrder);
-    </script>
+        <script>
+            window.editOrderData = @json($editOrder);
+        </script>
     @endif
 
 @endsection
 
 <script>
 
-document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
 
-    // Toggle de datos de facturación
-    var toggleFactura = document.getElementById('solicitar-factura');
-    var datosFacturacion = document.getElementById('datos-facturacion');
-    var fieldsFactura = ['razon-social', 'nif-cif', 'email-factura', 'direccion-calle', 'direccion-cp', 'direccion-ciudad'];
+        // Toggle de datos de facturación
+        var toggleFactura = document.getElementById('solicitar-factura');
+        var datosFacturacion = document.getElementById('datos-facturacion');
+        var fieldsFactura = ['razon-social', 'nif-cif', 'email-factura', 'direccion-calle', 'direccion-cp', 'direccion-ciudad'];
 
-    toggleFactura.addEventListener('change', function() {
+        toggleFactura.addEventListener('change', function() {
 
-        if (this.checked) {
+            if (this.checked) {
 
-            datosFacturacion.style.display = 'block';
+                datosFacturacion.style.display = 'block';
 
-            // Agregar required y clase de validación a los campos obligatorios
-            document.getElementById('razon-social').required = true;
-            document.getElementById('razon-social').classList.add('required-field');
-            
-            document.getElementById('nif-cif').required = true;
-            document.getElementById('nif-cif').classList.add('required-field');
-            
-            document.getElementById('direccion-calle').required = true;
-            document.getElementById('direccion-calle').classList.add('required-field');
-            
-            document.getElementById('direccion-cp').required = true;
-            document.getElementById('direccion-cp').classList.add('required-field');
-            
-            document.getElementById('direccion-ciudad').required = true;
-            document.getElementById('direccion-ciudad').classList.add('required-field');
-            
-        } else {
+                // Agregar required y clase de validación a los campos obligatorios
+                document.getElementById('razon-social').required = true;
+                document.getElementById('razon-social').classList.add('required-field');
+                
+                document.getElementById('nif-cif').required = true;
+                document.getElementById('nif-cif').classList.add('required-field');
+                
+                document.getElementById('direccion-calle').required = true;
+                document.getElementById('direccion-calle').classList.add('required-field');
+                
+                document.getElementById('direccion-cp').required = true;
+                document.getElementById('direccion-cp').classList.add('required-field');
+                
+                document.getElementById('direccion-ciudad').required = true;
+                document.getElementById('direccion-ciudad').classList.add('required-field');
+                
+            } else {
 
-            datosFacturacion.style.display = 'none';
+                datosFacturacion.style.display = 'none';
 
-            // Quitar required, clase de validación y limpiar valores
-            fieldsFactura.forEach(function(fieldId) {
-                var field = document.getElementById(fieldId);
-                field.required = false;
-                field.classList.remove('required-field', 'is-invalid', 'is-valid');
-                field.value = '';
-            });
+                // Quitar required, clase de validación y limpiar valores
+                fieldsFactura.forEach(function(fieldId) {
+                    var field = document.getElementById(fieldId);
+                    field.required = false;
+                    field.classList.remove('required-field', 'is-invalid', 'is-valid');
+                    field.value = '';
+                });
 
-        }
+            }
+
+        });
 
     });
-
-});
 
 </script>

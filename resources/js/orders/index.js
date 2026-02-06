@@ -53,6 +53,17 @@ function createOrderFormApp() {
         isEditMode: false,
         editOrderId: null,
 
+        // Búsqueda y paginación (por pestaña)
+        searchTerms: {
+            pending: '',
+            history: ''
+        },
+        currentPage: {
+            pending: 1,
+            history: 1
+        },
+        perPage: 15,
+
         // Estado para modales
         showQuickViewModal: false,
         selectedOrder: null,
@@ -190,6 +201,7 @@ function createOrderFormApp() {
          */
         async changeTab(tab) {
             this.currentTab = tab;
+            this.resetPagination(tab);
             await this.loadOrders();
         },
 
@@ -209,6 +221,7 @@ function createOrderFormApp() {
 
                     this.orders = result.data || [];
                     // console.log('✅ Total órdenes:', this.orders.length);
+                    this.ensurePageInRange(this.currentTab);
 
                 } else if (result && result.message === 'Unauthenticated.') {
 
@@ -232,6 +245,84 @@ function createOrderFormApp() {
 
                 this.loadingOrders = false;
 
+            }
+        },
+
+        // ====================
+        // BÚSQUEDA Y PAGINACIÓN
+        // ====================
+
+        getFilteredOrders(tab = this.currentTab) {
+            const searchTerm = (this.searchTerms[tab] || '').toLowerCase().trim();
+            if (!searchTerm) return this.orders;
+
+            return this.orders.filter(order => {
+                const clientName = order.client?.name || '';
+                const licensePlaque = order.client?.license_plaque || '';
+                const services = Array.isArray(order.services)
+                    ? order.services.map(service => service.name).join(' ')
+                    : '';
+                const userName = order.user?.name || '';
+                const statusText = this.getStatusText(order.status) || '';
+                const creationDate = order.creation_date || '';
+                const hourIn = order.hour_in || '';
+                const hourOut = order.hour_out || '';
+                const total = order.total !== undefined && order.total !== null ? String(order.total) : '';
+                const orderId = order.id !== undefined && order.id !== null ? String(order.id) : '';
+
+                const haystack = [
+                    clientName,
+                    licensePlaque,
+                    services,
+                    userName,
+                    statusText,
+                    creationDate,
+                    hourIn,
+                    hourOut,
+                    total,
+                    orderId
+                ].map(value => String(value).toLowerCase());
+
+                return haystack.some(value => value.includes(searchTerm));
+            });
+        },
+
+        getPaginatedOrders(tab = this.currentTab) {
+            const filteredData = this.getFilteredOrders(tab);
+            const start = (this.currentPage[tab] - 1) * this.perPage;
+            const end = start + this.perPage;
+            return filteredData.slice(start, end);
+        },
+
+        getTotalPages(tab = this.currentTab) {
+            const filteredData = this.getFilteredOrders(tab);
+            return Math.ceil(filteredData.length / this.perPage);
+        },
+
+        goToPage(tab, page) {
+            const totalPages = this.getTotalPages(tab);
+            if (page >= 1 && page <= totalPages) {
+                this.currentPage[tab] = page;
+            }
+        },
+
+        resetPagination(tab) {
+            if (this.currentPage[tab] !== undefined) {
+                this.currentPage[tab] = 1;
+            }
+        },
+
+        ensurePageInRange(tab = this.currentTab) {
+            const totalPages = this.getTotalPages(tab);
+            if (totalPages === 0) {
+                this.currentPage[tab] = 1;
+                return;
+            }
+            if (this.currentPage[tab] > totalPages) {
+                this.currentPage[tab] = totalPages;
+            }
+            if (this.currentPage[tab] < 1) {
+                this.currentPage[tab] = 1;
             }
         },
 

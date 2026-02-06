@@ -134,6 +134,7 @@ export class OrderFormApp {
                     if (result.success) {
 
                         window.notyf?.success('¡Orden creada exitosamente!');
+
                         await this.loadOrders();
                         this.resetForm();
 
@@ -181,15 +182,9 @@ export class OrderFormApp {
                     
                     // Limpiar valor
                     if (!input.readOnly) input.value = '';
-                    
-                    // Remover clases de validación
-                    if (input.classList.contains('is-valid')) {
-                        input.classList.remove('is-valid');
-                    }
 
-                    if (input.classList.contains('is-invalid')) {
-                        input.classList.remove('is-invalid');
-                    }
+                    // Limpiar clases de validación
+                    input.classList.remove('is-valid');
 
                 });
 
@@ -209,12 +204,6 @@ export class OrderFormApp {
                 if (datosFacturacion) datosFacturacion.style.display = 'none';
 
                 // Sumar el numero del consecutivo
-                const consecutiveNumberInput = document.querySelector('input[name="consecutive_number"]');
-
-                if (consecutiveNumberInput) {
-                    let currentNumber = parseInt(consecutiveNumberInput.value) || 0;
-                    consecutiveNumberInput.value = (currentNumber + 1).toString().padStart(6, '0');
-                }
 
             },
 
