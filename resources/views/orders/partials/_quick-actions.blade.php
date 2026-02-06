@@ -163,32 +163,38 @@
                             Pago
                         </h5>
 
-                        <div class="row" x-for="payment in (selectedOrder?.payments || [])" :key="payment.id">
+                        <template x-if="(selectedOrder?.payments || []).length === 0">
+                            <div class="text-muted small">No hay pagos registrados.</div>
+                        </template>
 
-                            <div class="col-3">
-                                <label class="fw-bold small">Estado</label>
-                                <p class="mb-2">
-                                    <span class="badge" :class="getPaymentStatusBadge(payment.status)" 
-                                        x-text="getPaymentStatusText(payment.status)"></span>
-                                </p>
+                        <template x-for="payment in (selectedOrder?.payments || [])" :key="payment.id">
+                            <div class="row g-2 align-items-center mb-2">
+
+                                <div class="col-3">
+                                    <label class="fw-bold small">Estado</label>
+                                    <p class="mb-2">
+                                        <span class="badge" :class="getPaymentStatusBadge(payment.status)" 
+                                            x-text="getPaymentStatusText(payment.status)"></span>
+                                    </p>
+                                </div>
+
+                                <div class="col-3">
+                                    <label class="fw-bold small">Método</label>
+                                    <p class="mb-2" x-text="getPaymentMethodText(payment.type)"></p>
+                                </div>
+
+                                <div class="col-2">
+                                    <label class="fw-bold small">Total Pagado</label>
+                                    <p class="mb-2 text-success" x-text="formatCurrency(payment.total || 0)"></p>
+                                </div>
+
+                                <div class="col-2" x-show="selectedOrder?.partial_payment > 0">
+                                    <label class="fw-bold small">Abono Parcial</label>
+                                    <p class="mb-2 text-primary" x-text="formatCurrency(selectedOrder?.partial_payment || 0)"></p>
+                                </div>
+
                             </div>
-
-                            <div class="col-3">
-                                <label class="fw-bold small">Método</label>
-                                <span class="mb-2" x-text="getPaymentMethodText(payment.type)"></span>
-                            </div>
-
-                            <div class="col-3">
-                                <label class="fw-bold small">Total Pagado</label>
-                                <span class="mb-2 text-success" x-text="formatCurrency(payment.total || 0)"></span>
-                            </div>
-
-                            <div class="col-3" x-show="selectedOrder?.partial_payment > 0">
-                                <label class="fw-bold small">Abono Parcial</label>
-                                <span class="mb-2 text-primary" x-text="formatCurrency(selectedOrder?.partial_payment || 0)"></span>
-                            </div>
-
-                        </div>
+                        </template>
 
                     </div>
 

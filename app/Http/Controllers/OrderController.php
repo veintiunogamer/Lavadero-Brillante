@@ -248,12 +248,15 @@ class OrderController extends Controller
 
             \DB::commit();
 
+            $consecutive = $this->getConsecutive();
+
             return response()->json([
                 'success' => true,
                 'message' => 'Orden creada exitosamente',
                 'data' => [
                     'order' => $order,
                     'client' => $client,
+                    'consecutive' => $consecutive,
                 ]
             ], 201);
 

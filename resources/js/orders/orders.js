@@ -112,7 +112,27 @@ window.agendamientoApp = function() {
          */
         formatTime(time) {
             if (!time) return 'N/A';
-            return time.substring(0, 5); // HH:MM
+
+            if (time instanceof Date) {
+                return time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            const value = String(time);
+            let timePart = value;
+
+            if (value.includes('T')) {
+                timePart = value.split('T')[1] || value;
+            } else if (value.includes(' ')) {
+                timePart = value.split(' ')[1] || value;
+            }
+
+            timePart = timePart.replace('Z', '');
+
+            if (timePart.includes('+')) {
+                timePart = timePart.split('+')[0];
+            }
+
+            return timePart.substring(0, 5); // HH:MM
         },
 
         /**

@@ -471,9 +471,12 @@ function createOrderFormApp() {
                 let result;
 
                 if (this.isEditMode && this.editOrderId) {
+
                     // Modo edición: usar PUT
                     result = await apiPut(`/orders/${this.editOrderId}`, formData);
+                    
                 } else {
+
                     // Modo creación: usar POST
                     result = await apiPost('/orders/store', formData);
                 }
@@ -487,13 +490,18 @@ function createOrderFormApp() {
                     window.notyf?.success(message);
 
                     if (this.isEditMode) {
+
                         // Redirigir al inicio después de editar
                         setTimeout(() => {
                             window.location.href = '/';
                         }, 1500);
+
                     } else {
+
                         await this.loadOrders();
                         this.resetForm();
+                        this.updateConsecutive(result.data?.consecutive);
+
                     }
 
                 } else {
@@ -537,6 +545,7 @@ function createOrderFormApp() {
             // Limpiar campos de texto y email
             document.querySelectorAll('#orders-root input[type="text"], #orders-root input[type="email"], #orders-root textarea').forEach(input => {
                 if (!input.readOnly) input.value = '';
+                input.classList.remove('is-valid', 'is-invalid');
             });
 
             // Resetear campos numéricos (excepto cantidad que va a 1)
@@ -566,6 +575,11 @@ function createOrderFormApp() {
 
             });
 
+            // Asegurar que no queden estados de validación en otros campos
+            document.querySelectorAll('#orders-root .is-valid, #orders-root .is-invalid').forEach(field => {
+                field.classList.remove('is-valid', 'is-invalid');
+            });
+
             // Resetear módulos
             services.reset();
             payment.reset();
@@ -584,6 +598,22 @@ function createOrderFormApp() {
             // Scroll al inicio del formulario
             document.getElementById('orders-root')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+        },
+
+        updateConsecutive(consecutive) {
+
+            if (!consecutive) return;
+
+            const serialInput = document.querySelector('input[name="consecutive_serial"]');
+            const numberInput = document.querySelector('input[name="consecutive_number"]');
+
+            if (serialInput && consecutive.date_code) {
+                serialInput.value = consecutive.date_code;
+            }
+
+            if (numberInput && consecutive.sequence) {
+                numberInput.value = consecutive.sequence;
+            }
         },
 
         // Métodos de formateo
