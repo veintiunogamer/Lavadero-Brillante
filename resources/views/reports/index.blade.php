@@ -28,7 +28,7 @@
                         <option value="week">Esta Semana</option>
                     </select>
 
-                    <button class="btn btn-primary btn-sm" @click="downloadCurrentPdf()">
+                    <button class="btn btn-success btn-sm" @click="openExportModal()">
                         <i class="fa-solid fa-download me-1"></i>
                         Descargar Informe Actual
                     </button>
@@ -247,6 +247,27 @@
 
             </div>
 
+        </div>
+
+        <!-- Modal Exportar -->
+        <div x-show="showExportModal" x-transition.opacity class="reports-export-backdrop" @click="closeExportModal()" aria-hidden="true">
+            <div class="reports-export-modal" @click.stop>
+                <div class="reports-export-header">
+                    <h5 class="mb-0">Exportar informe</h5>
+                    <button class="btn-close" type="button" aria-label="Cerrar" @click="closeExportModal()"></button>
+                </div>
+                <p class="text-muted mb-3">Selecciona el formato de descarga.</p>
+                <div class="reports-export-options">
+                    <button class="reports-export-option reports-export-option--pdf" @click="downloadCurrent('pdf')">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        <span>PDF</span>
+                    </button>
+                    <button class="reports-export-option reports-export-option--excel" @click="downloadCurrent('excel')">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span>Excel</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
     </div>

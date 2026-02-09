@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/clients', [ReportController::class, 'clients'])->name('reports.clients');
     Route::get('/reports/pdf/daily', [ReportController::class, 'dailyPdf'])->name('reports.pdf.daily');
     Route::get('/reports/pdf/current', [ReportController::class, 'currentPdf'])->name('reports.pdf.current');
+    Route::get('/reports/excel/current', [ReportController::class, 'currentExcel'])->name('reports.excel.current');
     
     # Rutas para configuraciones
     Route::get('/settings', function () {

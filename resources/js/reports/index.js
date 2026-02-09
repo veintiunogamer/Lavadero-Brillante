@@ -30,6 +30,7 @@ window.reportsApp = function() {
         perPage: 10,
         loadingSales: false,
         loadingClients: false,
+        showExportModal: false,
 
         async init() {
             await this.loadSales();
@@ -310,12 +311,21 @@ window.reportsApp = function() {
         },
 
         // ====================
-        // PDF
+        // EXPORT
         // ====================
 
-        downloadCurrentPdf() {
+        openExportModal() {
+            this.showExportModal = true;
+        },
 
-            let url = `/reports/pdf/current?tab=${this.activeTab}`;
+        closeExportModal() {
+            this.showExportModal = false;
+        },
+
+        getExportUrl(format) {
+
+            const base = format === 'excel' ? '/reports/excel/current' : '/reports/pdf/current';
+            let url = `${base}?tab=${this.activeTab}`;
 
             if (this.activeTab === 'sales') {
                 url += `&range=${this.salesRange}`;
@@ -325,8 +335,15 @@ window.reportsApp = function() {
                 url += `&search=${encodeURIComponent(this.searchTerms.clients)}`;
             }
 
-            window.open(url, '_blank');
+            return url;
 
-        }
+        },
+
+        downloadCurrent(format) {
+            const url = this.getExportUrl(format);
+            window.open(url, '_blank');
+            this.closeExportModal();
+        },
+
     };
 };

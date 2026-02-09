@@ -222,6 +222,80 @@ class ReportController extends Controller
         ], 400);
     }
 
+    /**
+     * Descarga el informe actual en Excel (CSV)
+     */
+    public function currentExcel(Request $request)
+    {
+        $tab = $request->query('tab', 'sales');
+
+        if ($tab === 'sales') {
+            $range = $request->query('range', 'month');
+            if (!in_array($range, ['today', 'week', 'month'], true)) {
+                $range = 'month';
+            }
+
+            [$start, $end] = $this->getRangeDates($range);
+            $orders = $this->querySales($start, $end)->get();
+
+            $statusLabels = $this->getOrderStatusLabels();
+            $paymentStatusLabels = $this->getPaymentStatusLabels();
+
+            $headers = ['Orden', 'Cliente', 'Servicios', 'Fecha', 'Subtotal', 'Descuento %', 'Total', 'Pago', 'Estado'];
+            $rows = $orders->map(function ($order) use ($statusLabels, $paymentStatusLabels) {
+                $orderNumber = $order->consecutive_serial && $order->consecutive_number
+                    ? $order->consecutive_serial . '-' . $order->consecutive_number
+                    : strtoupper(substr($order->id, 0, 8));
+
+                $services = $order->services->pluck('name')->join(', ');
+                $payment = $order->payments->first();
+                $paymentStatus = $payment ? ($paymentStatusLabels[$payment->status] ?? 'Desconocido') : 'N/A';
+
+                return [
+                    $orderNumber,
+                    optional($order->client)->name ?? 'N/A',
+                    $services ?: 'N/A',
+                    Carbon::parse($order->creation_date)->format('d/m/Y'),
+                    number_format($order->subtotal, 2, ',', '.') . ' €',
+                    number_format($order->discount ?? 0, 0),
+                    number_format($order->total, 2, ',', '.') . ' €',
+                    $paymentStatus,
+                    $statusLabels[$order->status] ?? 'Desconocido'
+                ];
+            })->all();
+
+            $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.csv';
+
+            return $this->streamCsv($filename, $headers, $rows);
+        }
+
+        if ($tab === 'clients') {
+            $search = $request->query('search');
+            $clients = $this->queryClients($search)->get();
+
+            $headers = ['Cliente', 'Teléfono', 'Matrícula', 'Citas', 'Total gastado', 'Última visita'];
+            $rows = $clients->map(function ($client) {
+                return [
+                    $client->name,
+                    $client->phone ?? 'N/A',
+                    $client->license_plaque ?? 'N/A',
+                    $client->orders_count,
+                    number_format($client->total_spent ?? 0, 2, ',', '.') . ' €',
+                    $client->last_order_date ? Carbon::parse($client->last_order_date)->format('d/m/Y') : 'N/A'
+                ];
+            })->all();
+
+            $filename = 'reporte-clientes-' . Carbon::now()->format('Ymd') . '.csv';
+
+            return $this->streamCsv($filename, $headers, $rows);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'El informe solicitado no está disponible.'
+        ], 400);
+    }
+
     private function getRangeDates(string $range): array
     {
         $now = Carbon::now();
@@ -294,5 +368,25 @@ class ReportController extends Controller
             2 => 'Parcial',
             3 => 'Pagado',
         ];
+    }
+
+    private function streamCsv(string $filename, array $headers, array $rows)
+    {
+        return response()->streamDownload(function () use ($headers, $rows) {
+            $handle = fopen('php://output', 'w');
+
+            // UTF-8 BOM for Excel compatibility
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            fputcsv($handle, $headers, ';');
+
+            foreach ($rows as $row) {
+                fputcsv($handle, $row, ';');
+            }
+
+            fclose($handle);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 }
