@@ -587,7 +587,7 @@
         @include('orders.modals._change-status')
 
         <!-- Modal Factura -->
-        <div x-show="showInvoiceModal" x-transition.opacity class="invoice-modal-backdrop" @click="closeInvoiceModal()" @keydown.escape.window="closeInvoiceModal()">
+        <div x-cloak x-show="showInvoiceModal" x-transition.opacity class="invoice-modal-backdrop" @click="closeInvoiceModal()" @keydown.escape.window="closeInvoiceModal()">
             <div class="invoice-modal" @click.stop>
                 <h5 class="mb-2">¿Factura?</h5>
                 <p class="text-muted mb-3">¿Deseas generar la factura en PDF?</p>

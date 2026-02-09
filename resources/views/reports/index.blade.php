@@ -250,7 +250,7 @@
         </div>
 
         <!-- Modal Exportar -->
-        <div x-show="showExportModal" x-transition.opacity class="reports-export-backdrop" @click="closeExportModal()" aria-hidden="true">
+        <div x-cloak x-show="showExportModal" x-transition.opacity class="reports-export-backdrop" @click="closeExportModal()" aria-hidden="true">
             <div class="reports-export-modal" @click.stop>
                 <div class="reports-export-header">
                     <h5 class="mb-0">Exportar informe</h5>
