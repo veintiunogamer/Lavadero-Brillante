@@ -5,6 +5,9 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ReportSalesExport;
+use App\Exports\ReportClientsExport;
 
 class ReportController extends Controller
 {   
@@ -238,56 +241,24 @@ class ReportController extends Controller
             [$start, $end] = $this->getRangeDates($range);
             $orders = $this->querySales($start, $end)->get();
 
-            $statusLabels = $this->getOrderStatusLabels();
-            $paymentStatusLabels = $this->getPaymentStatusLabels();
+            $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.xlsx';
 
-            $headers = ['Orden', 'Cliente', 'Servicios', 'Fecha', 'Subtotal', 'Descuento %', 'Total', 'Pago', 'Estado'];
-            $rows = $orders->map(function ($order) use ($statusLabels, $paymentStatusLabels) {
-                $orderNumber = $order->consecutive_serial && $order->consecutive_number
-                    ? $order->consecutive_serial . '-' . $order->consecutive_number
-                    : strtoupper(substr($order->id, 0, 8));
-
-                $services = $order->services->pluck('name')->join(', ');
-                $payment = $order->payments->first();
-                $paymentStatus = $payment ? ($paymentStatusLabels[$payment->status] ?? 'Desconocido') : 'N/A';
-
-                return [
-                    $orderNumber,
-                    optional($order->client)->name ?? 'N/A',
-                    $services ?: 'N/A',
-                    Carbon::parse($order->creation_date)->format('d/m/Y'),
-                    number_format($order->subtotal, 2, ',', '.') . ' €',
-                    number_format($order->subtotal > 0 ? (($order->discount ?? 0) / $order->subtotal) * 100 : 0, 0),
-                    number_format($order->total, 2, ',', '.') . ' €',
-                    $paymentStatus,
-                    $statusLabels[$order->status] ?? 'Desconocido'
-                ];
-            })->all();
-
-            $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.csv';
-
-            return $this->streamCsv($filename, $headers, $rows);
+            return Excel::download(
+                new ReportSalesExport($orders, $this->getOrderStatusLabels(), $this->getPaymentStatusLabels()),
+                $filename
+            );
         }
 
         if ($tab === 'clients') {
             $search = $request->query('search');
             $clients = $this->queryClients($search)->get();
 
-            $headers = ['Cliente', 'Teléfono', 'Matrícula', 'Citas', 'Total gastado', 'Última visita'];
-            $rows = $clients->map(function ($client) {
-                return [
-                    $client->name,
-                    $client->phone ?? 'N/A',
-                    $client->license_plaque ?? 'N/A',
-                    $client->orders_count,
-                    number_format($client->total_spent ?? 0, 2, ',', '.') . ' €',
-                    $client->last_order_date ? Carbon::parse($client->last_order_date)->format('d/m/Y') : 'N/A'
-                ];
-            })->all();
+            $filename = 'reporte-clientes-' . Carbon::now()->format('Ymd') . '.xlsx';
 
-            $filename = 'reporte-clientes-' . Carbon::now()->format('Ymd') . '.csv';
-
-            return $this->streamCsv($filename, $headers, $rows);
+            return Excel::download(
+                new ReportClientsExport($clients),
+                $filename
+            );
         }
 
         return response()->json([
@@ -370,23 +341,4 @@ class ReportController extends Controller
         ];
     }
 
-    private function streamCsv(string $filename, array $headers, array $rows)
-    {
-        return response()->streamDownload(function () use ($headers, $rows) {
-            $handle = fopen('php://output', 'w');
-
-            // UTF-8 BOM for Excel compatibility
-            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
-
-            fputcsv($handle, $headers, ';');
-
-            foreach ($rows as $row) {
-                fputcsv($handle, $row, ';');
-            }
-
-            fclose($handle);
-        }, $filename, [
-            'Content-Type' => 'text/csv; charset=UTF-8',
-        ]);
-    }
 }

@@ -1,8 +1,12 @@
 <!doctype html>
+
 <html lang="es">
+
     <head>
+
         <meta charset="utf-8">
         <title>Factura {{ $invoiceNumber }}</title>
+
         <style>
             body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #111827; }
             .header { width: 100%; margin-bottom: 12px; }
@@ -19,8 +23,11 @@
             .text-right { text-align: right; }
             .text-muted { color: #6b7280; }
         </style>
+
     </head>
+
     <body>
+
         @php
             $clientName = $order->invoice_business_name ?: (optional($order->client)->name ?? 'N/A');
             $taxId = $order->invoice_tax_id ?? '';
@@ -37,9 +44,10 @@
         @endphp
 
         <table class="header">
+
             <tr>
                 <td style="width: 140px;">
-                    <img src="{{ public_path('images/logo.png') }}" alt="Logo" class="logo">
+                    <img src="{{ public_path('images/logo_alterno.png') }}" alt="Logo" class="logo">
                 </td>
                 <td style="text-align: right;">
                     <h1 class="title">Factura</h1>
@@ -47,23 +55,31 @@
                     <div class="subtle">Fecha: {{ $invoiceDate }}</div>
                 </td>
             </tr>
+
         </table>
 
         <div class="section">
+
             <div class="section-title">Datos del cliente</div>
+
             <div><strong>Nombre/Razon social:</strong> {{ $clientName }}</div>
+
             @if($taxId)
                 <div><strong>NIF/CIF:</strong> {{ $taxId }}</div>
             @endif
+
             @if($clientPhone)
                 <div><strong>Telefono:</strong> {{ $clientPhone }}</div>
             @endif
+
             @if($email)
                 <div><strong>Email:</strong> {{ $email }}</div>
             @endif
+
             @if($address || $postal || $city)
                 <div><strong>Direccion:</strong> {{ trim($address . ' ' . $postal . ' ' . $city) }}</div>
             @endif
+            
         </div>
 
         <table>
