@@ -107,7 +107,7 @@
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
-                                    <button class="btn btn-sm btn-warning me-1" @click="openStatusModal(order)" title="Cambiar estado"
+                                    <button class="btn btn-sm btn-warning me-1" @click="openStatusTypeModal(order)" title="Cambiar estado"
                                             x-show="order.status !== 3 || order.payment?.status !== 3">
                                         <i class="fa-solid fa-exchange-alt"></i>
                                     </button>
@@ -154,6 +154,8 @@
         <!-- Modales -->
         @include('orders.partials._quick-actions')
         @include('orders.modals._change-status')
+        @include('orders.modals._select-status-type')
+        @include('orders.modals._change-payment')
 
     </div>
 

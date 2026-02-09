@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
     Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePaymentStatus'])->name('orders.updatePayment');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoicePdf'])->name('orders.invoice');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 

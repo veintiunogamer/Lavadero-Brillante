@@ -539,7 +539,7 @@
                                             <button @click="openQuickView(order)" class="btn btn-info" title="Ver detalles">
                                                 <i class="fa-solid fa-eye"></i>
                                             </button>
-                                            <button @click="openStatusModal(order)" class="btn btn-warning" title="Cambiar estado"
+                                            <button @click="openStatusTypeModal(order)" class="btn btn-warning" title="Cambiar estado"
                                                     x-show="order.status !== 3 || order.payment?.status !== 3">
                                                 <i class="fa-solid fa-exchange-alt"></i>
                                             </button>
@@ -586,6 +586,8 @@
         <!-- Modales -->
         @include('orders.partials._quick-actions')
         @include('orders.modals._change-status')
+        @include('orders.modals._select-status-type')
+        @include('orders.modals._change-payment')
 
         <!-- Modal Factura -->
         <div x-cloak x-show="showInvoiceModal" x-transition.opacity class="invoice-modal-backdrop" @click="closeInvoiceModal()" @keydown.escape.window="closeInvoiceModal()">

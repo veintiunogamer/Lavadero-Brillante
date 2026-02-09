@@ -33,6 +33,13 @@ window.agendamientoApp = function() {
         newStatus: null,
         statusChangeNote: '',
         changingStatus: false,
+        showStatusTypeModal: false,
+        statusTypeOrder: null,
+        showPaymentModal: false,
+        paymentModalOrder: null,
+        newPaymentStatus: null,
+        paymentPartialAmount: null,
+        changingPayment: false,
 
         /**
          * Inicializa el componente y carga las órdenes
@@ -101,7 +108,7 @@ window.agendamientoApp = function() {
          */
         getStatusBadge(status) {
             const badges = {
-                1: 'badge bg-warning',
+                1: 'badge bg-warning text-dark',
                 2: 'badge bg-info text-white',
                 3: 'badge bg-success',
                 4: 'badge bg-danger'
@@ -189,6 +196,118 @@ window.agendamientoApp = function() {
             this.statusModalOrder = null;
             this.newStatus = null;
             this.statusChangeNote = '';
+        },
+
+        // ==================== MODAL TIPO DE ESTADO ====================
+
+        openStatusTypeModal(order) {
+            const baseOrder = this.orders.find(item => item.id === order?.id) || order;
+            if (baseOrder && !baseOrder.payment && Array.isArray(baseOrder.payments)) {
+                baseOrder.payment = baseOrder.payments[0] || null;
+            }
+            this.statusTypeOrder = baseOrder;
+            this.showStatusTypeModal = true;
+        },
+
+        closeStatusTypeModal() {
+            this.showStatusTypeModal = false;
+            this.statusTypeOrder = null;
+        },
+
+        openOrderStatusFromType() {
+            if (!this.statusTypeOrder) return;
+            const order = this.statusTypeOrder;
+            this.closeStatusTypeModal();
+            this.openStatusModal(order);
+        },
+
+        openPaymentStatusFromType() {
+            if (!this.statusTypeOrder) return;
+            const order = this.statusTypeOrder;
+            this.closeStatusTypeModal();
+            this.openPaymentModal(order);
+        },
+
+        // ==================== MODAL CAMBIO DE PAGO ====================
+
+        async openPaymentModal(order) {
+            const baseOrder = order || {};
+
+            if (baseOrder?.id && !baseOrder?.client) {
+                try {
+                    const response = await fetch(`/orders/${baseOrder.id}`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    const result = await response.json();
+                    if (response.ok && result.success && result.data) {
+                        this.setPaymentModalData(result.data);
+                    } else {
+                        this.setPaymentModalData(baseOrder);
+                    }
+                } catch (error) {
+                    this.setPaymentModalData(baseOrder);
+                }
+            } else {
+                this.setPaymentModalData(baseOrder);
+            }
+
+            this.showPaymentModal = true;
+        },
+
+        closePaymentModal() {
+            this.showPaymentModal = false;
+            this.paymentModalOrder = null;
+            this.newPaymentStatus = null;
+            this.paymentPartialAmount = null;
+        },
+
+        setPaymentModalData(order) {
+            if (order && !order.payment && Array.isArray(order.payments)) {
+                order.payment = order.payments[0] || null;
+            }
+            this.paymentModalOrder = order;
+            this.newPaymentStatus = order?.payment?.status || 1;
+            this.paymentPartialAmount = order?.partial_payment || null;
+        },
+
+        async confirmPaymentChange() {
+            if (!this.paymentModalOrder || !this.newPaymentStatus) return;
+            if (this.newPaymentStatus === this.paymentModalOrder?.payment?.status) return;
+
+            this.changingPayment = true;
+
+            try {
+                const payload = { status: this.newPaymentStatus };
+
+                if (this.newPaymentStatus === 2) {
+                    payload.partial_payment = this.paymentPartialAmount;
+                }
+
+                const response = await fetch(`/orders/${this.paymentModalOrder.id}/payment`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.notyf?.success('Estado de pago actualizado');
+                    await this.loadOrders(this.currentTab);
+                    this.closePaymentModal();
+                } else {
+                    window.notyf?.error(result.message || 'Error al actualizar el pago');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf?.error('Error al actualizar el pago');
+            } finally {
+                this.changingPayment = false;
+            }
         },
 
         async confirmStatusChange() {

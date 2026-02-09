@@ -495,6 +495,91 @@ class OrderController extends Controller
     }
 
     /**
+     * Actualiza el estado de pago de una orden
+     *
+     * @param Request $request
+     * @param Order $order
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updatePaymentStatus(Request $request, Order $order)
+    {
+        try {
+            $validated = $request->validate([
+                'status' => 'required|integer|in:1,2,3',
+                'partial_payment' => 'nullable|numeric|min:0',
+            ]);
+
+            \DB::beginTransaction();
+
+            $order->load(['payments']);
+            $payment = $order->payments->first();
+
+            if (!$payment) {
+                $payment = \App\Models\Payment::create([
+                    'id' => \Illuminate\Support\Str::uuid(),
+                    'order_id' => $order->id,
+                    'type' => $request->input('payment_method', 1),
+                    'subtotal' => $order->subtotal ?? 0,
+                    'total' => $order->total ?? 0,
+                    'status' => $validated['status'],
+                    'creation_date' => now(),
+                ]);
+            } else {
+                $payment->status = $validated['status'];
+                $payment->save();
+            }
+
+            if ((int) $validated['status'] === \App\Models\Payment::STATUS_PARTIAL) {
+                if ($validated['partial_payment'] === null) {
+                    \DB::rollBack();
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Debes indicar el monto parcial.'
+                    ], 422);
+                }
+                $order->partial_payment = $validated['partial_payment'];
+            } elseif ((int) $validated['status'] === \App\Models\Payment::STATUS_PAID) {
+                $order->partial_payment = $order->total;
+            } else {
+                $order->partial_payment = null;
+            }
+
+            $order->save();
+
+            \DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Estado de pago actualizado',
+                'data' => [
+                    'order' => $order->fresh(['client', 'services', 'payments', 'user'])
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+
+            \DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error de validación',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+
+            \DB::rollBack();
+
+            \Log::error('Error al actualizar pago: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el pago'
+            ], 500);
+
+        }
+    }
+
+    /**
      * Obtiene los detalles de una orden específica
      *
      * @param Order $order
