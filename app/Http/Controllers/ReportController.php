@@ -143,6 +143,7 @@ class ReportController extends Controller
             'orders' => $orders,
             'summary' => $summary,
             'statusLabels' => $this->getOrderStatusLabels(),
+            'paymentStatusLabels' => $this->getPaymentStatusLabels(),
         ]);
 
         $filename = 'cierre-diario-' . $target->format('Ymd') . '.pdf';
@@ -192,6 +193,7 @@ class ReportController extends Controller
                 'orders' => $orders,
                 'summary' => $summary,
                 'statusLabels' => $this->getOrderStatusLabels(),
+                'paymentStatusLabels' => $this->getPaymentStatusLabels(),
             ]);
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.pdf';
@@ -239,7 +241,11 @@ class ReportController extends Controller
 
     private function querySales(Carbon $start, Carbon $end)
     {
-        return Order::with(['client:id,name,phone,license_plaque', 'services:id,name'])
+        return Order::with([
+            'client:id,name,phone,license_plaque',
+            'services:id,name',
+            'payments:id,order_id,type,status,subtotal,total'
+        ])
             ->whereBetween('creation_date', [$start, $end])
             ->orderByDesc('creation_date');
     }
@@ -278,6 +284,15 @@ class ReportController extends Controller
             2 => 'En Proceso',
             3 => 'Terminado',
             4 => 'Cancelado',
+        ];
+    }
+
+    private function getPaymentStatusLabels(): array
+    {
+        return [
+            1 => 'Pendiente',
+            2 => 'Parcial',
+            3 => 'Pagado',
         ];
     }
 }
