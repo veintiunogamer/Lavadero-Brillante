@@ -52,9 +52,12 @@ window.agendamientoApp = function() {
          * Cambia de tab y recarga las órdenes
          */
         async changeTab(status) {
+
             this.currentTab = status;
             this.resetPagination();
+            
             await this.loadOrders(status);
+
         },
 
         /**
@@ -65,6 +68,7 @@ window.agendamientoApp = function() {
             this.loading = true;
             
             try {
+
                 const response = await fetch(`/orders/status/${status}`, {
                     method: 'GET',
                     headers: {
@@ -94,72 +98,90 @@ window.agendamientoApp = function() {
          * Obtiene el texto del estado
          */
         getStatusText(status) {
+
             const statuses = {
                 1: 'Pendiente',
                 2: 'En Proceso',
                 3: 'Terminado',
                 4: 'Cancelado'
             };
+
             return statuses[status] || 'Desconocido';
+
         },
 
         /**
          * Obtiene la clase CSS del badge según el estado
          */
         getStatusBadge(status) {
+
             const badges = {
                 1: 'badge bg-warning text-dark',
                 2: 'badge bg-info text-white',
                 3: 'badge bg-success',
                 4: 'badge bg-danger'
             };
+
             return badges[status] || 'badge bg-secondary';
+
         },
 
         /**
          * Obtiene el texto del estado de pago
          */
         getPaymentStatusText(status) {
+
             const statuses = {
                 1: 'Pendiente',
                 2: 'Parcial',
                 3: 'Pagado'
             };
+
             return statuses[status] || 'N/A';
+
         },
 
         /**
          * Obtiene la clase CSS del badge según el estado de pago
          */
         getPaymentStatusBadge(status) {
+
             const badges = {
                 1: 'badge bg-warning text-dark',
                 2: 'badge bg-info text-white',
                 3: 'badge bg-success'
             };
+
             return badges[status] || 'badge bg-secondary';
+
         },
 
         /**
          * Obtiene el texto del método de pago
          */
         getPaymentMethodText(method) {
+
             const methods = {
                 1: 'Efectivo',
                 2: 'Tarjeta',
                 3: 'Transferencia',
                 4: 'Bizum'
             };
+
             return methods[method] || 'N/A';
+
         },
 
         normalizePayments(orders = []) {
+
             return orders.map(order => {
+
                 if (!order.payment && Array.isArray(order.payments)) {
                     order.payment = order.payments[0] || null;
                 }
                 return order;
             });
+
         },
 
         // ====================
@@ -185,65 +207,86 @@ window.agendamientoApp = function() {
         // ====================
 
         openStatusModal(order) {
+
             this.statusModalOrder = order;
             this.newStatus = order.status;
             this.statusChangeNote = '';
             this.showStatusModal = true;
+
         },
 
         closeStatusModal() {
+
             this.showStatusModal = false;
             this.statusModalOrder = null;
             this.newStatus = null;
             this.statusChangeNote = '';
+
         },
 
         // ==================== MODAL TIPO DE ESTADO ====================
 
         openStatusTypeModal(order) {
+
             const baseOrder = this.orders.find(item => item.id === order?.id) || order;
             if (baseOrder && !baseOrder.payment && Array.isArray(baseOrder.payments)) {
                 baseOrder.payment = baseOrder.payments[0] || null;
             }
+
             this.statusTypeOrder = baseOrder;
             this.showStatusTypeModal = true;
+
         },
 
         closeStatusTypeModal() {
+
             this.showStatusTypeModal = false;
             this.statusTypeOrder = null;
+
         },
 
         openOrderStatusFromType() {
+
             if (!this.statusTypeOrder) return;
             const order = this.statusTypeOrder;
+
             this.closeStatusTypeModal();
             this.openStatusModal(order);
+
         },
 
         openPaymentStatusFromType() {
+
             if (!this.statusTypeOrder) return;
             const order = this.statusTypeOrder;
+
             this.closeStatusTypeModal();
             this.openPaymentModal(order);
+
         },
 
         // ==================== MODAL CAMBIO DE PAGO ====================
 
         async openPaymentModal(order) {
+
             const baseOrder = order || {};
 
             if (baseOrder?.id && !baseOrder?.client) {
+
                 try {
+
                     const response = await fetch(`/orders/${baseOrder.id}`, {
                         headers: { 'Accept': 'application/json' }
                     });
+
                     const result = await response.json();
+
                     if (response.ok && result.success && result.data) {
                         this.setPaymentModalData(result.data);
                     } else {
                         this.setPaymentModalData(baseOrder);
                     }
+
                 } catch (error) {
                     this.setPaymentModalData(baseOrder);
                 }
@@ -255,28 +298,35 @@ window.agendamientoApp = function() {
         },
 
         closePaymentModal() {
+
             this.showPaymentModal = false;
             this.paymentModalOrder = null;
             this.newPaymentStatus = null;
             this.paymentPartialAmount = null;
+
         },
 
         setPaymentModalData(order) {
+
             if (order && !order.payment && Array.isArray(order.payments)) {
                 order.payment = order.payments[0] || null;
             }
+
             this.paymentModalOrder = order;
             this.newPaymentStatus = order?.payment?.status || 1;
             this.paymentPartialAmount = order?.partial_payment || null;
+
         },
 
         async confirmPaymentChange() {
+
             if (!this.paymentModalOrder || !this.newPaymentStatus) return;
             if (this.newPaymentStatus === this.paymentModalOrder?.payment?.status) return;
 
             this.changingPayment = true;
 
             try {
+
                 const payload = { status: this.newPaymentStatus };
 
                 if (this.newPaymentStatus === 2) {
@@ -296,27 +346,34 @@ window.agendamientoApp = function() {
                 const result = await response.json();
 
                 if (result.success) {
+
                     window.notyf?.success('Estado de pago actualizado');
                     await this.loadOrders(this.currentTab);
                     this.closePaymentModal();
+
                 } else {
                     window.notyf?.error(result.message || 'Error al actualizar el pago');
                 }
+
             } catch (error) {
+
                 console.error('Error:', error);
                 window.notyf?.error('Error al actualizar el pago');
+
             } finally {
                 this.changingPayment = false;
             }
         },
 
         async confirmStatusChange() {
+
             if (!this.statusModalOrder || !this.newStatus) return;
             if (this.newStatus === this.statusModalOrder.status) return;
 
             this.changingStatus = true;
 
             try {
+
                 const response = await fetch(`/orders/${this.statusModalOrder.id}/status`, {
                     method: 'PATCH',
                     headers: {
@@ -333,12 +390,15 @@ window.agendamientoApp = function() {
                 const result = await response.json();
 
                 if (result.success) {
+
                     window.notyf?.success('Estado actualizado correctamente');
                     await this.loadOrders(this.currentTab);
                     this.closeStatusModal();
+
                 } else {
                     window.notyf?.error(result.message || 'Error al actualizar el estado');
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 window.notyf?.error('Error al actualizar el estado');
@@ -351,17 +411,20 @@ window.agendamientoApp = function() {
          * Formatea una fecha
          */
         formatDate(date) {
+
             return new Date(date).toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit'
             });
+
         },
 
         /**
          * Formatea una hora
          */
         formatTime(time) {
+
             if (!time) return 'N/A';
 
             if (time instanceof Date) {
@@ -390,10 +453,12 @@ window.agendamientoApp = function() {
          * Formatea moneda
          */
         formatCurrency(amount) {
+
             return new Intl.NumberFormat('es-ES', {
                 style: 'currency',
                 currency: 'EUR'
             }).format(amount);
+
         },
 
         // ====================
@@ -401,10 +466,12 @@ window.agendamientoApp = function() {
         // ====================
 
         getFilteredOrders() {
+
             const term = (this.searchTerm || '').toLowerCase().trim();
             if (!term) return this.orders;
 
             return this.orders.filter(order => {
+
                 const clientName = order.client?.name || '';
                 const licensePlaque = order.client?.license_plaque || '';
                 const services = Array.isArray(order.services)
@@ -438,22 +505,29 @@ window.agendamientoApp = function() {
         // ====================
 
         getPaginatedOrders() {
+
             const filtered = this.getFilteredOrders();
             const start = (this.currentPage - 1) * this.perPage;
             const end = start + this.perPage;
+
             return filtered.slice(start, end);
         },
 
         getTotalPages() {
+
             const total = this.getFilteredOrders().length;
             return Math.ceil(total / this.perPage);
+
         },
 
         goToPage(page) {
+
             const totalPages = this.getTotalPages();
+
             if (page >= 1 && page <= totalPages) {
                 this.currentPage = page;
             }
+
         },
 
         resetPagination() {
@@ -461,17 +535,22 @@ window.agendamientoApp = function() {
         },
 
         ensurePageInRange() {
+
             const totalPages = this.getTotalPages();
+
             if (totalPages === 0) {
                 this.currentPage = 1;
                 return;
             }
+
             if (this.currentPage > totalPages) {
                 this.currentPage = totalPages;
             }
+
             if (this.currentPage < 1) {
                 this.currentPage = 1;
             }
+
         }
     }
 

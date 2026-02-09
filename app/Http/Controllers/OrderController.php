@@ -463,11 +463,14 @@ class OrderController extends Controller
 
             // Si hay nota de cancelación, agregarla a extra_notes
             if ($validated['status'] == 4 && !empty($validated['note'])) {
+
                 $existingNotes = $order->extra_notes;
                 $cancelNote = '[CANCELADO] ' . $validated['note'];
+
                 $order->update([
                     'extra_notes' => $existingNotes ? $existingNotes . "\n" . $cancelNote : $cancelNote
                 ]);
+                
             }
 
             \Log::info("Orden {$order->id} cambió de estado {$oldStatus} a {$validated['status']}");
