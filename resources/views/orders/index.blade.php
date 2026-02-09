@@ -103,13 +103,18 @@
                                 </td>
                                 <td>
                                     
-                                    <button class="btn btn-sm btn-info me-1">
+                                    <button class="btn btn-sm btn-info me-1" @click="openQuickView(order)" title="Ver detalles">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
-                                    <button class="btn btn-sm btn-warning">
-                                        <i class="fa-solid fa-edit"></i>
+                                    <button class="btn btn-sm btn-warning me-1" @click="openStatusModal(order)" title="Cambiar estado"
+                                            x-show="order.status !== 3 || order.payment?.status !== 3">
+                                        <i class="fa-solid fa-exchange-alt"></i>
                                     </button>
+
+                                    <a :href="'/orders/' + order.id + '/edit'" class="btn btn-sm btn-primary" title="Editar" x-show="order.status !== 3">
+                                        <i class="fa-solid fa-edit"></i>
+                                    </a>
 
                                 </td>
                             </tr>
@@ -145,6 +150,10 @@
             </div>
 
         </div>
+
+        <!-- Modales -->
+        @include('orders.partials._quick-actions')
+        @include('orders.modals._change-status')
 
     </div>
 

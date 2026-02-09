@@ -8,7 +8,7 @@
  */
 export const ORDER_STATUS = {
     1: { text: 'Pendiente', badge: 'badge bg-warning text-dark' },
-    2: { text: 'En Proceso', badge: 'badge bg-info text-dark' },
+    2: { text: 'En Proceso', badge: 'badge bg-info text-white' },
     3: { text: 'Terminado', badge: 'badge bg-success' },
     4: { text: 'Cancelado', badge: 'badge bg-danger' }
 };
@@ -18,7 +18,7 @@ export const ORDER_STATUS = {
  */
 export const PAYMENT_STATUS = {
     1: { text: 'Pendiente', badge: 'badge bg-warning text-dark' },
-    2: { text: 'Parcial', badge: 'badge bg-info text-dark' },
+    2: { text: 'Parcial', badge: 'badge bg-info text-white' },
     3: { text: 'Pagado', badge: 'badge bg-success' }
 };
 

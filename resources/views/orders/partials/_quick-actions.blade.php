@@ -238,7 +238,7 @@
                         <i class="fa-solid fa-times me-1"></i> Cerrar
                     </button>
 
-                    <a :href="'/orders/' + selectedOrder?.id + '/edit'" class="btn btn-warning">
+                    <a :href="'/orders/' + selectedOrder?.id + '/edit'" class="btn btn-warning" x-show="selectedOrder?.status !== 3">
                         <i class="fa-solid fa-edit me-1"></i> Editar
                     </a>
 

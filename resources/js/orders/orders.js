@@ -26,6 +26,13 @@ window.agendamientoApp = function() {
         perPage: 10,
         currentPage: 1,
         searchTerm: '',
+        showQuickViewModal: false,
+        selectedOrder: null,
+        showStatusModal: false,
+        statusModalOrder: null,
+        newStatus: null,
+        statusChangeNote: '',
+        changingStatus: false,
 
         /**
          * Inicializa el componente y carga las órdenes
@@ -126,6 +133,19 @@ window.agendamientoApp = function() {
             return badges[status] || 'badge bg-secondary';
         },
 
+        /**
+         * Obtiene el texto del método de pago
+         */
+        getPaymentMethodText(method) {
+            const methods = {
+                1: 'Efectivo',
+                2: 'Tarjeta',
+                3: 'Transferencia',
+                4: 'Bizum'
+            };
+            return methods[method] || 'N/A';
+        },
+
         normalizePayments(orders = []) {
             return orders.map(order => {
                 if (!order.payment && Array.isArray(order.payments)) {
@@ -133,6 +153,79 @@ window.agendamientoApp = function() {
                 }
                 return order;
             });
+        },
+
+        // ====================
+        // MODAL VISTA RÁPIDA
+        // ====================
+
+        openQuickView(order) {
+            this.selectedOrder = order;
+            this.showQuickViewModal = true;
+        },
+
+        closeQuickViewModal() {
+            this.showQuickViewModal = false;
+            this.selectedOrder = null;
+        },
+
+        printOrder(orderId) {
+            window.open(`/orders/${orderId}/print`, '_blank');
+        },
+
+        // ====================
+        // MODAL CAMBIO DE ESTADO
+        // ====================
+
+        openStatusModal(order) {
+            this.statusModalOrder = order;
+            this.newStatus = order.status;
+            this.statusChangeNote = '';
+            this.showStatusModal = true;
+        },
+
+        closeStatusModal() {
+            this.showStatusModal = false;
+            this.statusModalOrder = null;
+            this.newStatus = null;
+            this.statusChangeNote = '';
+        },
+
+        async confirmStatusChange() {
+            if (!this.statusModalOrder || !this.newStatus) return;
+            if (this.newStatus === this.statusModalOrder.status) return;
+
+            this.changingStatus = true;
+
+            try {
+                const response = await fetch(`/orders/${this.statusModalOrder.id}/status`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        status: this.newStatus,
+                        note: this.statusChangeNote
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    window.notyf?.success('Estado actualizado correctamente');
+                    await this.loadOrders(this.currentTab);
+                    this.closeStatusModal();
+                } else {
+                    window.notyf?.error(result.message || 'Error al actualizar el estado');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                window.notyf?.error('Error al actualizar el estado');
+            } finally {
+                this.changingStatus = false;
+            }
         },
 
         /**

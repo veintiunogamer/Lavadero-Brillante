@@ -566,17 +566,17 @@ class OrderController extends Controller
 
             if ($tab === 'pending') {
 
-                // Tab 1: Solo pendientes
+                // Tab 1: Pendientes + En Proceso
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
-                ->where('status', Order::STATUS_PENDING)
+                ->whereIn('status', [Order::STATUS_PENDING, Order::STATUS_IN_PROGRESS])
                 ->orderBy('creation_date', 'desc')
                 ->get();
 
             } else {
 
-                // Tab 2: Historial completo (En Proceso, Terminadas, Canceladas)
+                // Tab 2: Historial (Terminadas, Canceladas)
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
-                ->whereIn('status', [Order::STATUS_PENDING, Order::STATUS_IN_PROGRESS, Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
+                ->whereIn('status', [Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
                 ->orderBy('creation_date', 'desc')
                 ->get();
 

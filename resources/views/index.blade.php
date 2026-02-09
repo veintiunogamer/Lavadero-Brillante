@@ -539,10 +539,11 @@
                                             <button @click="openQuickView(order)" class="btn btn-info" title="Ver detalles">
                                                 <i class="fa-solid fa-eye"></i>
                                             </button>
-                                            <button @click="openStatusModal(order)" class="btn btn-warning" title="Cambiar estado">
+                                            <button @click="openStatusModal(order)" class="btn btn-warning" title="Cambiar estado"
+                                                    x-show="order.status !== 3 || order.payment?.status !== 3">
                                                 <i class="fa-solid fa-exchange-alt"></i>
                                             </button>
-                                            <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar">
+                                            <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar" x-show="order.status !== 3">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
                                         </div>
