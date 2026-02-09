@@ -19,9 +19,13 @@ if (typeof window !== 'undefined' && agendamientoModuleActive()) {
 window.agendamientoApp = function() {
 
     return {
+        
         currentTab: 1, // 1 = Pendientes, 2 = En Proceso, 3 = Terminados
         orders: [],
         loading: false,
+        perPage: 10,
+        currentPage: 1,
+        searchTerm: '',
 
         /**
          * Inicializa el componente y carga las órdenes
@@ -35,6 +39,7 @@ window.agendamientoApp = function() {
          */
         async changeTab(status) {
             this.currentTab = status;
+            this.resetPagination();
             await this.loadOrders(status);
         },
 
@@ -57,7 +62,8 @@ window.agendamientoApp = function() {
                 const result = await response.json();
 
                 if (result.success) {
-                    this.orders = result.data;
+                    this.orders = result.data || [];
+                    this.ensurePageInRange();
                 } else {
                     window.notyf?.error('Error al cargar los agendamientos');
                 }
@@ -143,6 +149,84 @@ window.agendamientoApp = function() {
                 style: 'currency',
                 currency: 'EUR'
             }).format(amount);
+        },
+
+        // ====================
+        // BÚSQUEDA
+        // ====================
+
+        getFilteredOrders() {
+            const term = (this.searchTerm || '').toLowerCase().trim();
+            if (!term) return this.orders;
+
+            return this.orders.filter(order => {
+                const clientName = order.client?.name || '';
+                const licensePlaque = order.client?.license_plaque || '';
+                const services = Array.isArray(order.services)
+                    ? order.services.map(service => service.name).join(' ')
+                    : '';
+                const statusText = this.getStatusText(order.status) || '';
+                const creationDate = order.creation_date || '';
+                const hourIn = order.hour_in || '';
+                const hourOut = order.hour_out || '';
+                const total = order.total !== undefined && order.total !== null ? String(order.total) : '';
+                const orderId = order.id !== undefined && order.id !== null ? String(order.id) : '';
+
+                const haystack = [
+                    clientName,
+                    licensePlaque,
+                    services,
+                    statusText,
+                    creationDate,
+                    hourIn,
+                    hourOut,
+                    total,
+                    orderId
+                ].map(value => String(value).toLowerCase());
+
+                return haystack.some(value => value.includes(term));
+            });
+        },
+
+        // ====================
+        // PAGINACIÓN
+        // ====================
+
+        getPaginatedOrders() {
+            const filtered = this.getFilteredOrders();
+            const start = (this.currentPage - 1) * this.perPage;
+            const end = start + this.perPage;
+            return filtered.slice(start, end);
+        },
+
+        getTotalPages() {
+            const total = this.getFilteredOrders().length;
+            return Math.ceil(total / this.perPage);
+        },
+
+        goToPage(page) {
+            const totalPages = this.getTotalPages();
+            if (page >= 1 && page <= totalPages) {
+                this.currentPage = page;
+            }
+        },
+
+        resetPagination() {
+            this.currentPage = 1;
+        },
+
+        ensurePageInRange() {
+            const totalPages = this.getTotalPages();
+            if (totalPages === 0) {
+                this.currentPage = 1;
+                return;
+            }
+            if (this.currentPage > totalPages) {
+                this.currentPage = totalPages;
+            }
+            if (this.currentPage < 1) {
+                this.currentPage = 1;
+            }
         }
     }
 

@@ -16,6 +16,18 @@
                     <p class="fw-bold small text-muted">Gestión de citas y agendamientos.</p>
                 </div>
 
+                <div class="col-6 d-flex justify-content-end">
+                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                        <input type="text"
+                               x-model="searchTerm"
+                               @input="resetPagination()"
+                               class="form-control pe-5"
+                               placeholder="Buscar agendamientos...">
+                        <i class="fa-solid fa-search position-absolute"
+                           style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Tabs -->
@@ -43,13 +55,13 @@
             </div>
 
             <!-- Sin resultados -->
-            <div x-show="!loading && orders.length === 0" class="text-center py-5 p-4">
+            <div x-show="!loading && getFilteredOrders().length === 0" class="text-center py-5 p-4">
                 <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
-                <p class="text-muted">No hay agendamientos <span x-text="currentTab === 1 ? 'pendientes' : (currentTab === 2 ? 'en proceso' : 'terminados')"></span></p>
+                <p class="text-muted" x-text="searchTerm ? 'No se encontraron resultados.' : ('No hay agendamientos ' + (currentTab === 1 ? 'pendientes' : (currentTab === 2 ? 'en proceso' : 'terminados')))"></p>
             </div>
 
             <!-- Tabla de agendamientos -->
-            <div x-show="!loading && orders.length > 0" class="table-responsive p-4">
+            <div x-show="!loading && getFilteredOrders().length > 0" class="table-responsive p-4">
 
                 <table class="table table-striped table-bordered align-middle">
 
@@ -69,7 +81,7 @@
 
                     <tbody>
 
-                        <template x-for="(order, index) in orders" :key="index">
+                        <template x-for="(order, index) in getPaginatedOrders()" :key="index">
                             <tr>
                                 <td x-text="order.client ? order.client.name : 'N/A'"></td>
                                 <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
@@ -103,6 +115,28 @@
                     </tbody>
 
                 </table>
+
+                <!-- Paginador -->
+                <div x-show="getTotalPages() > 1" class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted">
+                        Página <span x-text="currentPage"></span> de <span x-text="getTotalPages()"></span>
+                    </div>
+                    <nav>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item" :class="currentPage === 1 ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage(currentPage - 1)">«</button>
+                            </li>
+                            <template x-for="page in getTotalPages()" :key="page">
+                                <li class="page-item" :class="page === currentPage ? 'active' : ''">
+                                    <button class="page-link" @click="goToPage(page)" x-text="page"></button>
+                                </li>
+                            </template>
+                            <li class="page-item" :class="currentPage === getTotalPages() ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage(currentPage + 1)">»</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
 
             </div>
 

@@ -501,7 +501,6 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Cliente</th>
-                                <th>Placa</th>
                                 <th>Servicio</th>
                                 <th>Fecha</th>
                                 <th>Entrada</th>
@@ -517,8 +516,7 @@
 
                             <template x-for="order in getPaginatedOrders()" :key="order.id">
                                 <tr>
-                                    <td x-text="order.client ? order.client.name : 'N/A'"></td>
-                                    <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
+                                    <td x-html="order.client ? order.client.name + '<br>' + order.client.license_plaque : 'N/A'"></td>
                                     <td>
                                         <template x-for="service in order.services" :key="service.id">
                                             <div x-text="service.name"></div>

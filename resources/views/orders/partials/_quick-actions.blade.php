@@ -9,7 +9,7 @@
     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
     style="background: rgba(0,0,0,0.5); z-index: 9999; display: none;" x-transition>
 
-        <div class="bg-white rounded-4 shadow-lg" style="max-width: 800px; width: 95%; max-height: 90vh; overflow-y: auto;">
+        <div class="bg-white rounded-4 shadow-lg" style="max-width: 950px; width: 95%; max-height: 90vh; overflow-y: auto;">
 
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center p-4 border-bottom bg-light rounded-top-4">

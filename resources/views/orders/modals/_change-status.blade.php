@@ -9,7 +9,8 @@
     class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
     style="background: rgba(0,0,0,0.5); z-index: 9999; display: none;" x-transition>
         
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
+        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 650px; width: 95%;">
+
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h4 class="mb-0 fw-bold">
@@ -81,14 +82,17 @@
 
             </div>
 
-            <!-- Footer -->
-            <div class="d-flex justify-content-end gap-2">
+            <hr>
 
-                <button @click="closeStatusModal()" class="btn btn-secondary">
+            <!-- Footer -->
+            <div class="d-flex flex-wrap justify-content-center justify-items-center my-3 gap-2">
+
+                <button @click="closeStatusModal()" class="btn btn-danger my-2">
+                    <i class="fa-solid fa-xmark me-1"></i>&nbsp;
                     Cancelar
                 </button>
 
-                <button @click="confirmStatusChange()" class="btn btn-primary"
+                <button @click="confirmStatusChange()" class="btn btn-primary my-2"
                 :disabled="!newStatus || newStatus === statusModalOrder?.status || changingStatus">
                     
                     <span x-show="!changingStatus">
