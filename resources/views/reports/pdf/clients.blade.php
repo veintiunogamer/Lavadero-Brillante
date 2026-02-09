@@ -16,7 +16,7 @@
             .subtitle { color: #4b4c4d; margin: 2px 0 0; }
             table { width: 100%; border-collapse: collapse; margin-top: 8px; }
             th, td { border: 1px solid #e5e7eb; padding: 6px 8px; vertical-align: top; }
-            th { background: #f3f4f6; text-align: left; }
+            th { background: #000000; color: #ffffff; text-align: left; }
         </style>
 
     </head>

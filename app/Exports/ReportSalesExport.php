@@ -8,8 +8,11 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
+class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
     private Collection $orders;
     private array $statusLabels;
@@ -66,6 +69,19 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
             round((float) ($order->total ?? 0), 2),
             $paymentStatus,
             $this->statusLabels[$order->status] ?? 'Desconocido',
+        ];
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1 => [
+                'font' => ['color' => ['rgb' => 'FFFFFF'], 'bold' => true],
+                'fill' => [
+                    'fillType' => Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '000000']
+                ],
+            ],
         ];
     }
 }

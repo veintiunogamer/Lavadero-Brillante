@@ -284,7 +284,7 @@ window.reportsApp = function() {
 
             const map = {
                 1: 'bg-warning text-dark',
-                2: 'bg-info text-dark',
+                2: 'bg-info text-white',
                 3: 'bg-success',
                 4: 'bg-danger'
             };
@@ -309,7 +309,7 @@ window.reportsApp = function() {
 
             const map = {
                 1: 'bg-warning text-dark',
-                2: 'bg-info text-dark',
+                2: 'bg-info text-white',
                 3: 'bg-success'
             };
 

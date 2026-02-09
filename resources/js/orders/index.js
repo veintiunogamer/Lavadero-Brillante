@@ -493,8 +493,8 @@ function createOrderFormApp() {
          */
         getPaymentStatusBadge(status) {
             const badges = {
-                1: 'bg-danger',
-                2: 'bg-warning text-dark',
+                1: 'bg-warning text-dark',
+                2: 'bg-info text-white',
                 3: 'bg-success'
             };
             return badges[status] || 'bg-secondary';

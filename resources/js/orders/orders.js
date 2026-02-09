@@ -95,7 +95,7 @@ window.agendamientoApp = function() {
         getStatusBadge(status) {
             const badges = {
                 1: 'badge bg-warning',
-                2: 'badge bg-info',
+                2: 'badge bg-info text-white',
                 3: 'badge bg-success',
                 4: 'badge bg-danger'
             };
@@ -120,7 +120,7 @@ window.agendamientoApp = function() {
         getPaymentStatusBadge(status) {
             const badges = {
                 1: 'badge bg-warning text-dark',
-                2: 'badge bg-info text-dark',
+                2: 'badge bg-info text-white',
                 3: 'badge bg-success'
             };
             return badges[status] || 'badge bg-secondary';
