@@ -73,7 +73,7 @@ class OrderController extends Controller
      */
     public function getByStatus($status)
     {
-        $orders = Order::with(['client', 'services'])
+        $orders = Order::with(['client', 'services', 'payments'])
             ->where('status', $status)
             ->orderBy('creation_date', 'desc')
             ->get();
@@ -335,7 +335,7 @@ class OrderController extends Controller
                 'vehicle_notes' => 'nullable|string|max:250',
                 'order_notes' => 'nullable|string|max:250',
                 'extra_notes' => 'nullable|string|max:250',
-                'discount' => 'nullable|numeric|min:0|max:100',
+                'discount' => 'nullable|numeric|min:0',
                 'subtotal' => 'required|numeric|min:0',
                 'total' => 'required|numeric|min:0',
                 'selected_date' => 'required|date',
@@ -519,6 +519,37 @@ class OrderController extends Controller
             ], 500);
 
         }
+    }
+
+    /**
+     * Genera la factura en PDF para una orden
+     *
+     * @param Order $order
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     */
+    public function invoicePdf(Order $order)
+    {
+        if (!class_exists('Barryvdh\\DomPDF\\Facade\\Pdf')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'PDF no disponible. Instala barryvdh/laravel-dompdf y ejecuta composer install.'
+            ], 501);
+        }
+
+        $order->load(['client', 'services', 'payments', 'user']);
+
+        $invoiceNumber = $order->consecutive_serial && $order->consecutive_number
+            ? $order->consecutive_serial . '-' . $order->consecutive_number
+            : strtoupper(substr($order->id, 0, 8));
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('orders.pdf.invoice', [
+            'order' => $order,
+            'invoiceNumber' => $invoiceNumber,
+        ]);
+
+        $filename = 'factura-' . $invoiceNumber . '.pdf';
+
+        return $pdf->download($filename);
     }
 
     /**

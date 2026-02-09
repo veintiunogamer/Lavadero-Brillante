@@ -257,7 +257,7 @@ class ReportController extends Controller
                     $services ?: 'N/A',
                     Carbon::parse($order->creation_date)->format('d/m/Y'),
                     number_format($order->subtotal, 2, ',', '.') . ' €',
-                    number_format($order->discount ?? 0, 0),
+                    number_format($order->subtotal > 0 ? (($order->discount ?? 0) / $order->subtotal) * 100 : 0, 0),
                     number_format($order->total, 2, ',', '.') . ' €',
                     $paymentStatus,
                     $statusLabels[$order->status] ?? 'Desconocido'

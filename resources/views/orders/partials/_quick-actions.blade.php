@@ -107,7 +107,7 @@
 
                                     <tr x-show="selectedOrder?.discount > 0">
                                         <td colspan="2" class="fw-bold text-danger">Descuento:</td>
-                                        <td class="text-end text-danger" x-text="'-' + formatCurrency((selectedOrder?.subtotal * selectedOrder?.discount / 100) || 0)"></td>
+                                        <td class="text-end text-danger" x-text="'-' + formatCurrency(selectedOrder?.discount || 0)"></td>
                                     </tr>
 
                                     <tr>

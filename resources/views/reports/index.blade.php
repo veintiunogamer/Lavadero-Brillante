@@ -115,7 +115,7 @@
                                         </td>
                                         <td x-text="formatDate(order.creation_date)"></td>
                                         <td x-text="formatCurrency(order.subtotal)"></td>
-                                        <td x-text="formatPercent(order.discount)"></td>
+                                        <td x-text="formatPercent(getDiscountPercent(order))"></td>
                                         <td x-text="formatCurrency(order.total)"></td>
                                         <td>
                                             <span class="badge" :class="getPaymentStatusBadge(order.payment?.status)" x-text="getPaymentStatusText(order.payment?.status)"></span>

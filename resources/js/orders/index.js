@@ -72,6 +72,8 @@ function createOrderFormApp() {
         newStatus: null,
         statusChangeNote: '',
         changingStatus: false,
+        showInvoiceModal: false,
+        invoiceOrderId: null,
 
         /**
          * Inicialización del componente Alpine
@@ -107,6 +109,7 @@ function createOrderFormApp() {
 
             this.isEditMode = true;
             this.editOrderId = order.id;
+            order.payment = order.payment || (Array.isArray(order.payments) ? order.payments[0] : null);
 
             // Pre-llenar datos del cliente
             const clientName = document.querySelector('[name="client_name"]');
@@ -139,9 +142,22 @@ function createOrderFormApp() {
             if (orderNotes) orderNotes.value = order.order_notes || '';
             if (extraNotes) extraNotes.value = order.extra_notes || '';
 
-            // Pre-llenar descuento
-            const discount = document.querySelector('[name="discount"]');
-            if (discount) discount.value = order.discount || '';
+            // Pre-llenar descuento (almacenado en euros, mostrar porcentaje)
+            const discountSelect = document.querySelector('[name="discount"]');
+            if (discountSelect) {
+                const subtotal = Number(order.subtotal || 0);
+                const discountAmount = Number(order.discount || 0);
+                let discountPercent = 0;
+
+                if (subtotal > 0 && discountAmount > 0) {
+                    discountPercent = Math.round((discountAmount / subtotal) * 100);
+                }
+
+                const optionExists = Array.from(discountSelect.options)
+                    .some(option => option.value === String(discountPercent));
+
+                discountSelect.value = optionExists ? String(discountPercent) : '';
+            }
 
             // Pre-llenar estado de pago
             const paymentStatus = document.querySelector('[name="payment_status"]');
@@ -219,7 +235,7 @@ function createOrderFormApp() {
 
                 if (result && result.success) {
 
-                    this.orders = result.data || [];
+                    this.orders = this.normalizePayments(result.data || []);
                     // console.log('✅ Total órdenes:', this.orders.length);
                     this.ensurePageInRange(this.currentTab);
 
@@ -344,6 +360,15 @@ function createOrderFormApp() {
 
         },
 
+        normalizePayments(orders = []) {
+            return orders.map(order => {
+                if (!order.payment && Array.isArray(order.payments)) {
+                    order.payment = order.payments[0] || null;
+                }
+                return order;
+            });
+        },
+
         // ==================== MODAL VISTA RÁPIDA ====================
 
         /**
@@ -425,6 +450,28 @@ function createOrderFormApp() {
             } finally {
                 this.changingStatus = false;
             }
+        },
+
+        // ==================== MODAL FACTURA ====================
+
+        openInvoiceModal(orderId) {
+            this.invoiceOrderId = orderId || null;
+            this.showInvoiceModal = true;
+        },
+
+        closeInvoiceModal() {
+            this.showInvoiceModal = false;
+            this.invoiceOrderId = null;
+        },
+
+        downloadInvoice() {
+            if (!this.invoiceOrderId) {
+                this.closeInvoiceModal();
+                return;
+            }
+
+            window.open(`/orders/${this.invoiceOrderId}/invoice`, '_blank');
+            this.closeInvoiceModal();
         },
 
         // ==================== HELPERS DE PAGO ====================
@@ -519,6 +566,10 @@ function createOrderFormApp() {
                         await this.loadOrders();
                         this.resetForm();
                         this.updateConsecutive(result.data?.consecutive);
+                        const orderId = result.data?.order?.id;
+                        if (orderId) {
+                            this.openInvoiceModal(orderId);
+                        }
 
                     }
 

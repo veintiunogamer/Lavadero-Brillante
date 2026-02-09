@@ -74,6 +74,7 @@
                             <th>Entrada</th>
                             <th>Salida</th>
                             <th>Total</th>
+                            <th>Pago</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -94,6 +95,9 @@
                                 <td x-text="formatTime(order.hour_in)"></td>
                                 <td x-text="formatTime(order.hour_out)"></td>
                                 <td x-text="formatCurrency(order.total)"></td>
+                                <td>
+                                    <span class="badge" :class="getPaymentStatusBadge(order.payment?.status)" x-text="getPaymentStatusText(order.payment?.status)"></span>
+                                </td>
                                 <td>
                                     <span :class="getStatusBadge(order.status)" x-text="getStatusText(order.status)"></span>
                                 </td>

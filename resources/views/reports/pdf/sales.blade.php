@@ -75,7 +75,13 @@
                         <td>{{ $order->services->pluck('name')->join(', ') }}</td>
                         <td>{{ \Carbon\Carbon::parse($order->creation_date)->format('d/m/Y') }}</td>
                         <td>{{ number_format($order->subtotal, 2, ',', '.') }} €</td>
-                        <td>{{ number_format($order->discount ?? 0, 0) }}%</td>
+                        <td>
+                            @php
+                                $discountValue = $order->discount ?? 0;
+                                $discountPercent = $order->subtotal > 0 ? ($discountValue / $order->subtotal) * 100 : 0;
+                            @endphp
+                            {{ number_format($discountPercent, 0) }}%
+                        </td>
                         <td>{{ number_format($order->total, 2, ',', '.') }} €</td>
                         <td>
                             @php

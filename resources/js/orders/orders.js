@@ -62,7 +62,7 @@ window.agendamientoApp = function() {
                 const result = await response.json();
 
                 if (result.success) {
-                    this.orders = result.data || [];
+                    this.orders = this.normalizePayments(result.data || []);
                     this.ensurePageInRange();
                 } else {
                     window.notyf?.error('Error al cargar los agendamientos');
@@ -100,6 +100,39 @@ window.agendamientoApp = function() {
                 4: 'badge bg-danger'
             };
             return badges[status] || 'badge bg-secondary';
+        },
+
+        /**
+         * Obtiene el texto del estado de pago
+         */
+        getPaymentStatusText(status) {
+            const statuses = {
+                1: 'Pendiente',
+                2: 'Parcial',
+                3: 'Pagado'
+            };
+            return statuses[status] || 'N/A';
+        },
+
+        /**
+         * Obtiene la clase CSS del badge según el estado de pago
+         */
+        getPaymentStatusBadge(status) {
+            const badges = {
+                1: 'badge bg-warning text-dark',
+                2: 'badge bg-info text-dark',
+                3: 'badge bg-success'
+            };
+            return badges[status] || 'badge bg-secondary';
+        },
+
+        normalizePayments(orders = []) {
+            return orders.map(order => {
+                if (!order.payment && Array.isArray(order.payments)) {
+                    order.payment = order.payments[0] || null;
+                }
+                return order;
+            });
         },
 
         /**

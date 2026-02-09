@@ -3,7 +3,7 @@
 @section('content')
 
     <div id="orders-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;" 
-         x-data="typeof orderFormApp === 'function' ? orderFormApp() : { showQuickViewModal: false, showStatusModal: false }" 
+         x-data="typeof orderFormApp === 'function' ? orderFormApp() : { showQuickViewModal: false, showStatusModal: false, showInvoiceModal: false }" 
          x-init="typeof init === 'function' && init()">
         
         <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
@@ -505,8 +505,9 @@
                                 <th>Fecha</th>
                                 <th>Entrada</th>
                                 <th>Salida</th>
-                                <th>Total</th>
-                                <th>Estado</th>
+                                    <th>Total</th>
+                                    <th>Pago</th>
+                                    <th>Estado</th>
                                 <th>Detallador</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
@@ -526,6 +527,9 @@
                                     <td x-text="formatTime(order.hour_in)"></td>
                                     <td x-text="formatTime(order.hour_out)"></td>
                                     <td x-text="formatCurrency(order.total)"></td>
+                                    <td>
+                                        <span class="badge" :class="getPaymentStatusBadge(order.payment?.status)" x-text="getPaymentStatusText(order.payment?.status)"></span>
+                                    </td>
                                     <td>
                                         <span :class="getStatusBadge(order.status)" x-text="getStatusText(order.status)"></span>
                                     </td>
@@ -581,6 +585,18 @@
         <!-- Modales -->
         @include('orders.partials._quick-actions')
         @include('orders.modals._change-status')
+
+        <!-- Modal Factura -->
+        <div x-show="showInvoiceModal" x-transition.opacity class="invoice-modal-backdrop" @click="closeInvoiceModal()" @keydown.escape.window="closeInvoiceModal()">
+            <div class="invoice-modal" @click.stop>
+                <h5 class="mb-2">¿Factura?</h5>
+                <p class="text-muted mb-3">¿Deseas generar la factura en PDF?</p>
+                <div class="invoice-modal-actions">
+                    <button class="btn btn-outline-secondary" type="button" @click="closeInvoiceModal()">No</button>
+                    <button class="btn btn-primary" type="button" @click="downloadInvoice()">Sí, generar</button>
+                </div>
+            </div>
+        </div>
 
     </div>
 

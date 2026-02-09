@@ -223,6 +223,13 @@ window.reportsApp = function() {
             return `${percent.toFixed(0)}%`;
         },
 
+        getDiscountPercent(order) {
+            const subtotal = Number(order?.subtotal || 0);
+            const discount = Number(order?.discount || 0);
+            if (subtotal <= 0 || discount <= 0) return 0;
+            return (discount / subtotal) * 100;
+        },
+
         formatDate(date) {
 
             if (!date) return 'N/A';

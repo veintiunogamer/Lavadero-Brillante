@@ -855,6 +855,45 @@ hr {
     border-color: #2f6dff;
 }
 
+/* =========================
+   Invoice Modal
+========================= */
+.invoice-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1060;
+}
+
+.invoice-modal {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+
+.invoice-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.invoice-modal-actions .btn {
+    min-width: 110px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.invoice-modal-actions .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.15);
+}
+
 @media (max-width: 768px) {
     .reports-controls {
         flex-wrap: wrap;
@@ -873,6 +912,11 @@ hr {
 
     .reports-export-options {
         grid-template-columns: 1fr;
+    }
+
+    .invoice-modal {
+        margin: 0 1rem;
+        max-width: 100%;
     }
 }
 
