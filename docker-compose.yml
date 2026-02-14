@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: ${PROJECT_NAME}-php
+    user: www-data
     volumes:
       - .:/var/www
     networks:
@@ -66,6 +67,7 @@ services:
     image: node:22
     container_name: ${PROJECT_NAME}-vite
     working_dir: /app
+    user: node
     volumes:
       - .:/app
     command: sh -c "npm install && npm run dev"
