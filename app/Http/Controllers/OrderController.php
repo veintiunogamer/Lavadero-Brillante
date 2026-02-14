@@ -357,6 +357,7 @@ class OrderController extends Controller
 
             // Actualizar cliente
             $client = $order->client;
+            
             $client->update([
                 'name' => $validated['client_name'],
                 'phone' => $validated['client_phone'],
@@ -409,6 +410,7 @@ class OrderController extends Controller
                     'subtotal' => 0,
                     'quantity' => $serviceData['quantity'],
                     'total' => $serviceData['price'],
+                    'created_at' => now()
                 ]);
 
             }
