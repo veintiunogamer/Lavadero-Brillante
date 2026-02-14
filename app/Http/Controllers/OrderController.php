@@ -294,8 +294,13 @@ class OrderController extends Controller
     {
         // Cargar relaciones necesarias
         $order->load(['client', 'services', 'user', 'payments']);
-        
-        $consecutive = $this->getConsecutive();
+
+        $generatedConsecutive = $this->getConsecutive();
+        $consecutive = [
+            'date_code' => $order->consecutive_serial ?: $generatedConsecutive['date_code'],
+            'sequence' => $order->consecutive_number ?: $generatedConsecutive['sequence'],
+        ];
+
         $categories = \App\Models\Category::where('status', 1)->orderBy('cat_name')->get();
         $vehicleTypes = \App\Models\VehicleType::orderBy('name')->get();
         $users = \App\Models\User::where('status', 1)->orderBy('name')->get();
@@ -326,7 +331,7 @@ class OrderController extends Controller
                 'client_phone' => 'nullable|string|max:20',
                 'license_plaque' => 'required|string|max:15',
                 'assigned_user' => 'nullable|uuid',
-                'vehicle_type_id' => 'required|uuid|exists:vehicle_types,id',
+                'vehicle_type_id' => 'required|uuid|exists:vehicle_type,id',
                 'dirt_level' => 'required|integer|in:1,2,3',
                 'services' => 'required|array|min:1',
                 'services.*.service_id' => 'required|uuid|exists:services,id',
@@ -396,14 +401,31 @@ class OrderController extends Controller
 
             // Crear nuevos servicios
             foreach ($validated['services'] as $serviceData) {
+
                 OrderService::create([
                     'id' => \Illuminate\Support\Str::uuid(),
                     'order_id' => $order->id,
                     'service_id' => $serviceData['service_id'],
+                    'subtotal' => 0,
                     'quantity' => $serviceData['quantity'],
                     'total' => $serviceData['price'],
                 ]);
+
             }
+
+            // Eliminar pago anterior
+            $order->payments()->delete();
+
+            // Crear nuevo pago
+            \App\Models\Payment::create([
+                'id' => \Illuminate\Support\Str::uuid(),
+                'order_id' => $order->id,
+                'type' => $validated['payment_method'],
+                'subtotal' => $validated['subtotal'],
+                'total' => $validated['total'],
+                'status' => $validated['payment_status'],
+                'creation_date' => now(),
+            ]);
 
             \DB::commit();
 
@@ -411,7 +433,7 @@ class OrderController extends Controller
                 'success' => true,
                 'message' => 'Orden actualizada exitosamente',
                 'data' => [
-                    'order' => $order->fresh(['client', 'services']),
+                    'order' => $order->fresh(['client', 'services', 'payments']),
                 ]
             ]);
 

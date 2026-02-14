@@ -52,6 +52,7 @@ function createOrderFormApp() {
         submitting: false,
         isEditMode: false,
         editOrderId: null,
+        editDataLoaded: false,
 
         // Búsqueda y paginación (por pestaña)
         searchTerms: {
@@ -103,8 +104,9 @@ function createOrderFormApp() {
             await this.loadOrders();
 
             // Verificar si hay una orden para editar
-            if (window.editOrderData) {
-                this.loadEditOrder(window.editOrderData);
+            if (window.editOrderData && !this.editDataLoaded) {
+                await this.loadEditOrder(window.editOrderData);
+                this.editDataLoaded = true;
             }
         },
 
@@ -112,11 +114,29 @@ function createOrderFormApp() {
          * Carga los datos de una orden para edición
          * @param {Object} order 
          */
-        loadEditOrder(order) {
+        async loadEditOrder(order) {
+
+            if (!order || !order.id) return;
+            if (this.isEditMode && this.editOrderId === order.id) return;
 
             this.isEditMode = true;
             this.editOrderId = order.id;
+
             order.payment = order.payment || (Array.isArray(order.payments) ? order.payments[0] : null);
+
+            const orderDateValue = order.date || order.creation_date || null;
+
+            if (orderDateValue) {
+
+                const parsedOrderDate = new Date(orderDateValue);
+
+                if (!Number.isNaN(parsedOrderDate.getTime())) {
+                    calendar.setSelectedDate(parsedOrderDate);
+                }
+                
+            }
+
+            timepicker.setHours(order.hour_in || '', order.hour_out || '');
 
             // Pre-llenar datos del cliente
             const clientName = document.querySelector('[name="client_name"]');
@@ -138,6 +158,12 @@ function createOrderFormApp() {
             // Pre-llenar detallador asignado
             const assignedUser = document.querySelector('[name="assigned_user"]');
             if (assignedUser) assignedUser.value = order.user_id || '';
+
+            // Pre-llenar consecutivo de la orden editada
+            const serialInput = document.querySelector('input[name="consecutive_serial"]');
+            const numberInput = document.querySelector('input[name="consecutive_number"]');
+            if (serialInput) serialInput.value = order.consecutive_serial || serialInput.value || '';
+            if (numberInput) numberInput.value = order.consecutive_number || numberInput.value || '';
 
             // Pre-llenar observaciones del vehículo
             const vehicleNotes = document.querySelector('[name="vehicle_notes"]');
@@ -196,11 +222,12 @@ function createOrderFormApp() {
 
             // Pre-llenar servicios (primero el existente)
             if (order.services && order.services.length > 0) {
-                services.loadExistingServices(order.services);
+                const normalizedServices = this.normalizeServicesForEdit(order.services);
+                await services.loadExistingServices(normalizedServices);
             }
 
             // Actualizar totales
-            payment.updateTotals();
+            services.getCalculator().recalculate();
 
             // Cambiar texto del botón
             const confirmBtn = document.querySelector('.confirm-btn');
@@ -216,6 +243,49 @@ function createOrderFormApp() {
             }
 
             console.log('📝 Modo edición activado para orden:', order.id);
+        },
+
+        normalizeServicesForEdit(rawServices = []) {
+            if (!Array.isArray(rawServices) || rawServices.length === 0) return [];
+
+            const grouped = new Map();
+
+            rawServices.forEach(service => {
+                if (!service?.id) return;
+
+                const key = String(service.id);
+                const pivotQuantity = Number(service?.pivot?.quantity ?? 1);
+                const safeQuantity = Number.isFinite(pivotQuantity) && pivotQuantity > 0 ? pivotQuantity : 1;
+                const pivotTotal = Number(service?.pivot?.total ?? service?.value ?? 0);
+                const safeTotal = Number.isFinite(pivotTotal) ? pivotTotal : 0;
+
+                if (!grouped.has(key)) {
+                    grouped.set(key, {
+                        ...service,
+                        pivot: {
+                            ...(service?.pivot || {}),
+                            quantity: safeQuantity,
+                            total: safeTotal
+                        }
+                    });
+                    return;
+                }
+
+                const existing = grouped.get(key);
+                const existingQuantity = Number(existing?.pivot?.quantity ?? 1) || 1;
+                const existingTotal = Number(existing?.pivot?.total ?? 0) || 0;
+
+                grouped.set(key, {
+                    ...existing,
+                    pivot: {
+                        ...(existing?.pivot || {}),
+                        quantity: existingQuantity + safeQuantity,
+                        total: existingTotal + safeTotal
+                    }
+                });
+            });
+
+            return Array.from(grouped.values());
         },
 
         /**

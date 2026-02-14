@@ -288,15 +288,21 @@ export class ServiceManager {
                 await this.loadServicesForCategory(categorySelect, serviceSelect, service.id);
             }
 
+            const quantityValue = Number(service?.pivot?.quantity || 1) || 1;
+            const lineTotalValue = Number(service?.pivot?.total ?? service?.value ?? 0) || 0;
+            const basePriceValue = quantityValue > 0
+                ? (lineTotalValue / quantityValue)
+                : Number(service?.value || 0);
+
             // Establecer cantidad
-            if (quantityInput && service.pivot) {
-                quantityInput.value = service.pivot.quantity || 1;
+            if (quantityInput) {
+                quantityInput.value = quantityValue;
             }
 
-            // Establecer precio
-            if (priceInput && service.pivot) {
-                priceInput.value = service.pivot.total || service.value || 0;
-                priceInput.dataset.basePrice = service.value || 0;
+            // Establecer precio de línea
+            if (priceInput) {
+                priceInput.value = lineTotalValue.toFixed(2);
+                priceInput.dataset.basePrice = basePriceValue.toFixed(2);
             }
         }
 
@@ -326,7 +332,7 @@ export class ServiceManager {
                     option.textContent = service.name;
                     option.dataset.value = service.value;
                     
-                    if (service.id === selectedServiceId) {
+                    if (String(service.id) === String(selectedServiceId)) {
                         option.selected = true;
                     }
                     

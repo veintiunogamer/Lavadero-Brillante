@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   brillante-php:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: ${PROJECT_NAME}-php
-    user: www-data
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/var/www
     networks:

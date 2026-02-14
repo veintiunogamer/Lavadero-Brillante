@@ -75,9 +75,8 @@ export class PriceCalculator {
         let subtotal = 0;
 
         allServiceItems.forEach(item => {
-            const quantity = parseFloat(item.querySelector('.service-quantity')?.value || 0);
             const price = parseFloat(item.querySelector('.service-price')?.value || 0);
-            subtotal += quantity * price;
+            subtotal += price;
         });
 
         // Habilitar/deshabilitar descuento
