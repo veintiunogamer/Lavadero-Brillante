@@ -560,7 +560,7 @@
                                     <td x-text="order.user ? order.user.name : 'N/A'"></td>
                                     <td class="text-center">
                                         <div class="btn-group btn-group-sm">
-                                            <button @click="openQuickView(order)" class="btn btn-info" title="Ver detalles">
+                                            <button @click="openQuickView(order)" class="btn btn-secondary" title="Ver detalles">
                                                 <i class="fa-solid fa-eye"></i>
                                             </button>
                                             <button @click="openStatusTypeModal(order)" class="btn btn-warning" title="Cambiar estado"
@@ -570,7 +570,7 @@
                                             <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar" x-show="order.status !== 3">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
-                                            <button @click="printOrder(order.id)" class="btn btn-secondary" title="Imprimir orden">
+                                            <button @click="printOrder(order.id)" class="btn btn-success" title="Imprimir orden">
                                                 <i class="fa-solid fa-print"></i>
                                             </button>
                                         </div>
