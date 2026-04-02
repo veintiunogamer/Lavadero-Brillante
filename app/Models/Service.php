@@ -22,6 +22,14 @@ class Service extends Model
     ];
 
     /**
+     * Relación con Categoría
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    /**
      * Relación muchos a muchos con Orders a través de la tabla intermedia order_services
      */
     public function orders()
