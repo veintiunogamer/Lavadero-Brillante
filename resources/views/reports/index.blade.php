@@ -71,9 +71,10 @@
                         </div>
                     </div>
 
-                    <div x-show="!loadingSales && getFilteredData('sales').length === 0" class="reports-empty">
-                        <h5>No hay datos para el periodo seleccionado</h5>
-                        <p>Prueba a seleccionar otro rango de fechas o añade nuevas citas.</p>
+                    <div x-show="!loadingSales && getFilteredData('sales').length === 0" class="citas-empty-state" style="min-height: 220px;">
+                        <i class="fa-solid fa-receipt citas-empty-icon" style="color:#fde68a;"></i>
+                        <p class="citas-empty-title">Sin ventas en este periodo</p>
+                        <p class="citas-empty-sub">No hay datos de ventas para el rango de fechas seleccionado.<br>Prueba con otro periodo o verifica que existan citas completadas.</p>
                     </div>
 
                     <div x-show="!loadingSales && getFilteredData('sales').length > 0" class="table-responsive">
@@ -187,9 +188,10 @@
                         </div>
                     </div>
 
-                    <div x-show="!loadingClients && getFilteredData('clients').length === 0" class="reports-empty">
-                        <h5>No hay clientes para mostrar</h5>
-                        <p>Intenta ajustar el término de búsqueda.</p>
+                    <div x-show="!loadingClients && getFilteredData('clients').length === 0" class="citas-empty-state" style="min-height: 220px;">
+                        <i class="fa-solid fa-users citas-empty-icon" style="color:#86efac;"></i>
+                        <p class="citas-empty-title">Sin clientes para mostrar</p>
+                        <p class="citas-empty-sub">No hay clientes que coincidan con la búsqueda.<br>Intenta ajustar el término o verifica que existan clientes registrados.</p>
                     </div>
 
                     <div x-show="!loadingClients && getFilteredData('clients').length > 0" class="table-responsive">

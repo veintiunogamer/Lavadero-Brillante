@@ -134,7 +134,7 @@
                                 </td>
                                 <td>
                                     
-                                    <button class="btn btn-sm btn-info me-1" @click="openQuickView(order)" title="Ver detalles">
+                                    <button class="btn btn-sm btn-secondary me-1" @click="openQuickView(order)" title="Ver detalles">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
@@ -146,6 +146,10 @@
                                     <a :href="'/orders/' + order.id + '/edit'" class="btn btn-sm btn-primary" title="Editar" x-show="order.status !== 3">
                                         <i class="fa-solid fa-edit"></i>
                                     </a>
+
+                                    <button class="btn btn-sm btn-success ms-1" @click="printOrder(order.id)" title="Imprimir orden">
+                                        <i class="fa-solid fa-print"></i>
+                                    </button>
 
                                 </td>
                             </tr>
