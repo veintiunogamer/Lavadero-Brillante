@@ -113,9 +113,21 @@
                             </template>
 
                             <tr x-show="getFilteredData('categories').length === 0">
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    <span x-text="searchTerms.categories ? 'No se encontraron resultados' : 'No hay categorías registradas'"></span>
+                                <td colspan="4">
+                                    <template x-if="searchTerms.categories">
+                                        <div class="citas-empty-state">
+                                            <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                                            <p class="citas-empty-title">Sin resultados</p>
+                                            <p class="citas-empty-sub">No se encontraron categorías para <strong x-text="'&quot;' + searchTerms.categories + '&quot;'"></strong>.</p>
+                                        </div>
+                                    </template>
+                                    <template x-if="!searchTerms.categories">
+                                        <div class="citas-empty-state">
+                                            <i class="fa-solid fa-tags citas-empty-icon" style="color:#fde68a;"></i>
+                                            <p class="citas-empty-title">Sin categorías</p>
+                                            <p class="citas-empty-sub">Aún no hay categorías registradas.<br>Crea la primera usando el botón <strong>Crear Categoría</strong>.</p>
+                                        </div>
+                                    </template>
                                 </td>
                             </tr>
 
@@ -224,9 +236,21 @@
                             </template>
 
                             <tr x-show="getFilteredData('services').length === 0">
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    <span x-text="searchTerms.services ? 'No se encontraron resultados' : 'No hay servicios registrados'"></span>
+                                <td colspan="6">
+                                    <template x-if="searchTerms.services">
+                                        <div class="citas-empty-state">
+                                            <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                                            <p class="citas-empty-title">Sin resultados</p>
+                                            <p class="citas-empty-sub">No se encontraron servicios para <strong x-text="'&quot;' + searchTerms.services + '&quot;'"></strong>.</p>
+                                        </div>
+                                    </template>
+                                    <template x-if="!searchTerms.services">
+                                        <div class="citas-empty-state">
+                                            <i class="fa-solid fa-tools citas-empty-icon" style="color:#bfdbfe;"></i>
+                                            <p class="citas-empty-title">Sin servicios</p>
+                                            <p class="citas-empty-sub">Aún no hay servicios registrados.<br>Añade el primer servicio usando el botón <strong>Crear Servicio</strong>.</p>
+                                        </div>
+                                    </template>
                                 </td>
                             </tr>
 
@@ -321,9 +345,21 @@
                                     </tr>
                                 </template>
                                 <tr x-show="getFilteredData('vehicleTypes').length === 0">
-                                    <td colspan="4" class="text-center text-muted py-4">
-                                        <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                        <span x-text="searchTerms.vehicleTypes ? 'No se encontraron resultados' : 'No hay tipos de vehículos registrados'" ></span>
+                                    <td colspan="4">
+                                        <template x-if="searchTerms.vehicleTypes">
+                                            <div class="citas-empty-state">
+                                                <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                                                <p class="citas-empty-title">Sin resultados</p>
+                                                <p class="citas-empty-sub">No se encontraron tipos de vehículo para <strong x-text="'&quot;' + searchTerms.vehicleTypes + '&quot;'"></strong>.</p>
+                                            </div>
+                                        </template>
+                                        <template x-if="!searchTerms.vehicleTypes">
+                                            <div class="citas-empty-state">
+                                                <i class="fa-solid fa-car citas-empty-icon" style="color:#86efac;"></i>
+                                                <p class="citas-empty-title">Sin tipos de vehículo</p>
+                                                <p class="citas-empty-sub">No hay tipos de vehículo registrados.<br>Crea el primero usando el botón <strong>Crear Tipo de Vehículo</strong>.</p>
+                                            </div>
+                                        </template>
                                     </td>
                                 </tr>
                             </tbody>
@@ -428,9 +464,21 @@
                             </template>
 
                             <tr x-show="getFilteredData('clients').length === 0">
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="fa-solid fa-inbox fa-3x mb-3 d-block"></i>
-                                    <span x-text="searchTerms.clients ? 'No se encontraron resultados' : 'No hay clientes registrados'"></span>
+                                <td colspan="6">
+                                    <template x-if="searchTerms.clients">
+                                        <div class="citas-empty-state">
+                                            <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                                            <p class="citas-empty-title">Sin resultados</p>
+                                            <p class="citas-empty-sub">No se encontraron clientes para <strong x-text="'&quot;' + searchTerms.clients + '&quot;'"></strong>.</p>
+                                        </div>
+                                    </template>
+                                    <template x-if="!searchTerms.clients">
+                                        <div class="citas-empty-state">
+                                            <i class="fa-solid fa-users citas-empty-icon" style="color:#fde68a;"></i>
+                                            <p class="citas-empty-title">Sin clientes</p>
+                                            <p class="citas-empty-sub">Aún no hay clientes registrados.<br>Agrega el primero usando el botón <strong>Crear Cliente</strong>.</p>
+                                        </div>
+                                    </template>
                                 </td>
                             </tr>
 

@@ -240,9 +240,10 @@
                 </div>
 
                 <!-- ==================== PRODUCTIVIDAD OPERATIVA ==================== -->
-                <div x-show="activeTab === 'productivity'" class="reports-empty">
-                    <h5>Productividad Operativa</h5>
-                    <p>Este informe se definirá con más detalle en la siguiente iteración.</p>
+                <div x-show="activeTab === 'productivity'" class="citas-empty-state" style="min-height: 220px;">
+                    <i class="fa-solid fa-chart-line citas-empty-icon" style="color:#bfdbfe;"></i>
+                    <p class="citas-empty-title">Productividad Operativa</p>
+                    <p class="citas-empty-sub">Este informe estará disponible en la próxima actualización.<br>Aquí se mostrarán métricas de rendimiento por operario y tiempo de servicio.</p>
                 </div>
 
             </div>

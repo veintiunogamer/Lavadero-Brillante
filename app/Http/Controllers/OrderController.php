@@ -648,7 +648,7 @@ class OrderController extends Controller
             ], 501);
         }
 
-        $order->load(['client', 'services', 'payments', 'user']);
+        $order->load(['client', 'services.category', 'payments', 'user', 'vehicleType']);
 
         $invoiceNumber = $order->consecutive_serial && $order->consecutive_number
             ? $order->consecutive_serial . '-' . $order->consecutive_number

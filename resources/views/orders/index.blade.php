@@ -55,9 +55,40 @@
             </div>
 
             <!-- Sin resultados -->
-            <div x-show="!loading && getFilteredOrders().length === 0" class="text-center py-5 p-4">
-                <i class="fa-solid fa-inbox fa-3x text-muted mb-3"></i>
-                <p class="text-muted" x-text="searchTerm ? 'No se encontraron resultados.' : ('No hay agendamientos ' + (currentTab === 1 ? 'pendientes' : (currentTab === 2 ? 'en proceso' : 'terminados')))"></p>
+            <div x-show="!loading && getFilteredOrders().length === 0" class="citas-empty-state">
+
+                <template x-if="searchTerm">
+                    <div>
+                        <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                        <p class="citas-empty-title">Sin resultados</p>
+                        <p class="citas-empty-sub">No se encontraron agendamientos para <strong x-text="'&quot;' + searchTerm + '&quot;'"></strong>.<br>Intenta con otro término de búsqueda.</p>
+                    </div>
+                </template>
+
+                <template x-if="!searchTerm && currentTab === 1">
+                    <div>
+                        <i class="fa-solid fa-clock citas-empty-icon" style="color:#fde68a;"></i>
+                        <p class="citas-empty-title">Sin pendientes</p>
+                        <p class="citas-empty-sub">No hay agendamientos pendientes en este momento.<br>Los nuevos agendamientos aparecerán aquí.</p>
+                    </div>
+                </template>
+
+                <template x-if="!searchTerm && currentTab === 2">
+                    <div>
+                        <i class="fa-solid fa-spinner citas-empty-icon" style="color:#86efac;"></i>
+                        <p class="citas-empty-title">Nada en proceso</p>
+                        <p class="citas-empty-sub">No hay agendamientos en proceso actualmente.<br>Los agendamientos activos aparecerán aquí.</p>
+                    </div>
+                </template>
+
+                <template x-if="!searchTerm && currentTab === 3">
+                    <div>
+                        <i class="fa-solid fa-circle-check citas-empty-icon" style="color:#bfdbfe;"></i>
+                        <p class="citas-empty-title">Sin terminados</p>
+                        <p class="citas-empty-sub">Los agendamientos finalizados aparecerán aquí<br>una vez sean completados o cancelados.</p>
+                    </div>
+                </template>
+
             </div>
 
             <!-- Tabla de agendamientos -->
