@@ -489,8 +489,32 @@
                 </div>
 
                 <!-- Sin resultados -->
-                <div x-show="!loadingOrders && getFilteredOrders().length === 0" class="citas-content">
-                    <p class="citas-empty" x-text="searchTerms[currentTab] ? 'No se encontraron resultados.' : (currentTab === 'pending' ? 'No hay citas pendientes.' : 'No hay citas en el historial.')"></p>
+                <div x-show="!loadingOrders && getFilteredOrders().length === 0" class="citas-empty-state">
+
+                    <template x-if="searchTerms[currentTab]">
+                        <div>
+                            <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                            <p class="citas-empty-title">Sin resultados</p>
+                            <p class="citas-empty-sub">No se encontraron citas para <strong x-text="'\"' + searchTerms[currentTab] + '\"'"></strong>.<br>Intenta con otro término de búsqueda.</p>
+                        </div>
+                    </template>
+
+                    <template x-if="!searchTerms[currentTab] && currentTab === 'pending'">
+                        <div>
+                            <i class="fa-solid fa-calendar-check citas-empty-icon" style="color:#86efac;"></i>
+                            <p class="citas-empty-title">¡Todo al día!</p>
+                            <p class="citas-empty-sub">No hay citas pendientes en este momento.<br>Usa el formulario superior para agendar una nueva cita.</p>
+                        </div>
+                    </template>
+
+                    <template x-if="!searchTerms[currentTab] && currentTab === 'history'">
+                        <div>
+                            <i class="fa-solid fa-clock-rotate-left citas-empty-icon" style="color:#bfdbfe;"></i>
+                            <p class="citas-empty-title">Sin historial aún</p>
+                            <p class="citas-empty-sub">Las citas completadas y canceladas aparecerán aquí.</p>
+                        </div>
+                    </template>
+
                 </div>
 
                 <!-- Tabla de citas -->
