@@ -546,6 +546,9 @@
                                             <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar" x-show="order.status !== 3">
                                                 <i class="fa-solid fa-edit"></i>
                                             </a>
+                                            <button @click="printOrder(order.id)" class="btn btn-secondary" title="Imprimir orden">
+                                                <i class="fa-solid fa-print"></i>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>

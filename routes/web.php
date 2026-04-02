@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePaymentStatus'])->name('orders.updatePayment');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'invoicePdf'])->name('orders.invoice');
+    Route::get('/orders/{order}/print', [OrderController::class, 'invoicePdf'])->name('orders.print');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
 
