@@ -225,7 +225,12 @@
                     </div>
 
                     <div class="col-lg-2 col-md-2 col-sm-12 px-2">
-                        <label class="fw-bold mb-1">€</label>
+                        <label class="fw-bold mb-1 d-flex justify-content-between align-items-center">
+                            <span class="price-label-text">Precio</span>
+                            <button type="button" class="btn btn-link p-0 price-edit-btn text-primary" title="Editar precio" style="font-size:0.8rem; line-height:1;">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                        </label>
                         <input type="number" class="form-control required-field input-tall service-price" name="price" data-service-row="0" value="0" step="0.01" min="0" readonly data-field-name="Precio">
                     </div>
 
