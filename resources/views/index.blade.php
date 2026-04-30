@@ -227,11 +227,11 @@
                     <div class="col-lg-2 col-md-2 col-sm-12 px-2">
                         <label class="fw-bold mb-1 d-flex justify-content-between align-items-center">
                             <span class="price-label-text">Precio</span>
-                            <button type="button" class="btn btn-link p-0 price-edit-btn text-primary" title="Editar precio" style="font-size:0.8rem; line-height:1;">
-                                <i class="fa-solid fa-pen"></i>
+                            <button type="button" class="btn btn-primary btn-sm price-edit-btn" title="Editar precio" style="padding: 2px 6px;">
+                                <i class="fa-solid fa-pen text-white"></i>
                             </button>
                         </label>
-                        <input type="number" class="form-control required-field input-tall service-price" name="price" data-service-row="0" value="0" step="0.01" min="0" readonly data-field-name="Precio">
+                        <input type="text" class="form-control required-field input-tall service-price price-input" name="price" data-service-row="0" value="0.00" readonly data-field-name="Precio">
                     </div>
 
                     <div class="col-lg-1 col-md-1 col-sm-12 d-flex align-items-center px-2" style="padding-top: 1.7rem;">

@@ -75,7 +75,8 @@ export class PriceCalculator {
         let subtotal = 0;
 
         allServiceItems.forEach(item => {
-            const price = parseFloat(item.querySelector('.service-price')?.value || 0);
+            const priceInput = item.querySelector('.service-price');
+            const price = parseFloat(priceInput?.value || 0);
             subtotal += price;
         });
 

@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
     container_name: ${PROJECT_NAME}-php
     user: "${UID:-1000}:${GID:-1000}"
     volumes:

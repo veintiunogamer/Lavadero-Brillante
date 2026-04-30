@@ -5,6 +5,7 @@
 
 import { fetchServicesByCategory } from '../../utils/api.js';
 import PriceCalculator from './PriceCalculator.js';
+import Cleave from 'cleave.js';
 
 export class ServiceManager {
     constructor() {
@@ -13,6 +14,7 @@ export class ServiceManager {
         this.originalRow = null;
         this.addBtn = null;
         this.initialized = false;
+        this.cleaveInstances = new Map(); // Para almacenar instancias de Cleave
     }
 
     /**
@@ -76,13 +78,13 @@ export class ServiceManager {
                     priceInput.removeAttribute('readonly');
                     priceInput.classList.add('border-warning');
                     priceInput.focus();
-                    editBtn.querySelector('i').className = 'fa-solid fa-lock';
+                    editBtn.querySelector('i').className = 'fa-solid fa-lock text-white';
                     editBtn.title = 'Bloquear precio';
                     row.querySelector('.price-label-text').textContent = 'Precio';
                 } else {
                     priceInput.setAttribute('readonly', '');
                     priceInput.classList.remove('border-warning');
-                    editBtn.querySelector('i').className = 'fa-solid fa-pen';
+                    editBtn.querySelector('i').className = 'fa-solid fa-pen text-white';
                     editBtn.title = 'Editar precio';
                     row.querySelector('.price-label-text').textContent = 'Precio';
                 }
@@ -91,10 +93,24 @@ export class ServiceManager {
         }
 
         if (priceInput && !priceInput.dataset.inputInitialized) {
+            // Inicializar Cleave.js para formato de dinero
+            if (!priceInput.dataset.cleaveInitialized) {
+                const cleaveInstance = new Cleave(priceInput, {
+                    numeral: true,
+                    numeralDecimalMark: '.',
+                    delimiter: '',
+                    numeralPositiveOnly: true,
+                    numeralDecimalScale: 2
+                });
+                this.cleaveInstances.set(priceInput, cleaveInstance);
+                priceInput.dataset.cleaveInitialized = 'true';
+            }
+
             priceInput.addEventListener('input', () => {
                 const quantity = parseFloat(row.querySelector('.service-quantity')?.value || 1);
+                const rawValue = parseFloat(priceInput.value || 0);
                 if (quantity > 0) {
-                    priceInput.dataset.basePrice = (parseFloat(priceInput.value || 0) / quantity).toFixed(4);
+                    priceInput.dataset.basePrice = (rawValue / quantity).toFixed(4);
                 }
                 this.calculator.recalculate();
             });
@@ -157,16 +173,21 @@ export class ServiceManager {
 
         // Limpiar valores y flags
         clone.querySelectorAll('input, select, textarea').forEach(el => {
-            el.value = el.defaultValue || '';
+            if (el.classList.contains('service-price')) {
+                el.value = '0.00';
+            } else {
+                el.value = el.defaultValue || '';
+            }
             delete el.dataset.initialized;
             delete el.dataset.inputInitialized;
+            delete el.dataset.cleaveInitialized;
         });
 
         // Resetear estado del botón de editar precio
         const cloneEditBtn = clone.querySelector('.price-edit-btn');
         const clonePriceInput = clone.querySelector('.service-price');
         if (cloneEditBtn) {
-            cloneEditBtn.querySelector('i').className = 'fa-solid fa-pen';
+            cloneEditBtn.querySelector('i').className = 'fa-solid fa-pen text-white';
             cloneEditBtn.title = 'Editar precio';
             delete cloneEditBtn.dataset.initialized;
         }
@@ -175,6 +196,7 @@ export class ServiceManager {
         if (clonePriceInput) {
             clonePriceInput.setAttribute('readonly', '');
             clonePriceInput.classList.remove('border-warning');
+            clonePriceInput.value = '0.00';
         }
 
         // Actualizar data-service-row
@@ -240,13 +262,14 @@ export class ServiceManager {
         document.querySelectorAll('.service-item').forEach(item => {
             const serviceId = item.querySelector('.service-select')?.value;
             const quantity = item.querySelector('.service-quantity')?.value;
-            const price = item.querySelector('.service-price')?.value;
+            const priceInput = item.querySelector('.service-price');
+            const price = parseFloat(priceInput?.value || 0);
 
             if (serviceId) {
                 services.push({
                     service_id: serviceId,
                     quantity: parseInt(quantity),
-                    price: parseFloat(price)
+                    price: price
                 });
             }
         });
