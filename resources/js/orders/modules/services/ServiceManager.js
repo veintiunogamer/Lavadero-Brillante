@@ -67,6 +67,39 @@ export class ServiceManager {
             });
             quantityInput.dataset.initialized = 'true';
         }
+
+        const editBtn = row.querySelector('.price-edit-btn');
+        if (editBtn && !editBtn.dataset.initialized) {
+            editBtn.addEventListener('click', () => {
+                const isReadonly = priceInput.hasAttribute('readonly');
+                if (isReadonly) {
+                    priceInput.removeAttribute('readonly');
+                    priceInput.classList.add('border-warning');
+                    priceInput.focus();
+                    editBtn.querySelector('i').className = 'fa-solid fa-lock';
+                    editBtn.title = 'Bloquear precio';
+                    row.querySelector('.price-label-text').textContent = 'Precio';
+                } else {
+                    priceInput.setAttribute('readonly', '');
+                    priceInput.classList.remove('border-warning');
+                    editBtn.querySelector('i').className = 'fa-solid fa-pen';
+                    editBtn.title = 'Editar precio';
+                    row.querySelector('.price-label-text').textContent = 'Precio';
+                }
+            });
+            editBtn.dataset.initialized = 'true';
+        }
+
+        if (priceInput && !priceInput.dataset.inputInitialized) {
+            priceInput.addEventListener('input', () => {
+                const quantity = parseFloat(row.querySelector('.service-quantity')?.value || 1);
+                if (quantity > 0) {
+                    priceInput.dataset.basePrice = (parseFloat(priceInput.value || 0) / quantity).toFixed(4);
+                }
+                this.calculator.recalculate();
+            });
+            priceInput.dataset.inputInitialized = 'true';
+        }
     }
 
     /**
@@ -126,7 +159,23 @@ export class ServiceManager {
         clone.querySelectorAll('input, select, textarea').forEach(el => {
             el.value = el.defaultValue || '';
             delete el.dataset.initialized;
+            delete el.dataset.inputInitialized;
         });
+
+        // Resetear estado del botón de editar precio
+        const cloneEditBtn = clone.querySelector('.price-edit-btn');
+        const clonePriceInput = clone.querySelector('.service-price');
+        if (cloneEditBtn) {
+            cloneEditBtn.querySelector('i').className = 'fa-solid fa-pen';
+            cloneEditBtn.title = 'Editar precio';
+            delete cloneEditBtn.dataset.initialized;
+        }
+        const clonePriceLabel = clone.querySelector('.price-label-text');
+        if (clonePriceLabel) clonePriceLabel.textContent = 'Precio';
+        if (clonePriceInput) {
+            clonePriceInput.setAttribute('readonly', '');
+            clonePriceInput.classList.remove('border-warning');
+        }
 
         // Actualizar data-service-row
         this.rowCounter++;
