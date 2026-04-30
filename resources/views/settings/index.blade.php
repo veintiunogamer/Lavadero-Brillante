@@ -595,7 +595,7 @@
 
                         <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                             <label class="form-label fw-bold">Precio (€) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" min="0" x-model="serviceForm.value" class="form-control" placeholder="0.00" required>
+                            <input type="text" x-ref="servicePriceInput" class="form-control" placeholder="0,00" required>
                             <span x-show="errors.service.value" x-text="errors.service.value?.[0]" class="text-danger small"></span>
                         </div>
 

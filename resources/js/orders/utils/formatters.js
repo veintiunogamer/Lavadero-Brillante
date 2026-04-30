@@ -104,7 +104,10 @@ export const formatCurrency = (amount) => {
  * @returns {string}
  */
 export const formatPrice = (amount) => {
-    return parseFloat(amount).toFixed(2) + '€';
+    return new Intl.NumberFormat('es-ES', {
+        style: 'currency',
+        currency: 'EUR'
+    }).format(amount);
 };
 
 /**

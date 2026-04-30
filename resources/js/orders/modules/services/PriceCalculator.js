@@ -7,9 +7,10 @@ import { formatPrice } from '../../utils/formatters.js';
 
 export class PriceCalculator {
 
-    constructor() {
+    constructor(cleaveInstances) {
         this.initialized = false;
         this.discountSelect = null;
+        this.cleaveInstances = cleaveInstances || new Map();
     }
 
     /**
@@ -42,8 +43,15 @@ export class PriceCalculator {
         const quantity = parseFloat(quantityInput?.value || 1);
 
         if (priceInput) {
+            const total = parseFloat(basePrice) * quantity;
             priceInput.dataset.basePrice = basePrice;
-            priceInput.value = (parseFloat(basePrice) * quantity).toFixed(2);
+            priceInput.dataset.rawPrice = total.toFixed(2);
+            const cleave = this.cleaveInstances.get(priceInput);
+            if (cleave) {
+                cleave.setRawValue(total.toFixed(2));
+            } else {
+                priceInput.value = total.toFixed(2);
+            }
         }
 
         this.recalculate();
@@ -59,7 +67,14 @@ export class PriceCalculator {
 
         const quantity = parseFloat(quantityInput.value || 1);
         const basePrice = parseFloat(priceInput.dataset.basePrice || 0);
-        priceInput.value = (quantity * basePrice).toFixed(2);
+        const total = quantity * basePrice;
+        priceInput.dataset.rawPrice = total.toFixed(2);
+        const cleave = this.cleaveInstances.get(priceInput);
+        if (cleave) {
+            cleave.setRawValue(total.toFixed(2));
+        } else {
+            priceInput.value = total.toFixed(2);
+        }
 
         this.recalculate();
         this.updateOrderDescription();
@@ -76,7 +91,11 @@ export class PriceCalculator {
 
         allServiceItems.forEach(item => {
             const priceInput = item.querySelector('.service-price');
-            const price = parseFloat(priceInput?.value || 0);
+            const cleave = this.cleaveInstances.get(priceInput);
+            const rawStr = cleave
+                ? cleave.getRawValue()
+                : (priceInput?.dataset.rawPrice || priceInput?.value || '0');
+            const price = parseFloat(rawStr || 0);
             subtotal += price;
         });
 

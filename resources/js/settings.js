@@ -1,3 +1,5 @@
+import Cleave from 'cleave.js';
+
 // Solo mostrar logs si estamos en la vista de settings
 function settingsModuleActive() {
     return !!document.getElementById('settings-root');
@@ -81,6 +83,7 @@ window.settingsApp = function() {
             value: '',
             duration: ''
         },
+        _servicePriceCleave: null,
         vehicleTypeForm: {
             name: ''
         },
@@ -280,6 +283,7 @@ window.settingsApp = function() {
             this.currentEditId = null;
             this.resetServiceForm();
             this.clearErrors('service');
+            this.$nextTick(() => this._initServicePriceCleave());
         },
 
         async editService(service) {
@@ -294,6 +298,12 @@ window.settingsApp = function() {
             };
             this.showServiceModal = true;
             this.clearErrors('service');
+            this.$nextTick(() => {
+                this._initServicePriceCleave();
+                if (this._servicePriceCleave) {
+                    this._servicePriceCleave.setRawValue(parseFloat(service.value).toFixed(2));
+                }
+            });
         },
 
         async saveService() {
@@ -344,6 +354,10 @@ window.settingsApp = function() {
 
         closeServiceModal() {
             this.showServiceModal = false;
+            if (this._servicePriceCleave) {
+                this._servicePriceCleave.destroy();
+                this._servicePriceCleave = null;
+            }
             this.resetServiceForm();
             this.clearErrors('service');
         },
@@ -356,6 +370,24 @@ window.settingsApp = function() {
                 value: '',
                 duration: ''
             };
+        },
+
+        _initServicePriceCleave() {
+            const input = this.$refs.servicePriceInput;
+            if (!input) return;
+            if (this._servicePriceCleave) {
+                this._servicePriceCleave.destroy();
+            }
+            this._servicePriceCleave = new Cleave(input, {
+                numeral: true,
+                numeralDecimalMark: ',',
+                delimiter: '.',
+                numeralPositiveOnly: true,
+                numeralDecimalScale: 2,
+                onValueChanged: (e) => {
+                    this.serviceForm.value = e.target.rawValue;
+                }
+            });
         },
 
         getCategoryName(categoryId) {

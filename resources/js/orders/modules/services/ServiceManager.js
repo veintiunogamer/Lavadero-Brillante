@@ -9,12 +9,12 @@ import Cleave from 'cleave.js';
 
 export class ServiceManager {
     constructor() {
-        this.calculator = new PriceCalculator();
+        this.cleaveInstances = new Map(); // Para almacenar instancias de Cleave
+        this.calculator = new PriceCalculator(this.cleaveInstances);
         this.rowCounter = 1;
         this.originalRow = null;
         this.addBtn = null;
         this.initialized = false;
-        this.cleaveInstances = new Map(); // Para almacenar instancias de Cleave
     }
 
     /**
@@ -97,8 +97,8 @@ export class ServiceManager {
             if (!priceInput.dataset.cleaveInitialized) {
                 const cleaveInstance = new Cleave(priceInput, {
                     numeral: true,
-                    numeralDecimalMark: '.',
-                    delimiter: '',
+                    numeralDecimalMark: ',',
+                    delimiter: '.',
                     numeralPositiveOnly: true,
                     numeralDecimalScale: 2
                 });
@@ -108,7 +108,9 @@ export class ServiceManager {
 
             priceInput.addEventListener('input', () => {
                 const quantity = parseFloat(row.querySelector('.service-quantity')?.value || 1);
-                const rawValue = parseFloat(priceInput.value || 0);
+                const cleave = this.cleaveInstances.get(priceInput);
+                const rawValue = parseFloat(cleave ? cleave.getRawValue() : priceInput.value || 0);
+                priceInput.dataset.rawPrice = rawValue;
                 if (quantity > 0) {
                     priceInput.dataset.basePrice = (rawValue / quantity).toFixed(4);
                 }
@@ -135,7 +137,12 @@ export class ServiceManager {
         const quantityInput = row.querySelector('.service-quantity');
         const priceInput = row.querySelector('.service-price');
         if (quantityInput) quantityInput.value = 1;
-        if (priceInput) priceInput.value = '0.00';
+        if (priceInput) {
+            const cleave = this.cleaveInstances.get(priceInput);
+            if (cleave) cleave.setRawValue('0.00');
+            else priceInput.value = '0.00';
+            priceInput.dataset.rawPrice = '0';
+        }
 
         if (!categoryId) {
             this.calculator.recalculate();
