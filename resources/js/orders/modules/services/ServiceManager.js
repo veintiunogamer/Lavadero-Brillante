@@ -8,22 +8,27 @@ import PriceCalculator from './PriceCalculator.js';
 import Cleave from 'cleave.js';
 
 export class ServiceManager {
+
     constructor() {
+
         this.cleaveInstances = new Map(); // Para almacenar instancias de Cleave
         this.calculator = new PriceCalculator(this.cleaveInstances);
         this.rowCounter = 1;
         this.originalRow = null;
         this.addBtn = null;
         this.initialized = false;
+
     }
 
     /**
      * Inicializa el gestor de servicios
-     */
+    */
     init() {
+
         if (this.initialized) return;
         
         this.calculator.init();
+
         this.originalRow = document.querySelector('.service-item');
         this.addBtn = document.querySelector('.add-service-btn');
 
@@ -44,57 +49,78 @@ export class ServiceManager {
      * @param {HTMLElement} row 
      */
     bindRowEvents(row) {
+
         const categorySelect = row.querySelector('.service-category');
         const serviceSelect = row.querySelector('.service-select');
         const quantityInput = row.querySelector('.service-quantity');
         const priceInput = row.querySelector('.service-price');
 
         if (categorySelect && !categorySelect.dataset.initialized) {
+
             categorySelect.addEventListener('change', () => {
                 this.onCategoryChange(categorySelect, serviceSelect, row);
             });
+
             categorySelect.dataset.initialized = 'true';
         }
 
         if (serviceSelect && !serviceSelect.dataset.initialized) {
+
             serviceSelect.addEventListener('change', () => {
                 this.calculator.updateServicePrice(serviceSelect, priceInput);
             });
+
             serviceSelect.dataset.initialized = 'true';
         }
 
         if (quantityInput && !quantityInput.dataset.initialized) {
+
             quantityInput.addEventListener('input', () => {
                 this.calculator.updateQuantityPrice(quantityInput, priceInput);
             });
+
             quantityInput.dataset.initialized = 'true';
         }
 
         const editBtn = row.querySelector('.price-edit-btn');
+
         if (editBtn && !editBtn.dataset.initialized) {
+
             editBtn.addEventListener('click', () => {
+
                 const isReadonly = priceInput.hasAttribute('readonly');
+
                 if (isReadonly) {
+
                     priceInput.removeAttribute('readonly');
                     priceInput.classList.add('border-warning');
                     priceInput.focus();
-                    editBtn.querySelector('i').className = 'fa-solid fa-lock text-white';
+                    editBtn.querySelector('i').className = 'fa-solid fa-lock';
                     editBtn.title = 'Bloquear precio';
+
                     row.querySelector('.price-label-text').textContent = 'Precio';
+
                 } else {
+
                     priceInput.setAttribute('readonly', '');
                     priceInput.classList.remove('border-warning');
-                    editBtn.querySelector('i').className = 'fa-solid fa-pen text-white';
+                    editBtn.querySelector('i').className = 'fa-solid fa-pen';
                     editBtn.title = 'Editar precio';
+
                     row.querySelector('.price-label-text').textContent = 'Precio';
+
                 }
+
             });
+
             editBtn.dataset.initialized = 'true';
         }
 
         if (priceInput && !priceInput.dataset.inputInitialized) {
+
             // Inicializar Cleave.js para formato de dinero
             if (!priceInput.dataset.cleaveInitialized) {
+
                 const cleaveInstance = new Cleave(priceInput, {
                     numeral: true,
                     numeralDecimalMark: ',',
@@ -102,20 +128,28 @@ export class ServiceManager {
                     numeralPositiveOnly: true,
                     numeralDecimalScale: 2
                 });
+
                 this.cleaveInstances.set(priceInput, cleaveInstance);
                 priceInput.dataset.cleaveInitialized = 'true';
+
             }
 
             priceInput.addEventListener('input', () => {
+
                 const quantity = parseFloat(row.querySelector('.service-quantity')?.value || 1);
                 const cleave = this.cleaveInstances.get(priceInput);
                 const rawValue = parseFloat(cleave ? cleave.getRawValue() : priceInput.value || 0);
+
                 priceInput.dataset.rawPrice = rawValue;
+
                 if (quantity > 0) {
                     priceInput.dataset.basePrice = (rawValue / quantity).toFixed(4);
                 }
+
                 this.calculator.recalculate();
+
             });
+
             priceInput.dataset.inputInitialized = 'true';
         }
     }
@@ -127,6 +161,7 @@ export class ServiceManager {
      * @param {HTMLElement} row 
      */
     async onCategoryChange(categorySelect, serviceSelect, row) {
+
         const categoryId = categorySelect.value;
 
         // Resetear servicio
@@ -136,11 +171,16 @@ export class ServiceManager {
         // Resetear cantidad y precio
         const quantityInput = row.querySelector('.service-quantity');
         const priceInput = row.querySelector('.service-price');
+
         if (quantityInput) quantityInput.value = 1;
+
         if (priceInput) {
+
             const cleave = this.cleaveInstances.get(priceInput);
+
             if (cleave) cleave.setRawValue('0.00');
             else priceInput.value = '0.00';
+
             priceInput.dataset.rawPrice = '0';
         }
 
@@ -150,21 +190,32 @@ export class ServiceManager {
         }
 
         try {
+
             const result = await fetchServicesByCategory(categoryId);
 
             if (result.success && result.data.length > 0) {
+
                 result.data.forEach(service => {
+
                     const option = document.createElement('option');
+
                     option.value = service.id;
                     option.textContent = service.name;
                     option.dataset.value = service.value;
+
                     serviceSelect.appendChild(option);
+
                 });
+
                 serviceSelect.disabled = false;
+
             } else {
+
                 serviceSelect.innerHTML = '<option value="">No hay servicios disponibles</option>';
             }
+
         } catch (error) {
+
             console.error('Error cargando servicios:', error);
             serviceSelect.innerHTML = '<option value="">Error al cargar servicios</option>';
         }
@@ -174,17 +225,20 @@ export class ServiceManager {
      * Agrega una nueva fila de servicio
      */
     addRow() {
+
         if (!this.originalRow) return;
 
         const clone = this.originalRow.cloneNode(true);
 
         // Limpiar valores y flags
         clone.querySelectorAll('input, select, textarea').forEach(el => {
+
             if (el.classList.contains('service-price')) {
                 el.value = '0.00';
             } else {
                 el.value = el.defaultValue || '';
             }
+
             delete el.dataset.initialized;
             delete el.dataset.inputInitialized;
             delete el.dataset.cleaveInitialized;
@@ -193,13 +247,17 @@ export class ServiceManager {
         // Resetear estado del botón de editar precio
         const cloneEditBtn = clone.querySelector('.price-edit-btn');
         const clonePriceInput = clone.querySelector('.service-price');
+
         if (cloneEditBtn) {
             cloneEditBtn.querySelector('i').className = 'fa-solid fa-pen text-white';
             cloneEditBtn.title = 'Editar precio';
             delete cloneEditBtn.dataset.initialized;
         }
+
         const clonePriceLabel = clone.querySelector('.price-label-text');
+
         if (clonePriceLabel) clonePriceLabel.textContent = 'Precio';
+
         if (clonePriceInput) {
             clonePriceInput.setAttribute('readonly', '');
             clonePriceInput.classList.remove('border-warning');
@@ -208,6 +266,7 @@ export class ServiceManager {
 
         // Actualizar data-service-row
         this.rowCounter++;
+
         clone.querySelectorAll('[data-service-row]').forEach(el => {
             el.dataset.serviceRow = this.rowCounter;
         });
@@ -221,7 +280,9 @@ export class ServiceManager {
         // Insertar después del último service-item
         const serviceItems = document.querySelectorAll('.service-item');
         const lastItem = serviceItems[serviceItems.length - 1];
+
         lastItem.insertAdjacentElement('afterend', clone);
+
     }
 
     /**
@@ -229,18 +290,24 @@ export class ServiceManager {
      * @param {HTMLElement} row 
      */
     addRemoveButton(row) {
+
         let btnCol = row.querySelector('.col-lg-1.d-flex');
         
         if (!btnCol) {
+
             btnCol = document.createElement('div');
             btnCol.className = 'col-lg-1 d-flex align-items-center px-2';
             btnCol.style.paddingTop = '1.7rem';
+
             row.appendChild(btnCol);
+
         } else {
+
             btnCol.innerHTML = '';
         }
 
         const removeBtn = document.createElement('button');
+
         removeBtn.className = 'remove-btn btn btn-sm btn-danger';
         removeBtn.type = 'button';
         removeBtn.innerHTML = '<i class="fa-solid fa-times"></i>';
@@ -254,9 +321,12 @@ export class ServiceManager {
      * @param {HTMLElement} row 
      */
     removeRow(row) {
+
         row.remove();
+
         this.calculator.recalculate();
         this.calculator.updateOrderDescription();
+
     }
 
     /**
@@ -264,21 +334,26 @@ export class ServiceManager {
      * @returns {Array}
      */
     collectServices() {
+
         const services = [];
         
         document.querySelectorAll('.service-item').forEach(item => {
+
             const serviceId = item.querySelector('.service-select')?.value;
             const quantity = item.querySelector('.service-quantity')?.value;
             const priceInput = item.querySelector('.service-price');
             const price = parseFloat(priceInput?.value || 0);
 
             if (serviceId) {
+
                 services.push({
                     service_id: serviceId,
                     quantity: parseInt(quantity),
                     price: price
                 });
+
             }
+
         });
 
         return services;
@@ -329,27 +404,34 @@ export class ServiceManager {
      * @param {Array} existingServices - Array de servicios de la orden
      */
     async loadExistingServices(existingServices) {
+
         if (!existingServices || existingServices.length === 0) return;
 
         // Limpiar filas existentes primero
         const serviceItems = document.querySelectorAll('.service-item');
+
         for (let i = serviceItems.length - 1; i > 0; i--) {
             serviceItems[i].remove();
         }
 
         // Cargar cada servicio
         for (let i = 0; i < existingServices.length; i++) {
+
             const service = existingServices[i];
             let row;
 
             if (i === 0) {
+
                 // Usar la primera fila existente
                 row = document.querySelector('.service-item');
+
             } else {
+
                 // Agregar nueva fila
                 this.addRow();
                 const rows = document.querySelectorAll('.service-item');
                 row = rows[rows.length - 1];
+
             }
 
             if (!row) continue;
@@ -361,14 +443,17 @@ export class ServiceManager {
 
             // Seleccionar categoría
             if (categorySelect && service.category_id) {
+
                 categorySelect.value = service.category_id;
                 
                 // Cargar servicios de esa categoría
                 await this.loadServicesForCategory(categorySelect, serviceSelect, service.id);
+
             }
 
             const quantityValue = Number(service?.pivot?.quantity || 1) || 1;
             const lineTotalValue = Number(service?.pivot?.total ?? service?.value ?? 0) || 0;
+
             const basePriceValue = quantityValue > 0
                 ? (lineTotalValue / quantityValue)
                 : Number(service?.value || 0);
@@ -396,17 +481,23 @@ export class ServiceManager {
      * @param {string} selectedServiceId - ID del servicio a seleccionar
      */
     async loadServicesForCategory(categorySelect, serviceSelect, selectedServiceId) {
+
         const categoryId = categorySelect.value;
+
         if (!categoryId) return;
 
         try {
+
             const result = await fetchServicesByCategory(categoryId);
 
             if (result.success && result.data.length > 0) {
+
                 serviceSelect.innerHTML = '<option value="">Selecciona un servicio</option>';
                 
                 result.data.forEach(service => {
+
                     const option = document.createElement('option');
+
                     option.value = service.id;
                     option.textContent = service.name;
                     option.dataset.value = service.value;
@@ -416,11 +507,15 @@ export class ServiceManager {
                     }
                     
                     serviceSelect.appendChild(option);
+                    
                 });
                 
                 serviceSelect.disabled = false;
+
             }
+
         } catch (error) {
+
             console.error('Error cargando servicios para edición:', error);
         }
     }

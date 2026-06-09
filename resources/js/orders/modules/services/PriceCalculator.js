@@ -43,14 +43,22 @@ export class PriceCalculator {
         const quantity = parseFloat(quantityInput?.value || 1);
 
         if (priceInput) {
+
             const total = parseFloat(basePrice) * quantity;
+
             priceInput.dataset.basePrice = basePrice;
             priceInput.dataset.rawPrice = total.toFixed(2);
+
             const cleave = this.cleaveInstances.get(priceInput);
+
             if (cleave) {
+
                 cleave.setRawValue(total.toFixed(2));
+
             } else {
+
                 priceInput.value = total.toFixed(2);
+
             }
         }
 
@@ -68,8 +76,11 @@ export class PriceCalculator {
         const quantity = parseFloat(quantityInput.value || 1);
         const basePrice = parseFloat(priceInput.dataset.basePrice || 0);
         const total = quantity * basePrice;
+
         priceInput.dataset.rawPrice = total.toFixed(2);
+
         const cleave = this.cleaveInstances.get(priceInput);
+
         if (cleave) {
             cleave.setRawValue(total.toFixed(2));
         } else {
@@ -90,13 +101,17 @@ export class PriceCalculator {
         let subtotal = 0;
 
         allServiceItems.forEach(item => {
+
             const priceInput = item.querySelector('.service-price');
             const cleave = this.cleaveInstances.get(priceInput);
+
             const rawStr = cleave
-                ? cleave.getRawValue()
-                : (priceInput?.dataset.rawPrice || priceInput?.value || '0');
+            ? cleave.getRawValue()
+            : (priceInput?.dataset.rawPrice || priceInput?.value || '0');
+
             const price = parseFloat(rawStr || 0);
             subtotal += price;
+
         });
 
         // Habilitar/deshabilitar descuento

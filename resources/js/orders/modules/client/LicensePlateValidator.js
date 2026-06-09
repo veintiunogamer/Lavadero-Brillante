@@ -8,6 +8,7 @@ import { checkLicensePlate } from '../../utils/api.js';
 export class LicensePlateValidator {
 
     constructor() {
+        
         this.licensePlateInput = null;
         this.clientNameInput = null;
         this.clientPhoneInput = null;
@@ -15,6 +16,7 @@ export class LicensePlateValidator {
         this.debounceTimer = null;
         this.debounceDelay = 500;
         this.initialized = false;
+        
     }
 
     /**
@@ -103,7 +105,9 @@ export class LicensePlateValidator {
         }
 
         if (this.clientPhoneInput) {
+
             const phoneValue = client.phone || '';
+
             // Extraer últimos 9 dígitos (formato español)
             this.clientPhoneInput.value = phoneValue.replace(/\D/g, '').slice(-9);
         }

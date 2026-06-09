@@ -4,6 +4,7 @@
  */
 
 export class PaymentManager {
+    
     constructor() {
         this.buttons = null;
         this.statusInput = null;
@@ -16,6 +17,7 @@ export class PaymentManager {
      * Inicializa el gestor de pagos
      */
     init() {
+
         if (this.initialized) return;
 
         this.buttons = document.querySelectorAll('.pay-status-btn');
@@ -25,18 +27,23 @@ export class PaymentManager {
 
         this.bindEvents();
         this.initialized = true;
+
     }
 
     /**
      * Vincula eventos a los botones de estado de pago
      */
     bindEvents() {
+
         this.buttons.forEach(btn => {
+
             if (btn.dataset.initialized) return;
 
             btn.addEventListener('click', (e) => this.onStatusClick(e, btn));
             btn.dataset.initialized = 'true';
+
         });
+
     }
 
     /**
@@ -45,6 +52,7 @@ export class PaymentManager {
      * @param {HTMLElement} btn 
      */
     onStatusClick(e, btn) {
+
         e.preventDefault();
 
         // Actualizar clases activas
@@ -53,6 +61,7 @@ export class PaymentManager {
 
         // Actualizar input oculto
         const status = btn.getAttribute('data-value');
+
         if (this.statusInput) {
             this.statusInput.value = status;
         }
@@ -69,18 +78,23 @@ export class PaymentManager {
      * @param {string} status 
      */
     togglePartialPayment(status) {
+
         if (!this.partialContainer || !this.partialInput) return;
 
         if (status === '2') {
+
             // Pago parcial
             this.partialContainer.style.display = 'block';
             this.partialInput.required = true;
             this.partialInput.classList.add('required-field');
+
         } else {
+
             this.partialContainer.style.display = 'none';
             this.partialInput.value = '';
             this.partialInput.required = false;
             this.partialInput.classList.remove('required-field', 'is-invalid', 'is-valid');
+
         }
     }
 
@@ -89,6 +103,7 @@ export class PaymentManager {
      * @returns {number}
      */
     getPaymentStatus() {
+
         const activeBtn = document.querySelector('.pay-status-btn.pay-status-active');
         return parseInt(activeBtn?.dataset?.value) || 1;
     }
@@ -98,7 +113,9 @@ export class PaymentManager {
      * @returns {number|null}
      */
     getPartialPayment() {
+
         const status = this.getPaymentStatus();
+
         if (status === 2 && this.partialInput?.value) {
             return parseFloat(this.partialInput.value);
         }

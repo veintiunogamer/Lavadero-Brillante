@@ -50,19 +50,23 @@ window.profileApp = function() {
         },
 
         validatePhone() {
+
             if (this.form.phone && !validateSpanishPhoneJS(this.form.phone)) {
                 this.errors.phone = 'Número de móvil no válido';
             } else {
                 this.errors.phone = '';
             }
+
         },
 
         validateNewPassword() {
+
             if (this.form.new_password && this.form.new_password.length < 8) {
                 this.errors.new_password = 'Mínimo 8 caracteres';
             } else {
                 this.errors.new_password = '';
             }
+
         },
 
         validatePhoneForButton() {
@@ -70,6 +74,7 @@ window.profileApp = function() {
         },
 
         isFormValid() {
+
             const basicInfoValid = this.form.name && this.form.email && this.form.username && this.validatePhoneForButton();
             
             // Si se intenta cambiar la contraseña, validar que ambos campos estén llenos
@@ -128,6 +133,7 @@ window.profileApp = function() {
 
                     // Actualizar el nombre de usuario en el header si cambió
                     const usernameElement = document.querySelector('.user-name');
+                    
                     if (usernameElement) {
                         usernameElement.textContent = result.user.username;
                     }

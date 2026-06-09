@@ -80,15 +80,19 @@ window.agendamientoApp = function() {
                 const result = await response.json();
 
                 if (result.success) {
+
                     this.orders = this.normalizePayments(result.data || []);
                     this.ensurePageInRange();
+
                 } else {
                     window.notyf?.error('Error al cargar los agendamientos');
                 }
 
             } catch (error) {
+
                 console.error('Error:', error);
                 window.notyf?.error('Ocurrió un error al cargar los agendamientos');
+
             } finally {
                 this.loading = false;
             }
@@ -229,6 +233,7 @@ window.agendamientoApp = function() {
         openStatusTypeModal(order) {
 
             const baseOrder = this.orders.find(item => item.id === order?.id) || order;
+
             if (baseOrder && !baseOrder.payment && Array.isArray(baseOrder.payments)) {
                 baseOrder.payment = baseOrder.payments[0] || null;
             }
@@ -290,6 +295,7 @@ window.agendamientoApp = function() {
                 } catch (error) {
                     this.setPaymentModalData(baseOrder);
                 }
+
             } else {
                 this.setPaymentModalData(baseOrder);
             }
@@ -400,8 +406,10 @@ window.agendamientoApp = function() {
                 }
 
             } catch (error) {
+
                 console.error('Error:', error);
                 window.notyf?.error('Error al actualizar el estado');
+                
             } finally {
                 this.changingStatus = false;
             }
