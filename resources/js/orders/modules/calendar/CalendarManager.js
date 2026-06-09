@@ -135,10 +135,14 @@ export class CalendarManager {
                 const cell = document.createElement('td');
 
                 if (week === 0 && dayOfWeek < startDayOfWeek) {
+
                     cell.textContent = '';
+
                 } else if (day > daysInMonth) {
+
                     cell.textContent = '';
                 } else {
+
                     cell.textContent = day;
                     cell.style.cursor = 'pointer';
 
@@ -231,9 +235,12 @@ export class CalendarManager {
      * @param {Date} date 
      */
     setSelectedDate(date) {
+
         this.selectedDate = date;
         this.currentDate = new Date(date);
+
         window.selectedOrderDate = this.selectedDate;
+
         this.render();
         this.updateFooter();
     }
@@ -242,10 +249,12 @@ export class CalendarManager {
      * Resetea el calendario a la fecha actual
      */
     reset() {
+        
         this.currentDate = new Date();
         this.selectedDate = new Date();
         window.selectedOrderDate = this.selectedDate;
         this.render();
+
     }
 }
 
