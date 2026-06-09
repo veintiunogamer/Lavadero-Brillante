@@ -116,19 +116,23 @@ window.usuariosApp = function() {
         },
 
         validatePhone() {
+
             if (this.form.phone && !validateSpanishPhoneJS(this.form.phone)) {
                 this.errors.phone = 'Número de móvil no válido';
             } else {
                 this.errors.phone = '';
             }
+
         },
 
         validatePassword() {
+
             if (this.form.password && this.form.password.length < 8) {
                 this.errors.password = 'Mínimo 8 caracteres';
             } else {
                 this.errors.password = '';
             }
+
         },
 
         validatePhoneForButton() {
@@ -140,8 +144,13 @@ window.usuariosApp = function() {
         },
 
         isFormValid() {
-            const passwordValid = this.isEditing ? (this.form.password === '' || this.form.password.length >= 8) : (this.form.password && this.form.password.length >= 8);
-            return this.form.name && this.form.email && this.form.username && passwordValid && this.validatePhoneForButton();
+
+            const passwordValid = this.isEditing 
+            ? (this.form.password === '' || this.form.password.length >= 8) 
+            : (this.form.password && this.form.password.length >= 8);
+            
+            return this.form.name && this.form.email && this.form.username 
+            && passwordValid && this.validatePhoneForButton();
         },
 
         editUser(user) {
@@ -173,7 +182,10 @@ window.usuariosApp = function() {
                 return;
             }
 
-            const url = this.isEditing ? `/users/update/${this.currentUserId}` : '/users/store';
+            const url = this.isEditing 
+            ? `/users/update/${this.currentUserId}` 
+            : '/users/store';
+
             const method = this.isEditing ? 'PUT' : 'POST';
 
             try {
@@ -251,10 +263,13 @@ window.usuariosApp = function() {
 
                     // Eliminar el usuario del array de activos y agregarlo a inactivos
                     const userToDeactivate = this.activeUsers.find(user => user.id === id);
+
                     if (userToDeactivate) {
+
                         userToDeactivate.status = false;
                         this.activeUsers = this.activeUsers.filter(user => user.id !== id);
                         this.inactiveUsers.push(userToDeactivate);
+
                     }
 
                     window.notyf.success(result.message || 'Usuario desactivado exitosamente');
@@ -288,10 +303,13 @@ window.usuariosApp = function() {
 
                     // Eliminar el usuario del array de inactivos y agregarlo a activos
                     const userToActivate = this.inactiveUsers.find(user => user.id === id);
+
                     if (userToActivate) {
+
                         userToActivate.status = true;
                         this.inactiveUsers = this.inactiveUsers.filter(user => user.id !== id);
                         this.activeUsers.push(userToActivate);
+                        
                     }
 
                     window.notyf.success(result.message || 'Usuario activado exitosamente');

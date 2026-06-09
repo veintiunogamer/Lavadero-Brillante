@@ -4,17 +4,21 @@
  */
 
 export class FormSubmitHandler {
+
     constructor(onSubmit) {
+        
         this.onSubmit = onSubmit;
         this.confirmBtn = null;
         this.termsCheckbox = null;
         this.initialized = false;
+
     }
 
     /**
      * Inicializa el manejador de envío
      */
     init() {
+
         this.confirmBtn = document.querySelector('.confirm-btn');
         this.termsCheckbox = document.getElementById('terms-checkbox');
 
@@ -33,6 +37,7 @@ export class FormSubmitHandler {
      * Vincula eventos al formulario
      */
     bindEvents() {
+
         // Evento del checkbox de términos
         if (this.termsCheckbox && !this.termsCheckbox.dataset.initialized) {
             this.termsCheckbox.addEventListener('change', () => this.updateButtonState());
@@ -41,19 +46,24 @@ export class FormSubmitHandler {
 
         // Evento del botón de confirmar
         this.confirmBtn.addEventListener('click', async (e) => {
+
             e.preventDefault();
+
             if (this.onSubmit) {
                 await this.onSubmit();
             }
+
         });
 
         // Escuchar cambios en campos requeridos
         document.querySelectorAll('.required-field').forEach(field => {
+
             if (!field.dataset.formListener) {
                 field.addEventListener('input', () => this.updateButtonState());
                 field.addEventListener('change', () => this.updateButtonState());
                 field.dataset.formListener = 'true';
             }
+
         });
 
         // Escuchar evento personalizado para cambios en el formulario
@@ -65,6 +75,7 @@ export class FormSubmitHandler {
      * @returns {boolean}
      */
     isFormValid() {
+
         const requiredFields = document.querySelectorAll('.required-field');
         
         for (let field of requiredFields) {
@@ -88,6 +99,7 @@ export class FormSubmitHandler {
      * Actualiza el estado del botón de confirmar
      */
     updateButtonState() {
+
         const termsChecked = this.termsCheckbox?.checked || false;
         const formValid = this.isFormValid();
         
@@ -100,6 +112,7 @@ export class FormSubmitHandler {
      * Resetea el estado del formulario
      */
     reset() {
+
         if (this.termsCheckbox) {
             this.termsCheckbox.checked = false;
         }
@@ -107,6 +120,7 @@ export class FormSubmitHandler {
         if (this.confirmBtn) {
             this.confirmBtn.disabled = true;
         }
+
     }
 }
 

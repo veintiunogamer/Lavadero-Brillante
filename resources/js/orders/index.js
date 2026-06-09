@@ -149,35 +149,43 @@ function createOrderFormApp() {
 
             // Pre-llenar tipo de vehículo
             const vehicleType = document.querySelector('[name="vehicle_type_id"]');
+
             if (vehicleType) vehicleType.value = order.vehicle_type_id || '';
 
             // Pre-llenar suciedad
             const dirtLevel = document.querySelector('[name="dirt_level"]');
+
             if (dirtLevel) dirtLevel.value = order.dirt_level || 1;
 
             // Pre-llenar detallador asignado
             const assignedUser = document.querySelector('[name="assigned_user"]');
+
             if (assignedUser) assignedUser.value = order.user_id || '';
 
             // Pre-llenar consecutivo de la orden editada
             const serialInput = document.querySelector('input[name="consecutive_serial"]');
             const numberInput = document.querySelector('input[name="consecutive_number"]');
+
             if (serialInput) serialInput.value = order.consecutive_serial || serialInput.value || '';
             if (numberInput) numberInput.value = order.consecutive_number || numberInput.value || '';
 
             // Pre-llenar observaciones del vehículo
             const vehicleNotes = document.querySelector('[name="vehicle_notes"]');
+
             if (vehicleNotes) vehicleNotes.value = order.vehicle_notes || '';
 
             // Pre-llenar notas
             const orderNotes = document.querySelector('[name="order_notes"]');
             const extraNotes = document.querySelector('[name="extra_notes"]');
+
             if (orderNotes) orderNotes.value = order.order_notes || '';
             if (extraNotes) extraNotes.value = order.extra_notes || '';
 
             // Pre-llenar descuento (almacenado en euros, mostrar porcentaje)
             const discountSelect = document.querySelector('[name="discount"]');
+
             if (discountSelect) {
+
                 const subtotal = Number(order.subtotal || 0);
                 const discountAmount = Number(order.discount || 0);
                 let discountPercent = 0;
@@ -194,36 +202,46 @@ function createOrderFormApp() {
 
             // Pre-llenar estado de pago
             const paymentStatus = document.querySelector('[name="payment_status"]');
+
             if (paymentStatus) paymentStatus.value = order.payment?.status || 1;
 
             // Activar el botón de estado de pago correspondiente
             document.querySelectorAll('.pay-status-btn').forEach(btn => {
+
                 btn.classList.remove('pay-status-active');
+
                 if (parseInt(btn.dataset.value) === (order.payment?.status || 1)) {
                     btn.classList.add('pay-status-active');
                 }
+
             });
 
             // Pre-llenar pago parcial si aplica
             if (order.partial_payment) {
+
                 const partialPayment = document.querySelector('[name="partial_payment"]');
                 const partialContainer = document.getElementById('partial-payment-container');
+
                 if (partialPayment) partialPayment.value = order.partial_payment;
                 if (partialContainer) partialContainer.style.display = 'block';
             }
 
             // Pre-llenar método de pago
             const paymentMethod = document.querySelector('[name="payment_method"]');
+
             if (paymentMethod) paymentMethod.value = order.payment?.type || 1;
 
             // Pre-llenar estado de la cita
             const status = document.querySelector('[name="status"]');
+
             if (status) status.value = order.status || 1;
 
             // Pre-llenar servicios (primero el existente)
             if (order.services && order.services.length > 0) {
+
                 const normalizedServices = this.normalizeServicesForEdit(order.services);
                 await services.loadExistingServices(normalizedServices);
+
             }
 
             // Actualizar totales
@@ -231,12 +249,14 @@ function createOrderFormApp() {
 
             // Cambiar texto del botón
             const confirmBtn = document.querySelector('.confirm-btn');
+
             if (confirmBtn) {
                 confirmBtn.innerHTML = '<i class="fa-solid fa-save icon"></i> Guardar Cambios';
             }
 
             // Auto-check términos en edición
             const termsCheckbox = document.getElementById('terms-checkbox');
+
             if (termsCheckbox) {
                 termsCheckbox.checked = true;
                 termsCheckbox.dispatchEvent(new Event('change'));
@@ -246,11 +266,13 @@ function createOrderFormApp() {
         },
 
         normalizeServicesForEdit(rawServices = []) {
+
             if (!Array.isArray(rawServices) || rawServices.length === 0) return [];
 
             const grouped = new Map();
 
             rawServices.forEach(service => {
+
                 if (!service?.id) return;
 
                 const key = String(service.id);
@@ -260,6 +282,7 @@ function createOrderFormApp() {
                 const safeTotal = Number.isFinite(pivotTotal) ? pivotTotal : 0;
 
                 if (!grouped.has(key)) {
+
                     grouped.set(key, {
                         ...service,
                         pivot: {
@@ -268,7 +291,9 @@ function createOrderFormApp() {
                             total: safeTotal
                         }
                     });
+
                     return;
+
                 }
 
                 const existing = grouped.get(key);
@@ -438,12 +463,16 @@ function createOrderFormApp() {
         },
 
         normalizePayments(orders = []) {
+
             return orders.map(order => {
+
                 if (!order.payment && Array.isArray(order.payments)) {
                     order.payment = order.payments[0] || null;
                 }
+
                 return order;
             });
+
         },
 
         // ==================== MODAL VISTA RÁPIDA ====================
@@ -499,7 +528,9 @@ function createOrderFormApp() {
         // ==================== MODAL TIPO DE ESTADO ====================
 
         openStatusTypeModal(order) {
+
             const baseOrder = this.orders.find(item => item.id === order?.id) || order;
+
             if (baseOrder && !baseOrder.payment && Array.isArray(baseOrder.payments)) {
                 baseOrder.payment = baseOrder.payments[0] || null;
             }
@@ -513,15 +544,21 @@ function createOrderFormApp() {
         },
 
         openOrderStatusFromType() {
+
             if (!this.statusTypeOrder) return;
+
             const order = this.statusTypeOrder;
+
             this.closeStatusTypeModal();
             this.openStatusModal(order);
         },
 
         openPaymentStatusFromType() {
+
             if (!this.statusTypeOrder) return;
+
             const order = this.statusTypeOrder;
+
             this.closeStatusTypeModal();
             this.openPaymentModal(order);
         },
@@ -529,19 +566,29 @@ function createOrderFormApp() {
         // ==================== MODAL CAMBIO DE PAGO ====================
 
         async openPaymentModal(order) {
+
             const baseOrder = order || {};
 
             if (baseOrder?.id && !baseOrder?.client) {
+
                 try {
+
                     const result = await apiGet(`/orders/${baseOrder.id}`);
+
                     if (result && result.success && result.data) {
+
                         this.setPaymentModalData(result.data);
+
                     } else {
+
                         this.setPaymentModalData(baseOrder);
+
                     }
+
                 } catch (error) {
                     this.setPaymentModalData(baseOrder);
                 }
+
             } else {
                 this.setPaymentModalData(baseOrder);
             }
@@ -550,28 +597,34 @@ function createOrderFormApp() {
         },
 
         closePaymentModal() {
+
             this.showPaymentModal = false;
             this.paymentModalOrder = null;
             this.newPaymentStatus = null;
             this.paymentPartialAmount = null;
+
         },
 
         setPaymentModalData(order) {
+
             if (order && !order.payment && Array.isArray(order.payments)) {
                 order.payment = order.payments[0] || null;
             }
+
             this.paymentModalOrder = order;
             this.newPaymentStatus = order?.payment?.status || 1;
             this.paymentPartialAmount = order?.partial_payment || null;
         },
 
         async confirmPaymentChange() {
+
             if (!this.paymentModalOrder || !this.newPaymentStatus) return;
             if (this.newPaymentStatus === this.paymentModalOrder?.payment?.status) return;
 
             this.changingPayment = true;
 
             try {
+
                 const payload = { status: this.newPaymentStatus };
 
                 if (this.newPaymentStatus === 2) {
@@ -581,15 +634,22 @@ function createOrderFormApp() {
                 const result = await apiPatch(`/orders/${this.paymentModalOrder.id}/payment`, payload);
 
                 if (result.success) {
+
                     window.notyf?.success('Estado de pago actualizado');
+
                     await this.loadOrders();
                     this.closePaymentModal();
+
                 } else {
+
                     window.notyf?.error(result.message || 'Error al actualizar el pago');
                 }
+
             } catch (error) {
+
                 console.error('Error:', error);
                 window.notyf?.error('Error al actualizar el pago');
+
             } finally {
                 this.changingPayment = false;
             }
@@ -613,16 +673,21 @@ function createOrderFormApp() {
                 });
 
                 if (result.success) {
+
                     window.notyf?.success('Estado actualizado correctamente');
+
                     await this.loadOrders();
                     this.closeStatusModal();
+
                 } else {
                     window.notyf?.error(result.message || 'Error al actualizar el estado');
                 }
 
             } catch (error) {
+
                 console.error('Error:', error);
                 window.notyf?.error('Error al actualizar el estado');
+
             } finally {
                 this.changingStatus = false;
             }
@@ -641,6 +706,7 @@ function createOrderFormApp() {
         },
 
         downloadInvoice() {
+
             if (!this.invoiceOrderId) {
                 this.closeInvoiceModal();
                 return;
@@ -740,9 +806,12 @@ function createOrderFormApp() {
                     } else {
 
                         await this.loadOrders();
+
                         this.resetForm();
                         this.updateConsecutive(result.data?.consecutive);
+
                         const orderId = result.data?.order?.id;
+
                         if (orderId) {
                             this.openInvoiceModal(orderId);
                         }
@@ -867,6 +936,7 @@ function createOrderFormApp() {
         formatCurrency: (amount) => formatters.formatCurrency(amount),
         getStatusText: (status) => formatters.getStatusText(status),
         getStatusBadge: (status) => formatters.getStatusBadge(status)
+
     };
 }
 
@@ -913,6 +983,7 @@ function createOrderEditApp() {
 
             // Configurar botón de guardar
             const confirmBtn = document.querySelector('.confirm-btn');
+
             if (confirmBtn) {
                 confirmBtn.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -925,6 +996,7 @@ function createOrderEditApp() {
          * Precarga los servicios de la orden existente
          */
         async preloadServices() {
+
             // Los servicios ya están renderizados por Blade
             // Solo necesitamos asegurar que los precios estén actualizados
             console.log('Servicios precargados:', window.orderServices.length);
@@ -939,8 +1011,11 @@ function createOrderEditApp() {
 
             // Validar formulario
             const form = document.getElementById('orders-root');
+
             if (window.OrderFormValidator) {
+
                 const validator = new window.OrderFormValidator(form);
+
                 if (!validator.validateOrderForm()) {
                     validator.showErrors();
                     return;
@@ -966,11 +1041,14 @@ function createOrderEditApp() {
                 const result = await response.json();
 
                 if (result.success) {
+
                     window.notyf?.success('¡Orden actualizada exitosamente!');
+
                     // Redirigir a la lista después de un momento
                     setTimeout(() => {
                         window.location.href = '/orders';
                     }, 1500);
+
                 } else {
                     this.handleSubmitErrors(result);
                 }
@@ -993,9 +1071,11 @@ function createOrderEditApp() {
         handleSubmitErrors(result) {
 
             if (result.errors) {
+                
                 Object.values(result.errors).forEach(errors => {
                     errors.forEach(error => window.notyf?.error(error));
                 });
+
             } else {
                 window.notyf?.error(result.message || 'Error al actualizar la orden');
             }

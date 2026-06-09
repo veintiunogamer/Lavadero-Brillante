@@ -109,12 +109,14 @@ window.settingsApp = function() {
         // ====================
 
         getFilteredData(type) {
+
             const data = this[type];
             const searchTerm = this.searchTerms[type].toLowerCase();
 
             if (!searchTerm) return data;
 
             return data.filter(item => {
+
                 // Búsqueda según el tipo de dato
                 switch(type) {
                     case 'categories':
@@ -135,19 +137,26 @@ window.settingsApp = function() {
         },
 
         getPaginatedData(type) {
+
             const filteredData = this.getFilteredData(type);
             const start = (this.currentPage[type] - 1) * this.perPage;
             const end = start + this.perPage;
+
             return filteredData.slice(start, end);
+
         },
 
         getTotalPages(type) {
+
             const filteredData = this.getFilteredData(type);
             return Math.ceil(filteredData.length / this.perPage);
+
         },
 
         goToPage(type, page) {
+
             const totalPages = this.getTotalPages(type);
+
             if (page >= 1 && page <= totalPages) {
                 this.currentPage[type] = page;
             }
@@ -167,14 +176,19 @@ window.settingsApp = function() {
         // ====================
         
         async loadCategories() {
+
             try {
+
                 const response = await fetch('/categories', {
                     headers: { 'Accept': 'application/json' }
                 });
                 const data = await response.json();
+
                 this.categories = data;
                 this.categoriesForServices = data.filter(c => c.status === 1);
                 this.applySorting('categories');
+
+
             } catch (error) {
                 console.error('Error cargando categorías:', error);
                 window.notyf.error('Error al cargar categorías');
@@ -182,6 +196,7 @@ window.settingsApp = function() {
         },
 
         openCategoryModal() {
+
             this.showCategoryModal = true;
             this.isEditingCategory = false;
             this.currentEditId = null;
@@ -190,17 +205,21 @@ window.settingsApp = function() {
         },
 
         async editCategory(category) {
+
             this.isEditingCategory = true;
             this.currentEditId = category.id;
+
             this.categoryForm = {
                 cat_name: category.cat_name,
                 status: category.status ? 1 : 0
             };
+
             this.showCategoryModal = true;
             this.clearErrors('category');
         },
 
         async saveCategory() {
+
             this.clearErrors('category');
 
             const url = this.isEditingCategory 
@@ -209,6 +228,7 @@ window.settingsApp = function() {
             const method = this.isEditingCategory ? 'PUT' : 'POST';
 
             try {
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -220,20 +240,29 @@ window.settingsApp = function() {
                 });
 
                 if (response.status === 422) {
+
                     const result = await response.json();
                     this.errors.category = result.errors || {};
+
                     return;
+
                 }
 
                 const result = await response.json();
 
                 if (response.ok) {
+
                     window.notyf.success(this.isEditingCategory ? 'Categoría actualizada' : 'Categoría creada');
                     this.closeCategoryModal();
+                    
                     await this.loadCategories();
+
                 } else {
+
                     window.notyf.error(result.message || 'Error al guardar categoría');
+
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 window.notyf.error('Error al guardar categoría');
@@ -264,13 +293,17 @@ window.settingsApp = function() {
         // ====================
 
         async loadServices() {
+
             try {
+
                 const response = await fetch('/api/services', {
                     headers: { 'Accept': 'application/json' }
                 });
                 const data = await response.json();
+
                 this.services = data;
                 this.applySorting('services');
+
             } catch (error) {
                 console.error('Error cargando servicios:', error);
                 window.notyf.error('Error al cargar servicios');
@@ -287,8 +320,10 @@ window.settingsApp = function() {
         },
 
         async editService(service) {
+
             this.isEditingService = true;
             this.currentEditId = service.id;
+
             this.serviceForm = {
                 category_id: service.category_id,
                 name: service.name,
@@ -296,17 +331,24 @@ window.settingsApp = function() {
                 value: service.value,
                 duration: service.duration
             };
+
             this.showServiceModal = true;
             this.clearErrors('service');
+
             this.$nextTick(() => {
+
                 this._initServicePriceCleave();
+
                 if (this._servicePriceCleave) {
                     this._servicePriceCleave.setRawValue(parseFloat(service.value).toFixed(2));
                 }
+
             });
+
         },
 
         async saveService() {
+
             this.clearErrors('service');
 
             const url = this.isEditingService 
@@ -315,6 +357,7 @@ window.settingsApp = function() {
             const method = this.isEditingService ? 'PUT' : 'POST';
 
             try {
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -326,20 +369,27 @@ window.settingsApp = function() {
                 });
 
                 if (response.status === 422) {
+
                     const result = await response.json();
                     this.errors.service = result.errors || {};
+
                     return;
+
                 }
 
                 const result = await response.json();
 
                 if (response.ok) {
+
                     window.notyf.success(this.isEditingService ? 'Servicio actualizado' : 'Servicio creado');
                     this.closeServiceModal();
+                    
                     await this.loadServices();
+
                 } else {
                     window.notyf.error(result.message || 'Error al guardar servicio');
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 window.notyf.error('Error al guardar servicio');
@@ -373,11 +423,15 @@ window.settingsApp = function() {
         },
 
         _initServicePriceCleave() {
+
             const input = this.$refs.servicePriceInput;
+
             if (!input) return;
+
             if (this._servicePriceCleave) {
                 this._servicePriceCleave.destroy();
             }
+
             this._servicePriceCleave = new Cleave(input, {
                 numeral: true,
                 numeralDecimalMark: ',',
@@ -388,6 +442,7 @@ window.settingsApp = function() {
                     this.serviceForm.value = e.target.rawValue;
                 }
             });
+
         },
 
         getCategoryName(categoryId) {
@@ -397,14 +452,18 @@ window.settingsApp = function() {
 
         // Filtrar servicios por búsqueda
         get filteredServices() {
+
             if (!this.searchService.trim()) {
                 return this.services;
             }
+
             const search = this.searchService.toLowerCase();
+
             return this.services.filter(service => 
                 service.name.toLowerCase().includes(search) ||
                 this.getCategoryName(service.category_id).toLowerCase().includes(search)
             );
+
         },
 
         // ====================
@@ -412,16 +471,23 @@ window.settingsApp = function() {
         // ====================
 
         async loadVehicleTypes() {
+
             try {
+
                 const response = await fetch('/vehicle-types', {
                     headers: { 'Accept': 'application/json' }
                 });
+
                 const data = await response.json();
+
                 this.vehicleTypes = data;
                 this.applySorting('vehicleTypes');
+
             } catch (error) {
+
                 console.error('Error cargando tipos de vehículo:', error);
                 window.notyf.error('Error al cargar tipos de vehículo');
+
             }
         },
 
@@ -434,24 +500,31 @@ window.settingsApp = function() {
         },
 
         async editVehicleType(vehicleType) {
+
             this.isEditingVehicleType = true;
             this.currentEditId = vehicleType.id;
+
             this.vehicleTypeForm = {
                 name: vehicleType.name
             };
+
             this.showVehicleTypeModal = true;
             this.clearErrors('vehicleType');
+
         },
 
         async saveVehicleType() {
+
             this.clearErrors('vehicleType');
 
             const url = this.isEditingVehicleType 
-                ? `/vehicle-types/${this.currentEditId}` 
-                : '/vehicle-types';
+            ? `/vehicle-types/${this.currentEditId}` 
+            : '/vehicle-types';
+
             const method = this.isEditingVehicleType ? 'PUT' : 'POST';
 
             try {
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -463,20 +536,26 @@ window.settingsApp = function() {
                 });
 
                 if (response.status === 422) {
+
                     const result = await response.json();
                     this.errors.vehicleType = result.errors || {};
+
                     return;
                 }
 
                 const result = await response.json();
 
                 if (response.ok) {
+
                     window.notyf.success(this.isEditingVehicleType ? 'Tipo de vehículo actualizado' : 'Tipo de vehículo creado');
                     this.closeVehicleTypeModal();
+
                     await this.loadVehicleTypes();
+
                 } else {
                     window.notyf.error(result.message || 'Error al guardar tipo de vehículo');
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 window.notyf.error('Error al guardar tipo de vehículo');
@@ -506,20 +585,27 @@ window.settingsApp = function() {
         // ====================
 
         async loadClients() {
+
             try {
+
                 const response = await fetch('/api/clients', {
                     headers: { 'Accept': 'application/json' }
                 });
+
                 const data = await response.json();
+
                 this.clients = data;
                 this.applySorting('clients');
+
             } catch (error) {
                 console.error('Error cargando clientes:', error);
                 window.notyf.error('Error al cargar clientes');
             }
+
         },
 
         openClientModal() {
+
             this.showClientModal = true;
             this.isEditingClient = false;
             this.currentEditId = null;
@@ -529,33 +615,41 @@ window.settingsApp = function() {
             
             // Inicializar máscaras de teléfono después de que el modal esté visible
             setTimeout(() => {
+
                 if (typeof window.initPhoneMasks === 'function') {
                     window.initPhoneMasks();
                 }
+
             }, 100);
         },
 
         async editClient(client) {
+
             this.isEditingClient = true;
             this.currentEditId = client.id;
             this.licensePlateExists = false;
+
             this.clientForm = {
                 name: client.name,
                 phone: client.phone || '',
                 license_plaque: client.license_plaque || ''
             };
+
             this.showClientModal = true;
             this.clearErrors('client');
             
             // Inicializar máscaras de teléfono después de que el modal esté visible
             setTimeout(() => {
+
                 if (typeof window.initPhoneMasks === 'function') {
                     window.initPhoneMasks();
                 }
+
             }, 100);
         },
 
         async checkLicensePlate(licensePlate) {
+
             if (!licensePlate || licensePlate.trim() === '') {
                 this.licensePlateExists = false;
                 return;
@@ -563,37 +657,48 @@ window.settingsApp = function() {
 
             // Si estamos editando, no validar si es la misma matrícula
             if (this.isEditingClient) {
+
                 const currentClient = this.clients.find(c => c.id === this.currentEditId);
+                
                 if (currentClient && currentClient.license_plaque === licensePlate.toUpperCase()) {
                     this.licensePlateExists = false;
                     return;
                 }
+
             }
 
             try {
+
                 const response = await fetch(`/api/clients/check-license-plate?license_plate=${encodeURIComponent(licensePlate)}`);
                 const result = await response.json();
+
                 this.licensePlateExists = result.exists;
+
             } catch (error) {
                 console.error('Error verificando matrícula:', error);
             }
         },
 
         async saveClient() {
+
             this.clearErrors('client');
 
             // Validar que la matrícula no exista
             if (this.licensePlateExists) {
+
                 window.notyf.error('Esta matrícula ya está registrada');
                 return;
+
             }
 
             const url = this.isEditingClient 
-                ? `/clients/${this.currentEditId}` 
-                : '/clients';
+            ? `/clients/${this.currentEditId}` 
+            : '/clients';
+
             const method = this.isEditingClient ? 'PUT' : 'POST';
 
             try {
+
                 const response = await fetch(url, {
                     method: method,
                     headers: {
@@ -605,20 +710,27 @@ window.settingsApp = function() {
                 });
 
                 if (response.status === 422) {
+
                     const result = await response.json();
                     this.errors.client = result.errors || {};
+
                     return;
+
                 }
 
                 const result = await response.json();
 
                 if (response.ok) {
+
                     window.notyf.success(this.isEditingClient ? 'Cliente actualizado' : 'Cliente creado');
                     this.closeClientModal();
+
                     await this.loadClients();
+
                 } else {
                     window.notyf.error(result.message || 'Error al guardar cliente');
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 window.notyf.error('Error al guardar cliente');
@@ -626,23 +738,29 @@ window.settingsApp = function() {
         },
 
         deleteClient(id) {
+
             this.deleteItemId = id;
             this.deleteItemType = 'client';
             this.showDeleteModal = true;
+
         },
 
         closeClientModal() {
+
             this.showClientModal = false;
             this.resetClientForm();
             this.clearErrors('client');
+
         },
 
         resetClientForm() {
+
             this.clientForm = {
                 name: '',
                 phone: '',
                 license_plaque: ''
             };
+            
         },
 
         // ====================
@@ -650,6 +768,7 @@ window.settingsApp = function() {
         // ====================
 
         async confirmDelete() {
+
             const id = this.deleteItemId;
             const type = this.deleteItemType;
 
@@ -658,6 +777,7 @@ window.settingsApp = function() {
             let url, reloadFn;
 
             switch (type) {
+
                 case 'category':
                     url = `/categories/${id}`;
                     reloadFn = () => this.loadCategories();
@@ -677,6 +797,7 @@ window.settingsApp = function() {
             }
 
             try {
+
                 const response = await fetch(url, {
                     method: 'DELETE',
                     headers: {
@@ -688,11 +809,14 @@ window.settingsApp = function() {
                 const result = await response.json();
 
                 if (response.ok) {
+
                     window.notyf.success(result.message || 'Eliminado exitosamente');
                     await reloadFn();
+
                 } else {
                     window.notyf.error(result.message || 'Error al eliminar');
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 window.notyf.error('Error al eliminar');
@@ -713,10 +837,12 @@ window.settingsApp = function() {
         // ====================
 
         async changeTab(tab) {
+
             this.activeTab = tab;
 
             // Cargar datos según el tab
             switch (tab) {
+
                 case 'categories':
                     await this.loadCategories();
                     break;
@@ -730,6 +856,7 @@ window.settingsApp = function() {
                     await this.loadClients();
                     break;
             }
+
         },
 
         // ====================
@@ -738,13 +865,17 @@ window.settingsApp = function() {
 
         // Ordenar datos
         sortData(type, field) {
+
             const currentSort = this.sortBy[type];
             const currentDirection = this.sortDirection[type];
 
             // Si es el mismo campo, invertir dirección
             if (currentSort === field) {
+
                 this.sortDirection[type] = currentDirection === 'asc' ? 'desc' : 'asc';
+
             } else {
+
                 // Si es otro campo, establecer como ascendente
                 this.sortBy[type] = field;
                 this.sortDirection[type] = 'asc';
@@ -755,6 +886,7 @@ window.settingsApp = function() {
         },
 
         applySorting(type) {
+
             const field = this.sortBy[type];
             const direction = this.sortDirection[type];
             let dataArray;
@@ -775,6 +907,7 @@ window.settingsApp = function() {
             }
 
             dataArray.sort((a, b) => {
+
                 let aVal = a[field];
                 let bVal = b[field];
 
@@ -801,18 +934,23 @@ window.settingsApp = function() {
                 } else {
                     return aVal < bVal ? 1 : aVal > bVal ? -1 : 0;
                 }
+
             });
         },
 
         getSortIcon(type, field) {
+
             if (this.sortBy[type] !== field) {
                 return '<i class="fa-solid fa-sort"></i>';
             }
+
             return this.sortDirection[type] === 'asc' ? '<i class="fa-solid fa-sort-up"></i>' : '<i class="fa-solid fa-sort-down"></i>';
+        
         },
 
         // Activar/Desactivar items
         async activateItem(id, type) {
+
             let url, reloadFn, itemName;
 
             switch (type) {
@@ -834,6 +972,7 @@ window.settingsApp = function() {
             }
 
             try {
+
                 const response = await fetch(url, {
                     method: 'PUT',
                     headers: {
@@ -845,11 +984,15 @@ window.settingsApp = function() {
                 const result = await response.json();
 
                 if (response.ok) {
+
                     window.notyf.success(result.message || `${itemName} activado`);
                     await reloadFn();
+
                 } else {
+
                     window.notyf.error(result.message || `Error al activar ${itemName}`);
                 }
+
             } catch (error) {
                 console.error('Error:', error);
                 window.notyf.error(`Error al activar ${itemName}`);
@@ -861,10 +1004,12 @@ window.settingsApp = function() {
         },
 
         formatCurrency(value) {
+
             return new Intl.NumberFormat('es-ES', {
                 style: 'currency',
                 currency: 'EUR'
             }).format(value);
+
         },
 
         formatDate(date) {
@@ -873,15 +1018,19 @@ window.settingsApp = function() {
         },
 
         formatDateTime(date) {
+
             if (!date) return 'N/A';
             const d = new Date(date);
+            
             return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true });
+        
         },
 
         /**
          * Valida matrícula al escribir
          */
         async checkLicensePlate(licensePlate) {
+
             if (!licensePlate || licensePlate.length < 4) {
                 this.licensePlateExists = false;
                 return;
@@ -889,17 +1038,23 @@ window.settingsApp = function() {
 
             // Si estamos editando, no validar si es la misma matrícula
             if (this.isEditingClient && this.currentEditId) {
+
                 const currentClient = this.clients.find(c => c.id === this.currentEditId);
+
                 if (currentClient && currentClient.license_plaque === licensePlate) {
                     this.licensePlateExists = false;
                     return;
                 }
+
             }
 
             try {
+
                 const response = await fetch(`/api/clients/check-license-plate?license_plate=${encodeURIComponent(licensePlate)}`);
                 const result = await response.json();
+                
                 this.licensePlateExists = result.exists;
+
             } catch (error) {
                 console.error('Error validando matrícula:', error);
                 this.licensePlateExists = false;
@@ -910,27 +1065,38 @@ window.settingsApp = function() {
 
 // Inicializar máscaras de teléfono y eventos en settings
 if (typeof window !== 'undefined' && settingsModuleActive()) {
+
     document.addEventListener('DOMContentLoaded', function() {
         
         // Convertir matrícula a mayúsculas automáticamente
         document.addEventListener('input', function(e) {
+
             if (e.target.classList.contains('license-plate-input')) {
                 e.target.value = e.target.value.toUpperCase();
             }
+
         });
 
         // Observer para inicializar máscaras cuando se abran modales
         const observer = new MutationObserver(function(mutations) {
+
             mutations.forEach(function(mutation) {
+
                 mutation.addedNodes.forEach(function(node) {
+
                     if (node.nodeType === 1 && node.classList && node.classList.contains('phone-mask')) {
+                        
                         // Re-inicializar máscaras de teléfono
                         if (typeof window.initPhoneMasks === 'function') {
                             window.initPhoneMasks(node.parentElement);
                         }
+
                     }
+
                 });
+
             });
+            
         });
 
         observer.observe(document.body, {

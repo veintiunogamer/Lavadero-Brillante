@@ -25,6 +25,7 @@ console.log('App JS cargado');
  * @returns {boolean} - True si es válido.
  */
 window.validateSpanishPhoneJS = function(phone) {
+
     // Verificar que solo contenga caracteres permitidos
     if (!/^[\d\s\+\(\)\-]+$/.test(phone)) {
         return false;
@@ -41,10 +42,12 @@ window.validateSpanishPhoneJS = function(phone) {
  * @returns {string} - El monto formateado.
  */
 window.formatEuroJS = function(amount) {
+
     return new Intl.NumberFormat('es-ES', {
         style: 'currency',
         currency: 'EUR'
     }).format(amount);
+
 };
 
 
@@ -54,17 +57,23 @@ window.formatEuroJS = function(amount) {
  * @returns {string} - El valor formateado.
  */
 window.formatPhoneInput = function(value) {
+
     // Extraer dígitos, ignorando +34 si ya está
     let digits = value.replace(/\D/g, '');
+
     if (value.startsWith('+34') && digits.length >= 2) {
         digits = digits.slice(2); // Quitar 34 del prefijo
     }
+
     // Si vacío, devolver vacío
     if (digits.length === 0) return '';
+
     // Formatear paso a paso
     if (digits.length <= 3) return '+34 ' + digits;
     if (digits.length <= 6) return '+34 ' + digits.slice(0, 3) + ' ' + digits.slice(3);
+
     return '+34 ' + digits.slice(0, 3) + ' ' + digits.slice(3, 6) + ' ' + digits.slice(6, 9);
+
 };
 
 /**
@@ -91,6 +100,7 @@ window.initPhoneMasks = function(container = document) {
         
         // Validación en tiempo real
         input.addEventListener('input', function() {
+
             const value = input.value.replace(/\s/g, '');
             const regex = /^(6|7|9)[0-9]{8}$/;
             
@@ -98,19 +108,25 @@ window.initPhoneMasks = function(container = document) {
             let errorDiv = input.parentElement.querySelector('.phone-error');
             
             if (!errorDiv) {
+
                 errorDiv = document.createElement('div');
                 errorDiv.className = 'phone-error text-danger small mt-1';
                 errorDiv.style.display = 'none';
                 errorDiv.textContent = 'Número inválido. Debe ser un móvil de 9 dígitos.';
+
                 input.parentElement.appendChild(errorDiv);
             }
             
             if (value.length < 9 && !regex.test(value)) {
+
                 errorDiv.style.display = 'block';
                 input.classList.add('is-invalid');
+
             } else {
+
                 errorDiv.style.display = 'none';
                 input.classList.remove('is-invalid');
+                
             }
         });
     });
