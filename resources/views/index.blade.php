@@ -463,6 +463,15 @@
                         </div>
 
                         <div class="col-6 px-2 mt-2">
+                            <label class="fw-bold">Período de Pago <span class="required">*</span></label>
+                            <select class="input form-control required-field" name="payment_period" id="payment-period-select" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Período de Pago">
+                                <option value="1" selected>Único</option>
+                                <option value="2">Mensual</option>
+                            </select>
+                            <small class="text-muted">Al elegir Mensual, el calendario se desactiva.</small>
+                        </div>
+
+                        <div class="col-6 px-2 mt-2">
                             <label class="fw-bold">Método de Pago <span class="required">*</span></label>
                             <select class="input form-control required-field" name="payment_method" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Método de Pago">
                                 <option value="1">Efectivo</option>

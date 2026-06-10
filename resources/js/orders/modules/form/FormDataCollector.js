@@ -173,12 +173,14 @@ export class FormDataCollector {
             : null;
 
         const paymentMethod = document.querySelector('select[name="payment_method"]')?.value || '1';
+        const paymentPeriod = document.querySelector('select[name="payment_period"]')?.value || '1';
         const orderStatus = document.querySelector('select[name="status"]')?.value || '1';
 
         return {
             payment_status: paymentStatus,
             partial_payment: partialPayment,
             payment_method: parseInt(paymentMethod),
+            payment_period: parseInt(paymentPeriod),
             order_status: parseInt(orderStatus)
         };
 

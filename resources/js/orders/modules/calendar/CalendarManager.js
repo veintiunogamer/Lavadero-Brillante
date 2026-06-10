@@ -21,6 +21,7 @@ export class CalendarManager {
         this.prevBtn = null;
         this.nextBtn = null;
         this.footerTip = null;
+        this.isDisabled = false;
     }
 
     /**
@@ -82,6 +83,9 @@ export class CalendarManager {
      * Navega al mes anterior
      */
     prevMonth() {
+
+        if (this.isDisabled) return;
+
         this.currentDate.setMonth(this.currentDate.getMonth() - 1);
         this.render();
     }
@@ -90,6 +94,9 @@ export class CalendarManager {
      * Navega al mes siguiente
      */
     nextMonth() {
+
+        if (this.isDisabled) return;
+
         this.currentDate.setMonth(this.currentDate.getMonth() + 1);
         this.render();
     }
@@ -144,7 +151,7 @@ export class CalendarManager {
                 } else {
 
                     cell.textContent = day;
-                    cell.style.cursor = 'pointer';
+                    cell.style.cursor = this.isDisabled ? 'not-allowed' : 'pointer';
 
                     const currentDay = day;
 
@@ -154,9 +161,11 @@ export class CalendarManager {
                     }
 
                     // Evento de selección
-                    cell.addEventListener('click', () => {
-                        this.selectDate(year, month, currentDay);
-                    });
+                    if (!this.isDisabled) {
+                        cell.addEventListener('click', () => {
+                            this.selectDate(year, month, currentDay);
+                        });
+                    }
 
                     day++;
                 }
@@ -192,6 +201,8 @@ export class CalendarManager {
      */
     selectDate(year, month, day) {
 
+        if (this.isDisabled) return;
+
         // Remover clase activa de todas las celdas
         this.tbody.querySelectorAll('td').forEach(td => {
             td.classList.remove('calendar-active');
@@ -215,11 +226,39 @@ export class CalendarManager {
 
         if (this.footerTip) {
 
-            const formattedDate = formatDateLong(this.selectedDate);
-            this.footerTip.textContent = 'Fecha seleccionada: ' + formattedDate;
+            if (this.isDisabled) {
+                this.footerTip.textContent = 'Período mensual: calendario desactivado';
+            } else {
+                const formattedDate = formatDateLong(this.selectedDate);
+                this.footerTip.textContent = 'Fecha seleccionada: ' + formattedDate;
+            }
 
         } 
 
+    }
+
+    /**
+     * Activa o desactiva el calendario visual y funcionalmente.
+     * @param {boolean} disabled
+     */
+    setDisabled(disabled) {
+
+        this.isDisabled = Boolean(disabled);
+
+        if (this.calendarBox) {
+            this.calendarBox.classList.toggle('calendar-disabled', this.isDisabled);
+        }
+
+        if (this.prevBtn) {
+            this.prevBtn.disabled = this.isDisabled;
+        }
+
+        if (this.nextBtn) {
+            this.nextBtn.disabled = this.isDisabled;
+        }
+
+        this.render();
+        this.updateFooter();
     }
 
     /**
@@ -252,8 +291,23 @@ export class CalendarManager {
         
         this.currentDate = new Date();
         this.selectedDate = new Date();
+        this.isDisabled = false;
+
+        if (this.calendarBox) {
+            this.calendarBox.classList.remove('calendar-disabled');
+        }
+
+        if (this.prevBtn) {
+            this.prevBtn.disabled = false;
+        }
+
+        if (this.nextBtn) {
+            this.nextBtn.disabled = false;
+        }
+
         window.selectedOrderDate = this.selectedDate;
         this.render();
+        this.updateFooter();
 
     }
 }

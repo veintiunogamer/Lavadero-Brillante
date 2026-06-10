@@ -322,8 +322,10 @@ class OrderFormValidator extends FormValidator {
             }
         }
 
-        // Validar fecha seleccionada (si existe una variable global)
-        if (typeof window.selectedOrderDate === 'undefined' || !window.selectedOrderDate) {
+        // Validar fecha seleccionada solo cuando el período es Único
+        const paymentPeriod = document.querySelector('select[name="payment_period"]')?.value || '1';
+
+        if (paymentPeriod === '1' && (typeof window.selectedOrderDate === 'undefined' || !window.selectedOrderDate)) {
             this.errors.push('Debes seleccionar una fecha en el calendario');
             valid = false;
         }

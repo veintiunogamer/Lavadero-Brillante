@@ -138,7 +138,8 @@ class OrderController extends Controller
                 'discount' => 'nullable|numeric|min:0',
                 'subtotal' => 'required|numeric|min:0',
                 'total' => 'required|numeric|min:0',
-                'selected_date' => 'required|date',
+                'payment_period' => 'required|integer|in:1,2',
+                'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'required|date_format:H:i',
                 'hour_out' => 'required|date_format:H:i|after:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
@@ -191,8 +192,12 @@ class OrderController extends Controller
             $orderId = \Illuminate\Support\Str::uuid();
 
             // Combinar fecha con horas
-            $hourIn = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_in']);
-            $hourOut = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_out']);
+            $selectedDate = !empty($validated['selected_date'])
+                ? $validated['selected_date']
+                : now()->toDateString();
+
+            $hourIn = Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_in']);
+            $hourOut = Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_out']);
 
             // 2. Crear orden
             $order = Order::create([
@@ -200,7 +205,7 @@ class OrderController extends Controller
                 'client_id' => $client->id,
                 'user_id' => $validated['assigned_user'],
                 'dirt_level' => $validated['dirt_level'],
-                'date' => $validated['selected_date'],
+                'date' => $selectedDate,
                 'hour_in' => $hourIn,
                 'hour_out' => $hourOut,
                 'quantity' => $validated['quantity'] ?? 1,
@@ -211,6 +216,7 @@ class OrderController extends Controller
                 'taxes' => $validated['tax_id'] ?? null,
                 'total' => $validated['total'],
                 'partial_payment' => $validated['partial_payment'] ?? null,
+                'payment_period' => $validated['payment_period'],
                 'order_notes' => $validated['order_notes'] ?? '',
                 'extra_notes' => $validated['extra_notes'] ?? '',
                 'status' => $validated['order_status'],
@@ -338,7 +344,8 @@ class OrderController extends Controller
                 'discount' => 'nullable|numeric|min:0',
                 'subtotal' => 'required|numeric|min:0',
                 'total' => 'required|numeric|min:0',
-                'selected_date' => 'required|date',
+                'payment_period' => 'required|integer|in:1,2',
+                'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'required|string',
                 'hour_out' => 'required|string',
                 'payment_status' => 'required|integer|in:1,2,3',
@@ -360,9 +367,12 @@ class OrderController extends Controller
             ]);
 
             // Preparar fechas y horas
-            $selectedDate = Carbon::parse($validated['selected_date']);
-            $hourIn = Carbon::parse($validated['selected_date'] . ' ' . $validated['hour_in']);
-            $hourOut = Carbon::parse($validated['selected_date'] . ' ' . $validated['hour_out']);
+            $selectedDate = !empty($validated['selected_date'])
+                ? Carbon::parse($validated['selected_date'])
+                : now();
+
+            $hourIn = Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_in']);
+            $hourOut = Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_out']);
 
             // Actualizar orden
             $order->update([
@@ -377,6 +387,8 @@ class OrderController extends Controller
                 'total' => $validated['total'],
                 'hour_in' => $hourIn,
                 'hour_out' => $hourOut,
+                'date' => $selectedDate->toDateString(),
+                'payment_period' => $validated['payment_period'],
                 'payment_status' => $validated['payment_status'],
                 'partial_payment' => $validated['partial_payment'],
                 'payment_method' => $validated['payment_method'],

@@ -53,14 +53,14 @@
             <!-- User Menu -->
             <div class="user-menu" aria-hidden="true">
 
-                <a href="{{ route('profile.index') }}">
-                    <i class="fa-solid fa-user-circle me-1"></i>
+                <a href="{{ route('profile.index') }}" class="fw-bold">
+                    <i class="fa-solid fa-user-circle me-1 text-primary"></i>
                     Perfil
                 </a>
 
                 <form id="logoutForm" action="{{ route('logout') }}" method="POST" style="display:block; margin:0;">
                     @csrf
-                    <button type="submit" class="logout-btn logout-small" style="width:100%;">
+                    <button type="submit" class="logout-btn fw-bold logout-small" style="width:100%;">
                         <i class="fa-solid fa-sign-out-alt"></i>&nbsp; Cerrar Sesión
                     </button>
                 </form>

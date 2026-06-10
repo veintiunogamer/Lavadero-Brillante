@@ -424,6 +424,23 @@ hr {
     box-shadow: 0 12px 40px rgba(10, 34, 57, 0.12), 0 4px 12px rgba(10, 34, 57, 0.06);
 }
 
+.calendar-box.calendar-disabled {
+    opacity: 0.72;
+    filter: grayscale(0.15);
+}
+
+.calendar-box.calendar-disabled .calendar-nav,
+.calendar-box.calendar-disabled .calendar-table td {
+    cursor: not-allowed !important;
+}
+
+.calendar-box.calendar-disabled .calendar-table td:hover:not(.calendar-active):not(.calendar-muted) {
+    transform: none;
+    box-shadow: none;
+    background: #ffffff;
+    border-color: transparent;
+}
+
 .calendar-enhanced {
     background: linear-gradient(135deg, #f8f9fd 0%, #ffffff 100%);
     border: 2px solid var(--color-azul-logo);
