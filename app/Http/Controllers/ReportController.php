@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Order;
@@ -10,13 +11,13 @@ use App\Exports\ReportSalesExport;
 use App\Exports\ReportClientsExport;
 
 class ReportController extends Controller
-{   
+{
     /**
      * Muestra la vista de informes.
      *
      * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
-    */
+     */
     public function index()
     {
         return view('reports.index');
@@ -41,11 +42,11 @@ class ReportController extends Controller
             'services:id,name',
             'payments:id,order_id,type,status,subtotal,total'
         ])->whereBetween('creation_date', [$start, $end])
-        ->orderByDesc('creation_date')
-        ->get();
+            ->orderByDesc('creation_date')
+            ->get();
 
         $data = $orders->map(function ($order) {
-            
+
             $payment = $order->payments->first();
 
             return [
@@ -340,5 +341,4 @@ class ReportController extends Controller
             3 => 'Pagado',
         ];
     }
-
 }

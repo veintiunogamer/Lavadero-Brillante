@@ -17,74 +17,82 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->group(function () {
 
-    # Ruta principal
-    Route::get('/', [OrderController::class, 'index'])->name('home');
-    
-    # Rutas para la gestión de agendamientos
-    Route::get('/orders', [OrderController::class, 'agendamiento'])->name('orders.index');
-    Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/status/{status}', [OrderController::class, 'getByStatus'])->name('orders.getByStatus');
-    Route::get('/orders/tab/{tab}', [OrderController::class, 'getOrdersByTab'])->name('orders.getByTab');
-    Route::get('/api/services/category/{categoryId}', [OrderController::class, 'getServicesByCategory'])->name('orders.servicesByCategory');
+    # Rutas visibles para todos los roles del negocio (Administrador, Operador, Cajero)
+    Route::middleware('role:1,2,3')->group(function () {
 
-    # Nuevas rutas para edición y acciones rápidas
-    Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
-    Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
-    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
-    Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePaymentStatus'])->name('orders.updatePayment');
-    Route::get('/orders/{order}/invoice', [OrderController::class, 'invoicePdf'])->name('orders.invoice');
-    Route::get('/orders/{order}/print', [OrderController::class, 'invoicePdf'])->name('orders.print');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        # Ruta principal
+        Route::get('/', [OrderController::class, 'index'])->name('home');
 
+        # Rutas para la gestión de agendamientos
+        Route::get('/orders', [OrderController::class, 'agendamiento'])->name('orders.index');
+        Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('/orders/status/{status}', [OrderController::class, 'getByStatus'])->name('orders.getByStatus');
+        Route::get('/orders/tab/{tab}', [OrderController::class, 'getOrdersByTab'])->name('orders.getByTab');
+        Route::get('/api/services/category/{categoryId}', [OrderController::class, 'getServicesByCategory'])->name('orders.servicesByCategory');
 
-    # Rutas para la gestión de clientes
-    Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
-    
-    # Rutas para la gestión de servicios
-    Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
-    
-    # Rutas para la gestión de usuarios (Solo Administradores)
-    Route::middleware('admin')->group(function () {
+        # Nuevas rutas para edición y acciones rápidas
+        Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePaymentStatus'])->name('orders.updatePayment');
+        Route::get('/orders/{order}/invoice', [OrderController::class, 'invoicePdf'])->name('orders.invoice');
+        Route::get('/orders/{order}/print', [OrderController::class, 'invoicePdf'])->name('orders.print');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+        # API necesaria para autocompletar cliente desde Agenda
+        Route::get('/api/clients/check-license-plate', [ClientController::class, 'findByLicensePlate'])->name('clients.check.license');
+
+        # Perfil de usuario
+        Route::get('/profile', [UserController::class, 'profile'])->name('profile.index');
+        Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
+    });
+
+    # Rutas para Informes (Administrador y Cajero)
+    Route::middleware('role:1,3')->group(function () {
+        Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
+        Route::get('/reports/clients', [ReportController::class, 'clients'])->name('reports.clients');
+        Route::get('/reports/pdf/daily', [ReportController::class, 'dailyPdf'])->name('reports.pdf.daily');
+        Route::get('/reports/pdf/current', [ReportController::class, 'currentPdf'])->name('reports.pdf.current');
+        Route::get('/reports/excel/current', [ReportController::class, 'currentExcel'])->name('reports.excel.current');
+    });
+
+    # Rutas solo para Administrador
+    Route::middleware('role:1')->group(function () {
+
+        # Rutas para la gestión de clientes
+        Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
+
+        # Rutas para la gestión de servicios
+        Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
+
+        # Rutas para la gestión de usuarios (Solo Administradores)
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
         Route::put('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/delete/{id}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::put('/users/activate/{id}', [UserController::class, 'activate'])->name('users.activate');
+
+        # Rutas para configuraciones
+        Route::get('/settings', function () {
+            return view('settings.index');
+        })->name('settings.index');
+
+        # Rutas API para categorías
+        Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
+
+        # Rutas API para tipos de vehículo
+        Route::resource('vehicle-types', VehicleTypeController::class)->except(['create', 'edit']);
+        Route::put('/vehicle-types/activate/{id}', [VehicleTypeController::class, 'activate'])->name('vehicle-types.activate');
+
+        # Rutas API para clientes
+        Route::get('/api/clients', [ClientController::class, 'apiIndex'])->name('clients.api.index');
+        Route::resource('clients', ClientController::class)->except(['index', 'create', 'edit']);
+        Route::put('/clients/activate/{id}', [ClientController::class, 'activate'])->name('clients.activate');
+
+        # Rutas API para servicios
+        Route::get('/api/services', [ServiceController::class, 'apiIndex'])->name('services.api.index');
+        Route::resource('services', ServiceController::class)->except(['index', 'create', 'edit']);
+        Route::put('/services/activate/{id}', [ServiceController::class, 'activate'])->name('services.activate');
     });
-    
-    # Rutas para el perfil del usuario
-    Route::get('/profile', [UserController::class, 'profile'])->name('profile.index');
-    Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
-    
-    # Rutas para la gestión de informes
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
-    Route::get('/reports/clients', [ReportController::class, 'clients'])->name('reports.clients');
-    Route::get('/reports/pdf/daily', [ReportController::class, 'dailyPdf'])->name('reports.pdf.daily');
-    Route::get('/reports/pdf/current', [ReportController::class, 'currentPdf'])->name('reports.pdf.current');
-    Route::get('/reports/excel/current', [ReportController::class, 'currentExcel'])->name('reports.excel.current');
-    
-    # Rutas para configuraciones
-    Route::get('/settings', function () {
-        return view('settings.index');
-    })->name('settings.index');
-    
-    # Rutas API para categorías
-    Route::resource('categories', CategoryController::class)->except(['create', 'edit']);
-    
-    # Rutas API para tipos de vehículo
-    Route::resource('vehicle-types', VehicleTypeController::class)->except(['create', 'edit']);
-    Route::put('/vehicle-types/activate/{id}', [VehicleTypeController::class, 'activate'])->name('vehicle-types.activate');
-    
-    # Rutas API para clientes
-    Route::get('/api/clients', [ClientController::class, 'apiIndex'])->name('clients.api.index');
-    Route::get('/api/clients/check-license-plate', [ClientController::class, 'findByLicensePlate'])->name('clients.check.license');
-    Route::resource('clients', ClientController::class)->except(['index', 'create', 'edit']);
-    Route::put('/clients/activate/{id}', [ClientController::class, 'activate'])->name('clients.activate');
-    
-    # Rutas API para servicios
-    Route::get('/api/services', [ServiceController::class, 'apiIndex'])->name('services.api.index');
-    Route::resource('services', ServiceController::class)->except(['index', 'create', 'edit']);
-    Route::put('/services/activate/{id}', [ServiceController::class, 'activate'])->name('services.activate');
-    
 });

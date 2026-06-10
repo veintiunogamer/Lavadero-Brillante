@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Str;
@@ -11,13 +12,13 @@ use App\Models\User;
 use App\Models\Role;
 
 class UserController extends Controller
-{   
+{
     /**
      * Muestra la lista de usuarios.
      *
      * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
-    */
+     */
     public function index()
     {
         $activeUsers = User::with('role')->where('status', true)->get();
@@ -33,7 +34,7 @@ class UserController extends Controller
      * @author Jose Alzate <josealzate97@gmail.com>
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-    */
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -64,8 +65,8 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-            'success' => true, 
-            'message' => 'Usuario creado exitosamente', 
+            'success' => true,
+            'message' => 'Usuario creado exitosamente',
             'user' => $user
         ]);
     }
@@ -77,7 +78,7 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  string  $id
      * @return \Illuminate\Http\Response
-    */
+     */
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -111,8 +112,8 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'success' => true, 
-            'message' => 'Usuario actualizado exitosamente', 
+            'success' => true,
+            'message' => 'Usuario actualizado exitosamente',
             'user' => $user->fresh()
         ]);
     }
@@ -123,15 +124,15 @@ class UserController extends Controller
      * @author Jose Alzate <josealzate97@gmail.com>
      * @param  string  $id
      * @return \Illuminate\Http\Response
-    */
+     */
     public function destroy($id)
-    {   
+    {
         $user = User::findOrFail($id);
-        
+
         $user->update(['status' => false]);
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'message' => 'Usuario desactivado exitosamente'
         ]);
     }
@@ -142,15 +143,15 @@ class UserController extends Controller
      * @author Jose Alzate <josealzate97@gmail.com>
      * @param  string  $id
      * @return \Illuminate\Http\Response
-    */
+     */
     public function activate($id)
-    {   
+    {
         $user = User::findOrFail($id);
-        
+
         $user->update(['status' => true]);
 
         return response()->json([
-            'success' => true, 
+            'success' => true,
             'message' => 'Usuario activado exitosamente'
         ]);
     }
@@ -160,7 +161,7 @@ class UserController extends Controller
      *
      * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
-    */
+     */
     public function profile()
     {
         $user = Auth::user()->load('role');
@@ -173,7 +174,7 @@ class UserController extends Controller
      * @author Jose Alzate <josealzate97@gmail.com>
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
-    */
+     */
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
@@ -209,8 +210,8 @@ class UserController extends Controller
         }
 
         return response()->json([
-            'success' => true, 
-            'message' => 'Perfil actualizado exitosamente', 
+            'success' => true,
+            'message' => 'Perfil actualizado exitosamente',
             'user' => $user->fresh()
         ]);
     }

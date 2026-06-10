@@ -1,17 +1,18 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
 
 class ClientController extends Controller
-{   
+{
     /**
      * Muestra la lista de clientes.
      *
      * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
-    */
+     */
     public function index()
     {
         return view('clients.index');
@@ -111,14 +112,14 @@ class ClientController extends Controller
     public function findByLicensePlate(Request $request)
     {
         $licensePlate = $request->query('license_plate');
-        
+
         if (!$licensePlate) {
             return response()->json(['exists' => false, 'client' => null]);
         }
 
         $client = Client::where('license_plaque', strtoupper($licensePlate))
-        ->where('status', 1)
-        ->first();
+            ->where('status', 1)
+            ->first();
 
         if ($client) {
             return response()->json([
@@ -133,7 +134,6 @@ class ClientController extends Controller
         }
 
         return response()->json(['exists' => false, 'client' => null]);
-
     }
 
     /**
