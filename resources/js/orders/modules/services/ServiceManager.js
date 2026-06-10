@@ -249,7 +249,7 @@ export class ServiceManager {
         const clonePriceInput = clone.querySelector('.service-price');
 
         if (cloneEditBtn) {
-            cloneEditBtn.querySelector('i').className = 'fa-solid fa-pen text-white';
+            cloneEditBtn.querySelector('i').className = 'fa-solid fa-pen';
             cloneEditBtn.title = 'Editar precio';
             delete cloneEditBtn.dataset.initialized;
         }
