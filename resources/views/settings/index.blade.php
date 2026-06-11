@@ -10,10 +10,10 @@
 
         <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
             <div class="col-6">
-                <h3 class="card-title mb-3">
+                <h2 class="m-0">
                     <i class="fa-solid fa-cog icon color-blue"></i>
                     Configuraciones
-                </h3>
+                </h2>
                 <p class="fw-bold small text-muted">Configuraciones del sistema.</p>
             </div>
         </div>
@@ -95,7 +95,7 @@
 
                         <template x-for="category in getPaginatedData('categories')" :key="category.id">
 
-                            <tr :class="category.status ? '' : 'table-secondary opacity-75'">
+                            <tr :class="category.status ? '' : 'table-secondary'">
                                 <td x-text="category.cat_name"></td>
                                 <td>
                                     <span class="badge" :class="category.status ? 'bg-success' : 'bg-danger'"
@@ -106,11 +106,15 @@
 
                                     <div class="btn-group btn-group-md">
 
-                                        <button @click="editCategory(category)" class="btn btn-primary">
+                                        <button @click="editCategory(category)" class="btn btn-primary"
+                                            :disabled="!category.status"
+                                            :title="category.status ? 'Editar categoría' : 'Registro inactivo'">
                                             <i class="fa-solid fa-edit"></i>
                                         </button>
 
-                                        <button @click="deleteCategory(category.id)" class="btn btn-danger">
+                                        <button @click="deleteCategory(category.id)" class="btn btn-danger"
+                                            :disabled="!category.status"
+                                            :title="category.status ? 'Desactivar categoría' : 'Registro inactivo'">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
 
@@ -230,8 +234,8 @@
 
                             <template x-for="service in getPaginatedData('services')" :key="service.id">
 
-                                <tr :class="service.status ? '' : 'table-secondary opacity-75'">
-                                    <td x-html="service.name + '<br>' + '<span class=\'badge bg-primary\'>' + getCategoryName(service.category_id) + '</span>'"></td>
+                                <tr :class="service.status ? '' : 'table-secondary'">
+                                    <td x-html="service.name + '<br>' + '<span class=\'badge bg-warning text-dark\'>' + getCategoryName(service.category_id) + '</span>'"></td>
 
                                     <td x-text="service.details"></td>
                                     <td x-text="formatCurrency(service.value)"></td>
@@ -244,7 +248,9 @@
 
                                         <div class="btn-group btn-group-md">
 
-                                            <button @click="editService(service)" class="btn btn-primary">
+                                            <button @click="editService(service)" class="btn btn-primary"
+                                                :disabled="!service.status"
+                                                :title="service.status ? 'Editar servicio' : 'Registro inactivo'">
                                                 <i class="fa-solid fa-edit"></i>
                                             </button>
 
@@ -361,7 +367,7 @@
                         </thead>
                         <tbody>
                             <template x-for="vehicleType in getPaginatedData('vehicleTypes')" :key="vehicleType.id">
-                                <tr :class="vehicleType.status ? '' : 'table-secondary opacity-75'">
+                                <tr :class="vehicleType.status ? '' : 'table-secondary'">
                                     <td x-text="vehicleType.name"></td>
                                     <td>
                                         <span class="badge" :class="vehicleType.status ? 'bg-success' : 'bg-secondary'"
@@ -369,19 +375,22 @@
                                     </td>
                                     <td x-text="formatDateTime(vehicleType.creation_date)"></td>
                                     <td class="text-center">
-                                        <button @click="editVehicleType(vehicleType)" class="btn btn-sm btn-warning me-1">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </button>
-                                        <template x-if="vehicleType.status">
-                                            <button @click="deleteVehicleType(vehicleType.id)" class="btn btn-sm btn-danger">
-                                                <i class="fa-solid fa-times"></i>
+
+                                        <div class="btn-group btn-group-md">
+
+                                            <button @click="editVehicleType(vehicleType)" class="btn btn-primary"
+                                                :disabled="!vehicleType.status"
+                                                :title="vehicleType.status ? 'Editar tipo de vehículo' : 'Registro inactivo'">
+                                                <i class="fa-solid fa-edit"></i>
                                             </button>
-                                        </template>
-                                        <template x-if="!vehicleType.status">
-                                            <button @click="activateItem(vehicleType.id, 'vehicleType')" class="btn btn-sm btn-success">
-                                                <i class="fa-solid fa-check"></i>
+
+                                            <button
+                                                @click="vehicleType.status ? deleteVehicleType(vehicleType.id) : activateItem(vehicleType.id, 'vehicleType')"
+                                                :class="vehicleType.status ? 'btn btn-danger' : 'btn btn-success'">
+                                                <i :class="vehicleType.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
                                             </button>
-                                        </template>
+
+                                        </div>
                                     </td>
                                 </tr>
                             </template>
@@ -493,7 +502,7 @@
 
                             <template x-for="client in getPaginatedData('clients')" :key="client.id">
 
-                                <tr :class="client.status ? '' : 'table-secondary opacity-75'">
+                                <tr :class="client.status ? '' : 'table-secondary'">
                                     <td x-text="client.name"></td>
                                     <td x-text="client.phone || 'N/A'"></td>
                                     <td x-text="client.license_plaque || 'N/A'"></td>
@@ -503,20 +512,25 @@
                                     </td>
                                     <td x-text="formatDate(client.creation_date)"></td>
                                     <td class="text-center">
-                                        <button @click="editClient(client)" class="btn btn-sm btn-warning me-1">
-                                            <i class="fa-solid fa-edit"></i>
-                                        </button>
-                                        <template x-if="client.status">
-                                            <button @click="deleteClient(client.id)" class="btn btn-sm btn-danger">
-                                                <i class="fa-solid fa-times"></i>
+
+                                        <div class="btn-group btn-group-md">
+
+                                            <button @click="editClient(client)" class="btn btn-primary"
+                                                :disabled="!client.status"
+                                                :title="client.status ? 'Editar cliente' : 'Registro inactivo'">
+                                                <i class="fa-solid fa-edit"></i>
                                             </button>
-                                        </template>
-                                        <template x-if="!client.status">
-                                            <button @click="activateItem(client.id, 'client')" class="btn btn-sm btn-success">
-                                                <i class="fa-solid fa-check"></i>
+
+                                            <button
+                                                @click="client.status ? deleteClient(client.id) : activateItem(client.id, 'client')"
+                                                :class="client.status ? 'btn btn-danger' : 'btn btn-success'">
+                                                <i :class="client.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
                                             </button>
-                                        </template>
+
+                                        </div>
+
                                     </td>
+
                                 </tr>
 
                             </template>

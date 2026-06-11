@@ -309,12 +309,13 @@
 
                     <div class="mb-3">
                         <label class="fw-bold mb-2">
-                            <i class="fa-solid fa-file-lines text-primary me-1"></i> Descripción de la cita (se genera automáticamente)
+                            <i class="fa-solid fa-message text-primary me-1"></i>
+                            Descripción de la cita (se genera automáticamente)
                         </label>
                         <textarea class="form-control form-control-lg" name="order_notes" rows="4">Ninguno de nuestros precios incluye IVA.</textarea>
                     </div>
 
-                    <small class="text-muted d-block mb-3">
+                    <small class="badge bg-warning text-dark mb-3 text-left">
                         <i class="fa-solid fa-circle-info me-1"></i>
                         Se actualiza automáticamente según los servicios elegidos. Puedes añadir notas adicionales abajo; se incorporan a la descripción.
                     </small>
@@ -323,7 +324,7 @@
 
                     <div class="my-3">
                         <label class="fw-bold mb-2">
-                            <i class="fa-solid fa-pen text-primary me-1"></i> Notas adicionales
+                            <i class="fa-solid fa-plus-circle text-primary me-1"></i> Notas adicionales
                         </label>
                         <textarea class="form-control form-control-lg" name="extra_notes" rows="4" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
                     </div>
@@ -516,19 +517,13 @@
                                 <input type="hidden" name="payment_status" class="payment-status-input" value="1">
                             </div>
 
-                            <div class="col-6 px-2 mt-2" id="partial-payment-container" style="display: none;">
-                                <label class="fw-bold">Abono Parcial <span class="required">*</span></label>
-                                <input type="number" class="input form-control" name="partial_payment" id="partial-payment-input" placeholder="0.00" step="0.01" min="0" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Abono Parcial">
-                                <small class="text-muted">Ingresa el monto del pago parcial</small>
-                            </div>
-
                             <div class="col-6 px-2 mt-2">
                                 <label class="fw-bold">Período de Pago <span class="required">*</span></label>
                                 <select class="input form-control required-field" name="payment_period" id="payment-period-select" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Período de Pago">
                                     <option value="1" selected>Único</option>
                                     <option value="2">Mensual</option>
                                 </select>
-                                <small class="text-muted">Al elegir Mensual, el calendario se desactiva.</small>
+                                <small class="badge bg-secondary my-2">Al elegir Mensual, el calendario se desactiva.</small>
                             </div>
 
                             <div class="col-6 px-2 mt-2">
@@ -547,6 +542,12 @@
                                     <option value="2">En Proceso</option>
                                     <option value="3">Terminada</option>
                                 </select>
+                            </div>
+
+                            <div class="col-6 px-2 mt-2" id="partial-payment-container" style="display: none;">
+                                <label class="fw-bold">Abono Parcial <span class="required">*</span></label>
+                                <input type="number" class="input form-control" name="partial_payment" id="partial-payment-input" placeholder="0.00" step="0.01" min="0" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Abono Parcial">
+                                <small class="badge bg-secondary my-2">Ingresa el monto del pago parcial</small>
                             </div>
 
                         </div>

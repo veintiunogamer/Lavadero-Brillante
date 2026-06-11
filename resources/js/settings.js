@@ -206,6 +206,11 @@ window.settingsApp = function() {
 
         async editCategory(category) {
 
+            if (!category.status) {
+                window.notyf.error('No puedes editar una categoría inactiva');
+                return;
+            }
+
             this.isEditingCategory = true;
             this.currentEditId = category.id;
 
@@ -270,6 +275,13 @@ window.settingsApp = function() {
         },
 
         deleteCategory(id) {
+
+            const category = this.categories.find(c => c.id === id);
+            if (category && !category.status) {
+                window.notyf.error('No puedes desactivar una categoría inactiva');
+                return;
+            }
+
             this.deleteItemId = id;
             this.deleteItemType = 'category';
             this.showDeleteModal = true;
@@ -320,6 +332,11 @@ window.settingsApp = function() {
         },
 
         async editService(service) {
+
+            if (!service.status) {
+                window.notyf.error('No puedes editar un servicio inactivo');
+                return;
+            }
 
             this.isEditingService = true;
             this.currentEditId = service.id;
@@ -397,6 +414,13 @@ window.settingsApp = function() {
         },
 
         deleteService(id) {
+
+            const service = this.services.find(s => s.id === id);
+            if (service && !service.status) {
+                window.notyf.error('No puedes desactivar un servicio inactivo');
+                return;
+            }
+
             this.deleteItemId = id;
             this.deleteItemType = 'service';
             this.showDeleteModal = true;
@@ -501,6 +525,11 @@ window.settingsApp = function() {
 
         async editVehicleType(vehicleType) {
 
+            if (!vehicleType.status) {
+                window.notyf.error('No puedes editar un tipo de vehículo inactivo');
+                return;
+            }
+
             this.isEditingVehicleType = true;
             this.currentEditId = vehicleType.id;
 
@@ -563,6 +592,13 @@ window.settingsApp = function() {
         },
 
         deleteVehicleType(id) {
+
+            const vehicleType = this.vehicleTypes.find(v => v.id === id);
+            if (vehicleType && !vehicleType.status) {
+                window.notyf.error('No puedes desactivar un tipo de vehículo inactivo');
+                return;
+            }
+
             this.deleteItemId = id;
             this.deleteItemType = 'vehicleType';
             this.showDeleteModal = true;
@@ -624,6 +660,11 @@ window.settingsApp = function() {
         },
 
         async editClient(client) {
+
+            if (!client.status) {
+                window.notyf.error('No puedes editar un cliente inactivo');
+                return;
+            }
 
             this.isEditingClient = true;
             this.currentEditId = client.id;
@@ -738,6 +779,12 @@ window.settingsApp = function() {
         },
 
         deleteClient(id) {
+
+            const client = this.clients.find(c => c.id === id);
+            if (client && !client.status) {
+                window.notyf.error('No puedes desactivar un cliente inactivo');
+                return;
+            }
 
             this.deleteItemId = id;
             this.deleteItemType = 'client';

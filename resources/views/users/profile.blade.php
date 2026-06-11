@@ -12,9 +12,9 @@
     <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
         <div class="col-12 mb-4 p-4">
-            <h3 class="card-title mb-3">
+            <h2 class="m-0">
                 <i class="fa-solid fa-user-circle icon color-blue"></i> Mi Perfil - {{ $user->name }}
-            </h3>
+            </h2>
             <p class="fw-bold small text-muted">Actualiza tu información personal y contraseña.</p>
         </div>
 

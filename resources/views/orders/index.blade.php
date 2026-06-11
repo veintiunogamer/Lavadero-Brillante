@@ -9,10 +9,10 @@
         <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
 
             <div class="col-6">
-                <h3 class="card-title mb-3">
+                <h2 class="m-0">
                     <i class="fa-solid fa-calendar-check icon color-blue"></i>
                     Agendamiento
-                </h3>
+                </h2>
                 <p class="fw-bold small text-muted">Gestión de citas y agendamientos.</p>
             </div>
 
