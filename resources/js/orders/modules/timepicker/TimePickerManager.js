@@ -387,10 +387,72 @@ export class TimePickerManager {
     }
 
     /**
+     * Activa o desactiva los campos de hora según el período de pago.
+     * Cuando disabled=true limpia y deshabilita ambos pickers.
+     * @param {boolean} disabled
+     */
+    setDisabled(disabled) {
+
+        const horaEntrada = document.getElementById('hora-entrada');
+        const horaSalida  = document.getElementById('hora-salida');
+        const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
+        const horaSalidaFallback  = document.getElementById('hora-salida-fallback');
+
+        if (disabled) {
+
+            // Limpiar valores
+            if (horaEntrada?._flatpickr) {
+                horaEntrada._flatpickr.clear();
+            } else if (horaEntrada) {
+                horaEntrada.value = '';
+            }
+
+            if (horaSalida?._flatpickr) {
+                horaSalida._flatpickr.clear();
+            } else if (horaSalida) {
+                horaSalida.value = '';
+            }
+
+            if (horaEntradaFallback) horaEntradaFallback.value = '';
+            if (horaSalidaFallback)  horaSalidaFallback.value  = '';
+
+        }
+
+        // Deshabilitar o habilitar los inputs visibles
+        const inputs = [horaEntrada, horaSalida].filter(Boolean);
+        inputs.forEach(input => {
+            input.disabled = disabled;
+            input.closest?.('.col-6')?.classList.toggle('opacity-50', disabled);
+        });
+
+        const fallbacks = [horaEntradaFallback, horaSalidaFallback].filter(Boolean);
+        fallbacks.forEach(sel => {
+            sel.disabled = disabled;
+            sel.closest?.('.col-6')?.classList.toggle('opacity-50', disabled);
+        });
+
+        // Actualizar clases required-field para que la validación las ignore
+        const allPickers = [...inputs, ...fallbacks];
+        allPickers.forEach(el => {
+            if (disabled) {
+                el.classList.remove('required-field');
+                el.classList.remove('is-invalid', 'is-valid');
+            } else {
+                el.classList.add('required-field');
+            }
+        });
+
+        document.dispatchEvent(new CustomEvent('formFieldChanged'));
+    }
+
+    /**
      * Resetea los selectores de hora
      */
     reset() {
         
+        // Re-habilitar primero (por si estaba en modo mensual)
+        this.setDisabled(false);
+
         if (this.useFallback) {
             
             const entradaFallback = document.getElementById('hora-entrada-fallback');

@@ -6,8 +6,8 @@
 <template x-if="showQuickViewModal">
 
     <div x-cloak @click.self="closeQuickViewModal()" @keydown.escape.window="closeQuickViewModal()"
-    class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-    style="background: rgba(0,0,0,0.5); z-index: 9999; display: none;" x-transition>
+        class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+        style="background: rgba(0,0,0,0.5); z-index: 9999; display: none;" x-transition>
 
         <div class="bg-white rounded-4 shadow-lg" style="max-width: 950px; width: 95%; max-height: 90vh; overflow-y: auto;">
 
@@ -20,8 +20,8 @@
                 </h4>
 
                 <div>
-                    <span class="badge fs-6" :class="getStatusBadge(selectedOrder?.status)" 
-                    x-text="getStatusText(selectedOrder?.status)"></span>
+                    <span class="badge fs-6" :class="getStatusBadge(selectedOrder?.status)"
+                        x-text="getStatusText(selectedOrder?.status)"></span>
                 </div>
 
                 <button @click="closeQuickViewModal()" type="button" class="btn-close"></button>
@@ -128,7 +128,7 @@
                 <!-- Info de Horario y Pago -->
                 <div class="row mb-4">
 
-                    <div class="col-md-12">
+                    <div class="col-md-12" x-show="selectedOrder?.payment_period !== 2">
 
                         <h5 class="border-bottom pb-2">
                             <i class="fa-solid fa-clock me-2 text-primary"></i>
@@ -173,7 +173,7 @@
                                 <div class="col-3">
                                     <label class="fw-bold small">Estado</label>
                                     <p class="mb-2">
-                                        <span class="badge" :class="getPaymentStatusBadge(payment.status)" 
+                                        <span class="badge" :class="getPaymentStatusBadge(payment.status)"
                                             x-text="getPaymentStatusText(payment.status)"></span>
                                     </p>
                                 </div>
@@ -193,6 +193,13 @@
                                     <p class="mb-2 text-primary" x-text="formatCurrency(selectedOrder?.partial_payment || 0)"></p>
                                 </div>
 
+                                <div class="col-3">
+                                    <label class="fw-bold small">Período de Pago</label>
+                                    <p class="mb-2">
+                                        <span class="badge" :class="selectedOrder?.payment_period === 2 ? 'bg-info text-white' : 'bg-secondary'" x-text="selectedOrder?.payment_period === 2 ? 'Mensual' : 'Único'"></span>
+                                    </p>
+                                </div>
+
                             </div>
                         </template>
 
@@ -202,7 +209,7 @@
 
                 <!-- Notas -->
                 <div class="row" x-show="selectedOrder?.vehicle_notes || selectedOrder?.order_notes || selectedOrder?.extra_notes">
-                    
+
                     <div class="col-12">
                         <h5 class="border-bottom pb-2 mb-3">
                             <i class="fa-solid fa-sticky-note me-2 text-primary"></i>

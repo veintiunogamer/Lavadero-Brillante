@@ -140,8 +140,8 @@ class OrderController extends Controller
                 'total' => 'required|numeric|min:0',
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
-                'hour_in' => 'required|date_format:H:i',
-                'hour_out' => 'required|date_format:H:i|after:hour_in',
+                'hour_in' => 'required_if:payment_period,1|nullable|date_format:H:i',
+                'hour_out' => 'required_if:payment_period,1|nullable|date_format:H:i|after:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='tarjeta', 3='transferencia'
@@ -196,8 +196,13 @@ class OrderController extends Controller
                 ? $validated['selected_date']
                 : now()->toDateString();
 
-            $hourIn = Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_in']);
-            $hourOut = Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_out']);
+            $hourIn  = !empty($validated['hour_in'])
+                ? Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_in'])
+                : null;
+
+            $hourOut = !empty($validated['hour_out'])
+                ? Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_out'])
+                : null;
 
             // 2. Crear orden
             $order = Order::create([
@@ -346,8 +351,8 @@ class OrderController extends Controller
                 'total' => 'required|numeric|min:0',
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
-                'hour_in' => 'required|string',
-                'hour_out' => 'required|string',
+                'hour_in' => 'required_if:payment_period,1|nullable|string',
+                'hour_out' => 'required_if:payment_period,1|nullable|string',
                 'payment_status' => 'required|integer|in:1,2,3',
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3,4',
@@ -371,8 +376,13 @@ class OrderController extends Controller
                 ? Carbon::parse($validated['selected_date'])
                 : now();
 
-            $hourIn = Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_in']);
-            $hourOut = Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_out']);
+            $hourIn  = !empty($validated['hour_in'])
+                ? Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_in'])
+                : null;
+
+            $hourOut = !empty($validated['hour_out'])
+                ? Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_out'])
+                : null;
 
             // Actualizar orden
             $order->update([

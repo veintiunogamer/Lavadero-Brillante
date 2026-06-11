@@ -330,6 +330,9 @@ class OrderFormValidator extends FormValidator {
             valid = false;
         }
 
+        // Omitir validación de horas en período mensual
+        if (paymentPeriod === '2') return valid;
+
         // Validar horas - verificar input visible o select fallback
         const horaEntradaInput = document.getElementById('hora-entrada');
         const horaEntradaFallback = document.getElementById('hora-entrada-fallback');

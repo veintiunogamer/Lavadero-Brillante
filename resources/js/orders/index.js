@@ -140,6 +140,7 @@ function createOrderFormApp() {
             }
 
             calendar.setDisabled(isMonthly);
+            timepicker.setDisabled(isMonthly);
             document.dispatchEvent(new CustomEvent('formFieldChanged'));
         },
 

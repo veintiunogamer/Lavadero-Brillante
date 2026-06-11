@@ -129,6 +129,9 @@ export class FormDataCollector {
      */
     getScheduleData() {
 
+        const paymentPeriod = parseInt(document.querySelector('select[name="payment_period"]')?.value || '1');
+        const isMonthly = paymentPeriod === 2;
+
         const selectedDateValue = window.selectedOrderDate
         ? window.selectedOrderDate.toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0];
@@ -153,8 +156,8 @@ export class FormDataCollector {
 
         return {
             selected_date: selectedDateValue,
-            hour_in: hourIn || '',
-            hour_out: hourOut || ''
+            hour_in: isMonthly ? null : (hourIn || ''),
+            hour_out: isMonthly ? null : (hourOut || '')
         };
     }
 
