@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Order;
@@ -9,20 +10,20 @@ use Illuminate\Http\Request;
 
 
 class OrderController extends Controller
-{   
+{
     /**
      * Muestra la vista principal con el código de orden generado.
      *
      * @author Jose Alzate <josealzate97@gmail.com>
      * @return \Illuminate\View\View
-    */
+     */
     public function index()
     {
         $consecutive = $this->getConsecutive();
         $categories = \App\Models\Category::where('status', 1)->orderBy('cat_name')->get();
         $vehicleTypes = \App\Models\VehicleType::orderBy('name')->get();
         $users = \App\Models\User::where('status', 1)->orderBy('name')->get();
-        
+
         return view('index', [
             'consecutive' => $consecutive,
             'categories' => $categories,
@@ -38,12 +39,12 @@ class OrderController extends Controller
      *
      * @author Jose Alzate <josealzate97@gmail.com>
      * @return array
-    */
+     */
     public function getConsecutive(): array
     {
         $today = Carbon::today();
         $dateCode = $today->format('dmY');
-        
+
         $todayOrders = Order::whereDate('creation_date', $today)->count();
         $sequence = str_pad((string) ($todayOrders + 1), 3, '0', STR_PAD_LEFT);
 
@@ -113,8 +114,8 @@ class OrderController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(\Illuminate\Http\Request $request)
-    {   
-        
+    {
+
         try {
 
             \DB::beginTransaction();
@@ -137,9 +138,10 @@ class OrderController extends Controller
                 'discount' => 'nullable|numeric|min:0',
                 'subtotal' => 'required|numeric|min:0',
                 'total' => 'required|numeric|min:0',
-                'selected_date' => 'required|date',
-                'hour_in' => 'required|date_format:H:i',
-                'hour_out' => 'required|date_format:H:i|after:hour_in',
+                'payment_period' => 'required|integer|in:1,2',
+                'selected_date' => 'required_if:payment_period,1|nullable|date',
+                'hour_in' => 'required_if:payment_period,1|nullable|date_format:H:i',
+                'hour_out' => 'required_if:payment_period,1|nullable|date_format:H:i|after:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='tarjeta', 3='transferencia'
@@ -167,7 +169,7 @@ class OrderController extends Controller
             if (!$client && $clientPhone) {
                 $client = \App\Models\Client::where('phone', $clientPhone)->first();
             }
-            
+
             if (!$client) {
 
                 $client = \App\Models\Client::create([
@@ -178,7 +180,6 @@ class OrderController extends Controller
                     'status' => \App\Models\Client::STATUS_ACTIVE,
                     'creation_date' => now(),
                 ]);
-
             } else {
 
                 $client->update([
@@ -186,14 +187,22 @@ class OrderController extends Controller
                     'phone' => $clientPhone,
                     'license_plaque' => $licensePlaque,
                 ]);
-
             }
 
             $orderId = \Illuminate\Support\Str::uuid();
-            
+
             // Combinar fecha con horas
-            $hourIn = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_in']);
-            $hourOut = Carbon::parse($validated['selected_date'])->setTimeFromTimeString($validated['hour_out']);
+            $selectedDate = !empty($validated['selected_date'])
+                ? $validated['selected_date']
+                : now()->toDateString();
+
+            $hourIn  = !empty($validated['hour_in'])
+                ? Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_in'])
+                : null;
+
+            $hourOut = !empty($validated['hour_out'])
+                ? Carbon::parse($selectedDate)->setTimeFromTimeString($validated['hour_out'])
+                : null;
 
             // 2. Crear orden
             $order = Order::create([
@@ -201,7 +210,7 @@ class OrderController extends Controller
                 'client_id' => $client->id,
                 'user_id' => $validated['assigned_user'],
                 'dirt_level' => $validated['dirt_level'],
-                'date' => $validated['selected_date'],
+                'date' => $selectedDate,
                 'hour_in' => $hourIn,
                 'hour_out' => $hourOut,
                 'quantity' => $validated['quantity'] ?? 1,
@@ -212,6 +221,7 @@ class OrderController extends Controller
                 'taxes' => $validated['tax_id'] ?? null,
                 'total' => $validated['total'],
                 'partial_payment' => $validated['partial_payment'] ?? null,
+                'payment_period' => $validated['payment_period'],
                 'order_notes' => $validated['order_notes'] ?? '',
                 'extra_notes' => $validated['extra_notes'] ?? '',
                 'status' => $validated['order_status'],
@@ -243,7 +253,6 @@ class OrderController extends Controller
                     'total' => $service['price'],
                     'created_at' => now(),
                 ]);
-                
             }
 
             \DB::commit();
@@ -259,7 +268,6 @@ class OrderController extends Controller
                     'consecutive' => $consecutive,
                 ]
             ], 201);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             \DB::rollBack();
@@ -269,18 +277,16 @@ class OrderController extends Controller
                 'message' => 'Error de validación',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (\Exception $e) {
 
             \DB::rollBack();
 
             \Log::error('Error al crear orden: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al crear la orden: ' . $e->getMessage()
             ], 500);
-
         }
     }
 
@@ -289,7 +295,7 @@ class OrderController extends Controller
      *
      * @param Order $order
      * @return \Illuminate\View\View
-    */
+     */
     public function edit(Order $order)
     {
         // Cargar relaciones necesarias
@@ -304,7 +310,7 @@ class OrderController extends Controller
         $categories = \App\Models\Category::where('status', 1)->orderBy('cat_name')->get();
         $vehicleTypes = \App\Models\VehicleType::orderBy('name')->get();
         $users = \App\Models\User::where('status', 1)->orderBy('name')->get();
-        
+
         // Usa la misma vista principal pero con la orden para editar
         return view('index', [
             'consecutive' => $consecutive,
@@ -315,7 +321,7 @@ class OrderController extends Controller
         ]);
     }
 
-     /**
+    /**
      * Actualiza una orden existente
      *
      * @param Request $request
@@ -343,9 +349,10 @@ class OrderController extends Controller
                 'discount' => 'nullable|numeric|min:0',
                 'subtotal' => 'required|numeric|min:0',
                 'total' => 'required|numeric|min:0',
-                'selected_date' => 'required|date',
-                'hour_in' => 'required|string',
-                'hour_out' => 'required|string',
+                'payment_period' => 'required|integer|in:1,2',
+                'selected_date' => 'required_if:payment_period,1|nullable|date',
+                'hour_in' => 'required_if:payment_period,1|nullable|string',
+                'hour_out' => 'required_if:payment_period,1|nullable|string',
                 'payment_status' => 'required|integer|in:1,2,3',
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3,4',
@@ -357,7 +364,7 @@ class OrderController extends Controller
 
             // Actualizar cliente
             $client = $order->client;
-            
+
             $client->update([
                 'name' => $validated['client_name'],
                 'phone' => $validated['client_phone'],
@@ -365,9 +372,17 @@ class OrderController extends Controller
             ]);
 
             // Preparar fechas y horas
-            $selectedDate = Carbon::parse($validated['selected_date']);
-            $hourIn = Carbon::parse($validated['selected_date'] . ' ' . $validated['hour_in']);
-            $hourOut = Carbon::parse($validated['selected_date'] . ' ' . $validated['hour_out']);
+            $selectedDate = !empty($validated['selected_date'])
+                ? Carbon::parse($validated['selected_date'])
+                : now();
+
+            $hourIn  = !empty($validated['hour_in'])
+                ? Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_in'])
+                : null;
+
+            $hourOut = !empty($validated['hour_out'])
+                ? Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_out'])
+                : null;
 
             // Actualizar orden
             $order->update([
@@ -382,6 +397,8 @@ class OrderController extends Controller
                 'total' => $validated['total'],
                 'hour_in' => $hourIn,
                 'hour_out' => $hourOut,
+                'date' => $selectedDate->toDateString(),
+                'payment_period' => $validated['payment_period'],
                 'payment_status' => $validated['payment_status'],
                 'partial_payment' => $validated['partial_payment'],
                 'payment_method' => $validated['payment_method'],
@@ -412,7 +429,6 @@ class OrderController extends Controller
                     'total' => $serviceData['price'],
                     'created_at' => now()
                 ]);
-
             }
 
             // Eliminar pago anterior
@@ -438,7 +454,6 @@ class OrderController extends Controller
                     'order' => $order->fresh(['client', 'services', 'payments']),
                 ]
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
 
             \DB::rollBack();
@@ -448,18 +463,16 @@ class OrderController extends Controller
                 'message' => 'Error de validación',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (\Exception $e) {
 
             \DB::rollBack();
 
             \Log::error('Error al actualizar orden: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al actualizar la orden: ' . $e->getMessage()
             ], 500);
-
         }
     }
 
@@ -480,7 +493,7 @@ class OrderController extends Controller
             ]);
 
             $oldStatus = $order->status;
-            
+
             $order->update([
                 'status' => $validated['status'],
             ]);
@@ -494,7 +507,6 @@ class OrderController extends Controller
                 $order->update([
                     'extra_notes' => $existingNotes ? $existingNotes . "\n" . $cancelNote : $cancelNote
                 ]);
-                
             }
 
             \Log::info("Orden {$order->id} cambió de estado {$oldStatus} a {$validated['status']}");
@@ -508,16 +520,14 @@ class OrderController extends Controller
                     'new_status' => $validated['status']
                 ]
             ]);
-
         } catch (\Exception $e) {
 
             \Log::error('Error al actualizar estado de orden: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al actualizar el estado'
             ], 500);
-
         }
     }
 
@@ -591,7 +601,6 @@ class OrderController extends Controller
                 'message' => 'Error de validación',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (\Exception $e) {
 
             \DB::rollBack();
@@ -602,7 +611,6 @@ class OrderController extends Controller
                 'success' => false,
                 'message' => 'Error al actualizar el pago'
             ], 500);
-
         }
     }
 
@@ -622,14 +630,12 @@ class OrderController extends Controller
                 'success' => true,
                 'data' => $order
             ]);
-
         } catch (\Exception $e) {
 
             return response()->json([
                 'success' => false,
                 'message' => 'Error al obtener la orden'
             ], 500);
-
         }
     }
 
@@ -680,18 +686,16 @@ class OrderController extends Controller
 
                 // Tab 1: Pendientes + En Proceso
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
-                ->whereIn('status', [Order::STATUS_PENDING, Order::STATUS_IN_PROGRESS])
-                ->orderBy('creation_date', 'desc')
-                ->get();
-
+                    ->whereIn('status', [Order::STATUS_PENDING, Order::STATUS_IN_PROGRESS])
+                    ->orderBy('creation_date', 'desc')
+                    ->get();
             } else {
 
                 // Tab 2: Historial (Terminadas, Canceladas)
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
-                ->whereIn('status', [Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
-                ->orderBy('creation_date', 'desc')
-                ->get();
-
+                    ->whereIn('status', [Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
+                    ->orderBy('creation_date', 'desc')
+                    ->get();
             }
 
             return response()->json([
@@ -699,16 +703,14 @@ class OrderController extends Controller
                 'data' => $orders,
                 'count' => $orders->count()
             ]);
-
         } catch (\Exception $e) {
 
             \Log::error('Error al obtener órdenes por tab: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error al cargar las órdenes'
             ], 500);
-
         }
     }
 }

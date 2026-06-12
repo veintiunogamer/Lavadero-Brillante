@@ -2,6 +2,56 @@
 
 @section('content')
 
+<style>
+    #solicitar-factura {
+        -webkit-appearance: none;
+        appearance: none;
+        position: relative;
+        width: 4.75rem;
+        height: 2.45rem;
+        margin: 0;
+        cursor: pointer;
+        border-radius: 999px;
+        border: 1px solid #cfd8e3;
+        background-color: #d7dee9;
+        box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.12);
+        transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        flex: 0 0 auto;
+    }
+
+    #solicitar-factura::before {
+        content: '';
+        position: absolute;
+        top: 0.22rem;
+        left: 0.22rem;
+        width: 1.95rem;
+        height: 1.95rem;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.22);
+        transition: transform 0.2s ease;
+    }
+
+    #solicitar-factura:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.12), 0 0 0 3px rgba(13, 110, 253, 0.14);
+    }
+
+    #solicitar-factura:checked::before {
+        transform: translateX(2.28rem);
+    }
+
+    #solicitar-factura:focus-visible {
+        outline: none;
+        box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.12), 0 0 0 4px rgba(13, 110, 253, 0.16);
+    }
+
+    #solicitar-factura:hover {
+        background-color: #cfd8e4;
+    }
+</style>
+
 <div id="orders-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;"
     x-data="typeof orderFormApp === 'function' ? orderFormApp() : { showQuickViewModal: false, showStatusModal: false, showInvoiceModal: false }"
     x-init="typeof init === 'function' && init()">
@@ -14,20 +64,20 @@
             <!-- Cabezera -->
             <div class="col-12 d-flex mb-4">
 
-                <div class="col-6">
-                    <h2 class="card-title">
-                        <i class="fa-solid fa-car icon color-blue"></i>
-                        Datos del Cliente y Vehículo
+                <div class="col-8 d-flex flex-column justify-content-center">
+                    <h2 class="card-title m-0">
+                        <i class="fa-solid fa-list icon color-blue"></i>
+                        FORMULARIO DE AGENDAMIENTO
                     </h2>
-                    <span class="text-muted fw-bold">Información básica para agendar el servicio.</span>
+                    <span class="text-muted fw-bold">Aqui podra diligenciar su orden sin ningun problema.</span>
                 </div>
 
-                <div class="col-6 text-end">
+                <div class="col-4 text-end">
 
-                    <label class="fw-bold">Nº Orden / Factura</label>
+                    <label class="fw-bold">Consecutivo</label>
                     <div style="gap: 0.5rem;">
-                        <input type="text" class="input float-right" name="consecutive_serial" readonly data-field-name="Serial" style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
-                        <input type="text" class="input float-right" name="consecutive_number"
+                        <input type="text" class="input float-right border-success" name="consecutive_serial" readonly data-field-name="Serial" style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
+                        <input type="text" class="input float-right border-success" name="consecutive_number"
                             id="consecutive_number" readonly value="{{ $consecutive['sequence'] ?? '' }}" data-field-name="Número" style="width: 70px;">
                     </div>
 
@@ -35,12 +85,20 @@
 
             </div>
 
-            <hr>
+
             <!-- Formulario Cliente -->
             <div class="d-flex flex-wrap p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #0d6efd !important;">
 
+                <div class="col-12 mb-5 pb-3 border-bottom">
+                    <h2 class="fw-bold mb-1">
+                        <i class="fa-solid fa-car icon color-blue"></i>
+                        Datos del Cliente y Vehículo
+                    </h2>
+                    <span class="text-muted fw-bold">Información básica para agendar el servicio.</span>
+                </div>
+
                 <div class="col-md-3 mb-3 px-2">
-                    <label class="fw-bold">Nombre Cliente <span class="required">*</span></label>
+                    <label class="fw-bold">Nombre Cliente / Flota <span class="required">*</span></label>
                     <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo" data-field-name="Nombre del Cliente">
                 </div>
 
@@ -50,18 +108,20 @@
                 </div>
 
                 <div class="col-md-3 mb-3 px-2">
-                    <label class="fw-bold">Matrícula <span class="required">*</span></label>
+                    <label class="fw-bold d-flex justify-content-between align-items-center gap-2">
+                        <span>Matrícula <span class="required">*</span></span>
+                        <small id="license-plate-info" class="text-success text-nowrap" style="display: none;">
+                            <i class="fa-solid fa-check-circle"></i> Cliente encontrado
+                        </small>
+                    </label>
                     <input type="text"
-                        class="input form-control required-field license-plate-order"
+                        class="input form-control required-field license-plate-order border-primary"
                         name="license_plaque"
                         id="license-plaque-input"
                         placeholder="Ej: 1234 ABC"
                         data-field-name="Matrícula"
                         maxlength="7"
                         style="text-transform: uppercase;">
-                    <small id="license-plate-info" class="text-success" style="display: none;">
-                        <i class="fa-solid fa-check-circle"></i> Cliente encontrado
-                    </small>
                 </div>
 
                 <div class="col-md-3 mb-3 px-2">
@@ -94,375 +154,402 @@
                     </select>
                 </div>
 
-                <div class="col-12 px-2">
+                <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
+
+                    <label class="form-check-label fw-bold mb-3" for="solicitar-factura">
+                        Solicitar Factura (Aplica 21% IVA)
+                    </label>
+                    <input class="ms-0" type="checkbox" role="switch" name="invoice_required" id="solicitar-factura">
+
+                </div>
+
+                <div class="col-12 px-2 my-4">
                     <div class="col-12" style="width: 100%;">
-                        <label class="fw-bold">Observaciones</label>
+                        <label class="fw-bold">
+                            <i class="fa fa-list text-primary"></i>&nbsp;
+                            Observaciones
+                        </label>
                         <textarea class="input form-control form-control-lg" name="vehicle_notes" rows="5" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
                     </div>
                 </div>
 
             </div>
 
-            <hr>
-
-            <div class="row align-items-center">
-
-                <div class="col-12">
-
-                    <div class="form-check form-switch d-flex align-items-center" style="gap: 1rem;">
-                        <input class="form-check-input m-0" type="checkbox" role="switch" name="invoice_required" id="solicitar-factura" style="cursor: pointer; width: 3.5rem; height: 1.75rem;">
-                        <label class="form-check-label fw-bold m-0" for="solicitar-factura" style="cursor: pointer; font-size: 1.1rem;">
-                            Solicitar Factura (Aplica 21% IVA)
-                        </label>
-                    </div>
-
-                </div>
-
-            </div>
 
             <!-- Datos de Facturación -->
-            <div id="datos-facturacion" class="mt-4 p-4 border rounded-3 bg-light" style="display: none; border-left: 4px solid #0d6efd !important;">
+            <div id="datos-facturacion" class="my-4 p-4 border rounded-3 bg-light" style="display: none; border-left: 4px solid #0d6efd !important;">
 
                 <div class="d-flex flex-wrap">
 
-                    <div class="col-12 mb-4">
-                        <h5 class="fw-bold text-primary">
-                            <i class="fa-solid fa-file-invoice me-2"></i> Datos de Facturación
-                        </h5>
-                        <small class="text-muted">Complete la información fiscal para emitir la factura</small>
+                    <div class="col-12 mb-4 pb-3 border-bottom">
+                        <h2 class="fw-bold mb-1">
+                            <i class="fa-solid fa-file-invoice text-primary"></i>
+                            Datos de Facturación
+                        </h2>
+                        <small class="text-muted d-block fw-bold">Complete la información fiscal para emitir la factura</small>
                     </div>
 
                     <div class="col-md-4 mb-3 px-2">
                         <label class="fw-bold mb-1">
-                            <i class="fa-solid fa-building me-1 text-primary"></i> Razón Social <span class="required">*</span>
+                            Razón Social <span class="required">*</span>
                         </label>
                         <input type="text" class="form-control" name="invoice_business_name" id="razon-social" placeholder="Nombre de la empresa" data-field-name="Razón Social">
                     </div>
 
                     <div class="col-md-4 mb-3 px-2">
                         <label class="fw-bold mb-1">
-                            <i class="fa-solid fa-hashtag me-1 text-primary"></i> NIF / CIF <span class="required">*</span>
+                            NIF / CIF <span class="required">*</span>
                         </label>
                         <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678" data-field-name="NIF/CIF">
                     </div>
 
                     <div class="col-md-4 mb-3 px-2">
                         <label class="fw-bold mb-1">
-                            <i class="fa-solid fa-envelope me-1 text-primary"></i> Email para Factura
+                            Email
                         </label>
                         <input type="email" class="form-control email-field" name="invoice_email" id="email-factura" placeholder="email@ejemplo.com" data-field-name="Email de Factura">
                     </div>
 
-                    <div class="col-12 mb-2">
+                    <hr>
+
+                    <div class="col-12 mb-2 my-2">
                         <label class="fw-bold mb-1">
                             <i class="fa-solid fa-location-dot me-1 text-primary"></i> Dirección Fiscal <span class="required">*</span>
                         </label>
                     </div>
 
-                    <div class="col-md-4 mb-3 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2 my-2">
                         <input type="text" class="form-control" name="invoice_address" id="direccion-calle" placeholder="Calle, número, puerta" data-field-name="Dirección">
                     </div>
 
-                    <div class="col-md-4 mb-3 px-2">
-                        <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp" placeholder="Código Postal" data-field-name="Código Postal">
-                    </div>
-
-                    <div class="col-md-4 mb-3 px-2">
+                    <div class="col-lg-4 col-md-3 col-sm-12 mb-3 px-2 my-2">
                         <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad" placeholder="Ciudad" data-field-name="Ciudad">
                     </div>
 
+                    <div class="col-lg-2 col-md-3 col-sm-12 mb-3 px-2 my-2">
+                        <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp" placeholder="Código Postal" data-field-name="Código Postal">
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
+            <!-- Servicios -->
+            <div class="bg-light border rounded-3 my-5 p-4" style="border-left: 4px solid #0d6efd !important;">
 
-        <!-- Servicios -->
-        <div class="mb-5 p-4">
+                <div class="col-lg-12 col-md-12 col-sm-12 d-flex pb-3 border-bottom">
 
-            <div class="col-lg-12 col-md-12 col-sm-12 d-flex mb-3">
+                    <div class="col-lg-8 col-md-8 col-sm-12 p-0">
+                        <h2 class="fw-bold mb-1">
+                            <i class="fa-solid fa-handshake icon color-blue"></i>Servicios
+                        </h2>
+                        <b class="text-muted">Elige una categoría y luego el servicio. La lista es corta y filtrada por categoría.</b>
+                    </div>
 
-                <div class="col-lg-8 col-md-8 col-sm-12 p-0">
-                    <h2 class="card-title">
-                        <i class="fa-solid fa-handshake icon color-blue"></i>Servicios
-                    </h2>
-                    <b class="text-muted">Elige una categoría y luego el servicio. La lista es corta y filtrada por categoría.</b>
-                </div>
-
-                <div class="col-lg-4 col-md-4 col-sm-12">
-                    <button class="btn btn-success add-service-btn float-end">
-                        <i class="fa-solid fa-plus icon"></i> Añadir Servicio
-                    </button>
-                </div>
-
-            </div>
-
-            <!--  Nuevo servicio -->
-            <div class="d-flex flex-wrap service-item p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #198754 !important;">
-
-                <div class="col-lg-3 col-md-3 col-sm-12 px-2">
-                    <label class="fw-bold mb-1">Categoría</label>
-                    <select class="form-control input-tall required-field service-category" data-service-row="0" data-field-name="Categoría">
-                        <option value="">Selecciona una categoría</option>
-                        @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}">{{ $cat->cat_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div class="col-lg-3 col-md-3 col-sm-12 px-2">
-                    <label class="fw-bold mb-1">Servicio</label>
-                    <select class="form-control input-tall required-field service-select" name="service_id" data-service-row="0" disabled data-field-name="Servicio">
-                        <option value="">Seleccionar servicio</option>
-                    </select>
-                </div>
-
-                <div class="col-lg-3 col-md-3 col-sm-12 px-2">
-                    <label class="fw-bold mb-1">Cant.</label>
-                    <input type="number" class="form-control required-field input-tall service-quantity" name="quantity" data-service-row="0" value="1" min="1" data-field-name="Cantidad">
-                </div>
-
-                <div class="col-lg-2 col-md-2 col-sm-12 px-2">
-
-                    <label class="fw-bold mb-1 d-flex justify-content-between align-items-center">
-                        <span class="price-label-text">Precio</span>
-
-                        <button type="button" class="btn btn-outline-success btn-sm price-edit-btn" title="Editar precio" style="padding: 2px 6px;">
-                            <i class="fa-solid fa-pen"></i>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <button class="btn btn-success add-service-btn float-end">
+                            <i class="fa-solid fa-plus icon"></i> Añadir Servicio
                         </button>
-
-                    </label>
-
-                    <input type="text" class="form-control required-field input-tall service-price price-input" name="price" data-service-row="0" value="0.00" readonly data-field-name="Precio">
+                    </div>
 
                 </div>
 
-            </div>
+                <!--  Nuevo servicio -->
+                <div class="d-flex flex-wrap service-item p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #198754 !important;">
 
-            <!-- Descripción de la cita y notas adicionales -->
-            <div class="service-box p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #025bb5 !important;">
+                    <div class="col-lg-3 col-md-3 col-sm-12 px-2">
+                        <label class="fw-bold mb-1">
+                            Categoría <span class="required">*</span>
+                        </label>
+                        <select class="form-control input-tall required-field service-category" data-service-row="0" data-field-name="Categoría">
+                            <option value="">Selecciona una categoría</option>
+                            @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}">{{ $cat->cat_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <div class="mb-3">
-                    <label class="fw-bold text-primary small mb-2">
-                        <i class="fa-solid fa-file-lines me-1"></i> Descripción de la cita (se genera automáticamente)
-                    </label>
-                    <textarea class="form-control form-control-lg" name="order_notes" rows="4">Ninguno de nuestros precios incluye IVA.</textarea>
+                    <div class="col-lg-3 col-md-3 col-sm-12 px-2">
+                        <label class="fw-bold mb-1">
+                            Servicio <span class="required">*</span>
+                        </label>
+                        <select class="form-control input-tall required-field service-select" name="service_id" data-service-row="0" disabled data-field-name="Servicio">
+                            <option value="">Seleccionar servicio</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-12 px-2">
+                        <label class="fw-bold mb-1">
+                            Cant. <span class="required">*</span>
+                        </label>
+                        <input type="number" class="form-control required-field input-tall service-quantity" name="quantity" data-service-row="0" value="1" min="1" data-field-name="Cantidad">
+                    </div>
+
+                    <div class="col-lg-2 col-md-2 col-sm-12 px-2">
+
+                        <label class="fw-bold mb-1 d-flex justify-content-between align-items-center">
+                            <span class="price-label-text">
+                                Precio <span class="required">*</span>
+                            </span>
+
+                            <button type="button" class="btn btn-outline-success btn-sm price-edit-btn" title="Editar precio" style="padding: 2px 6px;">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+
+                        </label>
+
+                        <input type="text" class="form-control required-field input-tall service-price price-input" name="price" data-service-row="0" value="0.00" readonly data-field-name="Precio">
+
+                    </div>
+
                 </div>
 
-                <small class="text-muted d-block mb-3">
-                    <i class="fa-solid fa-circle-info me-1"></i>
-                    Se actualiza automáticamente según los servicios elegidos. Puedes añadir notas adicionales abajo; se incorporan a la descripción.
-                </small>
+                <!-- Descripción de la cita y notas adicionales -->
+                <div class="service-box p-4 border rounded-3 bg-light mt-4">
 
-                <div class="mb-0">
-                    <label class="fw-bold mb-2 text-success small">
-                        <i class="fa-solid fa-pen me-1"></i> Notas adicionales
-                    </label>
-                    <textarea class="form-control form-control-lg" name="extra_notes" rows="4" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
+                    <div class="mb-3">
+                        <label class="fw-bold mb-2">
+                            <i class="fa-solid fa-message text-primary me-1"></i>
+                            Descripción de la cita (se genera automáticamente)
+                        </label>
+                        <textarea class="form-control form-control-lg" name="order_notes" rows="4">Ninguno de nuestros precios incluye IVA.</textarea>
+                    </div>
+
+                    <small class="badge bg-warning text-dark mb-3 text-left">
+                        <i class="fa-solid fa-circle-info me-1"></i>
+                        Se actualiza automáticamente según los servicios elegidos. Puedes añadir notas adicionales abajo; se incorporan a la descripción.
+                    </small>
+
+                    <br>
+
+                    <div class="my-3">
+                        <label class="fw-bold mb-2">
+                            <i class="fa-solid fa-plus-circle text-primary me-1"></i> Notas adicionales
+                        </label>
+                        <textarea class="form-control form-control-lg" name="extra_notes" rows="4" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
+                    </div>
+
                 </div>
 
-            </div>
+                <!-- Seccion de descuentos -->
+                <div class="row border p-3 rounded-3 my-3" style="align-items: center;">
 
-            <!-- Resumen de precios -->
-            <div class="row" style="align-items: center; margin-top:1.5rem;">
+                    <div class="col-12 mb-3 pb-2 border-bottom">
+                        <h5 class="fw-bold mb-1">
+                            <i class="fa-solid fa-tags text-primary me-2"></i> Descuentos y totales
+                        </h5>
+                        <small class="text-muted fw-bold">Ajusta el porcentaje de descuento y revisa el resumen final antes de continuar.</small>
+                    </div>
 
-                <div class="col-3">
-                    <label class="fw-bold">% Aplicar Descuento</label>
-                    <select class="input form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 42px;">
-                        <option value="">Selecciona Descuento</option>
-                        <option value="5">5%</option>
-                        <option value="10">10%</option>
-                        <option value="15">15%</option>
-                    </select>
-                </div>
+                    <div class="col-3">
+                        <label class="fw-bold">% Aplicar Descuento</label>
+                        <select class="input form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 42px;">
+                            <option value="">Selecciona Descuento</option>
+                            <option value="5">5%</option>
+                            <option value="10">10%</option>
+                            <option value="15">15%</option>
+                        </select>
+                    </div>
 
-                <div class="col-2">
-                    <label class="fw-bold">Subtotal</label>
-                    <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
-                    <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
-                </div>
+                    <div class="col-2">
+                        <label class="fw-bold">Subtotal</label>
+                        <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
+                        <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
+                    </div>
 
-                <div class="col-2">
-                    <labe class="fw-bold">Descuento</label>
+                    <div class="col-2">
+                        <label class="fw-bold">Descuento</label>
                         <div class="discount-section" style="font-size:1.3rem;font-weight:600;color:#dc3545;">-0.00€</div>
                         <input type="hidden" class="discount-value" name="discount_value" value="0.00">
-                </div>
+                    </div>
 
-                <div class="col-2">
-                    <label class="fw-bold">Total</label>
-                    <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
-                    <input type="hidden" class="total-value" name="total" value="0.00">
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Pago & métodos de pago -->
-        <div class="mb-5 p-4 border rounded-3 bg-light" style="border-left: 4px solid #0d6efd !important;">
-
-            <h2 class="card-title">
-                <i class="fa-solid fa-calendar-check icon color-blue"></i> Fecha, Hora y Pago
-            </h2>
-
-            <b class="text-muted">Selecciona la fecha y hora para el agendamiento del servicio.</b>
-
-            <hr>
-
-            <div class="col-12 d-flex justify-content-center align-items-center">
-
-                <!-- Pagos Calendario -->
-                <div class="col-6 d-flex justify-content-center align-items-center">
-
-                    <div class="calendar-box calendar-enhanced">
-
-                        <div class="calendar-header col-12">
-                            <button class="calendar-nav">&#60;</button>
-                            &nbsp;&nbsp;
-                            <span class="calendar-month">noviembre <span class="calendar-year">2026</span></span>
-                            &nbsp;&nbsp;
-                            <button class="calendar-nav">&#62;</button>
-                        </div>
-
-                        <table class="calendar-table">
-                            <thead>
-                                <tr>
-                                    <th>Lu</th>
-                                    <th>Ma</th>
-                                    <th>Mi</th>
-                                    <th>Ju</th>
-                                    <th>Vi</th>
-                                    <th>Sa</th>
-                                    <th>Do</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="calendar-muted">1</td>
-                                    <td class="calendar-muted">2</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>4</td>
-                                    <td>5</td>
-                                    <td>6</td>
-                                    <td>7</td>
-                                    <td>8</td>
-                                    <td>9</td>
-                                </tr>
-                                <tr>
-                                    <td>10</td>
-                                    <td>11</td>
-                                    <td class="calendar-active">12</td>
-                                    <td>13</td>
-                                    <td>14</td>
-                                    <td>15</td>
-                                    <td>16</td>
-                                </tr>
-                                <tr>
-                                    <td>17</td>
-                                    <td>18</td>
-                                    <td>19</td>
-                                    <td>20</td>
-                                    <td>21</td>
-                                    <td>22</td>
-                                    <td>23</td>
-                                </tr>
-                                <tr>
-                                    <td>24</td>
-                                    <td>25</td>
-                                    <td>26</td>
-                                    <td>27</td>
-                                    <td>28</td>
-                                    <td>29</td>
-                                    <td>30</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="calendar-footer">
-                            <span class="calendar-tip">Selecciona una fecha para agendar</span>
-                        </div>
+                    <div class="col-2">
+                        <label class="fw-bold">Total</label>
+                        <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
+                        <input type="hidden" class="total-value" name="total" value="0.00">
                     </div>
 
                 </div>
 
-                <!-- Pagos Formulario -->
-                <div class="col-6">
+            </div>
 
-                    <div class="col-12 form-side d-flex flex-wrap">
+            <!-- Pago & métodos de pago -->
+            <div class="mb-5 p-4 border rounded-3 bg-light" style="border-left: 4px solid #0d6efd !important;">
 
-                        <div class="col-6 px-2">
+                <div class="col-12 mb-4 pb-3 border-bottom">
 
-                            <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
-                            <input type="text" class="input form-control required-field time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
+                    <h2 class="fw-bold mb-1">
+                        <i class="fa-solid fa-credit-card text-primary"></i>
+                        Pago & Métodos de Pago
+                    </h2>
+                    <small class="text-muted fw-bold">Selecciona la fecha y hora para agendar, luego elige el estado del pago.</small>
+                </div>
 
-                            <!-- Fallback select (oculto por defecto) -->
-                            <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hora-entrada-fallback" style="display: none;" data-field-name="Hora de Entrada">
-                                <option value="">Seleccionar</option>
-                                @for($h = 8; $h <= 20; $h++)
-                                    @foreach(['00', '30' ] as $m)
-                                    <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
-                                    @endforeach
-                                    @endfor
-                            </select>
+                <div class="col-12 d-flex justify-content-center align-items-center">
 
-                        </div>
+                    <!-- Pagos Calendario -->
+                    <div class="col-6 d-flex justify-content-center align-items-center">
 
-                        <div class="col-6 px-2">
+                        <div class="calendar-box calendar-enhanced">
 
-                            <label class="fw-bold">Hora Entrega <span class="required">*</span></label>
-                            <input type="text" class="input form-control required-field time-picker" id="hora-salida" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
-
-                            <!-- Fallback select (oculto por defecto) -->
-                            <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hora-salida-fallback" style="display: none;" data-field-name="Hora de Salida">
-                                <option value="">Seleccionar</option>
-                                @for($h = 8; $h <= 20; $h++)
-                                    @foreach(['00', '30' ] as $m)
-                                    <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
-                                    @endforeach
-                                    @endfor
-                            </select>
-
-                        </div>
-
-                        <div class="col-12 my-5">
-                            <label class="fw-bold px-3">Estado del Pago <span class="required">*</span></label>
-                            <div class="pay-status-group mt-1 px-3 d-flex" style="gap: 1rem;">
-                                <button type="button" class="btn btn-outline-warning pay-status-btn pay-status-active" data-value="1">Pendiente</button>
-                                <button type="button" class="btn btn-outline-primary pay-status-btn" data-value="2">Parcial</button>
-                                <button type="button" class="btn btn-outline-success pay-status-btn" data-value="3">Pagado</button>
+                            <div class="calendar-header col-12">
+                                <button class="calendar-nav">&#60;</button>
+                                &nbsp;&nbsp;
+                                <span class="calendar-month">noviembre <span class="calendar-year">2026</span></span>
+                                &nbsp;&nbsp;
+                                <button class="calendar-nav">&#62;</button>
                             </div>
 
-                            <input type="hidden" name="payment_status" class="payment-status-input" value="1">
+                            <table class="calendar-table">
+                                <thead>
+                                    <tr>
+                                        <th>Lu</th>
+                                        <th>Ma</th>
+                                        <th>Mi</th>
+                                        <th>Ju</th>
+                                        <th>Vi</th>
+                                        <th>Sa</th>
+                                        <th>Do</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="calendar-muted">1</td>
+                                        <td class="calendar-muted">2</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>4</td>
+                                        <td>5</td>
+                                        <td>6</td>
+                                        <td>7</td>
+                                        <td>8</td>
+                                        <td>9</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10</td>
+                                        <td>11</td>
+                                        <td class="calendar-active">12</td>
+                                        <td>13</td>
+                                        <td>14</td>
+                                        <td>15</td>
+                                        <td>16</td>
+                                    </tr>
+                                    <tr>
+                                        <td>17</td>
+                                        <td>18</td>
+                                        <td>19</td>
+                                        <td>20</td>
+                                        <td>21</td>
+                                        <td>22</td>
+                                        <td>23</td>
+                                    </tr>
+                                    <tr>
+                                        <td>24</td>
+                                        <td>25</td>
+                                        <td>26</td>
+                                        <td>27</td>
+                                        <td>28</td>
+                                        <td>29</td>
+                                        <td>30</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="calendar-footer">
+                                <span class="calendar-tip">Selecciona una fecha para agendar</span>
+                            </div>
                         </div>
 
-                        <div class="col-6 px-2 mt-2" id="partial-payment-container" style="display: none;">
-                            <label class="fw-bold">Abono Parcial <span class="required">*</span></label>
-                            <input type="number" class="input form-control" name="partial_payment" id="partial-payment-input" placeholder="0.00" step="0.01" min="0" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Abono Parcial">
-                            <small class="text-muted">Ingresa el monto del pago parcial</small>
-                        </div>
+                    </div>
 
-                        <div class="col-6 px-2 mt-2">
-                            <label class="fw-bold">Método de Pago <span class="required">*</span></label>
-                            <select class="input form-control required-field" name="payment_method" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Método de Pago">
-                                <option value="1">Efectivo</option>
-                                <option value="2">Tarjeta</option>
-                                <option value="3">Transferencia</option>
-                            </select>
-                        </div>
+                    <!-- Pagos Formulario -->
+                    <div class="col-6">
 
-                        <div class="col-6 px-2 mt-2">
-                            <label class="fw-bold">Estado de la Cita <span class="required">*</span></label>
-                            <select class="input form-control required-field" name="status" data-field-name="Estado de la Cita">
-                                <option value="1">Pendiente</option>
-                                <option value="2">En Proceso</option>
-                                <option value="3">Terminada</option>
-                            </select>
+                        <div class="col-12 form-side d-flex flex-wrap">
+
+                            <div class="col-6 px-2">
+
+                                <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
+                                <input type="text" class="input form-control required-field time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
+
+                                <!-- Fallback select (oculto por defecto) -->
+                                <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hora-entrada-fallback" style="display: none;" data-field-name="Hora de Entrada">
+                                    <option value="">Seleccionar</option>
+                                    @for($h = 8; $h <= 20; $h++)
+                                        @foreach(['00', '30' ] as $m)
+                                        <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
+                                        @endforeach
+                                        @endfor
+                                </select>
+
+                            </div>
+
+                            <div class="col-6 px-2">
+
+                                <label class="fw-bold">Hora Entrega <span class="required">*</span></label>
+                                <input type="text" class="input form-control required-field time-picker" id="hora-salida" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
+
+                                <!-- Fallback select (oculto por defecto) -->
+                                <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hora-salida-fallback" style="display: none;" data-field-name="Hora de Salida">
+                                    <option value="">Seleccionar</option>
+                                    @for($h = 8; $h <= 20; $h++)
+                                        @foreach(['00', '30' ] as $m)
+                                        <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
+                                        @endforeach
+                                        @endfor
+                                </select>
+
+                            </div>
+
+                            <div class="col-12 my-5">
+                                <label class="fw-bold px-3">Estado del Pago <span class="required">*</span></label>
+                                <div class="pay-status-group mt-1 px-3 d-flex" style="gap: 1rem;">
+                                    <button type="button" class="btn btn-outline-warning pay-status-btn pay-status-active" data-value="1">Pendiente</button>
+                                    <button type="button" class="btn btn-outline-primary pay-status-btn" data-value="2">Parcial</button>
+                                    <button type="button" class="btn btn-outline-success pay-status-btn" data-value="3">Pagado</button>
+                                </div>
+
+                                <input type="hidden" name="payment_status" class="payment-status-input" value="1">
+                            </div>
+
+                            <div class="col-6 px-2 mt-2">
+                                <label class="fw-bold">Período de Pago <span class="required">*</span></label>
+                                <select class="input form-control required-field" name="payment_period" id="payment-period-select" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Período de Pago">
+                                    <option value="1" selected>Único</option>
+                                    <option value="2">Mensual</option>
+                                </select>
+                                <small class="badge bg-secondary my-2">Al elegir Mensual, el calendario se desactiva.</small>
+                            </div>
+
+                            <div class="col-6 px-2 mt-2">
+                                <label class="fw-bold">Método de Pago <span class="required">*</span></label>
+                                <select class="input form-control required-field" name="payment_method" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Método de Pago">
+                                    <option value="1">Efectivo</option>
+                                    <option value="2">Tarjeta</option>
+                                    <option value="3">Transferencia</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 px-2 mt-2">
+                                <label class="fw-bold">Estado de la Cita <span class="required">*</span></label>
+                                <select class="input form-control required-field" name="status" data-field-name="Estado de la Cita">
+                                    <option value="1">Pendiente</option>
+                                    <option value="2">En Proceso</option>
+                                    <option value="3">Terminada</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6 px-2 mt-2" id="partial-payment-container" style="display: none;">
+                                <label class="fw-bold">Abono Parcial <span class="required">*</span></label>
+                                <input type="number" class="input form-control" name="partial_payment" id="partial-payment-input" placeholder="0.00" step="0.01" min="0" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Abono Parcial">
+                                <small class="badge bg-secondary my-2">Ingresa el monto del pago parcial</small>
+                            </div>
+
                         </div>
 
                     </div>
@@ -471,27 +558,27 @@
 
             </div>
 
-        </div>
+            <!-- Boton de envio -->
+            <div class="col-12 text-center my-5">
 
-        <!-- Boton de envio -->
-        <div class="col-12 text-center my-5">
+                <label class="text-dark my-3">
 
-            <label class="text-dark my-3">
+                    <input type="checkbox" class="me-2" id="terms-checkbox" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
+                    He leído y acepto los
+                    <a href="#" style="color:var(--color-amarillo-logo);text-decoration:underline;">
+                        Términos y Condiciones
+                    </a>
 
-                <input type="checkbox" class="me-2" id="terms-checkbox" style="width: 1.2rem; height: 1.2rem; cursor: pointer;">
-                He leído y acepto los
-                <a href="#" style="color:var(--color-amarillo-logo);text-decoration:underline;">
-                    Términos y Condiciones
-                </a>
+                </label>
 
-            </label>
+                <br>
 
-            <br>
+                <button class="confirm-btn col-6" disabled>
+                    <i class="fa-solid fa-check icon"></i>
+                    Confirmar Agendamiento
+                </button>
 
-            <button class="confirm-btn col-6" disabled>
-                <i class="fa-solid fa-check icon"></i>
-                Confirmar Agendamiento
-            </button>
+            </div>
 
         </div>
 
@@ -610,20 +697,26 @@
                                 </td>
                                 <td x-text="order.user ? order.user.name : 'N/A'"></td>
                                 <td class="text-center">
-                                    <div class="btn-group btn-group-sm">
-                                        <button @click="openQuickView(order)" class="btn btn-secondary" title="Ver detalles">
+
+                                    <div class="btn-group btn-group-md">
+
+                                        <button @click="openQuickView(order)" class="btn btn-info" title="Ver detalles">
                                             <i class="fa-solid fa-eye"></i>
                                         </button>
-                                        <button @click="openStatusTypeModal(order)" class="btn btn-warning" title="Cambiar estado"
+
+                                        <button @click="openStatusTypeModal(order)" class="btn btn-success" title="Cambiar estado"
                                             x-show="order.status !== 3 || order.payment?.status !== 3">
                                             <i class="fa-solid fa-exchange-alt"></i>
                                         </button>
-                                        <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar" x-show="order.status !== 3">
+
+                                        <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar Orden" x-show="order.status !== 3">
                                             <i class="fa-solid fa-edit"></i>
                                         </a>
-                                        <button @click="printOrder(order.id)" class="btn btn-success" title="Imprimir orden">
+
+                                        <button @click="printOrder(order.id)" class="btn btn-warning" title="Imprimir Orden">
                                             <i class="fa-solid fa-print"></i>
                                         </button>
+
                                     </div>
                                 </td>
                             </tr>
@@ -637,10 +730,13 @@
 
             <!-- Paginador -->
             <div x-show="!loadingOrders && getTotalPages() > 1" class="d-flex justify-content-between align-items-center mt-3">
-                <div class="text-muted">
+
+                <div class="badge bg-primary text-light p-2 col-1">
                     Página <span x-text="currentPage[currentTab]"></span> de <span x-text="getTotalPages()"></span>
                 </div>
+
                 <nav>
+
                     <ul class="pagination pagination-sm mb-0">
                         <li class="page-item" :class="currentPage[currentTab] === 1 ? 'disabled' : ''">
                             <button class="page-link" @click="goToPage(currentTab, currentPage[currentTab] - 1)">«</button>
@@ -654,7 +750,9 @@
                             <button class="page-link" @click="goToPage(currentTab, currentPage[currentTab] + 1)">»</button>
                         </li>
                     </ul>
+
                 </nav>
+
             </div>
 
         </div>

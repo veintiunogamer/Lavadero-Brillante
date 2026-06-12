@@ -129,6 +129,9 @@ export class FormDataCollector {
      */
     getScheduleData() {
 
+        const paymentPeriod = parseInt(document.querySelector('select[name="payment_period"]')?.value || '1');
+        const isMonthly = paymentPeriod === 2;
+
         const selectedDateValue = window.selectedOrderDate
         ? window.selectedOrderDate.toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0];
@@ -153,8 +156,8 @@ export class FormDataCollector {
 
         return {
             selected_date: selectedDateValue,
-            hour_in: hourIn || '',
-            hour_out: hourOut || ''
+            hour_in: isMonthly ? null : (hourIn || ''),
+            hour_out: isMonthly ? null : (hourOut || '')
         };
     }
 
@@ -173,12 +176,14 @@ export class FormDataCollector {
             : null;
 
         const paymentMethod = document.querySelector('select[name="payment_method"]')?.value || '1';
+        const paymentPeriod = document.querySelector('select[name="payment_period"]')?.value || '1';
         const orderStatus = document.querySelector('select[name="status"]')?.value || '1';
 
         return {
             payment_status: paymentStatus,
             partial_payment: partialPayment,
             payment_method: parseInt(paymentMethod),
+            payment_period: parseInt(paymentPeriod),
             order_status: parseInt(orderStatus)
         };
 

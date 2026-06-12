@@ -94,6 +94,7 @@ function createOrderFormApp() {
             payment.init();
             timepicker.init();
             licensePlate.init();
+            this.initPaymentPeriodControl();
             
             // Inicializar manejador de envío
             const self = this;
@@ -108,6 +109,39 @@ function createOrderFormApp() {
                 await this.loadEditOrder(window.editOrderData);
                 this.editDataLoaded = true;
             }
+        },
+
+        initPaymentPeriodControl() {
+
+            const paymentPeriodSelect = document.getElementById('payment-period-select');
+
+            if (!paymentPeriodSelect || paymentPeriodSelect.dataset.initialized === 'true') {
+                this.applyPaymentPeriodRules();
+                return;
+            }
+
+            paymentPeriodSelect.addEventListener('change', () => {
+                this.applyPaymentPeriodRules();
+            });
+
+            paymentPeriodSelect.dataset.initialized = 'true';
+
+            this.applyPaymentPeriodRules();
+        },
+
+        applyPaymentPeriodRules() {
+
+            const paymentPeriodSelect = document.getElementById('payment-period-select');
+            const isMonthly = paymentPeriodSelect?.value === '2';
+
+            // Mantener un valor de fecha para envío incluso en mensual.
+            if (!window.selectedOrderDate) {
+                window.selectedOrderDate = new Date();
+            }
+
+            calendar.setDisabled(isMonthly);
+            timepicker.setDisabled(isMonthly);
+            document.dispatchEvent(new CustomEvent('formFieldChanged'));
         },
 
         /**
@@ -235,6 +269,13 @@ function createOrderFormApp() {
             const status = document.querySelector('[name="status"]');
 
             if (status) status.value = order.status || 1;
+
+            const paymentPeriod = document.querySelector('[name="payment_period"]');
+
+            if (paymentPeriod) {
+                paymentPeriod.value = String(order.payment_period || 1);
+                this.applyPaymentPeriodRules();
+            }
 
             // Pre-llenar servicios (primero el existente)
             if (order.services && order.services.length > 0) {
@@ -900,6 +941,7 @@ function createOrderFormApp() {
             timepicker.reset();
             licensePlate.reset();
             calendar.reset();
+            this.applyPaymentPeriodRules();
             submitHandler?.reset();
 
             // Resetear facturación

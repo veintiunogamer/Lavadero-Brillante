@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -13,33 +15,38 @@ class Order extends Model
     const STATUS_COMPLETED = 3;
     const STATUS_CANCELED = 4;
 
+    // Período de pago
+    const PAYMENT_PERIOD_SINGLE = 1;
+    const PAYMENT_PERIOD_MONTHLY = 2;
+
     // Niveles de suciedad
     const DIRTY_LEVEL_LOW = 1;
     const DIRTY_LEVEL_MEDIUM = 2;
     const DIRTY_LEVEL_HIGH = 3;
-    
+
     protected $keyType = 'string';
     protected $table = 'order';
 
     protected $fillable = [
-        'id', 
+        'id',
         'client_id',
-        'user_id', 
-        'quantity', 
-        'dirt_level', 
+        'user_id',
+        'quantity',
+        'dirt_level',
         'date',
-        'hour_in', 
+        'hour_in',
         'hour_out',
-        'vehicle_type_id', 
-        'vehicle_notes', 
-        'discount', 
-        'subtotal', 
-        'taxes', 
-        'total', 
+        'vehicle_type_id',
+        'vehicle_notes',
+        'discount',
+        'subtotal',
+        'taxes',
+        'total',
         'partial_payment',
-        'order_notes', 
-        'extra_notes', 
-        'status', 
+        'payment_period',
+        'order_notes',
+        'extra_notes',
+        'status',
         'creation_date',
         'consecutive_serial',
         'consecutive_number'
@@ -59,8 +66,8 @@ class Order extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class, 'order_services', 'order_id', 'service_id')
-        ->withPivot('id', 'subtotal', 'total', 'created_at')
-        ->using(OrderService::class);
+            ->withPivot('id', 'subtotal', 'total', 'created_at')
+            ->using(OrderService::class);
     }
 
     /**
