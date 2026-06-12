@@ -602,9 +602,14 @@
 
         <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0 fw-bold" x-text="isEditingCategory ? 'Editar Categoría' : 'Crear Categoría'"></h4>
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+
+                <h4 class="mb-0 fw-bold" x-html="isEditingCategory 
+                ? '<i class=\'fa fa-edit text-primary\'></i> &nbsp;Editar Categoría' 
+                : '<i class=\'fa fa-plus-circle text-primary\'></i>  Crear Categoría'"></h4>
+
                 <button @click="closeCategoryModal()" type="button" class="btn-close"></button>
+
             </div>
 
             <form @submit.prevent="saveCategory()">
@@ -650,9 +655,14 @@
 
         <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 700px; width: 95%;">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0 fw-bold" x-text="isEditingService ? 'Editar Servicio' : 'Crear Servicio'"></h4>
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+
+                <h4 class="mb-0 fw-bold" x-html="isEditingService 
+                ? '<i class=\'fa fa-edit text-primary\'></i>  Editar Servicio' 
+                : '<i class=\'fa fa-plus-circle text-primary\'></i>  Crear Servicio'"></h4>
+
                 <button @click="closeServiceModal()" type="button" class="btn-close"></button>
+
             </div>
 
             <form @submit.prevent="saveService()">
@@ -721,9 +731,14 @@
 
         <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0 fw-bold" x-text="isEditingVehicleType ? 'Editar Tipo de Vehículo' : 'Crear Tipo de Vehículo'"></h4>
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+
+                <h4 class="mb-0 fw-bold" x-html="isEditingVehicleType 
+                ? '<i class=\'fa fa-edit text-primary\'></i> &nbsp;Editar Tipo de Vehículo' 
+                : '<i class=\'fa fa-plus-circle text-primary\'></i> &nbsp;Crear Tipo de Vehículo'"></h4>
+
                 <button @click="closeVehicleTypeModal()" type="button" class="btn-close"></button>
+
             </div>
 
             <form @submit.prevent="saveVehicleType()">
@@ -757,8 +772,11 @@
 
         <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 600px; width: 95%;">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0 fw-bold" x-text="isEditingClient ? 'Editar Cliente' : 'Crear Cliente'"></h4>
+            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+                <h4 class="mb-0 fw-bold" x-html="isEditingClient 
+                ? '<i class=\'fa fa-edit text-primary\'></i> &nbsp;Editar Cliente' 
+                : '<i class=\'fa fa-plus-circle text-primary\'></i> &nbsp;Crear Cliente'"></h4>
+
                 <button @click="closeClientModal()" type="button" class="btn-close"></button>
             </div>
 

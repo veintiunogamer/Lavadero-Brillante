@@ -15,14 +15,18 @@
             <div class="d-flex justify-content-between align-items-center p-4 border-bottom bg-light rounded-top-4">
 
                 <h4 class="mb-0 fw-bold">
-                    <i class="fa fa-list color-blue me-2"></i>
-                    Detalle de Orden <span class="text-primary" x-text="selectedOrder ? (selectedOrder.consecutive_serial + ' - ' + selectedOrder.consecutive_number) : ''"></span>
-                </h4>
 
-                <div>
+                    <i class="fa fa-list color-blue me-2"></i>
+                    Detalle de Orden
+
+                    <span class="text-primary me-2" x-text="selectedOrder 
+                    ? (selectedOrder.consecutive_serial + ' - ' + selectedOrder.consecutive_number) 
+                    : ''"></span>
+
                     <span class="badge fs-6" :class="getStatusBadge(selectedOrder?.status)"
                         x-text="getStatusText(selectedOrder?.status)"></span>
-                </div>
+
+                </h4>
 
                 <button @click="closeQuickViewModal()" type="button" class="btn-close"></button>
 
@@ -32,13 +36,13 @@
             <div class="p-4" x-show="selectedOrder">
 
                 <!-- Info del Cliente -->
-                <div class="row mb-4">
+                <div class="row mb-4 bg-light border border-2 rounded-3 p-3">
 
                     <div class="col-12">
 
                         <h5 class="fw-bold border-bottom pb-2">
                             <i class="fa-solid fa-user me-2 text-primary"></i>
-                            Cliente
+                            Informacion del cliente
                         </h5>
 
                     </div>
@@ -61,7 +65,7 @@
                 </div>
 
                 <!-- Info de Servicios -->
-                <div class="row mb-4">
+                <div class="row mb-4 bg-light border border-2 rounded-3 p-3">
 
                     <div class="col-12">
                         <h5 class="fw-bold border-bottom pb-2">
@@ -126,8 +130,9 @@
                 </div>
 
                 <!-- Info de Horario y Pago -->
-                <div class="row mb-4">
+                <div class="row mb-4 bg-light border border-2 rounded-3 p-3">
 
+                    <!-- Horario (solo para pagos únicos) -->
                     <div class="col-md-12" x-show="selectedOrder?.payment_period !== 2">
 
                         <h5 class="border-bottom pb-2">
@@ -160,17 +165,20 @@
 
                         <h5 class="border-bottom pb-2 mb-3">
                             <i class="fa-solid fa-credit-card me-2 text-primary"></i>
-                            Pago
+                            Informacion de pago
                         </h5>
 
+                        <!-- Pagos NO registrados -->
                         <template x-if="(selectedOrder?.payments || []).length === 0">
                             <div class="text-muted small">No hay pagos registrados.</div>
                         </template>
 
+                        <!-- Pagos registrados -->
                         <template x-for="payment in (selectedOrder?.payments || [])" :key="payment.id">
+
                             <div class="row g-2 align-items-center mb-2">
 
-                                <div class="col-3">
+                                <div class="col-lg-2 col-md-3 col-sm-6">
                                     <label class="fw-bold small">Estado</label>
                                     <p class="mb-2">
                                         <span class="badge" :class="getPaymentStatusBadge(payment.status)"
@@ -178,29 +186,31 @@
                                     </p>
                                 </div>
 
-                                <div class="col-3">
+                                <div class="col-lg-2 col-md-3 col-sm-6">
                                     <label class="fw-bold small">Método</label>
                                     <p class="mb-2" x-text="getPaymentMethodText(payment.type)"></p>
                                 </div>
 
-                                <div class="col-2">
-                                    <label class="fw-bold small">Total Pagado</label>
-                                    <p class="mb-2 text-success" x-text="formatCurrency(payment.total || 0)"></p>
-                                </div>
-
-                                <div class="col-2" x-show="selectedOrder?.partial_payment > 0">
-                                    <label class="fw-bold small">Abono Parcial</label>
-                                    <p class="mb-2 text-primary" x-text="formatCurrency(selectedOrder?.partial_payment || 0)"></p>
-                                </div>
-
-                                <div class="col-3">
+                                <div class="col-lg-2 col-md-3 col-sm-6">
                                     <label class="fw-bold small">Período de Pago</label>
                                     <p class="mb-2">
                                         <span class="badge" :class="selectedOrder?.payment_period === 2 ? 'bg-info text-white' : 'bg-secondary'" x-text="selectedOrder?.payment_period === 2 ? 'Mensual' : 'Único'"></span>
                                     </p>
                                 </div>
 
+                                <div class="col-lg-2 col-md-3 col-sm-6">
+                                    <label class="fw-bold small">Total Pagado</label>
+                                    <p class="mb-2 text-success" x-text="formatCurrency(payment.total || 0)"></p>
+                                </div>
+
+                                <div class="col-lg-2 col-md-3 col-sm-6" x-show="selectedOrder?.partial_payment > 0">
+                                    <label class="fw-bold small">Abono Parcial</label>
+                                    <p class="mb-2 text-primary" x-text="formatCurrency(selectedOrder?.partial_payment || 0)"></p>
+                                </div>
+
+
                             </div>
+
                         </template>
 
                     </div>
@@ -208,7 +218,7 @@
                 </div>
 
                 <!-- Notas -->
-                <div class="row" x-show="selectedOrder?.vehicle_notes || selectedOrder?.order_notes || selectedOrder?.extra_notes">
+                <div class="row bg-light border border-2 rounded-3 p-3" x-show="selectedOrder?.vehicle_notes || selectedOrder?.order_notes || selectedOrder?.extra_notes">
 
                     <div class="col-12">
                         <h5 class="border-bottom pb-2 mb-3">
@@ -241,15 +251,15 @@
 
                 <div class="d-flex gap-2 flex-wrap align-items-center justify-content-center">
 
-                    <button @click="closeQuickViewModal()" class="btn btn-danger">
+                    <button @click="closeQuickViewModal()" class="btn btn-lg btn-danger col-3">
                         <i class="fa-solid fa-times me-1"></i> Cerrar
                     </button>
 
-                    <a :href="'/orders/' + selectedOrder?.id + '/edit'" class="btn btn-warning" x-show="selectedOrder?.status !== 3">
+                    <a :href="'/orders/' + selectedOrder?.id + '/edit'" class="btn btn-lg btn-primary col-3" x-show="selectedOrder?.status !== 3">
                         <i class="fa-solid fa-edit me-1"></i> Editar
                     </a>
 
-                    <button @click="printOrder(selectedOrder?.id)" class="btn btn-info">
+                    <button @click="printOrder(selectedOrder?.id)" class="btn btn-lg btn-warning col-3">
                         <i class="fa-solid fa-print me-1"></i> Imprimir
                     </button>
 

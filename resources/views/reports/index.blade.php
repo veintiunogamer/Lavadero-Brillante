@@ -29,7 +29,7 @@
                     <option value="week">Esta Semana</option>
                 </select>
 
-                <button class="btn btn-success btn-sm" @click="openExportModal()">
+                <button class="btn btn-warning text-dark btn-sm" @click="openExportModal()">
                     <i class="fa-solid fa-download me-1"></i>
                     Descargar Informe Actual
                 </button>
@@ -59,10 +59,13 @@
             <!-- ==================== VENTAS Y FACTURACIÓN ==================== -->
             <div x-show="activeTab === 'sales'">
 
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 border-bottom pb-3">
                     <div>
-                        <h4 class="reports-section-title mb-1">Ventas y Facturación</h4>
-                        <span class="reports-section-hint" x-text="getRangeLabel()"></span>
+                        <h3 class="reports-section-title m-0">
+                            <i class="fa-solid fa-dollar-sign text-primary"></i>
+                            Ventas y Facturación
+                        </h3>
+                        <span class="reports-section-hint fw-bold" x-text="getRangeLabel()"></span>
                     </div>
                 </div>
 
@@ -168,10 +171,13 @@
             <!-- ==================== CLIENTES Y FIDELIZACIÓN ==================== -->
             <div x-show="activeTab === 'clients'">
 
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 border-bottom pb-3">
                     <div>
-                        <h4 class="reports-section-title mb-1">Clientes y Fidelización</h4>
-                        <span class="reports-section-hint">Búsqueda libre por nombre, teléfono o matrícula.</span>
+                        <h3 class="reports-section-title m-0">
+                            <i class="fa-solid fa-user-check text-primary"></i>
+                            Clientes y Fidelización
+                        </h3>
+                        <span class="reports-section-hint fw-bold">Búsqueda libre por nombre, teléfono o matrícula.</span>
                     </div>
 
                     <div class="position-relative" style="max-width: 320px; width: 100%;">
@@ -246,7 +252,7 @@
             <div x-show="activeTab === 'productivity'" class="citas-empty-state" style="min-height: 220px;">
                 <i class="fa-solid fa-chart-line citas-empty-icon" style="color:#bfdbfe;"></i>
                 <p class="citas-empty-title">Productividad Operativa</p>
-                <p class="citas-empty-sub">Este informe estará disponible en la próxima actualización.<br>Aquí se mostrarán métricas de rendimiento por operario y tiempo de servicio.</p>
+                <p class="citas-empty-sub fw-bold my-3">Este informe estará disponible en la próxima actualización</p>
             </div>
 
         </div>
@@ -255,23 +261,33 @@
 
     <!-- Modal Exportar -->
     <div x-cloak x-show="showExportModal" x-transition.opacity class="reports-export-backdrop" @click="closeExportModal()" aria-hidden="true">
+
         <div class="reports-export-modal" @click.stop>
-            <div class="reports-export-header">
-                <h5 class="mb-0">Exportar informe</h5>
+
+            <div class="reports-export-header border-bottom pb-3">
+                <h4 class="mb-0">
+                    <i class="fa-solid fa-download text-primary"></i>&nbsp;
+                    Exportar informe
+                </h4>
                 <button class="btn-close" type="button" aria-label="Cerrar" @click="closeExportModal()"></button>
             </div>
-            <p class="text-muted mb-3">Selecciona el formato de descarga.</p>
+
             <div class="reports-export-options">
+
                 <button class="reports-export-option reports-export-option--pdf" @click="downloadCurrent('pdf')">
                     <i class="fa-solid fa-file-pdf"></i>
                     <span>PDF</span>
                 </button>
+
                 <button class="reports-export-option reports-export-option--excel" @click="downloadCurrent('excel')">
                     <i class="fa-solid fa-file-excel"></i>
                     <span>Excel</span>
                 </button>
+
             </div>
+
         </div>
+
     </div>
 
 </div>
