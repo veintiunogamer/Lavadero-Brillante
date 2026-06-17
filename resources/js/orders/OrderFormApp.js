@@ -197,7 +197,7 @@ export class OrderFormApp {
                 self.submitHandler.reset();
 
                 // Resetear facturación
-                const solicitarFactura = document.getElementById('solicitar-factura');
+                const solicitarFactura = document.getElementById('get-invoice');
                 const datosFacturacion = document.getElementById('datos-facturacion');
                 
                 if (solicitarFactura) solicitarFactura.checked = false;

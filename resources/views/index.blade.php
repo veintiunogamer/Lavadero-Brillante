@@ -2,56 +2,6 @@
 
 @section('content')
 
-<style>
-    #solicitar-factura {
-        -webkit-appearance: none;
-        appearance: none;
-        position: relative;
-        width: 4.75rem;
-        height: 2.45rem;
-        margin: 0;
-        cursor: pointer;
-        border-radius: 999px;
-        border: 1px solid #cfd8e3;
-        background-color: #d7dee9;
-        box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.12);
-        transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-        flex: 0 0 auto;
-    }
-
-    #solicitar-factura::before {
-        content: '';
-        position: absolute;
-        top: 0.22rem;
-        left: 0.22rem;
-        width: 1.95rem;
-        height: 1.95rem;
-        border-radius: 50%;
-        background: #ffffff;
-        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.22);
-        transition: transform 0.2s ease;
-    }
-
-    #solicitar-factura:checked {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
-        box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.12), 0 0 0 3px rgba(13, 110, 253, 0.14);
-    }
-
-    #solicitar-factura:checked::before {
-        transform: translateX(2.28rem);
-    }
-
-    #solicitar-factura:focus-visible {
-        outline: none;
-        box-shadow: inset 0 1px 3px rgba(15, 23, 42, 0.12), 0 0 0 4px rgba(13, 110, 253, 0.16);
-    }
-
-    #solicitar-factura:hover {
-        background-color: #cfd8e4;
-    }
-</style>
-
 <div id="orders-root" class="d-flex justify-content-center align-items-start" style="min-height: 80vh; padding-top: 2rem;"
     x-data="typeof orderFormApp === 'function' ? orderFormApp() : { showQuickViewModal: false, showStatusModal: false, showInvoiceModal: false }"
     x-init="typeof init === 'function' && init()">
@@ -85,7 +35,6 @@
 
             </div>
 
-
             <!-- Formulario Cliente -->
             <div class="d-flex flex-wrap p-4 border rounded-3 bg-light mt-4" style="border-left: 4px solid #0d6efd !important;">
 
@@ -98,8 +47,13 @@
                 </div>
 
                 <div class="col-md-3 mb-3 px-2">
-                    <label class="fw-bold">Nombre Cliente / Flota <span class="required">*</span></label>
+                    <label class="fw-bold">Nombre Cliente<span class="required">*</span></label>
                     <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo" data-field-name="Nombre del Cliente">
+                </div>
+
+                <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
+                    <label class="form-check-label fw-bold mb-3">Flota<span class="required">*</span></label>
+                    <input class="ms-0" type="checkbox" role="switch" name="fleet" id="fleet">
                 </div>
 
                 <div class="col-md-3 mb-3 px-2">
@@ -145,7 +99,7 @@
                 </div>
 
                 <div class="col-md-3 mb-3 px-2">
-                    <label class="fw-bold">Asignar Detallador <span class="required">*</span></label>
+                    <label class="fw-bold">Lava Coches <span class="required">*</span></label>
                     <select class="input form-control required-field" name="assigned_user" data-field-name="Detallador">
                         <option value="">Seleccionar</option>
                         @foreach($users as $user)
@@ -156,10 +110,10 @@
 
                 <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
 
-                    <label class="form-check-label fw-bold mb-3" for="solicitar-factura">
-                        Solicitar Factura (Aplica 21% IVA)
+                    <label class="form-check-label fw-bold mb-3" for="get-invoice">
+                        Factura
                     </label>
-                    <input class="ms-0" type="checkbox" role="switch" name="invoice_required" id="solicitar-factura">
+                    <input class="ms-0" type="checkbox" role="switch" name="invoice_required" id="get-invoice">
 
                 </div>
 
@@ -174,7 +128,6 @@
                 </div>
 
             </div>
-
 
             <!-- Datos de Facturación -->
             <div id="datos-facturacion" class="my-4 p-4 border rounded-3 bg-light" style="display: none; border-left: 4px solid #0d6efd !important;">
@@ -327,46 +280,6 @@
                             <i class="fa-solid fa-plus-circle text-primary me-1"></i> Notas adicionales
                         </label>
                         <textarea class="form-control form-control-lg" name="extra_notes" rows="4" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
-                    </div>
-
-                </div>
-
-                <!-- Seccion de descuentos -->
-                <div class="row border p-3 rounded-3 my-3" style="align-items: center;">
-
-                    <div class="col-12 mb-3 pb-2 border-bottom">
-                        <h5 class="fw-bold mb-1">
-                            <i class="fa-solid fa-tags text-primary me-2"></i> Descuentos y totales
-                        </h5>
-                        <small class="text-muted fw-bold">Ajusta el porcentaje de descuento y revisa el resumen final antes de continuar.</small>
-                    </div>
-
-                    <div class="col-3">
-                        <label class="fw-bold">% Aplicar Descuento</label>
-                        <select class="input form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 42px;">
-                            <option value="">Selecciona Descuento</option>
-                            <option value="5">5%</option>
-                            <option value="10">10%</option>
-                            <option value="15">15%</option>
-                        </select>
-                    </div>
-
-                    <div class="col-2">
-                        <label class="fw-bold">Subtotal</label>
-                        <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
-                        <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
-                    </div>
-
-                    <div class="col-2">
-                        <label class="fw-bold">Descuento</label>
-                        <div class="discount-section" style="font-size:1.3rem;font-weight:600;color:#dc3545;">-0.00€</div>
-                        <input type="hidden" class="discount-value" name="discount_value" value="0.00">
-                    </div>
-
-                    <div class="col-2">
-                        <label class="fw-bold">Total</label>
-                        <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
-                        <input type="hidden" class="total-value" name="total" value="0.00">
                     </div>
 
                 </div>
@@ -554,6 +467,55 @@
 
                     </div>
 
+                </div>
+
+            </div>
+
+            <!-- Seccion de totales, descuentos e IVA -->
+            <div class="mb-5 p-4 border rounded-3 bg-light  d-flex flex-wrap">
+
+                <div class="col-12 my-4 pb-2 border-bottom">
+
+                    <h2 class="fw-bold mb-1">
+                        <i class="fa-solid fa-tags text-primary me-2"></i> Descuentos y totales
+                    </h2>
+                    <small class="text-muted fw-bold">Ajusta el porcentaje de descuento y revisa el resumen final antes de continuar.</small>
+
+                </div>
+
+                <div class="col-3">
+                    <label class="fw-bold">Descuento</label>
+                    <select class="form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 40px;">
+                        <option value="">Selecciona Descuento</option>
+                        <option value="5">5%</option>
+                        <option value="10">10%</option>
+                        <option value="15">15%</option>
+                    </select>
+                </div>
+
+                <div class="col-2 text-center">
+                    <label class="fw-bold">Subtotal</label>
+                    <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
+                    <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
+                </div>
+
+                <div class="col-2 text-center">
+                    <label class="fw-bold">Descuento</label>
+                    <div class="discount-section" style="font-size:1.3rem;font-weight:600;color:#dc3545;">-0.00€</div>
+                    <input type="hidden" class="discount-value" name="discount_value" value="0.00">
+                </div>
+
+
+                <div class="col-2 text-center">
+                    <label class="fw-bold">IVA</label>
+                    <div class="tax-section" style="font-size:1.3rem;font-weight:600;color:green;">0.00€</div>
+                    <input type="hidden" class="tax-value" name="tax_value" value="0.00">
+                </div>
+
+                <div class="col-2 text-center">
+                    <label class="fw-bold">Total</label>
+                    <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
+                    <input type="hidden" class="total-value" name="total" value="0.00">
                 </div>
 
             </div>
@@ -792,7 +754,7 @@
     document.addEventListener('DOMContentLoaded', function() {
 
         // Toggle de datos de facturación
-        var toggleFactura = document.getElementById('solicitar-factura');
+        var toggleFactura = document.getElementById('get-invoice');
         var datosFacturacion = document.getElementById('datos-facturacion');
         var fieldsFactura = ['razon-social', 'nif-cif', 'email-factura', 'direccion-calle', 'direccion-cp', 'direccion-ciudad'];
 

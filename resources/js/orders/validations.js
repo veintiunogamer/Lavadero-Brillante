@@ -249,7 +249,7 @@ class OrderFormValidator extends FormValidator {
         }
 
         // Validar que si solicita factura, tenga los datos completos
-        const solicitaFactura = document.getElementById('solicitar-factura');
+        const solicitaFactura = document.getElementById('get-invoice');
 
         if (solicitaFactura && solicitaFactura.checked) {
             

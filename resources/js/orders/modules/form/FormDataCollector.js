@@ -195,7 +195,7 @@ export class FormDataCollector {
      */
     getInvoiceData() {
 
-        const invoiceRequired = document.getElementById('solicitar-factura')?.checked;
+        const invoiceRequired = document.getElementById('get-invoice')?.checked;
 
         if (invoiceRequired) {
 
