@@ -10,11 +10,11 @@
 
         <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
             <div class="col-6">
-                <h2 class="m-0">
+                <h1 class="m-0 fw-bold">
                     <i class="fa-solid fa-cog icon color-blue"></i>
-                    Configuraciones
-                </h2>
-                <p class="fw-bold small text-muted">Configuraciones del sistema.</p>
+                    CONFIGURACIONES
+                </h1>
+                <span class="fw-bold text-muted">Aquí puedes crear y gestionar las configuraciones del sistema.</span>
             </div>
         </div>
 
@@ -56,21 +56,47 @@
 
             <div class="card shadow-sm rounded-4 p-4 mb-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <button @click="openCategoryModal()" class="btn btn-success fw-bold">
-                        <i class="fa-solid fa-plus me-2"></i>
-                        Crear Categoría
-                    </button>
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-2 p-2">
 
-                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <h3 class="m-0 fw-bold">
+                            <i class="fa-solid fa-tags text-primary me-2"></i>
+                            Gestión de Categorías
+                        </h3>
+                        <medium class="text-muted fw-bold">Crea, edita y desactiva las categorías para organizar tus servicios.</medium>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+
+                        <button @click="openCategoryModal()" class="btn btn-success btn-lg fw-bold float-end">
+                            <i class="fa-solid fa-plus me-2"></i>
+                            Crear Categoría
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Filtros -->
+                <div class="col-12 filter-section 
+                d-flex flex-wrap align-items-center">
+
+                    <div class="col-12 border-bottom mb-1">
+                        <label class="fw-bold mb-1 fs-5">
+                            <i class="fa-solid fa-filter text-primary me-1"></i>
+                            Filtros de búsqueda
+                        </label>
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
                         <input type="text"
                             x-model="searchTerms.categories"
                             @input="resetPagination('categories')"
                             class="form-control pe-5"
                             placeholder="Buscar categorías...">
-                        <i class="fa-solid fa-search position-absolute"
-                            style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
+
                 </div>
 
                 <table class="table table-striped table-bordered align-middle">

@@ -16,15 +16,18 @@
         <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
 
             <div class="col-6">
-                <h2 class="m-0">
+
+                <h1 class="m-0 fw-bold">
                     <i class="fa-solid fa-user-cog icon color-blue"></i>
-                    Listado de usuarios
-                </h2>
-                <p class="fw-bold small text-muted">Listado y gestión de usuarios del sistema.</p>
+                    LISTADO DE USUARIOS
+                </h1>
+
+                <span class="fw-bold text-muted">Listado y gestión de usuarios del sistema.</span>
+
             </div>
 
             <div class="col-6">
-                <button @click="openModal()" class="btn btn-success mb-3 float-end">
+                <button @click="openModal()" class="btn btn-success btn-lg mb-3 float-end">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Usuario
                 </button>

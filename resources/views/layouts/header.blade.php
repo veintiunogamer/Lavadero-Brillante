@@ -17,24 +17,39 @@
         @endphp
 
         <!-- Home - Inicio -->
-        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}"><i class="fa-solid fa-home me-1"></i><span class="nav-text">Inicio</span></a>
+        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }} fw-bold">
+            <i class="fa-solid fa-home me-1 text-yellow"></i>
+            <span class="nav-text">Inicio</span>
+        </a>
 
         <!-- Orders - Agenda -->
-        <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.*') ? 'active' : '' }}"><i class="fa-solid fa-calendar-check me-1"></i><span class="nav-text">Agenda</span></a>
-
-        <!-- Settings - Configuración -->
-        @if($isAdmin)
-        <a href="{{ route('settings.index') }}" class="{{ request()->routeIs('settings.*') ? 'active' : '' }}"><i class="fa-solid fa-cog me-1"></i><span class="nav-text">Configuración</span></a>
-        @endif
+        <a href="{{ route('orders.index') }}" class="{{ request()->routeIs('orders.*') ? 'active' : '' }} fw-bold">
+            <i class="fa-solid fa-calendar-check me-1"></i>
+            <span class="nav-text">Agenda</span>
+        </a>
 
         <!-- Users - Usuarios (Solo Administradores) -->
         @if($isAdmin)
-        <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }}"><i class="fa-solid fa-users me-1"></i><span class="nav-text">Usuarios</span></a>
+        <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }} fw-bold">
+            <i class="fa-solid fa-users me-1"></i>
+            <span class="nav-text">Usuarios</span>
+        </a>
         @endif
 
         <!-- Reports - Informes -->
         @if($isAdmin || $isCashier)
-        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }}"><i class="fa-solid fa-chart-line me-1"></i><span class="nav-text">Informes</span></a>
+        <a href="{{ route('reports.index') }}" class="{{ request()->routeIs('reports.*') ? 'active' : '' }} fw-bold">
+            <i class="fa-solid fa-chart-line me-1"></i>
+            <span class="nav-text">Informes</span>
+        </a>
+        @endif
+
+        <!-- Settings - Configuración -->
+        @if($isAdmin)
+        <a href="{{ route('settings.index') }}" class="{{ request()->routeIs('settings.*') ? 'active' : '' }} fw-bold">
+            <i class="fa-solid fa-cog me-1"></i>
+            <span class="nav-text">Configuración</span>
+        </a>
         @endif
 
     </nav>

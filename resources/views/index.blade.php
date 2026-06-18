@@ -12,22 +12,25 @@
         <div class="my-4 p-4">
 
             <!-- Cabezera -->
-            <div class="col-12 d-flex mb-4">
+            <div class="col-12 d-flex mb-4 flex-wrap">
 
-                <div class="col-8 d-flex flex-column justify-content-center">
-                    <h2 class="card-title m-0">
+                <div class="col-lg-10 col-md-6 col-sm-12 d-flex flex-column justify-content-center">
+                    <h1 class="m-0 fw-bold">
                         <i class="fa-solid fa-list icon color-blue"></i>
                         FORMULARIO DE AGENDAMIENTO
-                    </h2>
+                    </h1>
                     <span class="text-muted fw-bold">Aqui podra diligenciar su orden sin ningun problema.</span>
                 </div>
 
-                <div class="col-4 text-end">
+                <div class="col-lg-2 col-md-6 col-sm-12 d-flex flex-column justify-content-center text-center">
 
-                    <label class="fw-bold">Consecutivo</label>
-                    <div style="gap: 0.5rem;">
-                        <input type="text" class="input float-right border-success" name="consecutive_serial" readonly data-field-name="Serial" style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
-                        <input type="text" class="input float-right border-success" name="consecutive_number"
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-hashtag text-primary me-1"></i>
+                        Consecutivo
+                    </label>
+                    <div class="d-flex justify-content-end" style="gap: 0.5rem;">
+                        <input type="text" class="input float-right" name="consecutive_serial" readonly data-field-name="Serial" style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
+                        <input type="text" class="input float-right" name="consecutive_number"
                             id="consecutive_number" readonly value="{{ $consecutive['sequence'] ?? '' }}" data-field-name="Número" style="width: 70px;">
                     </div>
 
@@ -591,16 +594,17 @@
             </div>
 
             <!-- Filtro de búsqueda -->
-            <div class="col-12 p-1 mt-3 bg-light border rounded-3 d-flex flex-wrap align-items-center mb-3">
+            <div class="col-12 filter-section 
+            d-flex flex-wrap align-items-center">
 
-                <div class="col-12 p-3 border-bottom mb-1">
+                <div class="col-12 border-bottom mb-1">
                     <label class="fw-bold mb-1 fs-5">
                         <i class="fa-solid fa-filter text-primary me-1"></i>
                         Filtros de búsqueda
                     </label>
                 </div>
 
-                <div class="col-3 p-3">
+                <div class="col-3 p-1 mt-2">
                     <input type="text"
                         x-model="searchTerms[currentTab]"
                         @input="resetPagination(currentTab)"
