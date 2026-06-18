@@ -187,14 +187,14 @@
                         <label class="form-label fw-bold">
                             Nombre Completo <span class="text-danger">*</span>
                         </label>
-                        <input type="text" x-model="form.name" class="form-control" required>
+                        <input type="text" x-model="form.name" class="form-control" maxlength="30" required>
                     </div>
 
                     <div class="col-lg-3 col-md-4 col-sm-12">
                         <label class="form-label fw-bold">
                             Correo Electrónico <span class="text-danger">*</span>
                         </label>
-                        <input type="email" x-model="form.email" class="form-control" required>
+                        <input type="email" x-model="form.email" class="form-control" maxlength="40" required>
                     </div>
 
                     <div class="col-lg-3 col-md-4 col-sm-12">
@@ -209,7 +209,7 @@
                         <label class="form-label fw-bold">
                             Usuario <span class="text-danger">*</span>
                         </label>
-                        <input type="text" x-model="form.username" class="form-control" required>
+                        <input type="text" x-model="form.username" class="form-control" maxlength="20" required>
                     </div>
 
                     <div class="col-lg-3 col-md-4 col-sm-12">
@@ -237,7 +237,7 @@
                             Contraseña <span class="text-danger">*</span>
                         </label>
                         <div class="position-relative">
-                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5" :required="!isEditing">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5" :required="!isEditing" maxlength="20">
                             <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
                                 <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
                             </button>

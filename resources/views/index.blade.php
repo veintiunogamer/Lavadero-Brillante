@@ -48,7 +48,7 @@
 
                 <div class="col-md-3 mb-3 px-2">
                     <label class="fw-bold">Nombre Cliente<span class="required">*</span></label>
-                    <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo" data-field-name="Nombre del Cliente">
+                    <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo" maxlength="30" data-field-name="Nombre del Cliente">
                 </div>
 
                 <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
@@ -123,7 +123,7 @@
                             <i class="fa fa-list text-primary"></i>&nbsp;
                             Observaciones
                         </label>
-                        <textarea class="input form-control form-control-lg" name="vehicle_notes" rows="5" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+                        <textarea class="input form-control form-control-lg" name="vehicle_notes" rows="5" maxlength="250" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
                     </div>
                 </div>
 
@@ -142,25 +142,33 @@
                         <small class="text-muted d-block fw-bold">Complete la información fiscal para emitir la factura</small>
                     </div>
 
-                    <div class="col-md-4 mb-3 px-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
                         <label class="fw-bold mb-1">
                             Razón Social <span class="required">*</span>
                         </label>
-                        <input type="text" class="form-control" name="invoice_business_name" id="razon-social" placeholder="Nombre de la empresa" data-field-name="Razón Social">
+                        <input type="text" class="form-control" name="invoice_business_name" id="razon-social" maxlength="40" placeholder="Nombre de la empresa" data-field-name="Razón Social">
                     </div>
 
-                    <div class="col-md-4 mb-3 px-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
                         <label class="fw-bold mb-1">
                             NIF / CIF <span class="required">*</span>
                         </label>
-                        <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678" data-field-name="NIF/CIF">
+                        <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678" maxlength="10" data-field-name="NIF/CIF">
                     </div>
 
-                    <div class="col-md-4 mb-3 px-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
                         <label class="fw-bold mb-1">
                             Email
                         </label>
-                        <input type="email" class="form-control email-field" name="invoice_email" id="email-factura" placeholder="email@ejemplo.com" data-field-name="Email de Factura">
+                        <input type="email" class="form-control email-field" name="invoice_email" id="email-factura" maxlength="40" placeholder="email@ejemplo.com" data-field-name="Email de Factura">
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
+                        <label class="fw-bold mb-1">
+                            Telefono
+                        </label>
+                        <input type="text" class="form-control" name="invoice_phone" id="telefono-factura" maxlength="15" placeholder="Ej: 123456789" data-field-name="Telefono de Factura">
                     </div>
 
                     <hr>
@@ -172,15 +180,15 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2 my-2">
-                        <input type="text" class="form-control" name="invoice_address" id="direccion-calle" placeholder="Calle, número, puerta" data-field-name="Dirección">
+                        <input type="text" class="form-control" name="invoice_address" id="direccion-calle" maxlength="40" placeholder="Calle, número, puerta" data-field-name="Dirección">
                     </div>
 
                     <div class="col-lg-4 col-md-3 col-sm-12 mb-3 px-2 my-2">
-                        <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad" placeholder="Ciudad" data-field-name="Ciudad">
+                        <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad" maxlength="20" placeholder="Ciudad" data-field-name="Ciudad">
                     </div>
 
                     <div class="col-lg-2 col-md-3 col-sm-12 mb-3 px-2 my-2">
-                        <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp" placeholder="Código Postal" data-field-name="Código Postal">
+                        <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp" maxlength="7" placeholder="Código Postal" data-field-name="Código Postal">
                     </div>
 
                 </div>
@@ -235,7 +243,7 @@
                         <label class="fw-bold mb-1">
                             Cant. <span class="required">*</span>
                         </label>
-                        <input type="number" class="form-control required-field input-tall service-quantity" name="quantity" data-service-row="0" value="1" min="1" data-field-name="Cantidad">
+                        <input type="number" class="form-control required-field input-tall service-quantity" name="quantity" data-service-row="0" value="1" min="1" max="99" step="1" data-field-name="Cantidad">
                     </div>
 
                     <div class="col-lg-2 col-md-2 col-sm-12 px-2">
@@ -265,7 +273,7 @@
                             <i class="fa-solid fa-message text-primary me-1"></i>
                             Descripción de la cita (se genera automáticamente)
                         </label>
-                        <textarea class="form-control form-control-lg" name="order_notes" rows="4">Ninguno de nuestros precios incluye IVA.</textarea>
+                        <textarea class="form-control form-control-lg" name="order_notes" rows="4" maxlength="250">Ninguno de nuestros precios incluye IVA.</textarea>
                     </div>
 
                     <small class="badge bg-warning text-dark mb-3 text-left">
@@ -279,7 +287,7 @@
                         <label class="fw-bold mb-2">
                             <i class="fa-solid fa-plus-circle text-primary me-1"></i> Notas adicionales
                         </label>
-                        <textarea class="form-control form-control-lg" name="extra_notes" rows="4" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
+                        <textarea class="form-control form-control-lg" name="extra_notes" rows="4" maxlength="100" placeholder="Ej.: cliente espera; promo aplicada; aclaraciones..."></textarea>
                     </div>
 
                 </div>
@@ -547,39 +555,49 @@
         <!-- Listado de citas agendamiento -->
         <div class="card mt-4 p-4 rounded-4">
 
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-5">
                 <h2 class="citas-title mb-0">
                     <i class="fa-solid fa-list-check icon color-blue"></i>
                     Registro de Citas
                 </h2>
-                <div class="position-relative" style="max-width: 350px; width: 100%;">
-                    <input type="text"
-                        x-model="searchTerms[currentTab]"
-                        @input="resetPagination(currentTab)"
-                        class="form-control pe-5"
-                        placeholder="Buscar citas...">
-                    <i class="fa-solid fa-search position-absolute"
-                        style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
-                </div>
             </div>
 
+            <!-- Tabs para filtrar entre citas pendientes y historial -->
             <div class="citas-tabs">
 
                 <button class="citas-tab"
                     :class="currentTab === 'pending' ? 'citas-tab-active' : ''"
                     @click="changeTab('pending')">
-                    <i class="fa-solid fa-calendar icon"></i> Citas Pendientes
+                    <i class="fa-solid fa-calendar icon"></i> Citas
                 </button>
 
                 <button class="citas-tab"
                     :class="currentTab === 'history' ? 'citas-tab-active' : ''"
                     @click="changeTab('history')">
-                    <i class="fa-solid fa-clock icon"></i> Historial Completo
+                    <i class="fa-solid fa-clock icon"></i> Historial
                 </button>
 
             </div>
 
-            <hr>
+            <!-- Filtro de búsqueda -->
+            <div class="col-12 p-1 mt-3 bg-light border rounded-3 d-flex flex-wrap align-items-center mb-3">
+
+                <div class="col-12 p-3 border-bottom mb-1">
+                    <label class="fw-bold mb-1 fs-5">
+                        <i class="fa-solid fa-filter text-primary me-1"></i>
+                        Filtros de búsqueda
+                    </label>
+                </div>
+
+                <div class="col-3 p-3">
+                    <input type="text"
+                        x-model="searchTerms[currentTab]"
+                        @input="resetPagination(currentTab)"
+                        class="form-control pe-5 border border-3"
+                        placeholder="Buscar citas...">
+                </div>
+
+            </div>
 
             <!-- Loading spinner -->
             <div x-show="loadingOrders" class="text-center py-4">

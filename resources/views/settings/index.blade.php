@@ -615,7 +615,7 @@
             <form @submit.prevent="saveCategory()">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                    <input type="text" x-model="categoryForm.cat_name" class="form-control" required>
+                    <input type="text" x-model="categoryForm.cat_name" class="form-control" maxlength="30" required>
                     <span x-show="errors.category.cat_name" x-text="errors.category.cat_name?.[0]" class="text-danger small"></span>
                 </div>
 
@@ -671,7 +671,7 @@
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" x-model="serviceForm.name" class="form-control" placeholder="Ej: Lavado Premium" required>
+                        <input type="text" x-model="serviceForm.name" class="form-control" maxlength="30" placeholder="Ej: Lavado Premium" required>
                         <span x-show="errors.service.name" x-text="errors.service.name?.[0]" class="text-danger small"></span>
                     </div>
 
@@ -688,7 +688,7 @@
 
                     <div class="col-12 mb-3 px-2">
                         <label class="form-label fw-bold">Detalles <span class="text-danger">*</span></label>
-                        <textarea x-model="serviceForm.details" class="form-control" rows="3" placeholder="Descripción del servicio..." required></textarea>
+                        <textarea x-model="serviceForm.details" class="form-control" rows="3" maxlength="100" placeholder="Descripción del servicio..." required></textarea>
                         <span x-show="errors.service.details" x-text="errors.service.details?.[0]" class="text-danger small"></span>
                     </div>
 
@@ -744,7 +744,7 @@
             <form @submit.prevent="saveVehicleType()">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                    <input type="text" x-model="vehicleTypeForm.name" class="form-control" required>
+                    <input type="text" x-model="vehicleTypeForm.name" class="form-control" maxlength="30" required>
                     <span x-show="errors.vehicleType.name" x-text="errors.vehicleType.name?.[0]" class="text-danger small"></span>
                 </div>
 
@@ -786,7 +786,7 @@
 
                     <div class="col-12 mb-3 px-2">
                         <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" x-model="clientForm.name" class="form-control" required>
+                        <input type="text" x-model="clientForm.name" class="form-control" maxlength="30" required>
                         <span x-show="errors.client.name" x-text="errors.client.name?.[0]" class="text-danger small"></span>
                     </div>
 
@@ -803,7 +803,7 @@
                             @input.debounce.500ms="checkLicensePlate($event.target.value)"
                             class="form-control license-plate-input"
                             placeholder="1234 ABC"
-                            maxlength="10"
+                            maxlength="8"
                             style="text-transform: uppercase;">
                         <span x-show="errors.client.license_plaque" x-text="errors.client.license_plaque?.[0]" class="text-danger small"></span>
                         <small x-show="licensePlateExists" class="text-danger">
