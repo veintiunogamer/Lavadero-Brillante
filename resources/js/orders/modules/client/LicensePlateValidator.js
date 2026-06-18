@@ -112,6 +112,19 @@ export class LicensePlateValidator {
             this.clientPhoneInput.value = phoneValue.replace(/\D/g, '').slice(-9);
         }
 
+        // Rellenar modelo (brand)
+        const brandInput = document.getElementById('client-brand-input');
+        if (brandInput) {
+            brandInput.value = client.brand || '';
+        }
+
+        // Rellenar flota y sincronizar periodo de pago
+        const fleetSwitch = document.querySelector('input[name="fleet"]');
+        if (fleetSwitch) {
+            fleetSwitch.checked = !!client.fleet;
+            fleetSwitch.dispatchEvent(new Event('change'));
+        }
+
         if (this.licensePlateInfo) {
             this.licensePlateInfo.style.display = 'block';
         }

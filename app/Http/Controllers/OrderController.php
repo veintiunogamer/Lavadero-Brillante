@@ -125,6 +125,8 @@ class OrderController extends Controller
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'required|string|max:20',
                 'license_plaque' => 'required|string|max:10',
+                'client_brand' => 'nullable|string|max:50',
+                'fleet' => 'nullable|boolean',
                 'assigned_user' => 'required|uuid|exists:users,id',
                 'vehicle_type_id' => 'required|uuid|exists:vehicle_type,id',
                 'dirt_level' => 'required|integer|min:1|max:3',
@@ -177,6 +179,8 @@ class OrderController extends Controller
                     'name' => $validated['client_name'],
                     'phone' => $clientPhone,
                     'license_plaque' => $licensePlaque,
+                    'brand' => $validated['client_brand'] ?? null,
+                    'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
                     'status' => \App\Models\Client::STATUS_ACTIVE,
                     'creation_date' => now(),
                 ]);
@@ -186,6 +190,8 @@ class OrderController extends Controller
                     'name' => $validated['client_name'],
                     'phone' => $clientPhone,
                     'license_plaque' => $licensePlaque,
+                    'brand' => $validated['client_brand'] ?? null,
+                    'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
                 ]);
             }
 
@@ -336,6 +342,8 @@ class OrderController extends Controller
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'nullable|string|max:20',
                 'license_plaque' => 'required|string|max:15',
+                'client_brand' => 'nullable|string|max:50',
+                'fleet' => 'nullable|boolean',
                 'assigned_user' => 'nullable|uuid',
                 'vehicle_type_id' => 'required|uuid|exists:vehicle_type,id',
                 'dirt_level' => 'required|integer|in:1,2,3',
@@ -369,6 +377,8 @@ class OrderController extends Controller
                 'name' => $validated['client_name'],
                 'phone' => $validated['client_phone'],
                 'license_plaque' => strtoupper($validated['license_plaque']),
+                'brand' => $validated['client_brand'] ?? null,
+                'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
             ]);
 
             // Preparar fechas y horas

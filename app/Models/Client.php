@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
@@ -19,8 +21,13 @@ class Client extends Model
         'name',
         'phone',
         'license_plaque',
+        'brand',
+        'fleet',
         'status',
         'creation_date'
     ];
 
+    protected $casts = [
+        'fleet' => 'boolean',
+    ];
 }

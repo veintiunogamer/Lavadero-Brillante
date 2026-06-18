@@ -48,7 +48,9 @@ export class FormDataCollector {
         return {
             client_name: document.querySelector('input[name="client_name"]')?.value || '',
             client_phone: document.getElementById('telefono-whatsapp')?.value || '',
-            license_plaque: document.querySelector('input[name="license_plaque"]')?.value || ''
+            license_plaque: document.querySelector('input[name="license_plaque"]')?.value || '',
+            client_brand: document.getElementById('client-brand-input')?.value || '',
+            fleet: document.querySelector('input[name="fleet"]')?.checked ? true : false
         };
 
     }

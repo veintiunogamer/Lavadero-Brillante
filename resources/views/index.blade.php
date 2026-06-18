@@ -79,6 +79,17 @@
                 </div>
 
                 <div class="col-md-3 mb-3 px-2">
+                    <label class="fw-bold">Modelo</label>
+                    <input type="text"
+                        class="input form-control"
+                        name="client_brand"
+                        id="client-brand-input"
+                        placeholder="Ej: Toyota Corolla"
+                        maxlength="50"
+                        data-field-name="Modelo">
+                </div>
+
+                <div class="col-md-3 mb-3 px-2">
                     <label class="fw-bold">Tipo Vehículo <span class="required">*</span></label>
                     <select class="input form-control required-field vehicle-type" name="vehicle_type_id" data-field-name="Tipo de Vehículo">
                         <option value="">Selecciona un tipo</option>

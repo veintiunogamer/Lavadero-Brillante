@@ -41,6 +41,8 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'license_plaque' => 'nullable|string|max:20',
+            'brand' => 'nullable|string|max:50',
+            'fleet' => 'nullable|boolean',
         ]);
 
         $client = Client::create([
@@ -48,6 +50,8 @@ class ClientController extends Controller
             'name' => $request->name,
             'phone' => $request->phone,
             'license_plaque' => $request->license_plaque,
+            'brand' => $request->brand,
+            'fleet' => (bool) $request->fleet,
             'status' => 1,
             'creation_date' => now(),
         ]);
@@ -80,12 +84,16 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'license_plaque' => 'nullable|string|max:20',
+            'brand' => 'nullable|string|max:50',
+            'fleet' => 'nullable|boolean',
         ]);
 
         $client->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'license_plaque' => $request->license_plaque,
+            'brand' => $request->brand,
+            'fleet' => (bool) $request->fleet,
         ]);
         return response()->json($client);
     }
