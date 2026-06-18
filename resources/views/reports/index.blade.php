@@ -10,12 +10,12 @@
 
         <div class="reports-header col-12 d-flex justify-content-between align-items-center mb-3 p-4">
 
-            <div>
-                <h2 class="reports-title">
+            <div class="reports-title-section">
+                <h1 class="reports-title fw-bold">
                     <i class="fa-solid fa-chart-line icon color-blue"></i>
-                    Informes y Analíticas
-                </h2>
-                <p class="reports-subtitle fw-bold">Panel de reportes y estadísticas.</p>
+                    INFORMES Y ESTADÍSTICAS
+                </h1>
+                <span class="reports-subtitle fw-bold text-muted">Panel de reportes y estadísticas.</span>
             </div>
 
             <div class="reports-controls">

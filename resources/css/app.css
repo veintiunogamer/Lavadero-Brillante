@@ -714,22 +714,6 @@ hr {
     margin-bottom: 1rem;
 }
 
-.reports-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 0.25rem;
-}
-
-.reports-subtitle {
-    color: #64748b;
-    margin-bottom: 0;
-}
-
-.reports-title .icon {
-    color: var(--color-azul-logo);
-}
-
 .reports-controls {
     display: flex;
     flex-wrap: nowrap;
