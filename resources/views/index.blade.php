@@ -443,7 +443,7 @@
                                 <label class="fw-bold">Método de Pago <span class="required">*</span></label>
                                 <select class="input form-control required-field" name="payment_method" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Método de Pago">
                                     <option value="1">Efectivo</option>
-                                    <option value="2">Tarjeta</option>
+                                    <option value="2">TPV</option>
                                     <option value="3">Transferencia</option>
                                 </select>
                             </div>

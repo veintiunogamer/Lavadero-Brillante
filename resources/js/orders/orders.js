@@ -167,7 +167,7 @@ window.agendamientoApp = function() {
 
             const methods = {
                 1: 'Efectivo',
-                2: 'Tarjeta',
+                2: 'TPV',
                 3: 'Transferencia',
                 4: 'Bizum'
             };
