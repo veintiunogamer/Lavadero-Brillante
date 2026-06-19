@@ -99,6 +99,8 @@ class ReportController extends Controller
                 'c.name',
                 'c.phone',
                 'c.license_plaque',
+                'c.brand',
+                'c.fleet',
                 'c.status',
                 DB::raw('COUNT(o.id) as orders_count'),
                 DB::raw('COALESCE(SUM(o.total), 0) as total_spent'),
@@ -305,18 +307,22 @@ class ReportController extends Controller
                 'c.name',
                 'c.phone',
                 'c.license_plaque',
+                'c.brand',
+                'c.fleet',
                 DB::raw('COUNT(o.id) as orders_count'),
                 DB::raw('COALESCE(SUM(o.total), 0) as total_spent'),
                 DB::raw('MAX(o.creation_date) as last_order_date'),
             ])
-            ->groupBy('c.id', 'c.name', 'c.phone', 'c.license_plaque')
+            ->groupBy('c.id', 'c.name', 'c.phone', 'c.license_plaque', 'c.brand', 'c.fleet')
             ->orderBy('c.name');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('c.name', 'like', '%' . $search . '%')
                     ->orWhere('c.phone', 'like', '%' . $search . '%')
-                    ->orWhere('c.license_plaque', 'like', '%' . $search . '%');
+                    ->orWhere('c.license_plaque', 'like', '%' . $search . '%')
+                    ->orWhere('c.brand', 'like', '%' . $search . '%')
+                    ->orWhere('c.fleet', 'like', '%' . $search . '%');
             });
         }
 

@@ -18,23 +18,6 @@
                 <span class="reports-subtitle fw-bold text-muted">Panel de reportes y estadísticas.</span>
             </div>
 
-            <div class="reports-controls">
-
-                <select class="form-select form-select-sm"
-                    x-model="salesRange"
-                    @change="changeSalesRange()"
-                    :disabled="activeTab !== 'sales'">
-                    <option value="today">Hoy</option>
-                    <option value="month">Este Mes</option>
-                    <option value="week">Esta Semana</option>
-                </select>
-
-                <button class="btn btn-warning text-dark btn-sm" @click="openExportModal()">
-                    <i class="fa-solid fa-download me-1"></i>
-                    Descargar Informe Actual
-                </button>
-
-            </div>
 
         </div>
 
@@ -59,14 +42,18 @@
             <!-- ==================== VENTAS Y FACTURACIÓN ==================== -->
             <div x-show="activeTab === 'sales'">
 
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 border-bottom pb-3">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-2 mb-3 border-bottom pb-3">
+
                     <div>
-                        <h3 class="reports-section-title m-0">
+                        <h2 class="reports-section-title m-0">
                             <i class="fa-solid fa-dollar-sign text-primary"></i>
                             Ventas y Facturación
-                        </h3>
+                        </h2>
+
                         <span class="reports-section-hint fw-bold" x-text="getRangeLabel()"></span>
                     </div>
+
                 </div>
 
                 <div x-show="loadingSales" class="text-center py-4">
@@ -75,14 +62,64 @@
                     </div>
                 </div>
 
+                <!-- ==================== FILTROS Y CONTROLES ==================== -->
+                <div class="col-12 filter-section
+                    d-flex flex-wrap align-items-center">
+
+                    <div class="col-12 border-bottom mb-1">
+                        <label class="fw-bold mb-1 fs-5">
+                            <i class="fa-solid fa-filter text-primary me-1"></i>
+                            Filtros de búsqueda
+                        </label>
+                    </div>
+
+
+                    <div class="col-3 p-1 mt-2">
+
+                        <select class="form-select form-select-lg"
+                            x-model="salesRange"
+                            @change="changeSalesRange()"
+                            :disabled="activeTab !== 'sales'">
+                            <option value="today">Hoy</option>
+                            <option value="month">Este Mes</option>
+                            <option value="week">Esta Semana</option>
+                        </select>
+
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
+                        <input type="date" class="form-control form-control-lg"
+                            x-model="customStartDate"
+                            @change="changeSalesRange('custom')"
+                            :disabled="activeTab !== 'sales'">
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
+
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
+
+                        <button class="btn btn-primary text-white btn-lg float-end" @click="openExportModal()">
+                            <i class="fa-solid fa-download me-1"></i>
+                            Exportar
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Empty State -->
                 <div x-show="!loadingSales && getFilteredData('sales').length === 0" class="citas-empty-state" style="min-height: 220px;">
                     <i class="fa-solid fa-receipt citas-empty-icon" style="color:#fde68a;"></i>
                     <p class="citas-empty-title">Sin ventas en este periodo</p>
                     <p class="citas-empty-sub">No hay datos de ventas para el rango de fechas seleccionado.<br>Prueba con otro periodo o verifica que existan citas completadas.</p>
                 </div>
 
+                <!-- Contenido -->
                 <div x-show="!loadingSales && getFilteredData('sales').length > 0" class="table-responsive">
 
+                    <!-- ==================== TABLA ==================== -->
                     <table class="table table-hover table-bordered align-middle reports-table">
 
                         <thead>
@@ -171,21 +208,14 @@
             <!-- ==================== CLIENTES Y FIDELIZACIÓN ==================== -->
             <div x-show="activeTab === 'clients'">
 
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 border-bottom pb-3">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-2 mb-3 border-bottom pb-3">
+
                     <div>
-                        <h3 class="reports-section-title m-0">
+                        <h2 class="reports-section-title m-0">
                             <i class="fa-solid fa-user-check text-primary"></i>
                             Clientes y Fidelización
-                        </h3>
+                        </h2>
                         <span class="reports-section-hint fw-bold">Búsqueda libre por nombre, teléfono o matrícula.</span>
-                    </div>
-
-                    <div class="position-relative" style="max-width: 320px; width: 100%;">
-                        <input type="text"
-                            x-model="searchTerms.clients"
-                            @input="resetPagination('clients')"
-                            class="form-control"
-                            placeholder="Buscar clientes...">
                     </div>
                 </div>
 
@@ -193,6 +223,36 @@
                     <div class="spinner-border text-info" role="status">
                         <span class="visually-hidden">Cargando...</span>
                     </div>
+                </div>
+
+                <div class="col-12 filter-section
+                    d-flex flex-wrap align-items-center">
+
+                    <div class="col-12 border-bottom mb-1">
+                        <label class="fw-bold mb-1 fs-5">
+                            <i class="fa-solid fa-filter text-primary me-1"></i>
+                            Filtros de búsqueda
+                        </label>
+                    </div>
+
+
+                    <div class="col-3 p-1 mt-2">
+                        <input type="text"
+                            x-model="searchTerms.clients"
+                            @input="resetPagination('clients')"
+                            class="form-control form-control-lg"
+                            placeholder="Buscar clientes...">
+                    </div>
+
+                    <div class="col-9 p-1 mt-2">
+
+                        <button class="btn btn-primary text-white btn-lg float-end" @click="openExportModal()">
+                            <i class="fa-solid fa-download me-1"></i>
+                            Exportar
+                        </button>
+
+                    </div>
+
                 </div>
 
                 <div x-show="!loadingClients && getFilteredData('clients').length === 0" class="citas-empty-state" style="min-height: 220px;">
@@ -208,6 +268,8 @@
                                 <th>Cliente</th>
                                 <th>Teléfono</th>
                                 <th>Matrícula</th>
+                                <th>Modelo</th>
+                                <th>Flota</th>
                                 <th>Citas</th>
                                 <th>Total gastado</th>
                                 <th>Última visita</th>
@@ -219,6 +281,8 @@
                                     <td x-text="client.name"></td>
                                     <td x-text="client.phone || 'N/A'"></td>
                                     <td x-text="client.license_plaque || 'N/A'"></td>
+                                    <td x-text="client.brand || 'N/A'"></td>
+                                    <td x-text="client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td x-text="client.orders_count"></td>
                                     <td x-text="formatCurrency(client.total_spent)"></td>
                                     <td x-text="formatDate(client.last_order_date)"></td>
