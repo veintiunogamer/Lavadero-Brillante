@@ -88,7 +88,7 @@ export const formatDateLong = (date) => {
  * @returns {string}
  */
 export const formatTime = (time) => {
-    if (!time) return 'N/A';
+    if (!time) return '--';
     const date = new Date(time);
     return date.toLocaleTimeString('es-ES', { 
         hour: '2-digit', 

@@ -61,7 +61,7 @@
 
                 <div class="col-lg-4 col-md-6 col-sm-12">
                     <label class="form-label fw-bold">Rol</label>
-                    <input type="text" :value="user.role ? user.role.name : 'N/A'" class="form-control" disabled>
+                    <input type="text" :value="user.role ? user.role.name : '--'" class="form-control" disabled>
                 </div>
 
                 <!-- Cambio de Contraseña -->

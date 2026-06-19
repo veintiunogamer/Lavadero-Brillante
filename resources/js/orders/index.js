@@ -822,7 +822,7 @@ function createOrderFormApp() {
          */
         getPaymentMethodText(method) {
             const methods = { 1: 'Efectivo', 2: 'TPV', 3: 'Transferencia', 4: 'Bizum' };
-            return methods[method] || 'N/A';
+            return methods[method] || '--';
         },
 
         // ==================== ENVÍO DE FORMULARIO ====================

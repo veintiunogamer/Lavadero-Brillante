@@ -189,22 +189,22 @@
 <body>
 
     @php
-    $clientName = optional($order->client)->name ?? 'N/A';
-    $clientPhone = optional($order->client)->phone ?? 'N/A';
-    $licensePlaque = optional($order->client)->license_plaque ?? 'N/A';
-    $vehicleCat = optional($order->vehicleType)->name ?? 'N/A';
-    $operario = optional($order->user)->name ?? 'N/A';
+    $clientName = optional($order->client)->name ?? '--';
+    $clientPhone = optional($order->client)->phone ?? '--';
+    $licensePlaque = optional($order->client)->license_plaque ?? '--';
+    $vehicleCat = optional($order->vehicleType)->name ?? '--';
+    $operario = optional($order->user)->name ?? '--';
 
     $entryDate = $order->hour_in
     ? \Carbon\Carbon::parse($order->hour_in)->locale('es')
     ->isoFormat('D [de] MMMM [de] YYYY [a las] HH:mm')
-    : 'N/A';
+    : '--';
     $exitTime = $order->hour_out
     ? \Carbon\Carbon::parse($order->hour_out)->format('H:i')
-    : 'N/A';
+    : '--';
 
     $dirtLabels = [1 => 'Bajo', 2 => 'Medio', 3 => 'Alto'];
-    $dirtLabel = $dirtLabels[$order->dirt_level] ?? 'N/A';
+    $dirtLabel = $dirtLabels[$order->dirt_level] ?? '--';
 
     $subtotal = $order->subtotal ?? 0;
     $total = $order->total ?? 0;

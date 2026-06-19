@@ -140,13 +140,13 @@
                 <td>
                     @php
                     $payment = $order->payments->first();
-                    $paymentStatus = $payment ? ($paymentStatusLabels[$payment->status] ?? 'Desconocido') : 'N/A';
+                    $paymentStatus = $payment ? ($paymentStatusLabels[$payment->status] ?? 'Desconocido') : '--';
                     @endphp
                     {{ $paymentStatus }}
                 </td>
                 <td>
                     @php
-                    $paymentMethod = $payment ? ($paymentMethodLabels[$payment->type] ?? 'Desconocido') : 'N/A';
+                    $paymentMethod = $payment ? ($paymentMethodLabels[$payment->type] ?? 'Desconocido') : '--';
                     @endphp
                     {{ $paymentMethod }}
                 </td>

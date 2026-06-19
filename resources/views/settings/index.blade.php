@@ -592,8 +592,8 @@
 
                             <tr :class="client.status ? '' : 'table-secondary'">
                                 <td x-text="client.name"></td>
-                                <td x-text="client.phone || 'N/A'"></td>
-                                <td x-text="client.license_plaque || 'N/A'"></td>
+                                <td x-text="client.phone || '--'"></td>
+                                <td x-text="client.license_plaque || '--'"></td>
                                 <td>
                                     <span class="badge" :class="client.status ? 'bg-success' : 'bg-secondary'"
                                         x-text="client.status ? 'Activo' : 'Inactivo'"></span>

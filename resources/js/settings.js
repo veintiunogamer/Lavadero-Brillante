@@ -471,7 +471,7 @@ window.settingsApp = function() {
 
         getCategoryName(categoryId) {
             const category = this.categoriesForServices.find(c => c.id === categoryId);
-            return category ? category.cat_name : 'N/A';
+            return category ? category.cat_name : '--';
         },
 
         // Filtrar servicios por búsqueda

@@ -58,8 +58,8 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
 
         $services = $order->services->pluck('name')->join(', ');
         $payment = $order->payments->first();
-        $paymentStatus = $payment ? ($this->paymentStatusLabels[$payment->status] ?? 'Desconocido') : 'N/A';
-        $paymentMethod = $payment ? ($this->paymentMethodLabels[$payment->type] ?? 'Desconocido') : 'N/A';
+        $paymentStatus = $payment ? ($this->paymentStatusLabels[$payment->status] ?? 'Desconocido') : '--';
+        $paymentMethod = $payment ? ($this->paymentMethodLabels[$payment->type] ?? 'Desconocido') : '--';
 
         $subtotal = (float) ($order->subtotal ?? 0);
         $tax = (float) ($order->tax ?? 0);
@@ -68,10 +68,10 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
 
         return [
             $orderNumber,
-            $order->creation_date ? Carbon::parse($order->creation_date)->format('d/m/Y') : 'N/A',
-            optional($order->client)->name ?? 'N/A',
-            optional($order->client)->fleet ?? 'N/A',
-            $services ?: 'N/A',
+            $order->creation_date ? Carbon::parse($order->creation_date)->format('d/m/Y') : '--',
+            optional($order->client)->name ?? '--',
+            optional($order->client)->fleet ?? '--',
+            $services ?: '--',
             round($subtotal, 2),
             round($tax, 2),
             round($discountPercent, 0),

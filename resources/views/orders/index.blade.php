@@ -142,8 +142,8 @@
 
                     <template x-for="(order, index) in getPaginatedOrders()" :key="index">
                         <tr>
-                            <td x-text="order.client ? order.client.name : 'N/A'"></td>
-                            <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
+                            <td x-text="order.client ? order.client.name : '--'"></td>
+                            <td x-text="order.client ? order.client.license_plaque : '--'"></td>
                             <td>
                                 <template x-for="service in order.services" :key="service.id">
                                     <div x-text="service.name"></div>

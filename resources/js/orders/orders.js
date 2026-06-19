@@ -141,7 +141,7 @@ window.agendamientoApp = function() {
                 3: 'Pagado'
             };
 
-            return statuses[status] || 'N/A';
+            return statuses[status] || '--';
 
         },
 
@@ -169,10 +169,10 @@ window.agendamientoApp = function() {
                 1: 'Efectivo',
                 2: 'TPV',
                 3: 'Transferencia',
-                4: 'Bizum'
+                4: 'Otros'
             };
 
-            return methods[method] || 'N/A';
+            return methods[method] || '--';
 
         },
 
@@ -433,7 +433,7 @@ window.agendamientoApp = function() {
          */
         formatTime(time) {
 
-            if (!time) return 'N/A';
+            if (!time) return '--';
 
             if (time instanceof Date) {
                 return time.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });

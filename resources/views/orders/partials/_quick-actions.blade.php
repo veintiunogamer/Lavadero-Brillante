@@ -49,17 +49,17 @@
 
                     <div class="col-md-3">
                         <label class="fw-bold small">Nombre</label>
-                        <p class="mb-2" x-text="selectedOrder?.client?.name || 'N/A'"></p>
+                        <p class="mb-2" x-text="selectedOrder?.client?.name || '--'"></p>
                     </div>
 
                     <div class="col-md-3">
                         <label class="fw-bold small">Teléfono</label>
-                        <p class="mb-2" x-text="selectedOrder?.client?.phone || 'N/A'"></p>
+                        <p class="mb-2" x-text="selectedOrder?.client?.phone || '--'"></p>
                     </div>
 
                     <div class="col-md-3">
                         <label class="fw-bold small">Matrícula</label>
-                        <p class="mb-2" x-text="selectedOrder?.client?.license_plaque || 'N/A'"></p>
+                        <p class="mb-2" x-text="selectedOrder?.client?.license_plaque || '--'"></p>
                     </div>
 
                 </div>

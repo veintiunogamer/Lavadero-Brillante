@@ -76,9 +76,9 @@
                         <tr>
                             <td x-text="user.name"></td>
                             <td x-text="user.email"></td>
-                            <td x-text="user.phone || 'N/A'"></td>
+                            <td x-text="user.phone || '--'"></td>
                             <td x-text="user.username"></td>
-                            <td x-text="user.role ? user.role.name : 'N/A'"></td>
+                            <td x-text="user.role ? user.role.name : '--'"></td>
                             <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
                             <td class="text-center">
 
@@ -136,9 +136,9 @@
                         <tr class="table-secondary">
                             <td x-text="user.name"></td>
                             <td x-text="user.email"></td>
-                            <td x-text="user.phone || 'N/A'"></td>
+                            <td x-text="user.phone || '--'"></td>
                             <td x-text="user.username"></td>
-                            <td x-text="user.role ? user.role.name : 'N/A'"></td>
+                            <td x-text="user.role ? user.role.name : '--'"></td>
                             <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
                             <td>
                                 <button @click="activateUser(user.id)" class="btn btn-sm btn-success">

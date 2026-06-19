@@ -252,7 +252,7 @@ window.reportsApp = function() {
                 return String(order.id).slice(0, 8).toUpperCase();
             }
 
-            return 'N/A';
+            return '--';
         },
 
         getRangeLabel() {
@@ -301,7 +301,7 @@ window.reportsApp = function() {
                 3: 'Pagado'
             };
 
-            return map[status] || 'N/A';
+            return map[status] || '--';
 
         },
 

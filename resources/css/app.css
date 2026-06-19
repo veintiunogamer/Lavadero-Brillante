@@ -48,6 +48,21 @@
     color: var(--color-azul-logo) !important;
 }
 
+.btn-warning {
+    background-color: var(--color-amarillo-logo) !important;
+    color: var(--color-azul-logo) !important;
+    border: none;
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    font-weight: 700;
+    transition: background-color 0.2s ease;
+}
+
+.badge-warning {
+    background-color: var(--color-amarillo-logo) !important;
+    color: var(--color-azul-logo) !important;
+}
+
 .logo {
     display: flex;
     align-items: center;
