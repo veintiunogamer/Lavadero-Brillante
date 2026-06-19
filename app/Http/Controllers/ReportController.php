@@ -153,6 +153,7 @@ class ReportController extends Controller
             'summary' => $summary,
             'statusLabels' => $this->getOrderStatusLabels(),
             'paymentStatusLabels' => $this->getPaymentStatusLabels(),
+            'paymentMethodLabels' => $this->getPaymentMethodLabels()
         ]);
 
         $filename = 'cierre-diario-' . $target->format('Ymd') . '.pdf';
@@ -204,6 +205,7 @@ class ReportController extends Controller
                 'summary' => $summary,
                 'statusLabels' => $this->getOrderStatusLabels(),
                 'paymentStatusLabels' => $this->getPaymentStatusLabels(),
+                'paymentMethodLabels' => $this->getPaymentMethodLabels(),
             ]);
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.pdf';
@@ -251,12 +253,13 @@ class ReportController extends Controller
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.xlsx';
 
             return Excel::download(
-                new ReportSalesExport($orders, $this->getOrderStatusLabels(), $this->getPaymentStatusLabels()),
+                new ReportSalesExport($orders, $this->getOrderStatusLabels(), $this->getPaymentStatusLabels(), $this->getPaymentMethodLabels()),
                 $filename
             );
         }
 
         if ($tab === 'clients') {
+
             $search = $request->query('search');
             $clients = $this->queryClients($search)->get();
 
@@ -349,6 +352,16 @@ class ReportController extends Controller
             1 => 'Pendiente',
             2 => 'Parcial',
             3 => 'Pagado',
+        ];
+    }
+
+    private function getPaymentMethodLabels(): array
+    {
+        return [
+            1 => 'Efectivo',
+            2 => 'TPV',
+            3 => 'Transferencia',
+            4 => 'Otro',
         ];
     }
 }

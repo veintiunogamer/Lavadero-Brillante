@@ -149,7 +149,7 @@
                                 <tr>
                                     <td x-text="formatOrderNumber(order)"></td>
                                     <td x-text="formatDate(order.creation_date)"></td>
-                                    <td x-text="order.client ? order.client.name : 'N/A'"></td>
+                                    <td x-text="order.client ? order.client.name : '--'"></td>
                                     <td x-text="order.client && order.client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td>
                                         <template x-if="order.services && order.services.length">
@@ -160,7 +160,7 @@
                                             </div>
                                         </template>
                                         <template x-if="!order.services || order.services.length === 0">
-                                            <span class="text-muted">N/A</span>
+                                            <span class="text-muted">--</span>
                                         </template>
                                     </td>
 
@@ -310,9 +310,9 @@
                             <template x-for="client in getPaginatedData('clients')" :key="client.id">
                                 <tr>
                                     <td x-text="client.name"></td>
-                                    <td x-text="client.phone || 'N/A'"></td>
-                                    <td x-text="client.license_plaque || 'N/A'"></td>
-                                    <td x-text="client.brand || 'N/A'"></td>
+                                    <td x-text="client.phone || '--'"></td>
+                                    <td x-text="client.license_plaque || '--'"></td>
+                                    <td x-text="client.brand || '--'"></td>
                                     <td x-text="client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td x-text="client.orders_count"></td>
                                     <td x-text="formatCurrency(client.total_spent)"></td>

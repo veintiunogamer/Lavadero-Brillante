@@ -17,12 +17,14 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
     private Collection $orders;
     private array $statusLabels;
     private array $paymentStatusLabels;
+    private array $paymentMethodLabels;
 
-    public function __construct(Collection $orders, array $statusLabels, array $paymentStatusLabels)
+    public function __construct(Collection $orders, array $statusLabels, array $paymentStatusLabels, array $paymentMethodLabels)
     {
         $this->orders = $orders;
         $this->statusLabels = $statusLabels;
         $this->paymentStatusLabels = $paymentStatusLabels;
+        $this->paymentMethodLabels = $paymentMethodLabels;
     }
 
     public function collection(): Collection
@@ -33,15 +35,18 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
     public function headings(): array
     {
         return [
-            'Orden',
-            'Cliente',
-            'Servicios',
+            '# Orden',
             'Fecha',
+            'Cliente',
+            'Flota',
+            'Servicios',
             'Subtotal',
+            'IVA',
             'Descuento %',
-            'Total',
             'Pago',
+            'Método',
             'Estado',
+            'Total',
         ];
     }
 
@@ -54,21 +59,26 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         $services = $order->services->pluck('name')->join(', ');
         $payment = $order->payments->first();
         $paymentStatus = $payment ? ($this->paymentStatusLabels[$payment->status] ?? 'Desconocido') : 'N/A';
+        $paymentMethod = $payment ? ($this->paymentMethodLabels[$payment->type] ?? 'Desconocido') : 'N/A';
 
         $subtotal = (float) ($order->subtotal ?? 0);
+        $tax = (float) ($order->tax ?? 0);
         $discount = (float) ($order->discount ?? 0);
         $discountPercent = $subtotal > 0 ? ($discount / $subtotal) * 100 : 0;
 
         return [
             $orderNumber,
-            optional($order->client)->name ?? 'N/A',
-            $services ?: 'N/A',
             $order->creation_date ? Carbon::parse($order->creation_date)->format('d/m/Y') : 'N/A',
+            optional($order->client)->name ?? 'N/A',
+            optional($order->client)->fleet ?? 'N/A',
+            $services ?: 'N/A',
             round($subtotal, 2),
+            round($tax, 2),
             round($discountPercent, 0),
-            round((float) ($order->total ?? 0), 2),
             $paymentStatus,
+            $paymentMethod,
             $this->statusLabels[$order->status] ?? 'Desconocido',
+            round((float) ($order->total ?? 0), 2),
         ];
     }
 

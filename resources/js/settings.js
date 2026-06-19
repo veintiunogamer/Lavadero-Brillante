@@ -1060,13 +1060,13 @@ window.settingsApp = function() {
         },
 
         formatDate(date) {
-            if (!date) return 'N/A';
+            if (!date) return '--';
             return new Date(date).toLocaleDateString('es-ES');
         },
 
         formatDateTime(date) {
 
-            if (!date) return 'N/A';
+            if (!date) return '--';
             const d = new Date(date);
             
             return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true });

@@ -93,20 +93,20 @@
             @forelse($clients as $client)
             <tr>
                 <td>{{ $client->name }}</td>
-                <td>{{ $client->phone ?? 'N/A' }}</td>
-                <td>{{ $client->license_plaque ?? 'N/A' }}</td>
-                <td>{{ $client->brand ?? 'N/A' }}</td>
+                <td>{{ $client->phone ?? '--' }}</td>
+                <td>{{ $client->license_plaque ?? '--' }}</td>
+                <td>{{ $client->brand ?? '--' }}</td>
                 <td>{{ $client->fleet == 1 ? 'Sí' : 'No' }}</td>
-                <td>{{ isset($client->orders_count) ? $client->orders_count : 0 }}</td>
-                <td>{{ number_format(isset($client->total_spent) ? $client->total_spent : 0, 2, ',', '.') }} €</td>
+                <td>{{ isset($client->orders_count) ? $client->orders_count : '0' }}</td>
+                <td>{{ number_format(isset($client->total_spent) ? $client->total_spent : '0', 2, ',', '.') }} €</td>
                 <td>
-                    {{ $client->last_order_date ? \Carbon\Carbon::parse($client->last_order_date)->format('d/m/Y') : 'N/A' }}
+                    {{ $client->last_order_date ? \Carbon\Carbon::parse($client->last_order_date)->format('d/m/Y') : '--' }}
                 </td>
             </tr>
             @empty
 
             <tr>
-                <td colspan="6">No hay datos para mostrar.</td>
+                <td colspan="8">No hay datos para mostrar.</td>
             </tr>
 
             @endforelse

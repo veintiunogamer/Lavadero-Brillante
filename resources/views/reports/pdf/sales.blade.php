@@ -122,13 +122,13 @@
                 </td>
                 <td>{{ \Carbon\Carbon::parse($order->creation_date)->format('d/m/Y') }}</td>
 
-                <td>{{ optional($order->client)->name ?? 'N/A' }}</td>
+                <td>{{ optional($order->client)->name ?? '--' }}</td>
                 <td>{{ optional($order->client)->fleet == 1 ? 'Sí' : 'No' }}</td>
 
                 <td>{{ $order->services->pluck('name')->join(', ') }}</td>
 
                 <td>{{ number_format($order->subtotal, 2, ',', '.') }} €</td>
-                <td>{{ number_format($order->tax, 2, ',', '.') }} €</td>
+                <td>{{ number_format($order->tax ?? 0, 2, ',', '.') }} €</td>
                 <td>
                     @php
                     $discountValue = $order->discount ?? 0;
@@ -146,7 +146,7 @@
                 </td>
                 <td>
                     @php
-                    $paymentMethod = $payment ? ($paymentMethodLabels[$payment->method] ?? 'Desconocido') : 'N/A';
+                    $paymentMethod = $payment ? ($paymentMethodLabels[$payment->type] ?? 'Desconocido') : 'N/A';
                     @endphp
                     {{ $paymentMethod }}
                 </td>

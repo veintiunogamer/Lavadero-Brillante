@@ -232,7 +232,7 @@ window.reportsApp = function() {
 
         formatDate(date) {
 
-            if (!date) return 'N/A';
+            if (!date) return '--';
 
             return new Date(date).toLocaleDateString('es-ES', {
                 day: '2-digit',
