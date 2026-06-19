@@ -305,6 +305,18 @@ window.reportsApp = function() {
 
         },
 
+        getPaymentMethodText(method) {
+            
+            const map = {
+                1: 'Efectivo',
+                2: 'TPV',
+                3: 'Transferencia',
+                4: 'Otro'
+            };
+
+            return map[method] || 'Desconocido';
+        },
+
         getPaymentStatusBadge(status) {
 
             const map = {

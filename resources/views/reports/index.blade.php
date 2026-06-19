@@ -124,15 +124,21 @@
 
                         <thead>
                             <tr>
-                                <th>Orden</th>
-                                <th>Cliente</th>
-                                <th>Servicios</th>
+                                <th># Orden</th>
                                 <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Flota</th>
+                                <th>Servicios</th>
+
                                 <th>Subtotal</th>
+                                <th>IVA</th>
                                 <th>Descuento %</th>
-                                <th>Total</th>
+
                                 <th>Pago</th>
+                                <th>Método</th>
                                 <th>Estado</th>
+
+                                <th>Total</th>
                             </tr>
                         </thead>
 
@@ -142,7 +148,9 @@
 
                                 <tr>
                                     <td x-text="formatOrderNumber(order)"></td>
+                                    <td x-text="formatDate(order.creation_date)"></td>
                                     <td x-text="order.client ? order.client.name : 'N/A'"></td>
+                                    <td x-text="order.client && order.client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td>
                                         <template x-if="order.services && order.services.length">
                                             <div>
@@ -155,16 +163,22 @@
                                             <span class="text-muted">N/A</span>
                                         </template>
                                     </td>
-                                    <td x-text="formatDate(order.creation_date)"></td>
+
                                     <td x-text="formatCurrency(order.subtotal)"></td>
+                                    <td x-text="formatCurrency(order.tax)"></td>
                                     <td x-text="formatPercent(getDiscountPercent(order))"></td>
-                                    <td x-text="formatCurrency(order.total)"></td>
+
                                     <td>
                                         <span class="badge" :class="getPaymentStatusBadge(order.payment?.status)" x-text="getPaymentStatusText(order.payment?.status)"></span>
+                                    </td>
+                                    <td class="text-capitalize text-center">
+                                        <span class="text-dark" x-text="getPaymentMethodText(order.payment?.type)"></span>
                                     </td>
                                     <td>
                                         <span class="badge" :class="getOrderStatusBadge(order.status)" x-text="getOrderStatusText(order.status)"></span>
                                     </td>
+
+                                    <td x-text="formatCurrency(order.total)"></td>
                                 </tr>
 
                             </template>
@@ -177,15 +191,32 @@
 
                 <div x-show="!loadingSales && getFilteredData('sales').length > 0" class="reports-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
 
-                    <div class="text-muted">
+                    <!-- Resumen & Totales -->
+                    <div class="fw-bold">
+                        Efectivo:
+                        <strong x-text="formatCurrency(salesSummary.cash)"></strong>
+                    </div>
+
+                    <div class="fw-bold">
+                        TPV:
+                        <strong x-text="formatCurrency(salesSummary.card)"></strong>
+                    </div>
+
+                    <div class="fw-bold">
+                        Transferencia:
+                        <strong x-text="formatCurrency(salesSummary.transfer)"></strong>
+                    </div>
+
+                    <div class="fw-bold">
                         Total facturado:
                         <strong x-text="formatCurrency(salesSummary.total)"></strong>
                     </div>
 
-                    <div class="text-muted">
+                    <div class="fw-bold">
                         Órdenes: <span x-text="salesSummary.orders"></span>
                     </div>
 
+                    <!-- paginador -->
                     <nav x-show="getTotalPages('sales') > 1">
                         <ul class="pagination pagination-sm mb-0">
                             <li class="page-item" :class="currentPage.sales === 1 ? 'disabled' : ''">

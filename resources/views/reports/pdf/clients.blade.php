@@ -97,8 +97,8 @@
                 <td>{{ $client->license_plaque ?? 'N/A' }}</td>
                 <td>{{ $client->brand ?? 'N/A' }}</td>
                 <td>{{ $client->fleet == 1 ? 'Sí' : 'No' }}</td>
-                <td>{{ $client->orders_count }}</td>
-                <td>{{ number_format($client->total_spent ?? 0, 2, ',', '.') }} €</td>
+                <td>{{ isset($client->orders_count) ? $client->orders_count : 0 }}</td>
+                <td>{{ number_format(isset($client->total_spent) ? $client->total_spent : 0, 2, ',', '.') }} €</td>
                 <td>
                     {{ $client->last_order_date ? \Carbon\Carbon::parse($client->last_order_date)->format('d/m/Y') : 'N/A' }}
                 </td>

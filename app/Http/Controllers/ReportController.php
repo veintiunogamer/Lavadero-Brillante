@@ -37,7 +37,7 @@ class ReportController extends Controller
         [$start, $end] = $this->getRangeDates($range);
 
         $orders = Order::with([
-            'client:id,name,phone,license_plaque',
+            'client:id,name,phone,license_plaque,fleet',
             'user:id,name',
             'services:id,name',
             'payments:id,order_id,type,status,subtotal,total'
@@ -56,6 +56,7 @@ class ReportController extends Controller
                 'creation_date' => $order->creation_date,
                 'subtotal' => $order->subtotal,
                 'discount' => $order->discount,
+                'tax' => $order->tax,
                 'total' => $order->total,
                 'status' => $order->status,
                 'client' => $order->client,
@@ -74,6 +75,7 @@ class ReportController extends Controller
             'orders' => $orders->count(),
             'subtotal' => $orders->sum('subtotal'),
             'discount' => $orders->sum('discount'),
+            'tax' => $orders->sum('tax'),
             'total' => $orders->sum('total'),
         ];
 
@@ -106,7 +108,7 @@ class ReportController extends Controller
                 DB::raw('COALESCE(SUM(o.total), 0) as total_spent'),
                 DB::raw('MAX(o.creation_date) as last_order_date'),
             ])
-            ->groupBy('c.id', 'c.name', 'c.phone', 'c.license_plaque', 'c.status')
+            ->groupBy('c.id', 'c.name', 'c.phone', 'c.license_plaque', 'c.brand', 'c.fleet', 'c.status')
             ->orderBy('c.name')
             ->get();
 
@@ -139,6 +141,7 @@ class ReportController extends Controller
         $summary = [
             'orders' => $orders->count(),
             'subtotal' => $orders->sum('subtotal'),
+            'tax' => $orders->sum('tax'),
             'discount' => $orders->sum('discount'),
             'total' => $orders->sum('total'),
         ];
@@ -183,6 +186,7 @@ class ReportController extends Controller
             $summary = [
                 'orders' => $orders->count(),
                 'subtotal' => $orders->sum('subtotal'),
+                'tax' => $orders->sum('tax'),
                 'discount' => $orders->sum('discount'),
                 'total' => $orders->sum('total'),
             ];

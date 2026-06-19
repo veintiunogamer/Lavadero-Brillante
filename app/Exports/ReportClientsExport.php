@@ -48,8 +48,8 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
             $client->license_plaque ?? 'N/A',
             $client->brand ?? 'N/A',
             $client->fleet == 1 ? 'Sí' : 'No',
-            (int) $client->orders_count,
-            round((float) ($client->total_spent ?? 0), 2),
+            (int) (isset($client->orders_count) ? $client->orders_count : 0),
+            round((float) (isset($client->total_spent) ? $client->total_spent : 0), 2),
             $client->last_order_date ? Carbon::parse($client->last_order_date)->format('d/m/Y') : 'N/A',
         ];
     }
