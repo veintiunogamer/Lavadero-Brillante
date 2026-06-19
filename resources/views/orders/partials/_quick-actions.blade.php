@@ -47,20 +47,32 @@
 
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <label class="fw-bold small">Nombre</label>
                         <p class="mb-2" x-text="selectedOrder?.client?.name || '--'"></p>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <label class="fw-bold small">Matrícula</label>
+                        <p class="mb-2" x-text="selectedOrder?.client?.license_plaque || '--'"></p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <label class="fw-bold small">Modelo</label>
+                        <p class="mb-2" x-text="selectedOrder?.client?.brand || '--'"></p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <label class="fw-bold small">Flota</label>
+                        <p class="mb-2" x-text="selectedOrder?.client?.fleet ? 'Sí' : 'No'"></p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-12">
                         <label class="fw-bold small">Teléfono</label>
                         <p class="mb-2" x-text="selectedOrder?.client?.phone || '--'"></p>
                     </div>
 
-                    <div class="col-md-3">
-                        <label class="fw-bold small">Matrícula</label>
-                        <p class="mb-2" x-text="selectedOrder?.client?.license_plaque || '--'"></p>
-                    </div>
+
 
                 </div>
 
