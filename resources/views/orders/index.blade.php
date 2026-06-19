@@ -9,23 +9,11 @@
         <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
 
             <div class="col-6">
-                <h2 class="m-0">
+                <h1 class="m-0 fw-bold">
                     <i class="fa-solid fa-calendar-check icon color-blue"></i>
-                    Agendamiento
-                </h2>
-                <p class="fw-bold small text-muted">Gestión de citas y agendamientos.</p>
-            </div>
-
-            <div class="col-6 d-flex justify-content-end">
-                <div class="position-relative" style="max-width: 350px; width: 100%;">
-                    <input type="text"
-                        x-model="searchTerm"
-                        @input="resetPagination()"
-                        class="form-control pe-5"
-                        placeholder="Buscar agendamientos...">
-                    <i class="fa-solid fa-search position-absolute"
-                        style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
-                </div>
+                    AGENDAMIENTO
+                </h1>
+                <span class="fw-bold text-muted">Gestión de citas y agendamientos.</span>
             </div>
 
         </div>
@@ -47,12 +35,51 @@
 
         </ul>
 
+        <!-- Filtro de búsqueda -->
+        <div class="col-12 filter-section 
+            d-flex flex-wrap align-items-center">
+
+            <div class="col-12 border-bottom mb-1">
+                <label class="fw-bold mb-1 fs-5">
+                    <i class="fa-solid fa-filter text-primary me-1"></i>
+                    Filtros de búsqueda
+                </label>
+            </div>
+
+            <div class="col-3 p-1 mt-2">
+                <input type="text"
+                    x-model="searchTerm"
+                    @input="resetPagination()"
+                    class="form-control pe-5 border border-3"
+                    placeholder="Buscar agendamientos...">
+            </div>
+
+            <div class="col-3 p-1 mt-2">
+                <input type="date"
+                    x-model="searchDate"
+                    @change="resetPagination()"
+                    class="form-control border border-3">
+            </div>
+
+            <div class="col-3 p-1 mt-2">
+                <select x-model="searchPaymentType" @change="resetPagination()"
+                    class="form-select border border-3">
+                    <option value="">Todos</option>
+                    <option value="1">Efectivo</option>
+                    <option value="2">TPV</option>
+                    <option value="3">Transferencias</option>
+                </select>
+            </div>
+
+        </div>
+
         <!-- Loading Spinner -->
         <div x-show="loading" class="text-center p-4">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Cargando...</span>
             </div>
         </div>
+
 
         <!-- Sin resultados -->
         <div x-show="!loading && getFilteredOrders().length === 0" class="citas-empty-state">
@@ -115,8 +142,8 @@
 
                     <template x-for="(order, index) in getPaginatedOrders()" :key="index">
                         <tr>
-                            <td x-text="order.client ? order.client.name : 'N/A'"></td>
-                            <td x-text="order.client ? order.client.license_plaque : 'N/A'"></td>
+                            <td x-text="order.client ? order.client.name : '--'"></td>
+                            <td x-text="order.client ? order.client.license_plaque : '--'"></td>
                             <td>
                                 <template x-for="service in order.services" :key="service.id">
                                     <div x-text="service.name"></div>

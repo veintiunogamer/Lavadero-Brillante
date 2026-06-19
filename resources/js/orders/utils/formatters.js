@@ -23,6 +23,16 @@ export const PAYMENT_STATUS = {
 };
 
 /**
+ * Metodos de pago
+ */
+export const PAYMENT_METHODS = {
+    1: { text: 'Efectivo' },
+    2: { text: 'TPV' },
+    3: { text: 'Transferencia' },
+    4: { text: 'Otro' }
+};
+
+/**
  * Nombres de los meses en español
  */
 export const MONTH_NAMES = [
@@ -78,7 +88,7 @@ export const formatDateLong = (date) => {
  * @returns {string}
  */
 export const formatTime = (time) => {
-    if (!time) return 'N/A';
+    if (!time) return '--';
     const date = new Date(time);
     return date.toLocaleTimeString('es-ES', { 
         hour: '2-digit', 
@@ -142,6 +152,15 @@ export const getPaymentStatusText = (status) => {
 };
 
 /**
+ * Obtiene el texto del método de pago
+ * @param {number} method - Código de método de pago
+ * @returns {string}
+ */
+export const getPaymentMethodText = (method) => {
+    return PAYMENT_METHODS[method]?.text || 'Desconocido';
+};
+
+/**
  * Obtiene la clase de badge para estado de pago
  * @param {number} status - Código de estado de pago
  * @returns {string}
@@ -159,9 +178,11 @@ export default {
     getStatusText,
     getStatusBadge,
     getPaymentStatusText,
+    getPaymentMethodText,
     getPaymentStatusBadge,
     ORDER_STATUS,
     PAYMENT_STATUS,
+    PAYMENT_METHODS,
     MONTH_NAMES,
     MONTH_NAMES_SHORT,
     WEEKDAYS

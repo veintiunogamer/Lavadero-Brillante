@@ -232,7 +232,7 @@ window.reportsApp = function() {
 
         formatDate(date) {
 
-            if (!date) return 'N/A';
+            if (!date) return '--';
 
             return new Date(date).toLocaleDateString('es-ES', {
                 day: '2-digit',
@@ -252,7 +252,7 @@ window.reportsApp = function() {
                 return String(order.id).slice(0, 8).toUpperCase();
             }
 
-            return 'N/A';
+            return '--';
         },
 
         getRangeLabel() {
@@ -301,8 +301,20 @@ window.reportsApp = function() {
                 3: 'Pagado'
             };
 
-            return map[status] || 'N/A';
+            return map[status] || '--';
 
+        },
+
+        getPaymentMethodText(method) {
+            
+            const map = {
+                1: 'Efectivo',
+                2: 'TPV',
+                3: 'Transferencia',
+                4: 'Otro'
+            };
+
+            return map[method] || 'Desconocido';
         },
 
         getPaymentStatusBadge(status) {

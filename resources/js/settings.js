@@ -471,7 +471,7 @@ window.settingsApp = function() {
 
         getCategoryName(categoryId) {
             const category = this.categoriesForServices.find(c => c.id === categoryId);
-            return category ? category.cat_name : 'N/A';
+            return category ? category.cat_name : '--';
         },
 
         // Filtrar servicios por búsqueda
@@ -1060,13 +1060,13 @@ window.settingsApp = function() {
         },
 
         formatDate(date) {
-            if (!date) return 'N/A';
+            if (!date) return '--';
             return new Date(date).toLocaleDateString('es-ES');
         },
 
         formatDateTime(date) {
 
-            if (!date) return 'N/A';
+            if (!date) return '--';
             const d = new Date(date);
             
             return d.toLocaleDateString('es-ES') + ' ' + d.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: true });

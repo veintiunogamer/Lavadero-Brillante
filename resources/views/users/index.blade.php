@@ -16,15 +16,18 @@
         <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
 
             <div class="col-6">
-                <h2 class="m-0">
+
+                <h1 class="m-0 fw-bold">
                     <i class="fa-solid fa-user-cog icon color-blue"></i>
-                    Listado de usuarios
-                </h2>
-                <p class="fw-bold small text-muted">Listado y gestión de usuarios del sistema.</p>
+                    LISTADO DE USUARIOS
+                </h1>
+
+                <span class="fw-bold text-muted">Listado y gestión de usuarios del sistema.</span>
+
             </div>
 
             <div class="col-6">
-                <button @click="openModal()" class="btn btn-success mb-3 float-end">
+                <button @click="openModal()" class="btn btn-success btn-lg mb-3 float-end">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Usuario
                 </button>
@@ -73,9 +76,9 @@
                         <tr>
                             <td x-text="user.name"></td>
                             <td x-text="user.email"></td>
-                            <td x-text="user.phone || 'N/A'"></td>
+                            <td x-text="user.phone || '--'"></td>
                             <td x-text="user.username"></td>
-                            <td x-text="user.role ? user.role.name : 'N/A'"></td>
+                            <td x-text="user.role ? user.role.name : '--'"></td>
                             <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
                             <td class="text-center">
 
@@ -133,9 +136,9 @@
                         <tr class="table-secondary">
                             <td x-text="user.name"></td>
                             <td x-text="user.email"></td>
-                            <td x-text="user.phone || 'N/A'"></td>
+                            <td x-text="user.phone || '--'"></td>
                             <td x-text="user.username"></td>
-                            <td x-text="user.role ? user.role.name : 'N/A'"></td>
+                            <td x-text="user.role ? user.role.name : '--'"></td>
                             <td x-text="new Date(user.creation_date).toLocaleDateString()"></td>
                             <td>
                                 <button @click="activateUser(user.id)" class="btn btn-sm btn-success">
@@ -187,14 +190,14 @@
                         <label class="form-label fw-bold">
                             Nombre Completo <span class="text-danger">*</span>
                         </label>
-                        <input type="text" x-model="form.name" class="form-control" required>
+                        <input type="text" x-model="form.name" class="form-control" maxlength="30" required>
                     </div>
 
                     <div class="col-lg-3 col-md-4 col-sm-12">
                         <label class="form-label fw-bold">
                             Correo Electrónico <span class="text-danger">*</span>
                         </label>
-                        <input type="email" x-model="form.email" class="form-control" required>
+                        <input type="email" x-model="form.email" class="form-control" maxlength="40" required>
                     </div>
 
                     <div class="col-lg-3 col-md-4 col-sm-12">
@@ -209,7 +212,7 @@
                         <label class="form-label fw-bold">
                             Usuario <span class="text-danger">*</span>
                         </label>
-                        <input type="text" x-model="form.username" class="form-control" required>
+                        <input type="text" x-model="form.username" class="form-control" maxlength="20" required>
                     </div>
 
                     <div class="col-lg-3 col-md-4 col-sm-12">
@@ -237,7 +240,7 @@
                             Contraseña <span class="text-danger">*</span>
                         </label>
                         <div class="position-relative">
-                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5" :required="!isEditing">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5" :required="!isEditing" maxlength="20">
                             <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
                                 <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
                             </button>

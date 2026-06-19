@@ -10,11 +10,11 @@
 
         <div class="col-12 d-flex justify-content-between align-items-center mb-3 p-4">
             <div class="col-6">
-                <h2 class="m-0">
+                <h1 class="m-0 fw-bold">
                     <i class="fa-solid fa-cog icon color-blue"></i>
-                    Configuraciones
-                </h2>
-                <p class="fw-bold small text-muted">Configuraciones del sistema.</p>
+                    CONFIGURACIONES
+                </h1>
+                <span class="fw-bold text-muted">Aquí puedes crear y gestionar las configuraciones del sistema.</span>
             </div>
         </div>
 
@@ -56,21 +56,47 @@
 
             <div class="card shadow-sm rounded-4 p-4 mb-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <button @click="openCategoryModal()" class="btn btn-success fw-bold">
-                        <i class="fa-solid fa-plus me-2"></i>
-                        Crear Categoría
-                    </button>
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-2 p-2">
 
-                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <h3 class="m-0 fw-bold">
+                            <i class="fa-solid fa-tags text-primary me-2"></i>
+                            Gestión de Categorías
+                        </h3>
+                        <medium class="text-muted fw-bold">Crea, edita y desactiva las categorías para organizar tus servicios.</medium>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+
+                        <button @click="openCategoryModal()" class="btn btn-success btn-lg fw-bold float-end">
+                            <i class="fa-solid fa-plus me-2"></i>
+                            Crear Categoría
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <!-- Filtros -->
+                <div class="col-12 filter-section 
+                d-flex flex-wrap align-items-center">
+
+                    <div class="col-12 border-bottom mb-1">
+                        <label class="fw-bold mb-1 fs-5">
+                            <i class="fa-solid fa-filter text-primary me-1"></i>
+                            Filtros de búsqueda
+                        </label>
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
                         <input type="text"
                             x-model="searchTerms.categories"
                             @input="resetPagination('categories')"
                             class="form-control pe-5"
                             placeholder="Buscar categorías...">
-                        <i class="fa-solid fa-search position-absolute"
-                            style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
+
                 </div>
 
                 <table class="table table-striped table-bordered align-middle">
@@ -193,129 +219,150 @@
 
             <div class="card shadow-sm rounded-4 p-4 mb-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <button @click="openServiceModal()" class="btn btn-success fw-bold">
-                        <i class="fa-solid fa-plus me-2"></i>
-                        Crear Servicio
-                    </button>
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-2 p-2">
 
-                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <h3 class="m-0 fw-bold">
+                            <i class="fa-solid fa-tools text-primary me-2"></i>
+                            Gestión de Servicios
+                        </h3>
+                        <medium class="text-muted fw-bold">Crea, edita y desactiva los servicios que ofreces en tu lavadero.</medium>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <button @click="openServiceModal()" class="btn btn-success fw-bold float-end btn-lg">
+                            <i class="fa-solid fa-plus me-2"></i>
+                            Crear Servicio
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Filtros -->
+                <div class="col-12 filter-section 
+                d-flex flex-wrap align-items-center">
+
+                    <div class="col-12 border-bottom mb-1">
+                        <label class="fw-bold mb-1 fs-5">
+                            <i class="fa-solid fa-filter text-primary me-1"></i>
+                            Filtros de búsqueda
+                        </label>
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
                         <input type="text"
                             x-model="searchTerms.services"
                             @input="resetPagination('services')"
                             class="form-control pe-5"
                             placeholder="Buscar servicios...">
-                        <i class="fa-solid fa-search position-absolute"
-                            style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
+
                 </div>
 
-                <div class="table-responsive">
 
-                    <table class="table table-striped table-bordered align-middle">
+                <table class="table table-striped table-bordered align-middle">
 
-                        <thead class="table-dark">
-                            <tr>
-                                <th @click="sortData('services', 'name')" style="cursor: pointer;">
-                                    Nombre <span x-html="getSortIcon('services', 'name')"></span>
-                                </th>
+                    <thead class="table-dark">
+                        <tr>
+                            <th @click="sortData('services', 'name')" style="cursor: pointer;">
+                                Nombre <span x-html="getSortIcon('services', 'name')"></span>
+                            </th>
 
-                                <th>Detalles</th>
-                                <th>Precio</th>
-                                <th>Duración</th>
-                                <th @click="sortData('services', 'status')" style="cursor: pointer;">
-                                    Estado <span x-html="getSortIcon('services', 'status')"></span>
-                                </th>
-                                <th class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
+                            <th>Detalles</th>
+                            <th>Precio</th>
+                            <th>Duración</th>
+                            <th @click="sortData('services', 'status')" style="cursor: pointer;">
+                                Estado <span x-html="getSortIcon('services', 'status')"></span>
+                            </th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
 
-                        <tbody>
+                    <tbody>
 
-                            <template x-for="service in getPaginatedData('services')" :key="service.id">
+                        <template x-for="service in getPaginatedData('services')" :key="service.id">
 
-                                <tr :class="service.status ? '' : 'table-secondary'">
-                                    <td x-html="service.name + '<br>' + '<span class=\'badge bg-warning text-dark\'>' + getCategoryName(service.category_id) + '</span>'"></td>
+                            <tr :class="service.status ? '' : 'table-secondary'">
+                                <td x-html="service.name + '<br>' + '<span class=\'badge bg-warning text-dark\'>' + getCategoryName(service.category_id) + '</span>'"></td>
 
-                                    <td x-text="service.details"></td>
-                                    <td x-text="formatCurrency(service.value)"></td>
-                                    <td x-text="service.duration + ' mins'"></td>
-                                    <td>
-                                        <span class="badge" :class="service.status ? 'bg-success' : 'bg-secondary'"
-                                            x-text="service.status ? 'Activo' : 'Inactivo'"></span>
-                                    </td>
-                                    <td class="text-center">
+                                <td x-text="service.details"></td>
+                                <td x-text="formatCurrency(service.value)"></td>
+                                <td x-text="service.duration + ' mins'"></td>
+                                <td>
+                                    <span class="badge" :class="service.status ? 'bg-success' : 'bg-secondary'"
+                                        x-text="service.status ? 'Activo' : 'Inactivo'"></span>
+                                </td>
+                                <td class="text-center">
 
-                                        <div class="btn-group btn-group-md">
+                                    <div class="btn-group btn-group-md">
 
-                                            <button @click="editService(service)" class="btn btn-primary"
-                                                :disabled="!service.status"
-                                                :title="service.status ? 'Editar servicio' : 'Registro inactivo'">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </button>
+                                        <button @click="editService(service)" class="btn btn-primary"
+                                            :disabled="!service.status"
+                                            :title="service.status ? 'Editar servicio' : 'Registro inactivo'">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
 
-                                            <button
-                                                @click="service.status ? deleteService(service.id) : activateItem(service.id, 'service')"
-                                                :class="service.status ? 'btn btn-danger' : 'btn btn-success'">
-                                                <i :class="service.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
-                                            </button>
+                                        <button
+                                            @click="service.status ? deleteService(service.id) : activateItem(service.id, 'service')"
+                                            :class="service.status ? 'btn btn-danger' : 'btn btn-success'">
+                                            <i :class="service.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
+                                        </button>
 
-                                        </div>
+                                    </div>
 
-                                    </td>
-                                </tr>
-
-                            </template>
-
-                            <tr x-show="getFilteredData('services').length === 0">
-                                <td colspan="6">
-                                    <template x-if="searchTerms.services">
-                                        <div class="citas-empty-state">
-                                            <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
-                                            <p class="citas-empty-title">Sin resultados</p>
-                                            <p class="citas-empty-sub">No se encontraron servicios para <strong x-text="'&quot;' + searchTerms.services + '&quot;'"></strong>.</p>
-                                        </div>
-                                    </template>
-                                    <template x-if="!searchTerms.services">
-                                        <div class="citas-empty-state">
-                                            <i class="fa-solid fa-tools citas-empty-icon" style="color:#bfdbfe;"></i>
-                                            <p class="citas-empty-title">Sin servicios</p>
-                                            <p class="citas-empty-sub">Aún no hay servicios registrados.<br>Añade el primer servicio usando el botón <strong>Crear Servicio</strong>.</p>
-                                        </div>
-                                    </template>
                                 </td>
                             </tr>
 
-                        </tbody>
+                        </template>
 
-                    </table>
-
-                    <!-- Paginador -->
-                    <div x-show="getTotalPages('services') > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                        <div class="badge bg-primary text-light p-2 col-1">
-                            Página <span x-text="currentPage.services"></span> de <span x-text="getTotalPages('services')"></span>
-                        </div>
-
-                        <nav>
-
-                            <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" :class="currentPage.services === 1 ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('services', currentPage.services - 1)">«</button>
-                                </li>
-                                <template x-for="page in getTotalPages('services')" :key="page">
-                                    <li class="page-item" :class="page === currentPage.services ? 'active' : ''">
-                                        <button class="page-link" @click="goToPage('services', page)" x-text="page"></button>
-                                    </li>
+                        <tr x-show="getFilteredData('services').length === 0">
+                            <td colspan="6">
+                                <template x-if="searchTerms.services">
+                                    <div class="citas-empty-state">
+                                        <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                                        <p class="citas-empty-title">Sin resultados</p>
+                                        <p class="citas-empty-sub">No se encontraron servicios para <strong x-text="'&quot;' + searchTerms.services + '&quot;'"></strong>.</p>
+                                    </div>
                                 </template>
-                                <li class="page-item" :class="currentPage.services === getTotalPages('services') ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('services', currentPage.services + 1)">»</button>
-                                </li>
-                            </ul>
+                                <template x-if="!searchTerms.services">
+                                    <div class="citas-empty-state">
+                                        <i class="fa-solid fa-tools citas-empty-icon" style="color:#bfdbfe;"></i>
+                                        <p class="citas-empty-title">Sin servicios</p>
+                                        <p class="citas-empty-sub">Aún no hay servicios registrados.<br>Añade el primer servicio usando el botón <strong>Crear Servicio</strong>.</p>
+                                    </div>
+                                </template>
+                            </td>
+                        </tr>
 
-                        </nav>
+                    </tbody>
 
+                </table>
+
+                <!-- Paginador -->
+                <div x-show="getTotalPages('services') > 1" class="d-flex justify-content-between align-items-center mt-3">
+
+                    <div class="badge bg-primary text-light p-2 col-1">
+                        Página <span x-text="currentPage.services"></span> de <span x-text="getTotalPages('services')"></span>
                     </div>
+
+                    <nav>
+
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item" :class="currentPage.services === 1 ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage('services', currentPage.services - 1)">«</button>
+                            </li>
+                            <template x-for="page in getTotalPages('services')" :key="page">
+                                <li class="page-item" :class="page === currentPage.services ? 'active' : ''">
+                                    <button class="page-link" @click="goToPage('services', page)" x-text="page"></button>
+                                </li>
+                            </template>
+                            <li class="page-item" :class="currentPage.services === getTotalPages('services') ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage('services', currentPage.services + 1)">»</button>
+                            </li>
+                        </ul>
+
+                    </nav>
 
                 </div>
 
@@ -328,128 +375,148 @@
 
             <div class="card shadow-sm rounded-4 p-4 mb-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-2 p-2">
 
-                    <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold">
-                        <i class="fa-solid fa-plus me-2"></i>
-                        Crear Tipo de Vehículo
-                    </button>
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <h3 class="m-0 fw-bold">
+                            <i class="fa-solid fa-car text-primary me-2"></i>
+                            Gestión de Tipos de Vehículo
+                        </h3>
+                        <medium class="text-muted fw-bold">Crea, edita y desactiva los tipos de vehículo que atiendes en tu lavadero.</medium>
+                    </div>
 
-                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold float-end btn-lg">
+                            <i class="fa-solid fa-plus me-2"></i>
+                            Crear Tipo de Vehículo
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Filtros -->
+
+                <div class="col-12 filter-section 
+                d-flex flex-wrap align-items-center">
+
+                    <div class="col-12 border-bottom mb-1">
+                        <label class="fw-bold mb-1 fs-5">
+                            <i class="fa-solid fa-filter text-primary me-1"></i>
+                            Filtros de búsqueda
+                        </label>
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
                         <input type="text"
                             x-model="searchTerms.vehicleTypes"
                             @input="resetPagination('vehicleTypes')"
-                            class="form-control pe-5"
+                            class="form-control pe-5 "
                             placeholder="Buscar tipos de vehículos...">
-                        <i class="fa-solid fa-search position-absolute"
-                            style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
 
                 </div>
 
-                <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle">
 
-                    <table class="table table-striped table-bordered align-middle">
-
-                        <thead class="table-dark">
-                            <tr>
-                                <th @click="sortData('vehicleTypes', 'name')" style="cursor: pointer;">
-                                    Nombre <span x-html="getSortIcon('vehicleTypes', 'name')"></span>
-                                </th>
-                                <th @click="sortData('vehicleTypes', 'status')" style="cursor: pointer;">
-                                    Estado <span x-html="getSortIcon('vehicleTypes', 'status')"></span>
-                                </th>
-                                <th @click="sortData('vehicleTypes', 'creation_date')" style="cursor: pointer;">
-                                    Fecha Creación <span x-html="getSortIcon('vehicleTypes', 'creation_date')"></span>
-                                </th>
-                                <th class="text-center">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <template x-for="vehicleType in getPaginatedData('vehicleTypes')" :key="vehicleType.id">
-                                <tr :class="vehicleType.status ? '' : 'table-secondary'">
-                                    <td x-text="vehicleType.name"></td>
-                                    <td>
-                                        <span class="badge" :class="vehicleType.status ? 'bg-success' : 'bg-secondary'"
-                                            x-text="vehicleType.status ? 'Activo' : 'Inactivo'"></span>
-                                    </td>
-                                    <td x-text="formatDateTime(vehicleType.creation_date)"></td>
-                                    <td class="text-center">
-
-                                        <div class="btn-group btn-group-md">
-
-                                            <button @click="editVehicleType(vehicleType)" class="btn btn-primary"
-                                                :disabled="!vehicleType.status"
-                                                :title="vehicleType.status ? 'Editar tipo de vehículo' : 'Registro inactivo'">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </button>
-
-                                            <button
-                                                @click="vehicleType.status ? deleteVehicleType(vehicleType.id) : activateItem(vehicleType.id, 'vehicleType')"
-                                                :class="vehicleType.status ? 'btn btn-danger' : 'btn btn-success'">
-                                                <i :class="vehicleType.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
-                                            </button>
-
-                                        </div>
-                                    </td>
-                                </tr>
-                            </template>
-                            <tr x-show="getFilteredData('vehicleTypes').length === 0">
-                                <td colspan="4">
-                                    <template x-if="searchTerms.vehicleTypes">
-                                        <div class="citas-empty-state">
-                                            <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
-                                            <p class="citas-empty-title">Sin resultados</p>
-                                            <p class="citas-empty-sub">No se encontraron tipos de vehículo para <strong x-text="'&quot;' + searchTerms.vehicleTypes + '&quot;'"></strong>.</p>
-                                        </div>
-                                    </template>
-                                    <template x-if="!searchTerms.vehicleTypes">
-                                        <div class="citas-empty-state">
-                                            <i class="fa-solid fa-car citas-empty-icon" style="color:#86efac;"></i>
-                                            <p class="citas-empty-title">Sin tipos de vehículo</p>
-                                            <p class="citas-empty-sub">No hay tipos de vehículo registrados.<br>Crea el primero usando el botón <strong>Crear Tipo de Vehículo</strong>.</p>
-                                        </div>
-                                    </template>
+                    <thead class="table-dark">
+                        <tr>
+                            <th @click="sortData('vehicleTypes', 'name')" style="cursor: pointer;">
+                                Nombre <span x-html="getSortIcon('vehicleTypes', 'name')"></span>
+                            </th>
+                            <th @click="sortData('vehicleTypes', 'status')" style="cursor: pointer;">
+                                Estado <span x-html="getSortIcon('vehicleTypes', 'status')"></span>
+                            </th>
+                            <th @click="sortData('vehicleTypes', 'creation_date')" style="cursor: pointer;">
+                                Fecha Creación <span x-html="getSortIcon('vehicleTypes', 'creation_date')"></span>
+                            </th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="vehicleType in getPaginatedData('vehicleTypes')" :key="vehicleType.id">
+                            <tr :class="vehicleType.status ? '' : 'table-secondary'">
+                                <td x-text="vehicleType.name"></td>
+                                <td>
+                                    <span class="badge" :class="vehicleType.status ? 'bg-success' : 'bg-secondary'"
+                                        x-text="vehicleType.status ? 'Activo' : 'Inactivo'"></span>
                                 </td>
+                                <td x-text="formatDateTime(vehicleType.creation_date)"></td>
+                                <td class="text-center">
 
+                                    <div class="btn-group btn-group-md">
+
+                                        <button @click="editVehicleType(vehicleType)" class="btn btn-primary"
+                                            :disabled="!vehicleType.status"
+                                            :title="vehicleType.status ? 'Editar tipo de vehículo' : 'Registro inactivo'">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+
+                                        <button
+                                            @click="vehicleType.status ? deleteVehicleType(vehicleType.id) : activateItem(vehicleType.id, 'vehicleType')"
+                                            :class="vehicleType.status ? 'btn btn-danger' : 'btn btn-success'">
+                                            <i :class="vehicleType.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
+                                        </button>
+
+                                    </div>
+                                </td>
                             </tr>
-
-                        </tbody>
-
-                    </table>
-
-                    <!-- Paginador -->
-                    <div x-show="getTotalPages('vehicleTypes') > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                        <div class="badge bg-primary text-light p-2 col-1">
-                            Página <span x-text="currentPage.vehicleTypes"></span> de <span x-text="getTotalPages('vehicleTypes')"></span>
-                        </div>
-
-                        <nav>
-
-                            <ul class="pagination pagination-sm mb-0">
-
-                                <li class="page-item" :class="currentPage.vehicleTypes === 1 ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes - 1)">«</button>
-                                </li>
-
-                                <template x-for="page in getTotalPages('vehicleTypes')" :key="page">
-                                    <li class="page-item" :class="page === currentPage.vehicleTypes ? 'active' : ''">
-                                        <button class="page-link" @click="goToPage('vehicleTypes', page)" x-text="page"></button>
-                                    </li>
+                        </template>
+                        <tr x-show="getFilteredData('vehicleTypes').length === 0">
+                            <td colspan="4">
+                                <template x-if="searchTerms.vehicleTypes">
+                                    <div class="citas-empty-state">
+                                        <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                                        <p class="citas-empty-title">Sin resultados</p>
+                                        <p class="citas-empty-sub">No se encontraron tipos de vehículo para <strong x-text="'&quot;' + searchTerms.vehicleTypes + '&quot;'"></strong>.</p>
+                                    </div>
                                 </template>
+                                <template x-if="!searchTerms.vehicleTypes">
+                                    <div class="citas-empty-state">
+                                        <i class="fa-solid fa-car citas-empty-icon" style="color:#86efac;"></i>
+                                        <p class="citas-empty-title">Sin tipos de vehículo</p>
+                                        <p class="citas-empty-sub">No hay tipos de vehículo registrados.<br>Crea el primero usando el botón <strong>Crear Tipo de Vehículo</strong>.</p>
+                                    </div>
+                                </template>
+                            </td>
 
-                                <li class="page-item" :class="currentPage.vehicleTypes === getTotalPages('vehicleTypes') ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes + 1)">»</button>
-                                </li>
+                        </tr>
 
-                            </ul>
+                    </tbody>
 
-                        </nav>
+                </table>
 
+                <!-- Paginador -->
+                <div x-show="getTotalPages('vehicleTypes') > 1" class="d-flex justify-content-between align-items-center mt-3">
+
+                    <div class="badge bg-primary text-light p-2 col-1">
+                        Página <span x-text="currentPage.vehicleTypes"></span> de <span x-text="getTotalPages('vehicleTypes')"></span>
                     </div>
 
+                    <nav>
+
+                        <ul class="pagination pagination-sm mb-0">
+
+                            <li class="page-item" :class="currentPage.vehicleTypes === 1 ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes - 1)">«</button>
+                            </li>
+
+                            <template x-for="page in getTotalPages('vehicleTypes')" :key="page">
+                                <li class="page-item" :class="page === currentPage.vehicleTypes ? 'active' : ''">
+                                    <button class="page-link" @click="goToPage('vehicleTypes', page)" x-text="page"></button>
+                                </li>
+                            </template>
+
+                            <li class="page-item" :class="currentPage.vehicleTypes === getTotalPages('vehicleTypes') ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes + 1)">»</button>
+                            </li>
+
+                        </ul>
+
+                    </nav>
+
                 </div>
+
 
             </div>
 
@@ -460,132 +527,151 @@
 
             <div class="card shadow-sm rounded-4 p-4 mb-4">
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <button @click="openClientModal()" class="btn btn-success fw-bold">
-                        <i class="fa-solid fa-plus me-2"></i>
-                        Crear Cliente
-                    </button>
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-center mb-2 p-2">
 
-                    <div class="position-relative" style="max-width: 350px; width: 100%;">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <h3 class="m-0 fw-bold">
+                            <i class="fa-solid fa-users text-primary me-2"></i>
+                            Gestión de Clientes
+                        </h3>
+                        <medium class="text-muted fw-bold">Crea, edita y desactiva los clientes registrados en tu sistema.</medium>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
+                        <button @click="openClientModal()" class="btn btn-success fw-bold float-end btn-lg">
+                            <i class="fa-solid fa-plus me-2"></i>
+                            Crear Cliente
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- filtros -->
+                <div class="col-12 filter-section
+                d-flex flex-wrap align-items-center">
+
+                    <div class="col-12 border-bottom mb-1">
+                        <label class="fw-bold mb-1 fs-5">
+                            <i class="fa-solid fa-filter text-primary me-1"></i>
+                            Filtros de búsqueda
+                        </label>
+                    </div>
+
+                    <div class="col-3 p-1 mt-2">
                         <input type="text"
                             x-model="searchTerms.clients"
                             @input="resetPagination('clients')"
                             class="form-control pe-5"
                             placeholder="Buscar clientes...">
-                        <i class="fa-solid fa-search position-absolute"
-                            style="right: 15px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <table class="table table-striped table-bordered align-middle">
 
-                    <table class="table table-striped table-bordered align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th @click="sortData('clients', 'name')" style="cursor: pointer;">
+                                Nombre <span x-html="getSortIcon('clients', 'name')"></span>
+                            </th>
+                            <th>Teléfono</th>
+                            <th>Matrícula</th>
+                            <th @click="sortData('clients', 'status')" style="cursor: pointer;">
+                                Estado <span x-html="getSortIcon('clients', 'status')"></span>
+                            </th>
+                            <th @click="sortData('clients', 'creation_date')" style="cursor: pointer;">
+                                Fecha Creación <span x-html="getSortIcon('clients', 'creation_date')"></span>
+                            </th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
 
-                        <thead class="table-dark">
-                            <tr>
-                                <th @click="sortData('clients', 'name')" style="cursor: pointer;">
-                                    Nombre <span x-html="getSortIcon('clients', 'name')"></span>
-                                </th>
-                                <th>Teléfono</th>
-                                <th>Matrícula</th>
-                                <th @click="sortData('clients', 'status')" style="cursor: pointer;">
-                                    Estado <span x-html="getSortIcon('clients', 'status')"></span>
-                                </th>
-                                <th @click="sortData('clients', 'creation_date')" style="cursor: pointer;">
-                                    Fecha Creación <span x-html="getSortIcon('clients', 'creation_date')"></span>
-                                </th>
-                                <th class="text-center">Acciones</th>
+                    <tbody>
+
+                        <template x-for="client in getPaginatedData('clients')" :key="client.id">
+
+                            <tr :class="client.status ? '' : 'table-secondary'">
+                                <td x-text="client.name"></td>
+                                <td x-text="client.phone || '--'"></td>
+                                <td x-text="client.license_plaque || '--'"></td>
+                                <td>
+                                    <span class="badge" :class="client.status ? 'bg-success' : 'bg-secondary'"
+                                        x-text="client.status ? 'Activo' : 'Inactivo'"></span>
+                                </td>
+                                <td x-text="formatDate(client.creation_date)"></td>
+                                <td class="text-center">
+
+                                    <div class="btn-group btn-group-md">
+
+                                        <button @click="editClient(client)" class="btn btn-primary"
+                                            :disabled="!client.status"
+                                            :title="client.status ? 'Editar cliente' : 'Registro inactivo'">
+                                            <i class="fa-solid fa-edit"></i>
+                                        </button>
+
+                                        <button
+                                            @click="client.status ? deleteClient(client.id) : activateItem(client.id, 'client')"
+                                            :class="client.status ? 'btn btn-danger' : 'btn btn-success'">
+                                            <i :class="client.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
                             </tr>
-                        </thead>
 
-                        <tbody>
+                        </template>
 
-                            <template x-for="client in getPaginatedData('clients')" :key="client.id">
+                        <tr x-show="getFilteredData('clients').length === 0">
+                            <td colspan="6">
+                                <template x-if="searchTerms.clients">
+                                    <div class="citas-empty-state">
+                                        <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                                        <p class="citas-empty-title">Sin resultados</p>
+                                        <p class="citas-empty-sub">No se encontraron clientes para <strong x-text="'&quot;' + searchTerms.clients + '&quot;'"></strong>.</p>
+                                    </div>
+                                </template>
+                                <template x-if="!searchTerms.clients">
+                                    <div class="citas-empty-state">
+                                        <i class="fa-solid fa-users citas-empty-icon" style="color:#fde68a;"></i>
+                                        <p class="citas-empty-title">Sin clientes</p>
+                                        <p class="citas-empty-sub">Aún no hay clientes registrados.<br>Agrega el primero usando el botón <strong>Crear Cliente</strong>.</p>
+                                    </div>
+                                </template>
+                            </td>
+                        </tr>
 
-                                <tr :class="client.status ? '' : 'table-secondary'">
-                                    <td x-text="client.name"></td>
-                                    <td x-text="client.phone || 'N/A'"></td>
-                                    <td x-text="client.license_plaque || 'N/A'"></td>
-                                    <td>
-                                        <span class="badge" :class="client.status ? 'bg-success' : 'bg-secondary'"
-                                            x-text="client.status ? 'Activo' : 'Inactivo'"></span>
-                                    </td>
-                                    <td x-text="formatDate(client.creation_date)"></td>
-                                    <td class="text-center">
+                    </tbody>
 
-                                        <div class="btn-group btn-group-md">
+                </table>
 
-                                            <button @click="editClient(client)" class="btn btn-primary"
-                                                :disabled="!client.status"
-                                                :title="client.status ? 'Editar cliente' : 'Registro inactivo'">
-                                                <i class="fa-solid fa-edit"></i>
-                                            </button>
+                <!-- Paginador -->
+                <div x-show="getTotalPages('clients') > 1" class="d-flex justify-content-between align-items-center mt-3">
 
-                                            <button
-                                                @click="client.status ? deleteClient(client.id) : activateItem(client.id, 'client')"
-                                                :class="client.status ? 'btn btn-danger' : 'btn btn-success'">
-                                                <i :class="client.status ? 'fa-solid fa-trash' : 'fa-solid fa-check'"></i>
-                                            </button>
+                    <div class="badge bg-primary text-light p-2 col-1">
+                        Página <span x-text="currentPage.clients"></span> de <span x-text="getTotalPages('clients')"></span>
+                    </div>
 
-                                        </div>
+                    <nav>
 
-                                    </td>
+                        <ul class="pagination pagination-sm mb-0">
+                            <li class="page-item" :class="currentPage.clients === 1 ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage('clients', currentPage.clients - 1)">«</button>
+                            </li>
 
-                                </tr>
-
+                            <template x-for="page in getTotalPages('clients')" :key="page">
+                                <li class="page-item" :class="page === currentPage.clients ? 'active' : ''">
+                                    <button class="page-link" @click="goToPage('clients', page)" x-text="page"></button>
+                                </li>
                             </template>
 
-                            <tr x-show="getFilteredData('clients').length === 0">
-                                <td colspan="6">
-                                    <template x-if="searchTerms.clients">
-                                        <div class="citas-empty-state">
-                                            <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
-                                            <p class="citas-empty-title">Sin resultados</p>
-                                            <p class="citas-empty-sub">No se encontraron clientes para <strong x-text="'&quot;' + searchTerms.clients + '&quot;'"></strong>.</p>
-                                        </div>
-                                    </template>
-                                    <template x-if="!searchTerms.clients">
-                                        <div class="citas-empty-state">
-                                            <i class="fa-solid fa-users citas-empty-icon" style="color:#fde68a;"></i>
-                                            <p class="citas-empty-title">Sin clientes</p>
-                                            <p class="citas-empty-sub">Aún no hay clientes registrados.<br>Agrega el primero usando el botón <strong>Crear Cliente</strong>.</p>
-                                        </div>
-                                    </template>
-                                </td>
-                            </tr>
+                            <li class="page-item" :class="currentPage.clients === getTotalPages('clients') ? 'disabled' : ''">
+                                <button class="page-link" @click="goToPage('clients', currentPage.clients + 1)">»</button>
+                            </li>
+                        </ul>
 
-                        </tbody>
-
-                    </table>
-
-                    <!-- Paginador -->
-                    <div x-show="getTotalPages('clients') > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                        <div class="badge bg-primary text-light p-2 col-1">
-                            Página <span x-text="currentPage.clients"></span> de <span x-text="getTotalPages('clients')"></span>
-                        </div>
-
-                        <nav>
-
-                            <ul class="pagination pagination-sm mb-0">
-                                <li class="page-item" :class="currentPage.clients === 1 ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('clients', currentPage.clients - 1)">«</button>
-                                </li>
-
-                                <template x-for="page in getTotalPages('clients')" :key="page">
-                                    <li class="page-item" :class="page === currentPage.clients ? 'active' : ''">
-                                        <button class="page-link" @click="goToPage('clients', page)" x-text="page"></button>
-                                    </li>
-                                </template>
-
-                                <li class="page-item" :class="currentPage.clients === getTotalPages('clients') ? 'disabled' : ''">
-                                    <button class="page-link" @click="goToPage('clients', currentPage.clients + 1)">»</button>
-                                </li>
-                            </ul>
-
-                        </nav>
-
-                    </div>
+                    </nav>
 
                 </div>
 
@@ -615,7 +701,7 @@
             <form @submit.prevent="saveCategory()">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                    <input type="text" x-model="categoryForm.cat_name" class="form-control" required>
+                    <input type="text" x-model="categoryForm.cat_name" class="form-control" maxlength="30" required>
                     <span x-show="errors.category.cat_name" x-text="errors.category.cat_name?.[0]" class="text-danger small"></span>
                 </div>
 
@@ -671,7 +757,7 @@
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" x-model="serviceForm.name" class="form-control" placeholder="Ej: Lavado Premium" required>
+                        <input type="text" x-model="serviceForm.name" class="form-control" maxlength="30" placeholder="Ej: Lavado Premium" required>
                         <span x-show="errors.service.name" x-text="errors.service.name?.[0]" class="text-danger small"></span>
                     </div>
 
@@ -688,7 +774,7 @@
 
                     <div class="col-12 mb-3 px-2">
                         <label class="form-label fw-bold">Detalles <span class="text-danger">*</span></label>
-                        <textarea x-model="serviceForm.details" class="form-control" rows="3" placeholder="Descripción del servicio..." required></textarea>
+                        <textarea x-model="serviceForm.details" class="form-control" rows="3" maxlength="100" placeholder="Descripción del servicio..." required></textarea>
                         <span x-show="errors.service.details" x-text="errors.service.details?.[0]" class="text-danger small"></span>
                     </div>
 
@@ -744,7 +830,7 @@
             <form @submit.prevent="saveVehicleType()">
                 <div class="mb-3">
                     <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                    <input type="text" x-model="vehicleTypeForm.name" class="form-control" required>
+                    <input type="text" x-model="vehicleTypeForm.name" class="form-control" maxlength="30" required>
                     <span x-show="errors.vehicleType.name" x-text="errors.vehicleType.name?.[0]" class="text-danger small"></span>
                 </div>
 
@@ -786,7 +872,7 @@
 
                     <div class="col-12 mb-3 px-2">
                         <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" x-model="clientForm.name" class="form-control" required>
+                        <input type="text" x-model="clientForm.name" class="form-control" maxlength="30" required>
                         <span x-show="errors.client.name" x-text="errors.client.name?.[0]" class="text-danger small"></span>
                     </div>
 
@@ -803,7 +889,7 @@
                             @input.debounce.500ms="checkLicensePlate($event.target.value)"
                             class="form-control license-plate-input"
                             placeholder="1234 ABC"
-                            maxlength="10"
+                            maxlength="8"
                             style="text-transform: uppercase;">
                         <span x-show="errors.client.license_plaque" x-text="errors.client.license_plaque?.[0]" class="text-danger small"></span>
                         <small x-show="licensePlateExists" class="text-danger">

@@ -95,6 +95,7 @@ function createOrderFormApp() {
             timepicker.init();
             licensePlate.init();
             this.initPaymentPeriodControl();
+            this.initFleetControl();
             
             // Inicializar manejador de envío
             const self = this;
@@ -144,6 +145,25 @@ function createOrderFormApp() {
             document.dispatchEvent(new CustomEvent('formFieldChanged'));
         },
 
+        initFleetControl() {
+
+            const fleetSwitch = document.querySelector('input[name="fleet"]');
+
+            if (!fleetSwitch || fleetSwitch.dataset.fleetInitialized === 'true') return;
+
+            fleetSwitch.addEventListener('change', () => {
+                if (fleetSwitch.checked) {
+                    const paymentPeriodSelect = document.getElementById('payment-period-select');
+                    if (paymentPeriodSelect) {
+                        paymentPeriodSelect.value = '2';
+                        this.applyPaymentPeriodRules();
+                    }
+                }
+            });
+
+            fleetSwitch.dataset.fleetInitialized = 'true';
+        },
+
         /**
          * Carga los datos de una orden para edición
          * @param {Object} order 
@@ -180,6 +200,16 @@ function createOrderFormApp() {
             if (clientName && order.client) clientName.value = order.client.name || '';
             if (clientPhone && order.client) clientPhone.value = order.client.phone || '';
             if (licensePlateInput && order.client) licensePlateInput.value = order.client.license_plaque || '';
+
+            // Pre-llenar modelo (brand)
+            const brandInput = document.getElementById('client-brand-input');
+            if (brandInput && order.client) brandInput.value = order.client.brand || '';
+
+            // Pre-llenar flota y sincronizar periodo de pago
+            const fleetSwitch = document.querySelector('input[name="fleet"]');
+            if (fleetSwitch && order.client) {
+                fleetSwitch.checked = !!order.client.fleet;
+            }
 
             // Pre-llenar tipo de vehículo
             const vehicleType = document.querySelector('[name="vehicle_type_id"]');
@@ -273,7 +303,9 @@ function createOrderFormApp() {
             const paymentPeriod = document.querySelector('[name="payment_period"]');
 
             if (paymentPeriod) {
-                paymentPeriod.value = String(order.payment_period || 1);
+                // Si el cliente es de flota, forzar período mensual
+                const isFleet = order.client?.fleet;
+                paymentPeriod.value = isFleet ? '2' : String(order.payment_period || 1);
                 this.applyPaymentPeriodRules();
             }
 
@@ -789,8 +821,8 @@ function createOrderFormApp() {
          * @returns {string}
          */
         getPaymentMethodText(method) {
-            const methods = { 1: 'Efectivo', 2: 'Tarjeta', 3: 'Transferencia', 4: 'Bizum' };
-            return methods[method] || 'N/A';
+            const methods = { 1: 'Efectivo', 2: 'TPV', 3: 'Transferencia', 4: 'Bizum' };
+            return methods[method] || '--';
         },
 
         // ==================== ENVÍO DE FORMULARIO ====================
@@ -945,11 +977,19 @@ function createOrderFormApp() {
             submitHandler?.reset();
 
             // Resetear facturación
-            const solicitarFactura = document.getElementById('solicitar-factura');
+            const solicitarFactura = document.getElementById('get-invoice');
             const datosFacturacion = document.getElementById('datos-facturacion');
 
             if (solicitarFactura) solicitarFactura.checked = false;
             if (datosFacturacion) datosFacturacion.style.display = 'none';
+
+            // Resetear switch de flota
+            const fleetSwitch = document.querySelector('input[name="fleet"]');
+            if (fleetSwitch) fleetSwitch.checked = false;
+
+            // Limpiar campo modelo
+            const brandInput = document.getElementById('client-brand-input');
+            if (brandInput) brandInput.value = '';
 
             // Scroll al inicio del formulario
             document.getElementById('orders-root')?.scrollIntoView({ behavior: 'smooth', block: 'start' });

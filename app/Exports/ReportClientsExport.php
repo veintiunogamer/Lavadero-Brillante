@@ -32,6 +32,8 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
             'Cliente',
             'Telefono',
             'Matricula',
+            'Modelo',
+            'Flota',
             'Citas',
             'Total gastado',
             'Ultima visita',
@@ -42,11 +44,13 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
     {
         return [
             $client->name,
-            $client->phone ?? 'N/A',
-            $client->license_plaque ?? 'N/A',
-            (int) $client->orders_count,
-            round((float) ($client->total_spent ?? 0), 2),
-            $client->last_order_date ? Carbon::parse($client->last_order_date)->format('d/m/Y') : 'N/A',
+            $client->phone ?? '--',
+            $client->license_plaque ?? '--',
+            $client->brand ?? '--',
+            $client->fleet == 1 ? 'Sí' : 'No',
+            (int) (isset($client->orders_count) ? $client->orders_count : '0'),
+            round((float) (isset($client->total_spent) ? $client->total_spent : '0'), 2),
+            $client->last_order_date ? Carbon::parse($client->last_order_date)->format('d/m/Y') : '--',
         ];
     }
 
