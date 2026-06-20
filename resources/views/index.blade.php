@@ -659,15 +659,15 @@
 
                     <thead class="table-dark">
                         <tr>
-                            <th>Cliente</th>
-                            <th>Servicio</th>
                             <th>Fecha</th>
-                            <th>Entrada</th>
-                            <th>Salida</th>
-                            <th>Total</th>
-                            <th>Pago</th>
-                            <th>Estado</th>
+                            <th>Cliente</th>
+                            <th>Flota</th>
+                            <th>Servicio</th>
                             <th>Detallador</th>
+                            <th>Pago</th>
+                            <th>Metodo</th>
+                            <th>Estado</th>
+                            <th>Total</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
@@ -676,23 +676,31 @@
 
                         <template x-for="order in getPaginatedOrders()" :key="order.id">
                             <tr>
+                                <td x-html="
+                                    `${formatDate(order.creation_date)}
+                                    <br>
+                                    <span class='badge bg-success'>${formatTime(order.hour_in)}</span> -
+                                    <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`
+                                ">
+                                </td>
                                 <td x-html="order.client ? order.client.name + '<br>' + order.client.license_plaque : '--'"></td>
+                                <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                                 <td>
                                     <template x-for="service in order.services" :key="service.id">
                                         <div x-text="service.name"></div>
                                     </template>
                                 </td>
-                                <td x-text="formatDate(order.creation_date)"></td>
-                                <td x-text="formatTime(order.hour_in)"></td>
-                                <td x-text="formatTime(order.hour_out)"></td>
-                                <td x-text="formatCurrency(order.total)"></td>
+                                <td x-text="order.user ? order.user.name : '--'"></td>
                                 <td>
                                     <span class="badge" :class="getPaymentStatusBadge(order.payment?.status)" x-text="getPaymentStatusText(order.payment?.status)"></span>
                                 </td>
+                                <td x-text="getPaymentMethodText(order.payment?.type)"></td>
                                 <td>
                                     <span :class="getStatusBadge(order.status)" x-text="getStatusText(order.status)"></span>
                                 </td>
-                                <td x-text="order.user ? order.user.name : '--'"></td>
+
+                                <td x-text="formatCurrency(order.total)"></td>
+
                                 <td class="text-center">
 
                                     <div class="btn-group btn-group-md">
