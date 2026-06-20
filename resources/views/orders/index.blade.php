@@ -19,7 +19,7 @@
         </div>
 
         <!-- Tabs -->
-        <ul class="nav nav-tabs p-4" id="ordersTabs" role="tablist">
+        <ul class="nav nav-tabs p-2" id="ordersTabs" role="tablist">
 
             <li class="nav-item" role="presentation">
                 <button :class="currentTab === 1 ? 'nav-link active' : 'nav-link'" id="pending-tab" @click="changeTab(1)" type="button" role="tab" aria-controls="pending" :aria-selected="currentTab === 1"><i class="fa-solid fa-clock me-2"></i>Pendientes</button>
@@ -68,6 +68,14 @@
                     <option value="1">Efectivo</option>
                     <option value="2">TPV</option>
                     <option value="3">Transferencias</option>
+                </select>
+            </div>
+
+            <div class="col-3 p-1 mt-2">
+                <select x-model="searchIsFleet" @change="resetPagination()"
+                    class="form-select border border-3">
+                    <option value="1">Sí</option>
+                    <option value="0">No</option>
                 </select>
             </div>
 
@@ -125,15 +133,14 @@
 
                 <thead class="table-dark">
                     <tr>
-                        <th>Cliente</th>
-                        <th>Placa</th>
-                        <th>Servicio</th>
                         <th>Fecha</th>
-                        <th>Entrada</th>
-                        <th>Salida</th>
-                        <th>Total</th>
+                        <th>Cliente</th>
+                        <th>Flota</th>
+                        <th>Servicio</th>
                         <th>Pago</th>
+                        <th>Metodo</th>
                         <th>Estado</th>
+                        <th>Total</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -142,23 +149,29 @@
 
                     <template x-for="(order, index) in getPaginatedOrders()" :key="index">
                         <tr>
-                            <td x-text="order.client ? order.client.name : '--'"></td>
-                            <td x-text="order.client ? order.client.license_plaque : '--'"></td>
+                            <td x-html="
+                                `${formatDate(order.creation_date)}
+                                <br>
+                                <span class='badge bg-success'>${formatTime(order.hour_in)}</span> -
+                                <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`
+                            ">
+                            <td x-html="order.client ? order.client.name + '<br>' + order.client.license_plaque : '--'"></td>
+                            <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                             <td>
                                 <template x-for="service in order.services" :key="service.id">
                                     <div x-text="service.name"></div>
                                 </template>
                             </td>
-                            <td x-text="formatDate(order.creation_date)"></td>
-                            <td x-text="formatTime(order.hour_in)"></td>
-                            <td x-text="formatTime(order.hour_out)"></td>
-                            <td x-text="formatCurrency(order.total)"></td>
                             <td>
                                 <span class="badge" :class="getPaymentStatusBadge(order.payment?.status)" x-text="getPaymentStatusText(order.payment?.status)"></span>
                             </td>
+                            <td x-text="getPaymentMethodText(order.payment?.type)"></td>
                             <td>
                                 <span :class="getStatusBadge(order.status)" x-text="getStatusText(order.status)"></span>
                             </td>
+
+                            <td x-text="formatCurrency(order.total)"></td>
+
                             <td class="text-center">
 
                                 <div class="btn-group btn-group-md">

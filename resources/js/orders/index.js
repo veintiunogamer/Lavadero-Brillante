@@ -140,8 +140,7 @@ function createOrderFormApp() {
                 window.selectedOrderDate = new Date();
             }
 
-            calendar.setDisabled(isMonthly);
-            timepicker.setDisabled(isMonthly);
+            
             document.dispatchEvent(new CustomEvent('formFieldChanged'));
         },
 
@@ -152,13 +151,18 @@ function createOrderFormApp() {
             if (!fleetSwitch || fleetSwitch.dataset.fleetInitialized === 'true') return;
 
             fleetSwitch.addEventListener('change', () => {
+
                 if (fleetSwitch.checked) {
+
                     const paymentPeriodSelect = document.getElementById('payment-period-select');
+                    
                     if (paymentPeriodSelect) {
                         paymentPeriodSelect.value = '2';
                         this.applyPaymentPeriodRules();
                     }
+
                 }
+
             });
 
             fleetSwitch.dataset.fleetInitialized = 'true';
