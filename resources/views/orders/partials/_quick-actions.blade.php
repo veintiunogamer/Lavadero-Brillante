@@ -40,14 +40,14 @@
 
                     <div class="col-12">
 
-                        <h5 class="fw-bold border-bottom pb-2">
+                        <h4 class="fw-bold border-bottom pb-2">
                             <i class="fa-solid fa-user me-2 text-primary"></i>
-                            Informacion del cliente
-                        </h5>
+                            Información del cliente
+                        </h4>
 
                     </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-12">
+                    <div class="col-lg-3 col-md-4 col-sm-12">
                         <label class="fw-bold small">Nombre</label>
                         <p class="mb-2" x-text="selectedOrder?.client?.name || '--'"></p>
                     </div>
@@ -72,18 +72,16 @@
                         <p class="mb-2" x-text="selectedOrder?.client?.phone || '--'"></p>
                     </div>
 
-
-
                 </div>
 
                 <!-- Info de Servicios -->
                 <div class="row mb-4 bg-light border border-2 rounded-3 p-3">
 
                     <div class="col-12">
-                        <h5 class="fw-bold border-bottom pb-2">
+                        <h4 class="fw-bold border-bottom pb-2">
                             <i class="fa-solid fa-list-check me-2 text-primary"></i>
-                            Servicios
-                        </h5>
+                            Servicios Adquiridos
+                        </h4>
                     </div>
 
                     <div class="col-12">
@@ -141,16 +139,15 @@
 
                 </div>
 
-                <!-- Info de Horario y Pago -->
+                <!-- Info de Horario -->
                 <div class="row mb-4 bg-light border border-2 rounded-3 p-3">
 
-                    <!-- Horario (solo para pagos únicos) -->
-                    <div class="col-md-12" x-show="selectedOrder?.payment_period !== 2">
+                    <div class="col-md-12">
 
-                        <h5 class="border-bottom pb-2">
+                        <h4 class="border-bottom pb-2">
                             <i class="fa-solid fa-clock me-2 text-primary"></i>
                             Horario
-                        </h5>
+                        </h4>
 
                         <div class="row">
 
@@ -160,12 +157,12 @@
                             </div>
 
                             <div class="col-3">
-                                <label class="fw-bold small">Entrada</label>
+                                <label class="fw-bold small">Hora de Entrada</label>
                                 <p class="mb-2" x-text="formatTime(selectedOrder?.hour_in)"></p>
                             </div>
 
                             <div class="col-3">
-                                <label class="fw-bold small">Salida</label>
+                                <label class="fw-bold small">Hora de Salida</label>
                                 <p class="mb-2" x-text="formatTime(selectedOrder?.hour_out)"></p>
                             </div>
 
@@ -173,11 +170,43 @@
 
                     </div>
 
+                </div>
+
+                <!-- Notas -->
+                <div class="row bg-light border border-2 rounded-3 p-3" x-show="selectedOrder?.vehicle_notes || selectedOrder?.order_notes || selectedOrder?.extra_notes">
+
+                    <div class="col-12">
+                        <h5 class="border-bottom pb-2 mb-3">
+                            <i class="fa-solid fa-sticky-note me-2 text-primary"></i>
+                            Notas
+                        </h5>
+                    </div>
+
+                    <div class="col-md-4" x-show="selectedOrder?.vehicle_notes">
+                        <label class="fw-bold small">Vehículo</label>
+                        <p class="small" x-text="selectedOrder?.vehicle_notes"></p>
+                    </div>
+
+                    <div class="col-md-4" x-show="selectedOrder?.extra_notes">
+                        <label class="fw-bold small">Adicionales</label>
+                        <p class="small" x-text="selectedOrder?.extra_notes"></p>
+                    </div>
+
+                    <div class="col-md-12" x-show="selectedOrder?.order_notes">
+                        <label class="fw-bold small">Orden</label>
+                        <p class="small" x-text="selectedOrder?.order_notes"></p>
+                    </div>
+
+                </div>
+
+                <!-- Info de Horario y Pago -->
+                <div class="row mb-4 bg-mint-green border border-2 rounded-3 p-3">
+
                     <div class="col-md-12">
 
                         <h5 class="border-bottom pb-2 mb-3">
                             <i class="fa-solid fa-credit-card me-2 text-primary"></i>
-                            Informacion de pago
+                            Información de pago
                         </h5>
 
                         <!-- Pagos NO registrados -->
@@ -225,33 +254,6 @@
 
                         </template>
 
-                    </div>
-
-                </div>
-
-                <!-- Notas -->
-                <div class="row bg-light border border-2 rounded-3 p-3" x-show="selectedOrder?.vehicle_notes || selectedOrder?.order_notes || selectedOrder?.extra_notes">
-
-                    <div class="col-12">
-                        <h5 class="border-bottom pb-2 mb-3">
-                            <i class="fa-solid fa-sticky-note me-2 text-primary"></i>
-                            Notas
-                        </h5>
-                    </div>
-
-                    <div class="col-md-4" x-show="selectedOrder?.vehicle_notes">
-                        <label class="fw-bold small">Vehículo</label>
-                        <p class="small" x-text="selectedOrder?.vehicle_notes"></p>
-                    </div>
-
-                    <div class="col-md-4" x-show="selectedOrder?.extra_notes">
-                        <label class="fw-bold small">Adicionales</label>
-                        <p class="small" x-text="selectedOrder?.extra_notes"></p>
-                    </div>
-
-                    <div class="col-md-12" x-show="selectedOrder?.order_notes">
-                        <label class="fw-bold small">Orden</label>
-                        <p class="small" x-text="selectedOrder?.order_notes"></p>
                     </div>
 
                 </div>

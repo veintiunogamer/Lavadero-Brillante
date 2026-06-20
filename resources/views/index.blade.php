@@ -39,8 +39,7 @@
             </div>
 
             <!-- Formulario Cliente -->
-            <div class="d-flex flex-wrap p-4 border rounded-3 bg-light mt-4"
-                style="border-left: 10px solid #0d6efd !important;">
+            <div class="d-flex flex-wrap p-4 border border-blue rounded-3 bg-light mt-4">
 
                 <div class="col-12 mb-5 pb-3 border-bottom">
                     <h2 class="fw-bold mb-1">
@@ -268,8 +267,8 @@
             </div>
 
             <!-- Datos de Facturación -->
-            <div id="datos-facturacion" class="my-4 p-4 border rounded-3 bg-light"
-                style="display: none; border-left: 10px solid #0d6efd !important;">
+            <div id="datos-facturacion" class="my-4 p-4 border border-blue rounded-3 bg-light"
+                style="display: none;">
 
                 <div class="d-flex flex-wrap">
 
@@ -335,8 +334,7 @@
             </div>
 
             <!-- Servicios -->
-            <div class="bg-light border rounded-3 my-5 p-4"
-                style="border-left: 10px solid #198754 !important;">
+            <div class="bg-light border border-green rounded-3 my-5 p-4">
 
                 <div class="col-lg-12 col-md-12 col-sm-12 d-flex pb-3 border-bottom">
 
@@ -438,7 +436,7 @@
             </div>
 
             <!-- Pago & métodos de pago -->
-            <div class="mb-5 p-4 border rounded-3 bg-light" style="border-left: 10px solid #f0aa13 !important;">
+            <div class="mb-5 p-4 border border-yellow rounded-3 bg-light">
 
                 <div class="col-12  pb-3 border-bottom">
 
