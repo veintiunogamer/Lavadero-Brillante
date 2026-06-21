@@ -171,7 +171,6 @@
 
                     </div>
 
-
                 </div>
 
                 <!-- Fecha y hora de reserva -->

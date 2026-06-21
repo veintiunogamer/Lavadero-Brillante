@@ -262,7 +262,7 @@ function createOrderFormApp() {
             if (discountSelect) {
 
                 const subtotal = Number(order.subtotal || 0);
-                const discountAmount = Number(order.discount || 0);
+                const discountAmount = Number(order.discount_value || 0);
                 let discountPercent = 0;
 
                 if (subtotal > 0 && discountAmount > 0) {
