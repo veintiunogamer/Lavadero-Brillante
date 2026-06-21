@@ -116,7 +116,11 @@ export class PriceCalculator {
             ? cleave.getRawValue()
             : (priceInput?.dataset.rawPrice || priceInput?.value || '0');
 
-            const price = parseFloat(rawStr || 0);
+            // const price = parseFloat(rawStr || 0);
+
+            const price = parseFloat(
+                String(rawStr).slice(0, -2) + '.' + String(rawStr).slice(-2)
+            );
             subtotal += price;
 
         });
@@ -139,6 +143,8 @@ export class PriceCalculator {
         const taxesAmount = invoiceRequired ? Math.max(0, taxBase * 0.21) : 0;
 
         const total = taxBase + taxesAmount;
+
+        // console.log("Asi llegan las cosas en mis calculos", { subtotal, discountPercent, discountAmount, taxBase, taxesAmount, total });
 
         // Actualizar displays
         this.updateDisplays(subtotal, discountAmount, taxesAmount, total);

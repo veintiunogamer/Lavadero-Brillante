@@ -346,6 +346,7 @@ class OrderController extends Controller
                 'license_plaque' => 'required|string|max:15',
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
+                'invoice_required' => 'nullable|boolean',
                 'assigned_user' => 'nullable|uuid',
                 'vehicle_type_id' => 'required|uuid|exists:vehicle_type,id',
                 'dirt_level' => 'required|integer|in:1,2,3',
@@ -367,8 +368,7 @@ class OrderController extends Controller
                 'payment_status' => 'required|integer|in:1,2,3',
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3,4',
-                'order_status' => 'required|integer|in:1,2,3,4',
-                'invoice_required' => 'boolean',
+                'order_status' => 'required|integer|in:1,2,3,4'
             ]);
 
             \DB::beginTransaction();

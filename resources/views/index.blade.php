@@ -675,7 +675,7 @@
                         <template x-for="order in getPaginatedOrders()" :key="order.id">
                             <tr>
                                 <td x-html="
-                                    `${formatDate(order.creation_date)}
+                                    `${formatDate(order.date)}
                                     <br>
                                     <span class='badge bg-success'>${formatTime(order.hour_in)}</span> -
                                     <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`

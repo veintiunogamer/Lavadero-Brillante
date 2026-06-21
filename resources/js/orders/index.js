@@ -215,6 +215,13 @@ function createOrderFormApp() {
                 fleetSwitch.checked = !!order.client.fleet;
             }
 
+            const invoiceSwitch = document.getElementById('get-invoice');
+
+            if (invoiceSwitch) {
+                invoiceSwitch.checked = order.taxes;
+                document.getElementById('datos-facturacion').style.display = invoiceSwitch.checked ? 'block' : 'none';
+            }
+
             // Pre-llenar tipo de vehículo
             const vehicleType = document.querySelector('[name="vehicle_type_id"]');
 
