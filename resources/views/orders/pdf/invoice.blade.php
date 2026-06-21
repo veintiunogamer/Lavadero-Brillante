@@ -208,7 +208,8 @@
 
     $subtotal = $order->subtotal ?? 0;
     $total = $order->total ?? 0;
-    $discount = $order->discount ?? 0;
+    $discount = $order->discount_value ?? 0;
+    $taxesValue = $order->taxes_value ?? 0;
     $partialPayment = $order->partial_payment ?? null;
     $observations = $order->order_notes ?? '';
 
@@ -349,8 +350,13 @@
             <td style="width:50%; vertical-align:top;">
                 <div class="sub-row">Subtotal: {{ number_format($subtotal, 2, ',', '.') }}€</div>
                 @if($discount > 0)
-                <div class="sub-row" style="color:#6b7280;">
+                <div class="sub-row" style="color:#dc3545;">
                     Descuento: -{{ number_format($discount, 2, ',', '.') }}€
+                </div>
+                @endif
+                @if($taxesValue > 0)
+                <div class="sub-row" style="color:#198754;">
+                    IVA (21%): +{{ number_format($taxesValue, 2, ',', '.') }}€
                 </div>
                 @endif
                 <div class="total-lbl">

@@ -119,9 +119,14 @@
                                         <td class="text-end" x-text="formatCurrency(selectedOrder?.subtotal || 0)"></td>
                                     </tr>
 
-                                    <tr x-show="selectedOrder?.discount > 0">
+                                    <tr x-show="selectedOrder?.discount_value > 0">
                                         <td colspan="2" class="fw-bold text-danger">Descuento:</td>
-                                        <td class="text-end text-danger" x-text="'-' + formatCurrency(selectedOrder?.discount || 0)"></td>
+                                        <td class="text-end text-danger" x-text="'-' + formatCurrency(selectedOrder?.discount_value || 0)"></td>
+                                    </tr>
+
+                                    <tr x-show="selectedOrder?.taxes_value > 0">
+                                        <td colspan="2" class="fw-bold text-success">IVA (21%):</td>
+                                        <td class="text-end text-success" x-text="'+' + formatCurrency(selectedOrder?.taxes_value || 0)"></td>
                                     </tr>
 
                                     <tr>

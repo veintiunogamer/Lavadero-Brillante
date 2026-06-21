@@ -39,8 +39,10 @@ class Order extends Model
         'vehicle_type_id',
         'vehicle_notes',
         'discount',
+        'discount_value',
         'subtotal',
         'taxes',
+        'taxes_value',
         'total',
         'partial_payment',
         'payment_period',
@@ -50,6 +52,15 @@ class Order extends Model
         'creation_date',
         'consecutive_serial',
         'consecutive_number'
+    ];
+
+    protected $casts = [
+        'discount'       => 'boolean',
+        'taxes'          => 'boolean',
+        'discount_value' => 'decimal:2',
+        'taxes_value'    => 'decimal:2',
+        'subtotal'       => 'decimal:2',
+        'total'          => 'decimal:2',
     ];
 
     /**

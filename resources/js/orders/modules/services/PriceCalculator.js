@@ -10,6 +10,7 @@ export class PriceCalculator {
     constructor(cleaveInstances) {
         this.initialized = false;
         this.discountSelect = null;
+        this.invoiceCheckbox = null;
         this.cleaveInstances = cleaveInstances || new Map();
     }
 
@@ -19,13 +20,19 @@ export class PriceCalculator {
     init() {
 
         this.discountSelect = document.getElementById('discount-select');
-        
+        this.invoiceCheckbox = document.getElementById('get-invoice');
+
         if (this.discountSelect && !this.discountSelect.dataset.initialized) {
             this.discountSelect.addEventListener('change', () => this.recalculate());
             this.discountSelect.disabled = true;
             this.discountSelect.dataset.initialized = 'true';
         }
-        
+
+        if (this.invoiceCheckbox && !this.invoiceCheckbox.dataset.calcInitialized) {
+            this.invoiceCheckbox.addEventListener('change', () => this.recalculate());
+            this.invoiceCheckbox.dataset.calcInitialized = 'true';
+        }
+
         this.initialized = true;
     }
 
@@ -125,21 +132,28 @@ export class PriceCalculator {
         // Calcular descuento
         const discountPercent = parseFloat(this.discountSelect?.value || 0);
         const discountAmount = (subtotal * discountPercent) / 100;
-        const total = subtotal - discountAmount;
+
+        // Calcular IVA (21%) — solo si se requiere factura
+        const invoiceRequired = this.invoiceCheckbox?.checked || false;
+        const taxBase = subtotal - discountAmount;
+        const taxesAmount = invoiceRequired ? Math.max(0, taxBase * 0.21) : 0;
+
+        const total = taxBase + taxesAmount;
 
         // Actualizar displays
-        this.updateDisplays(subtotal, discountAmount, total);
+        this.updateDisplays(subtotal, discountAmount, taxesAmount, total);
 
-        return { subtotal, discountAmount, total, discountPercent };
+        return { subtotal, discountAmount, taxesAmount, total, discountPercent };
     }
 
     /**
      * Actualiza los elementos de display de precios
-     * @param {number} subtotal 
-     * @param {number} discountAmount 
-     * @param {number} total 
+     * @param {number} subtotal
+     * @param {number} discountAmount
+     * @param {number} taxesAmount
+     * @param {number} total
      */
-    updateDisplays(subtotal, discountAmount, total) {
+    updateDisplays(subtotal, discountAmount, taxesAmount, total) {
 
         // Subtotal
         const subtotalSection = document.querySelector('.subtotal-section');
@@ -154,6 +168,13 @@ export class PriceCalculator {
 
         if (discountSection) discountSection.textContent = '-' + formatPrice(discountAmount);
         if (discountInput) discountInput.value = discountAmount.toFixed(2);
+
+        // IVA
+        const taxSection = document.querySelector('.tax-section');
+        const taxInput = document.querySelector('.tax-value');
+
+        if (taxSection) taxSection.textContent = formatPrice(taxesAmount);
+        if (taxInput) taxInput.value = taxesAmount.toFixed(2);
 
         // Total
         const totalSection = document.querySelector('.total-section');
@@ -201,7 +222,8 @@ export class PriceCalculator {
 
         return {
             subtotal: parseFloat(document.querySelector('.subtotal-value')?.value || 0),
-            discount: parseFloat(document.querySelector('.discount-value')?.value || 0),
+            discount_value: parseFloat(document.querySelector('.discount-value')?.value || 0),
+            tax_value: parseFloat(document.querySelector('.tax-value')?.value || 0),
             total: parseFloat(document.querySelector('.total-value')?.value || 0),
             discountPercent: parseFloat(this.discountSelect?.value || 0)
         };
@@ -218,8 +240,8 @@ export class PriceCalculator {
             this.discountSelect.disabled = true;
         }
 
-        this.updateDisplays(0, 0, 0);
-        
+        this.updateDisplays(0, 0, 0, 0);
+
     }
 }
 
