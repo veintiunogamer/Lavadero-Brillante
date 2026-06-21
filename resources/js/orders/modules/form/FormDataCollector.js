@@ -115,10 +115,9 @@ export class FormDataCollector {
      */
     getPricingData() {
 
-        const discountValue = document.querySelector('.discount-value');
-
         return {
-            discount: parseFloat(discountValue?.value || 0),
+            discount_value: parseFloat(document.querySelector('.discount-value')?.value || 0),
+            tax_value: parseFloat(document.querySelector('.tax-value')?.value || 0),
             subtotal: parseFloat(document.querySelector('.subtotal-value')?.value || 0),
             total: parseFloat(document.querySelector('.total-value')?.value || 0)
         };

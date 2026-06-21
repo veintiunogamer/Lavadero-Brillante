@@ -62,9 +62,9 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         $paymentMethod = $payment ? ($this->paymentMethodLabels[$payment->type] ?? 'Desconocido') : '--';
 
         $subtotal = (float) ($order->subtotal ?? 0);
-        $tax = (float) ($order->tax ?? 0);
-        $discount = (float) ($order->discount ?? 0);
-        $discountPercent = $subtotal > 0 ? ($discount / $subtotal) * 100 : 0;
+        $taxesValue = (float) ($order->taxes_value ?? 0);
+        $discountValue = (float) ($order->discount_value ?? 0);
+        $discountPercent = $subtotal > 0 ? ($discountValue / $subtotal) * 100 : 0;
 
         return [
             $orderNumber,
@@ -73,7 +73,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
             optional($order->client)->fleet ?? '--',
             $services ?: '--',
             round($subtotal, 2),
-            round($tax, 2),
+            round($taxesValue, 2),
             round($discountPercent, 0),
             $paymentStatus,
             $paymentMethod,
