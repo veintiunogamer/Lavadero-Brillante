@@ -186,7 +186,9 @@ function createOrderFormApp() {
 
             if (orderDateValue) {
 
-                const parsedOrderDate = new Date(orderDateValue);
+                const [year, month, day] = orderDateValue.split('-');
+
+                const parsedOrderDate = new Date(year, month - 1, day);
 
                 if (!Number.isNaN(parsedOrderDate.getTime())) {
                     calendar.setSelectedDate(parsedOrderDate);
@@ -213,6 +215,13 @@ function createOrderFormApp() {
             const fleetSwitch = document.querySelector('input[name="fleet"]');
             if (fleetSwitch && order.client) {
                 fleetSwitch.checked = !!order.client.fleet;
+            }
+
+            const invoiceSwitch = document.getElementById('get-invoice');
+
+            if (invoiceSwitch) {
+                invoiceSwitch.checked = order.taxes;
+                document.getElementById('datos-facturacion').style.display = invoiceSwitch.checked ? 'block' : 'none';
             }
 
             // Pre-llenar tipo de vehículo
@@ -255,7 +264,7 @@ function createOrderFormApp() {
             if (discountSelect) {
 
                 const subtotal = Number(order.subtotal || 0);
-                const discountAmount = Number(order.discount || 0);
+                const discountAmount = Number(order.discount_value || 0);
                 let discountPercent = 0;
 
                 if (subtotal > 0 && discountAmount > 0) {

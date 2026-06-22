@@ -145,19 +145,19 @@
                 </div>
 
                 <!-- Info de Horario -->
-                <div class="row mb-4 bg-light border border-2 rounded-3 p-3">
+                <div class="row mb-4 bg-mint-blue border border-2 rounded-3 p-3">
 
                     <div class="col-md-12">
 
                         <h4 class="border-bottom pb-2">
                             <i class="fa-solid fa-clock me-2 text-primary"></i>
-                            Horario
+                            Horario del servicio
                         </h4>
 
                         <div class="row">
 
                             <div class="col-3">
-                                <label class="fw-bold small">Fecha</label>
+                                <label class="fw-bold small">Fecha programada</label>
                                 <p class="mb-2" x-text="formatDate(selectedOrder?.creation_date)"></p>
                             </div>
 

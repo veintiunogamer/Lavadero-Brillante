@@ -346,6 +346,7 @@ class OrderController extends Controller
                 'license_plaque' => 'required|string|max:15',
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
+                'invoice_required' => 'nullable|boolean',
                 'assigned_user' => 'nullable|uuid',
                 'vehicle_type_id' => 'required|uuid|exists:vehicle_type,id',
                 'dirt_level' => 'required|integer|in:1,2,3',
@@ -362,13 +363,12 @@ class OrderController extends Controller
                 'total' => 'required|numeric|min:0',
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
-                'hour_in' => 'required_if:payment_period,1|nullable|string',
-                'hour_out' => 'required_if:payment_period,1|nullable|string',
+                'hour_in' => 'required_if:payment_period,1|nullable|date_format:H:i',
+                'hour_out' => 'required_if:payment_period,1|nullable|date_format:H:i|after:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3',
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3,4',
-                'order_status' => 'required|integer|in:1,2,3,4',
-                'invoice_required' => 'boolean',
+                'order_status' => 'required|integer|in:1,2,3,4'
             ]);
 
             \DB::beginTransaction();
@@ -691,17 +691,20 @@ class OrderController extends Controller
 
             if ($tab === 'pending') {
 
+                $today = Carbon::today();
+
                 // Tab 1: Pendientes + En Proceso
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
                     ->whereIn('status', [Order::STATUS_PENDING, Order::STATUS_IN_PROGRESS])
-                    ->orderBy('creation_date', 'desc')
+                    ->whereDate('date', $today)
+                    ->orderBy('date', 'desc')
                     ->get();
             } else {
 
                 // Tab 2: Historial (Terminadas, Canceladas)
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
                     ->whereIn('status', [Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
-                    ->orderBy('creation_date', 'desc')
+                    ->orderBy('date', 'desc')
                     ->get();
             }
 
