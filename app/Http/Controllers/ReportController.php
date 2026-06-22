@@ -55,8 +55,8 @@ class ReportController extends Controller
                 'consecutive_number' => $order->consecutive_number ?? null,
                 'creation_date' => $order->creation_date,
                 'subtotal' => $order->subtotal,
-                'discount' => $order->discount,
-                'tax' => $order->tax,
+                'discount_value' => $order->discount_value,
+                'taxes_value' => $order->taxes_value,
                 'total' => $order->total,
                 'status' => $order->status,
                 'client' => $order->client,
@@ -74,8 +74,8 @@ class ReportController extends Controller
         $summary = [
             'orders' => $orders->count(),
             'subtotal' => $orders->sum('subtotal'),
-            'discount' => $orders->sum('discount'),
-            'tax' => $orders->sum('tax'),
+            'discount_value' => $orders->sum('discount_value'),
+            'taxes_value' => $orders->sum('taxes_value'),
             'total' => $orders->sum('total'),
         ];
 
@@ -141,8 +141,8 @@ class ReportController extends Controller
         $summary = [
             'orders' => $orders->count(),
             'subtotal' => $orders->sum('subtotal'),
-            'tax' => $orders->sum('tax'),
-            'discount' => $orders->sum('discount'),
+            'taxes_value' => $orders->sum('taxes_value'),
+            'discount_value' => $orders->sum('discount_value'),
             'total' => $orders->sum('total'),
         ];
 
@@ -187,8 +187,8 @@ class ReportController extends Controller
             $summary = [
                 'orders' => $orders->count(),
                 'subtotal' => $orders->sum('subtotal'),
-                'tax' => $orders->sum('tax'),
-                'discount' => $orders->sum('discount'),
+                'taxes_value' => $orders->sum('taxes_value'),
+                'discount_value' => $orders->sum('discount_value'),
                 'total' => $orders->sum('total'),
             ];
 
@@ -299,8 +299,20 @@ class ReportController extends Controller
         return Order::with([
             'client:id,name,phone,license_plaque',
             'services:id,name',
+            'order:taxes_value,discount_value,subtotal,total',
             'payments:id,order_id,type,status,subtotal,total'
         ])
+            ->select([
+                'id',
+                'consecutive_serial',
+                'consecutive_number',
+                'creation_date',
+                'subtotal',
+                'discount_value',
+                'taxes_value',
+                'total',
+                'status',
+            ])
             ->whereBetween('creation_date', [$start, $end])
             ->orderByDesc('creation_date');
     }

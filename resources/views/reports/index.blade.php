@@ -74,7 +74,7 @@
                     </div>
 
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-2 p-1 mt-2">
 
                         <select class="form-select form-select-lg"
                             x-model="salesRange"
@@ -87,18 +87,48 @@
 
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-2 p-1 mt-2">
                         <input type="date" class="form-control form-control-lg"
                             x-model="customStartDate"
                             @change="changeSalesRange('custom')"
                             :disabled="activeTab !== 'sales'">
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
-
+                    <div class="col-2 p-1 mt-2">
+                        <select class="form-select form-select-lg"
+                            x-model="fleetFilter"
+                            @change="resetPagination('sales')"
+                            :disabled="activeTab !== 'sales'">
+                            <option value="1">Si</option>
+                            <option value="0">No</option>
+                        </select>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-2 p-1 mt-2">
+                        <select class="form-select form-select-lg"
+                            x-model="paymentStatusFilter"
+                            @change="resetPagination('sales')"
+                            :disabled="activeTab !== 'sales'">
+                            <option value="">Todos</option>
+                            <option value="1">Pendiente</option>
+                            <option value="2">Parcial</option>
+                            <option value="3">Pagado</option>
+                        </select>
+                    </div>
+
+                    <div class="col-2 p-1 mt-2">
+                        <select class="form-select form-select-lg"
+                            x-model="paymentMethodsFilter"
+                            @change="resetPagination('sales')"
+                            :disabled="activeTab !== 'sales'">
+                            <option value="">Todos</option>
+                            <option value="1">Efectivo</option>
+                            <option value="2">TPV</option>
+                            <option value="3">Transferencia</option>
+                        </select>
+                    </div>
+
+                    <div class="col-2 p-1 mt-2">
 
                         <button class="btn btn-primary text-white btn-lg float-end" @click="openExportModal()">
                             <i class="fa-solid fa-download me-1"></i>
@@ -132,7 +162,7 @@
 
                                 <th>Subtotal</th>
                                 <th>IVA</th>
-                                <th>Descuento %</th>
+                                <th>Descuento</th>
 
                                 <th>Pago</th>
                                 <th>Método</th>
@@ -165,8 +195,8 @@
                                     </td>
 
                                     <td x-text="formatCurrency(order.subtotal)"></td>
-                                    <td x-text="formatCurrency(order.tax)"></td>
-                                    <td x-text="formatPercent(getDiscountPercent(order))"></td>
+                                    <td x-text="formatCurrency(order.taxes_value)"></td>
+                                    <td x-text="order.discount_value ? formatCurrency(order.discount_value) : '--'"></td>
 
                                     <td>
                                         <span class="badge" :class="getPaymentStatusBadge(order.payment?.status)" x-text="getPaymentStatusText(order.payment?.status)"></span>
@@ -275,7 +305,16 @@
                             placeholder="Buscar clientes...">
                     </div>
 
-                    <div class="col-9 p-1 mt-2">
+                    <div class="col-3 p-1 mt-2">
+                        <select class="form-select form-select-lg"
+                            x-model="fleetFilter"
+                            @change="resetPagination('clients')">
+                            <option value=" 1">Si</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 p-1 mt-2">
 
                         <button class="btn btn-primary text-white btn-lg float-end" @click="openExportModal()">
                             <i class="fa-solid fa-download me-1"></i>

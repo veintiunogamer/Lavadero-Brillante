@@ -225,7 +225,7 @@ window.reportsApp = function() {
 
         getDiscountPercent(order) {
             const subtotal = Number(order?.subtotal || 0);
-            const discount = Number(order?.discount || 0);
+            const discount = Number(order?.discount_value || 0);
             if (subtotal <= 0 || discount <= 0) return 0;
             return (discount / subtotal) * 100;
         },
