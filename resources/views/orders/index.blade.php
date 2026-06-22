@@ -39,31 +39,59 @@
         <div class="col-12 filter-section 
             d-flex flex-wrap align-items-center">
 
-            <div class="col-12 border-bottom mb-1">
+            <div class="col-12 border-bottom mb-1 border-2 border-white">
                 <label class="fw-bold mb-1 fs-5">
                     <i class="fa-solid fa-filter text-primary me-1"></i>
                     Filtros de búsqueda
                 </label>
             </div>
 
-            <div class="col-3 p-1 mt-2">
+            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                <label class="fw-bold mb-1">
+                    <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                    Búsqueda global
+                </label>
                 <input type="text"
                     x-model="searchTerm"
                     @input="resetPagination()"
-                    class="form-control pe-5 border border-3"
+                    class="input form-control pe-5"
                     placeholder="Buscar agendamientos...">
             </div>
 
-            <div class="col-3 p-1 mt-2">
+            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                <label class="fw-bold mb-1">
+                    <i class="fa-solid fa-calendar-check text-primary me-1"></i>
+                    Fecha de orden
+                </label>
                 <input type="date"
                     x-model="searchDate"
                     @change="resetPagination()"
-                    class="form-control border border-3">
+                    class="input form-control">
             </div>
 
-            <div class="col-3 p-1 mt-2">
+            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                <label class="fw-bold mb-1">
+                    <i class="fa-solid fa-exchange text-primary me-1"></i>
+                    Estados de pago
+                </label>
+                <select class="input form-select form-select-lg"
+                    x-model="paymentStatusFilter"
+                    @change="resetPagination('sales')"
+                    :disabled="activeTab !== 'sales'">
+                    <option value="">Todos</option>
+                    <option value="1">Pendiente</option>
+                    <option value="2">Parcial</option>
+                    <option value="3">Pagado</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                <label class="fw-bold mb-1">
+                    <i class="fa-solid fa-credit-card text-primary me-1"></i>
+                    Método de pago
+                </label>
                 <select x-model="searchPaymentType" @change="resetPagination()"
-                    class="form-select border border-3">
+                    class="input form-select">
                     <option value="">Todos</option>
                     <option value="1">Efectivo</option>
                     <option value="2">TPV</option>
@@ -71,9 +99,13 @@
                 </select>
             </div>
 
-            <div class="col-3 p-1 mt-2">
+            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                <label class="fw-bold mb-1">
+                    <i class="fa-solid fa-car text-primary me-1"></i>
+                    Flota
+                </label>
                 <select x-model="searchIsFleet" @change="resetPagination()"
-                    class="form-select border border-3">
+                    class="input form-select">
                     <option value="1">Sí</option>
                     <option value="0">No</option>
                 </select>

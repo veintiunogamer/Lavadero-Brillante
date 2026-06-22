@@ -66,7 +66,7 @@
                 <div class="col-12 filter-section
                     d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom mb-1 border-2 border-white">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
@@ -74,8 +74,11 @@
                     </div>
 
 
-                    <div class="col-2 p-1 mt-2">
-
+                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-clock text-primary me-1"></i>
+                            Periodo
+                        </label>
                         <select class="form-select form-select-lg"
                             x-model="salesRange"
                             @change="changeSalesRange()"
@@ -87,14 +90,22 @@
 
                     </div>
 
-                    <div class="col-2 p-1 mt-2">
+                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-calendar-check text-primary me-1"></i>
+                            Fecha de orden
+                        </label>
                         <input type="date" class="form-control form-control-lg"
                             x-model="customStartDate"
                             @change="changeSalesRange('custom')"
                             :disabled="activeTab !== 'sales'">
                     </div>
 
-                    <div class="col-2 p-1 mt-2">
+                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-car text-primary me-1"></i>
+                            Flota
+                        </label>
                         <select class="form-select form-select-lg"
                             x-model="fleetFilter"
                             @change="resetPagination('sales')"
@@ -104,7 +115,11 @@
                         </select>
                     </div>
 
-                    <div class="col-2 p-1 mt-2">
+                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-exchange text-primary me-1"></i>
+                            Estado de pago
+                        </label>
                         <select class="form-select form-select-lg"
                             x-model="paymentStatusFilter"
                             @change="resetPagination('sales')"
@@ -116,7 +131,11 @@
                         </select>
                     </div>
 
-                    <div class="col-2 p-1 mt-2">
+                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-credit-card text-primary me-1"></i>
+                            Método de pago
+                        </label>
                         <select class="form-select form-select-lg"
                             x-model="paymentMethodsFilter"
                             @change="resetPagination('sales')"
@@ -128,9 +147,9 @@
                         </select>
                     </div>
 
-                    <div class="col-2 p-1 mt-2">
+                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
 
-                        <button class="btn btn-primary text-white btn-lg float-end" @click="openExportModal()">
+                        <button class="btn btn-success text-white btn-lg float-end" @click="openExportModal()">
                             <i class="fa-solid fa-download me-1"></i>
                             Exportar
                         </button>
@@ -289,7 +308,7 @@
                 <div class="col-12 filter-section
                     d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom mb-1 border-2 border-white">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
@@ -298,6 +317,10 @@
 
 
                     <div class="col-3 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Búsqueda global
+                        </label>
                         <input type="text"
                             x-model="searchTerms.clients"
                             @input="resetPagination('clients')"
@@ -306,6 +329,10 @@
                     </div>
 
                     <div class="col-3 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-car text-primary me-1"></i>
+                            Flota
+                        </label>
                         <select class="form-select form-select-lg"
                             x-model="fleetFilter"
                             @change="resetPagination('clients')">

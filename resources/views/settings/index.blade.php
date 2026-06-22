@@ -82,18 +82,22 @@
                 <div class="col-12 filter-section 
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom border-2 border-white mb-1">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Nombre de categoría
+                        </label>
                         <input type="text"
                             x-model="searchTerms.categories"
                             @input="resetPagination('categories')"
-                            class="form-control pe-5"
+                            class="input form-control pe-5"
                             placeholder="Buscar categorías...">
                     </div>
 
@@ -243,18 +247,22 @@
                 <div class="col-12 filter-section 
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom border-2 border-white">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Nombre del servicio
+                        </label>
                         <input type="text"
                             x-model="searchTerms.services"
                             @input="resetPagination('services')"
-                            class="form-control pe-5"
+                            class="input form-control pe-5"
                             placeholder="Buscar servicios...">
                     </div>
 
@@ -400,18 +408,22 @@
                 <div class="col-12 filter-section 
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom border-2 border-white mb-1">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Tipo de vehiculo
+                        </label>
                         <input type="text"
                             x-model="searchTerms.vehicleTypes"
                             @input="resetPagination('vehicleTypes')"
-                            class="form-control pe-5 "
+                            class="input form-control pe-5 "
                             placeholder="Buscar tipos de vehículos...">
                     </div>
 
@@ -551,18 +563,22 @@
                 <div class="col-12 filter-section
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom mb-1 border-2 border-white">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Búsqueda global
+                        </label>
                         <input type="text"
                             x-model="searchTerms.clients"
                             @input="resetPagination('clients')"
-                            class="form-control pe-5"
+                            class="input form-control pe-5"
                             placeholder="Buscar clientes...">
                     </div>
                 </div>
@@ -576,6 +592,8 @@
                             </th>
                             <th>Teléfono</th>
                             <th>Matrícula</th>
+                            <th>Modelo</th>
+                            <th>Flota</th>
                             <th @click="sortData('clients', 'status')" style="cursor: pointer;">
                                 Estado <span x-html="getSortIcon('clients', 'status')"></span>
                             </th>
@@ -594,6 +612,8 @@
                                 <td x-text="client.name"></td>
                                 <td x-text="client.phone || '--'"></td>
                                 <td x-text="client.license_plaque || '--'"></td>
+                                <td x-text="client.brand || '--'"></td>
+                                <td x-text="client.fleet ? 'Sí' : 'No'"></td>
                                 <td>
                                     <span class="badge" :class="client.status ? 'bg-success' : 'bg-secondary'"
                                         x-text="client.status ? 'Activo' : 'Inactivo'"></span>

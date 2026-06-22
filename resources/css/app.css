@@ -121,6 +121,10 @@
     background-color: var(--color-rojo-tenue);
 }
 
+.text-warning {
+    color: var(--color-amarillo) !important;
+}
+
 .main-nav {
     display: flex;
     gap: 1.6rem;
@@ -1160,7 +1164,7 @@ hr {
         flex-direction: column; 
         gap: 0;
         padding: 1rem 1rem 1.5rem 1rem; 
-        border-bottom: 1px solid rgba(255,255,255,0.04); 
+        border-bottom: 1px solid var(--color-black); 
         z-index: 90;
         align-items: flex-start;
     }
