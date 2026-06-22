@@ -84,8 +84,8 @@
                             @change="changeSalesRange()"
                             :disabled="activeTab !== 'sales'">
                             <option value="today">Hoy</option>
-                            <option value="month">Este Mes</option>
-                            <option value="week">Esta Semana</option>
+                            <option value="month">Mensual</option>
+                            <option value="week">Semanal</option>
                         </select>
 
                     </div>
@@ -149,7 +149,7 @@
 
                     <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
 
-                        <button class="btn btn-success text-white btn-lg float-end" @click="openExportModal()">
+                        <button class="btn btn-success text-white btn-lg mt-4 float-end" @click="openExportModal()">
                             <i class="fa-solid fa-download me-1"></i>
                             Exportar
                         </button>

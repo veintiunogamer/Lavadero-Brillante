@@ -90,7 +90,8 @@ window.settingsApp = function() {
         clientForm: {
             name: '',
             phone: '',
-            license_plaque: ''
+            license_plaque: '',
+            brand: ''
         },
 
         // Estados de validación
@@ -673,7 +674,8 @@ window.settingsApp = function() {
             this.clientForm = {
                 name: client.name,
                 phone: client.phone || '',
-                license_plaque: client.license_plaque || ''
+                license_plaque: client.license_plaque || '',
+                brand: client.brand || ''
             };
 
             this.showClientModal = true;
@@ -805,7 +807,8 @@ window.settingsApp = function() {
             this.clientForm = {
                 name: '',
                 phone: '',
-                license_plaque: ''
+                license_plaque: '',
+                brand: ''
             };
             
         },

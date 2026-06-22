@@ -890,16 +890,10 @@
 
                 <div class="col-12 d-flex flex-wrap mx-n2">
 
-                    <div class="col-12 mb-3 px-2">
+                    <div class="col-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
                         <input type="text" x-model="clientForm.name" class="form-control" maxlength="30" required>
                         <span x-show="errors.client.name" x-text="errors.client.name?.[0]" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Teléfono</label>
-                        <input type="tel" x-model="clientForm.phone" class="form-control" data-phone="true" placeholder="612 345 678" maxlength="11">
-                        <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
@@ -916,6 +910,20 @@
                             <i class="fa-solid fa-exclamation-triangle"></i> Esta matrícula ya está registrada
                         </small>
                     </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
+                        <label class="form-label fw-bold">Modelo</label>
+                        <input type="text" x-model="clientForm.brand" class="form-control" maxlength="30" placeholder="Ej: Toyota Corolla">
+                        <span x-show="errors.client.brand" x-text="errors.client.brand?.[0]" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
+                        <label class="form-label fw-bold">Teléfono</label>
+                        <input type="tel" x-model="clientForm.phone" class="form-control" data-phone="true" placeholder="612 345 678" maxlength="11">
+                        <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
+                    </div>
+
+
                 </div>
 
                 <div class="d-flex col-12 justify-content-center gap-2 my-4">
