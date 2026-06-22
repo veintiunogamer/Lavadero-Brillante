@@ -186,7 +186,9 @@ function createOrderFormApp() {
 
             if (orderDateValue) {
 
-                const parsedOrderDate = new Date(orderDateValue);
+                const [year, month, day] = orderDateValue.split('-');
+
+                const parsedOrderDate = new Date(year, month - 1, day);
 
                 if (!Number.isNaN(parsedOrderDate.getTime())) {
                     calendar.setSelectedDate(parsedOrderDate);

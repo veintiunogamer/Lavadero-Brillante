@@ -333,7 +333,7 @@
             </div>
 
             <!-- Servicios -->
-            <div class="bg-light border border-green rounded-3 my-5 p-4">
+            <div class="bg-light border border-green border-2 rounded-3 my-5 p-4">
 
                 <div class="col-lg-12 col-md-12 col-sm-12 d-flex pb-3 border-bottom">
 
@@ -353,7 +353,7 @@
                 </div>
 
                 <!--  Nuevo servicio -->
-                <div class="d-flex flex-wrap service-item p-4 border border-success border-2 rounded-3 bg-light mt-4">
+                <div class="d-flex flex-wrap service-item p-4 rounded-3 mt-4">
 
                     <div class="col-lg-3 col-md-3 col-sm-12 px-2">
                         <label class="fw-bold mb-1">
@@ -451,7 +451,7 @@
                     <!-- Pagos Formulario -->
                     <div class="col-lg-6 col-md-6 col-sm-12 d-flex flex-wrap bg-light p-3 rounded-3">
 
-                        <div class="col-12 my-5">
+                        <div class="col-12 my-2">
                             <label class="fw-bold px-3">Estado del Pago <span class="required">*</span></label>
                             <div class="pay-status-group mt-1 px-3 d-flex" style="gap: 1rem;">
                                 <button type="button" class="btn btn-outline-warning pay-status-btn pay-status-active" data-value="1">Pendiente</button>
@@ -489,6 +489,16 @@
                             </select>
                         </div>
 
+                        <div class="col-lg-6 col-md-6 col-sm-12 px-2 mt-2">
+                            <label class="fw-bold">Descuento</label>
+                            <select class="input form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 40px;">
+                                <option value="">Selecciona Descuento</option>
+                                <option value="5">5%</option>
+                                <option value="10">10%</option>
+                                <option value="15">15%</option>
+                            </select>
+                        </div>
+
                         <div class="col-lg-6 col-md-6 col-sm-12 px-2 mt-2" id="partial-payment-container" style="display: none;">
                             <label class="fw-bold">Abono Parcial <span class="required">*</span></label>
                             <input type="number" class="input form-control" name="partial_payment" id="partial-payment-input" placeholder="0.00" step="0.01" min="0" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Abono Parcial">
@@ -498,40 +508,30 @@
                     </div>
 
                     <!-- Seccion de totales, descuentos e IVA -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 d-flex flex-wrap bg-light p-3 rounded-3">
+                    <div class="col-lg-6 col-md-6 col-sm-12 d-flex flex-wrap bg-light border p-3 rounded-3">
 
-                        <div class="col-lg-12 col-md-12 col-sm-12 px-2 mt-2">
-                            <label class="fw-bold">Descuento</label>
-                            <select class="form-control" name="discount" id="discount-select" style="font-size: 1.1rem; min-height: 40px;">
-                                <option value="">Selecciona Descuento</option>
-                                <option value="5">5%</option>
-                                <option value="10">10%</option>
-                                <option value="15">15%</option>
-                            </select>
-                        </div>
-
-                        <div class="col-lg-2 col-md-2 col-sm-12 text-center">
-                            <label class="fw-bold">Subtotal</label>
-                            <div class="subtotal-section" style="font-size:1.3rem;font-weight:600;">0.00€</div>
+                        <div class="col-lg-6 col-md-3 col-sm-12 p-2 rounded-3 fw-bold text-center">
+                            <label class="fw-bold">SUBTOTAL</label>
+                            <div class="subtotal-section">0.00€</div>
                             <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
                         </div>
 
-                        <div class="col-lg-2 col-md-2 col-sm-12 text-center">
-                            <label class="fw-bold">Descuento</label>
-                            <div class="discount-section" style="font-size:1.3rem;font-weight:600;color:#dc3545;">-0.00€</div>
+                        <div class="col-lg-6 col-md-3 col-sm-12 p-2 rounded-3 fw-bold text-center">
+                            <label class="fw-bold">DESCUENTO</label>
+                            <div class="discount-section">-0.00€</div>
                             <input type="hidden" class="discount-value" name="discount_value" value="0.00">
                         </div>
 
 
-                        <div class="col-2 text-center">
+                        <div class="col-lg-6 col-md-3 col-sm-12 rounded-3 p-2 fw-bold text-center">
                             <label class="fw-bold">IVA</label>
-                            <div class="tax-section" style="font-size:1.3rem;font-weight:600;color:green;">0.00€</div>
+                            <div class="tax-section">0.00€</div>
                             <input type="hidden" class="tax-value" name="tax_value" value="0.00">
                         </div>
 
-                        <div class="col-2 text-center">
-                            <label class="fw-bold">Total</label>
-                            <div class="total-section" style="font-size:1.3rem;font-weight:700;">0.00€</div>
+                        <div class="col-lg-6 col-md-3 col-sm-12 p-2 rounded-3 fw-bold text-center">
+                            <label class="fw-bold">TOTAL</label>
+                            <div class="total-section">0.00€</div>
                             <input type="hidden" class="total-value" name="total" value="0.00">
                         </div>
 
@@ -674,7 +674,7 @@
                         <template x-for="order in getPaginatedOrders()" :key="order.id">
                             <tr>
                                 <td x-html="
-                                    `${formatDate(order.date)}
+                                    `${order.date}
                                     <br>
                                     <span class='badge bg-success'>${formatTime(order.hour_in)}</span> -
                                     <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`

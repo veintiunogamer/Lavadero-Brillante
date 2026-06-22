@@ -691,17 +691,20 @@ class OrderController extends Controller
 
             if ($tab === 'pending') {
 
+                $today = Carbon::today();
+
                 // Tab 1: Pendientes + En Proceso
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
                     ->whereIn('status', [Order::STATUS_PENDING, Order::STATUS_IN_PROGRESS])
-                    ->orderBy('creation_date', 'desc')
+                    ->whereDate('date', $today)
+                    ->orderBy('date', 'desc')
                     ->get();
             } else {
 
                 // Tab 2: Historial (Terminadas, Canceladas)
                 $orders = Order::with(['client', 'services', 'user', 'payments'])
                     ->whereIn('status', [Order::STATUS_COMPLETED, Order::STATUS_CANCELED])
-                    ->orderBy('creation_date', 'desc')
+                    ->orderBy('date', 'desc')
                     ->get();
             }
 

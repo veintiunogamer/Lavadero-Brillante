@@ -26,7 +26,7 @@
     --color-rojo-tenue: #ffeaea;
 
     --color-verde: #198754;
-    --color-mint-green: #daf8e0;
+    --color-mint-green: #effff2;
 
 
     --color-gris: #888;
@@ -86,7 +86,7 @@
     border-left: 10px solid var(--color-azul-logo) !important;
 }
 
-.boder-green {
+.border-green {
     border-left: 10px solid var(--color-verde) !important;
 }
 
@@ -111,6 +111,14 @@
 
 .bg-mint-green {
     background-color: var(--color-mint-green);
+}
+
+.bg-mint-blue {
+    background-color: var(--color-azul-celeste-claro);
+}
+
+.bg-pastel-pink {
+    background-color: var(--color-rojo-tenue);
 }
 
 .main-nav {
@@ -405,7 +413,7 @@ hr {
 }
 
 .service-item {
-    background: var(--color-blanco);
+    background: var(--color-mint-green);
     border-radius: 12px;
     border: 1px solid var(--color-gris-claro);
     padding: 0.6em;
@@ -1500,9 +1508,13 @@ hr {
 }
 
 .filter-section {
-    background: var(--color-gris-claro) !important;
+    background: var(--color-azul-celeste-claro) !important;
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1.5rem;
     margin-top: 1.5rem;
+}
+
+.filter-section > input, .filter-section > select {
+    border: 0px !important;
 }
