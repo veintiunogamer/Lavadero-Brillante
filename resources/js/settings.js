@@ -90,7 +90,8 @@ window.settingsApp = function() {
         clientForm: {
             name: '',
             phone: '',
-            license_plaque: ''
+            license_plaque: '',
+            brand: ''
         },
 
         // Estados de validación
@@ -120,16 +121,24 @@ window.settingsApp = function() {
                 // Búsqueda según el tipo de dato
                 switch(type) {
                     case 'categories':
+
                         return item.cat_name.toLowerCase().includes(searchTerm);
+
                     case 'services':
+
                         return item.name.toLowerCase().includes(searchTerm) ||
-                               item.details?.toLowerCase().includes(searchTerm);
+                        item.details?.toLowerCase().includes(searchTerm);
+
                     case 'vehicleTypes':
+
                         return item.name.toLowerCase().includes(searchTerm);
+
                     case 'clients':
+
                         return item.name.toLowerCase().includes(searchTerm) ||
-                               item.phone?.toLowerCase().includes(searchTerm) ||
-                               item.license_plaque?.toLowerCase().includes(searchTerm);
+                        item.phone?.toLowerCase().includes(searchTerm) ||
+                        item.license_plaque?.toLowerCase().includes(searchTerm);
+                        
                     default:
                         return true;
                 }
@@ -673,7 +682,9 @@ window.settingsApp = function() {
             this.clientForm = {
                 name: client.name,
                 phone: client.phone || '',
-                license_plaque: client.license_plaque || ''
+                license_plaque: client.license_plaque || '',
+                brand: client.brand || '',
+                fleet: client.fleet || 0
             };
 
             this.showClientModal = true;
@@ -805,7 +816,8 @@ window.settingsApp = function() {
             this.clientForm = {
                 name: '',
                 phone: '',
-                license_plaque: ''
+                license_plaque: '',
+                brand: ''
             };
             
         },

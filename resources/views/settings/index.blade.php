@@ -82,18 +82,22 @@
                 <div class="col-12 filter-section 
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom border-2 border-white mb-1">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Nombre de categoría
+                        </label>
                         <input type="text"
                             x-model="searchTerms.categories"
                             @input="resetPagination('categories')"
-                            class="form-control pe-5"
+                            class="input form-control pe-5"
                             placeholder="Buscar categorías...">
                     </div>
 
@@ -243,18 +247,22 @@
                 <div class="col-12 filter-section 
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom border-2 border-white">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Nombre del servicio
+                        </label>
                         <input type="text"
                             x-model="searchTerms.services"
                             @input="resetPagination('services')"
-                            class="form-control pe-5"
+                            class="input form-control pe-5"
                             placeholder="Buscar servicios...">
                     </div>
 
@@ -400,18 +408,22 @@
                 <div class="col-12 filter-section 
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom border-2 border-white mb-1">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Tipo de vehiculo
+                        </label>
                         <input type="text"
                             x-model="searchTerms.vehicleTypes"
                             @input="resetPagination('vehicleTypes')"
-                            class="form-control pe-5 "
+                            class="input form-control pe-5 "
                             placeholder="Buscar tipos de vehículos...">
                     </div>
 
@@ -551,18 +563,22 @@
                 <div class="col-12 filter-section
                 d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1">
+                    <div class="col-12 border-bottom mb-1 border-2 border-white">
                         <label class="fw-bold mb-1 fs-5">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
                     </div>
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                        <label class="fw-bold">
+                            <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                            Búsqueda global
+                        </label>
                         <input type="text"
                             x-model="searchTerms.clients"
                             @input="resetPagination('clients')"
-                            class="form-control pe-5"
+                            class="input form-control pe-5"
                             placeholder="Buscar clientes...">
                     </div>
                 </div>
@@ -576,6 +592,8 @@
                             </th>
                             <th>Teléfono</th>
                             <th>Matrícula</th>
+                            <th>Modelo</th>
+                            <th>Flota</th>
                             <th @click="sortData('clients', 'status')" style="cursor: pointer;">
                                 Estado <span x-html="getSortIcon('clients', 'status')"></span>
                             </th>
@@ -594,6 +612,8 @@
                                 <td x-text="client.name"></td>
                                 <td x-text="client.phone || '--'"></td>
                                 <td x-text="client.license_plaque || '--'"></td>
+                                <td x-text="client.brand || '--'"></td>
+                                <td x-text="client.fleet ? 'Sí' : 'No'"></td>
                                 <td>
                                     <span class="badge" :class="client.status ? 'bg-success' : 'bg-secondary'"
                                         x-text="client.status ? 'Activo' : 'Inactivo'"></span>
@@ -870,16 +890,10 @@
 
                 <div class="col-12 d-flex flex-wrap mx-n2">
 
-                    <div class="col-12 mb-3 px-2">
+                    <div class="col-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
                         <input type="text" x-model="clientForm.name" class="form-control" maxlength="30" required>
                         <span x-show="errors.client.name" x-text="errors.client.name?.[0]" class="text-danger small"></span>
-                    </div>
-
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Teléfono</label>
-                        <input type="tel" x-model="clientForm.phone" class="form-control" data-phone="true" placeholder="612 345 678" maxlength="11">
-                        <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
@@ -896,6 +910,20 @@
                             <i class="fa-solid fa-exclamation-triangle"></i> Esta matrícula ya está registrada
                         </small>
                     </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
+                        <label class="form-label fw-bold">Modelo</label>
+                        <input type="text" x-model="clientForm.brand" class="form-control" maxlength="30" placeholder="Ej: Toyota Corolla">
+                        <span x-show="errors.client.brand" x-text="errors.client.brand?.[0]" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
+                        <label class="form-label fw-bold">Teléfono</label>
+                        <input type="tel" x-model="clientForm.phone" class="form-control" data-phone="true" placeholder="612 345 678" maxlength="11">
+                        <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
+                    </div>
+
+
                 </div>
 
                 <div class="d-flex col-12 justify-content-center gap-2 my-4">

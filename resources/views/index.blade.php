@@ -12,14 +12,17 @@
         <div class="my-4 p-4">
 
             <!-- Cabezera -->
-            <div class="col-12 d-flex mb-4 flex-wrap">
+            <div class="col-12 d-flex flex-wrap mb-4 p-3 border bg-light rounded-3">
 
-                <div class="col-lg-10 col-md-6 col-sm-12 d-flex flex-column justify-content-center">
+                <div class="col-lg-10 col-md-6 col-sm-12 d-flex flex-column 
+                justify-content-center">
+
                     <h1 class="m-0 fw-bold">
                         <i class="fa-solid fa-list-check icon color-blue"></i>
                         FORMULARIO DE AGENDAMIENTO
                     </h1>
                     <span class="text-muted fw-bold">Aqui podra diligenciar su orden sin ningun problema.</span>
+
                 </div>
 
                 <div class="col-lg-2 col-md-6 col-sm-12 d-flex flex-column justify-content-center text-center">
@@ -43,7 +46,7 @@
 
                 <div class="col-12 mb-5 pb-3 border-bottom">
                     <h2 class="fw-bold mb-1">
-                        <i class="fa-solid fa-car icon text-secondary"></i>
+                        <i class="fa-solid fa-car icon text-primary"></i>
                         Datos del Cliente y Vehículo
                     </h2>
                     <span class="text-muted fw-bold">Información básica para agendar el servicio.</span>
@@ -273,7 +276,7 @@
 
                     <div class="col-12 mb-4 pb-3 border-bottom">
                         <h2 class="fw-bold mb-1">
-                            <i class="fa-solid fa-file-invoice text-secondary"></i>
+                            <i class="fa-solid fa-file-invoice text-primary"></i>
                             Datos de Facturación
                         </h2>
                         <small class="text-muted d-block fw-bold">Complete la información fiscal para emitir la factura</small>
@@ -339,7 +342,8 @@
 
                     <div class="col-lg-8 col-md-8 col-sm-12 p-0">
                         <h2 class="fw-bold mb-1">
-                            <i class="fa-solid fa-handshake icon text-secondary"></i>Servicios
+                            <i class="fa-solid fa-handshake icon text-success"></i>
+                            Servicios
                         </h2>
                         <b class="text-muted">Elige una categoría y luego el servicio. La lista es corta y filtrada por categoría.</b>
                     </div>
@@ -440,7 +444,7 @@
                 <div class="col-12  pb-3 border-bottom">
 
                     <h2 class="fw-bold mb-1">
-                        <i class="fa-solid fa-credit-card text-secondary"></i>
+                        <i class="fa-solid fa-credit-card text-warning"></i>
                         Pago & Métodos de Pago
                     </h2>
                     <small class="text-muted fw-bold">Selecciona la fecha y hora para agendar, luego elige el estado del pago.</small>
@@ -581,7 +585,7 @@
                 <button class="citas-tab"
                     :class="currentTab === 'pending' ? 'citas-tab-active' : ''"
                     @click="changeTab('pending')">
-                    <i class="fa-solid fa-calendar icon"></i> Citas
+                    <i class="fa-solid fa-calendar-check icon"></i> Citas
                 </button>
 
                 <button class="citas-tab"
@@ -596,19 +600,68 @@
             <div class="col-12 filter-section 
             d-flex flex-wrap align-items-center">
 
-                <div class="col-12 border-bottom mb-1">
+                <div class="col-12 border-bottom border-2 border-white mb-1">
                     <label class="fw-bold mb-1 fs-5">
                         <i class="fa-solid fa-filter text-primary me-1"></i>
                         Filtros de búsqueda
                     </label>
                 </div>
 
-                <div class="col-3 p-1 mt-2">
+                <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
+                        Búsqueda Global
+                    </label>
                     <input type="text"
                         x-model="searchTerms[currentTab]"
                         @input="resetPagination(currentTab)"
-                        class="form-control pe-5 border border-3"
+                        class="input form-control pe-5"
                         placeholder="Buscar citas...">
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-money-bill text-primary me-1"></i>
+                        Estado de Pago
+                    </label>
+                    <select x-model="paymentStatusFilters[currentTab]"
+                        @change="resetPagination(currentTab)"
+                        class="input form-control pe-5">
+                        <option value="">Todos los estados</option>
+                        <option value="1">Pendiente</option>
+                        <option value="2">Parcial</option>
+                        <option value="3">Pagado</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-clock text-primary me-1"></i>
+                        Metodo de pago
+                    </label>
+                    <select x-model="paymentMethodFilters[currentTab]"
+                        @change="resetPagination(currentTab)"
+                        class="input form-control pe-5">
+                        <option value="">Todos los métodos de pago</option>
+                        <option value="1">Efectivo</option>
+                        <option value="2">TPV</option>
+                        <option value="3">Transferencia</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-car text-primary me-1"></i>
+                        Filtrar por Flota
+                    </label>
+                    <select x-model="fleetFilters[currentTab]"
+                        @change="resetPagination(currentTab)"
+                        class="input form-control pe-5">
+                        <option value="">Todos</option>
+                        <option value="1">Sí</option>
+                        <option value="0">No</option>
+                    </select>
+
                 </div>
 
             </div>
