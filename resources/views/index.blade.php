@@ -61,13 +61,13 @@
                     </div>
 
                     <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
-                        <label class="form-check-label fw-bold mb-3">Flota<span class="required">*</span></label>
+                        <label class="form-check-label fw-bold mb-1">Flota<span class="required">*</span></label>
                         <input class="ms-0" type="checkbox" role="switch" name="fleet" id="fleet">
                     </div>
 
                     <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
 
-                        <label class="form-check-label fw-bold mb-3" for="get-invoice">
+                        <label class="form-check-label fw-bold mb-1" for="get-invoice">
                             Factura
                         </label>
                         <input class="ms-0" type="checkbox" role="switch" name="invoice_required" id="get-invoice">

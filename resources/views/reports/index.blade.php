@@ -239,31 +239,31 @@
 
                 </div>
 
-                <div x-show="!loadingSales && getFilteredData('sales').length > 0" class="reports-footer d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div x-show="!loadingSales && getFilteredData('sales').length > 0" class="reports-footer d-flex justify-content-between bg-mint-green align-items-center flex-wrap gap-2">
 
                     <!-- Resumen & Totales -->
                     <div class="fw-bold">
                         Efectivo:
-                        <strong x-text="formatCurrency(salesSummary.cash)"></strong>
+                        <strong x-text="formatCurrency(getSalesSummary().cash)"></strong>
                     </div>
 
                     <div class="fw-bold">
                         TPV:
-                        <strong x-text="formatCurrency(salesSummary.card)"></strong>
+                        <strong x-text="formatCurrency(getSalesSummary().card)"></strong>
                     </div>
 
                     <div class="fw-bold">
                         Transferencia:
-                        <strong x-text="formatCurrency(salesSummary.transfer)"></strong>
+                        <strong x-text="formatCurrency(getSalesSummary().transfer)"></strong>
                     </div>
 
                     <div class="fw-bold">
                         Total facturado:
-                        <strong x-text="formatCurrency(salesSummary.total)"></strong>
+                        <strong x-text="formatCurrency(getSalesSummary().total)"></strong>
                     </div>
 
                     <div class="fw-bold">
-                        Órdenes: <span x-text="salesSummary.orders"></span>
+                        Órdenes: <span x-text="getSalesSummary().orders"></span>
                     </div>
 
                     <!-- paginador -->
@@ -345,7 +345,7 @@
 
                     <div class="col-6 p-1 mt-2">
 
-                        <button class="btn btn-primary text-white btn-lg float-end" @click="openExportModal()">
+                        <button class="btn btn-success text-white btn-lg float-end mt-4" @click="openExportModal()">
                             <i class="fa-solid fa-download me-1"></i>
                             Exportar
                         </button>

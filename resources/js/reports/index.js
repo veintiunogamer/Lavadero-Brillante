@@ -147,6 +147,7 @@ window.reportsApp = function() {
                     this.matchesPaymentStatusSearch(order) &&
                     this.matchesPaymentMethodSearch(order)
                 );
+
             }
 
             if (type === 'clients') {
@@ -262,6 +263,45 @@ window.reportsApp = function() {
 
             return String(Number(entity.fleet)) === filterValue;
 
+        },
+
+        getSalesSummary() {
+
+            const orders = this.getFilteredData('sales');
+
+            const summary = {
+                orders: orders.length,
+                cash: 0,
+                card: 0,
+                transfer: 0,
+                total: 0
+            };
+
+            orders.forEach(order => {
+
+                const payment = order.payment;
+
+                summary.total += Number(order.total || 0);
+
+                if (!payment) return;
+
+                switch (payment.type) {
+
+                    case 1:
+                        summary.cash += Number(payment.total || 0);
+                        break;
+
+                    case 2:
+                        summary.card += Number(payment.total || 0);
+                        break;
+
+                    case 3:
+                        summary.transfer += Number(payment.total || 0);
+                        break;
+                }
+            });
+
+            return summary;
         },
 
         // ====================
