@@ -54,6 +54,7 @@ class ReportController extends Controller
                 'consecutive_serial' => $order->consecutive_serial ?? null,
                 'consecutive_number' => $order->consecutive_number ?? null,
                 'creation_date' => $order->creation_date,
+                'date' => $order->date,
                 'subtotal' => $order->subtotal,
                 'discount_value' => $order->discount_value,
                 'taxes_value' => $order->taxes_value,
@@ -73,6 +74,9 @@ class ReportController extends Controller
 
         $summary = [
             'orders' => $orders->count(),
+            'cash' => $orders->where('payments.type', 1)->sum('payments.total'),
+            'card' => $orders->where('payments.type', 2)->sum('payments.total'),
+            'transfer' => $orders->where('payments.type', 3)->sum('payments.total'),
             'subtotal' => $orders->sum('subtotal'),
             'discount_value' => $orders->sum('discount_value'),
             'taxes_value' => $orders->sum('taxes_value'),

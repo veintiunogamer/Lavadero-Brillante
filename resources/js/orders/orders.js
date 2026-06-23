@@ -26,6 +26,10 @@ window.agendamientoApp = function() {
         perPage: 10,
         currentPage: 1,
         searchTerm: '',
+        searchDate: '',
+        paymentStatusFilter: '',
+        searchPaymentType: '',
+        searchIsFleet: '',
         showQuickViewModal: false,
         selectedOrder: null,
         showStatusModal: false,
@@ -183,6 +187,11 @@ window.agendamientoApp = function() {
                 if (!order.payment && Array.isArray(order.payments)) {
                     order.payment = order.payments[0] || null;
                 }
+
+                if (!order.client  && Array.isArray(order.client)) {
+                    order.client = order.client[0] || null;
+                }
+
                 return order;
             });
 
@@ -475,37 +484,13 @@ window.agendamientoApp = function() {
 
         getFilteredOrders() {
 
-            const term = (this.searchTerm || '').toLowerCase().trim();
-            if (!term) return this.orders;
-
-            return this.orders.filter(order => {
-
-                const clientName = order.client?.name || '';
-                const licensePlaque = order.client?.license_plaque || '';
-                const services = Array.isArray(order.services)
-                    ? order.services.map(service => service.name).join(' ')
-                    : '';
-                const statusText = this.getStatusText(order.status) || '';
-                const creationDate = order.creation_date || '';
-                const hourIn = order.hour_in || '';
-                const hourOut = order.hour_out || '';
-                const total = order.total !== undefined && order.total !== null ? String(order.total) : '';
-                const orderId = order.id !== undefined && order.id !== null ? String(order.id) : '';
-
-                const haystack = [
-                    clientName,
-                    licensePlaque,
-                    services,
-                    statusText,
-                    creationDate,
-                    hourIn,
-                    hourOut,
-                    total,
-                    orderId
-                ].map(value => String(value).toLowerCase());
-
-                return haystack.some(value => value.includes(term));
-            });
+            return this.orders.filter(order =>
+                this.matchesGlobalSearch(order) &&
+                this.matchesDateSearch(order) &&
+                this.matchesPaymentStatusSearch(order) &&
+                this.matchesPaymentMethodSearch(order) &&
+                this.matchesFleetSearch(order)
+            );
         },
 
         // ====================
@@ -559,7 +544,65 @@ window.agendamientoApp = function() {
                 this.currentPage = 1;
             }
 
-        }
+        }, 
+
+        matchesGlobalSearch(order) {
+
+            const term = (this.searchTerm || '').toLowerCase().trim();
+
+            // Si no hay texto, no filtra nada
+            if (!term) {
+                return true;
+            }
+
+            const clientName = order.client?.name || '';
+            const licensePlaque = order.client?.license_plaque || '';
+
+            const services = Array.isArray(order.services)
+                ? order.services.map(service => service.name).join(' ')
+                : '';
+
+            const haystack = [
+                clientName,
+                licensePlaque,
+                services
+            ].map(value => String(value).toLowerCase());
+
+            return haystack.some(value => value.includes(term));
+
+        },
+
+        matchesDateSearch(order) {
+
+            if (!this.searchDate) return true;
+
+            return order.date === this.searchDate;
+
+        }, 
+
+        matchesPaymentStatusSearch(order) {
+            
+            if (!this.paymentStatusFilter) return true;
+
+            return String(order.payment.status) === this.paymentStatusFilter;
+
+        }, 
+
+        matchesPaymentMethodSearch(order) {
+
+            if (!this.searchPaymentType) return true;
+
+            return String(order.payment.type) === this.searchPaymentType;
+
+        },
+
+        matchesFleetSearch(order) {
+
+            if (!this.searchIsFleet) return true;
+
+            return String(Number(order.client.fleet)) === this.searchIsFleet;
+
+        },
     }
 
 }

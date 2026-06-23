@@ -17,10 +17,26 @@ window.reportsApp = function() {
         sales: [],
         salesSummary: {
             total: 0,
+            cash: 0,
+            card: 0,
+            transfer: 0,
             orders: 0
         },
         clients: [],
         searchTerms: {
+            clients: ''
+        },
+        customStartDate: {
+            sales: ''
+        },
+        paymentStatusFilter: {
+            sales: ''
+        },
+        paymentMethodsFilter: {
+            sales: ''
+        },
+        fleetFilter: {
+            sales: '',
             clients: ''
         },
         currentPage: {
@@ -62,20 +78,20 @@ window.reportsApp = function() {
                 if (response.ok && result.success) {
 
                     this.sales = result.data || [];
-                    this.salesSummary = result.summary || { total: 0, orders: 0 };
+                    this.salesSummary = result.summary || { total: 0, cash: 0, card: 0, transfer: 0, orders: 0 };
                     this.ensurePageInRange('sales');
 
                 } else {
 
                     this.sales = [];
-                    this.salesSummary = { total: 0, orders: 0 };
+                    this.salesSummary = { total: 0, cash: 0, card: 0, transfer: 0, orders: 0 };
                     window.notyf?.error(result.message || 'Error al cargar ventas');
                 }
             } catch (error) {
 
                 console.error('Error cargando ventas:', error);
                 this.sales = [];
-                this.salesSummary = { total: 0, orders: 0 };
+                this.salesSummary = { total: 0, cash: 0, card: 0, transfer: 0, orders: 0 };
                 window.notyf?.error('Error al cargar ventas');
 
             } finally {
@@ -122,29 +138,24 @@ window.reportsApp = function() {
         // ====================
         // BÚSQUEDA Y PAGINACIÓN
         // ====================
-
         getFilteredData(type) {
 
             if (type === 'sales') {
-                return this.sales;
+                return this.sales.filter(order =>
+                    this.matchesFleet(order.client, this.fleetFilter.sales) && 
+                    this.matchesDateSearch(order) &&
+                    this.matchesPaymentStatusSearch(order) &&
+                    this.matchesPaymentMethodSearch(order)
+                );
             }
 
             if (type === 'clients') {
 
-                const searchTerm = this.searchTerms.clients.toLowerCase().trim();
-                if (!searchTerm) return this.clients;
+                return this.clients.filter(client =>
+                    this.matchesClientSearch(client) &&
+                    this.matchesFleet(client, this.fleetFilter.clients)
+                );
 
-                return this.clients.filter(client => {
-
-                    const haystack = [
-                        client.name,
-                        client.phone,
-                        client.license_plaque
-                    ].map(value => String(value || '').toLowerCase());
-
-                    return haystack.some(value => value.includes(searchTerm));
-
-                });
             }
 
             return [];
@@ -197,6 +208,60 @@ window.reportsApp = function() {
             if (this.currentPage[type] < 1) {
                 this.currentPage[type] = 1;
             }
+        },
+
+        matchesClientSearch(client) {
+
+            const searchTerm = (this.searchTerms.clients || '')
+            .toLowerCase()
+            .trim();
+
+            if (!searchTerm) {
+                return true;
+            }
+
+            const haystack = [
+                client.name,
+                client.phone,
+                client.license_plaque
+            ].map(value => String(value || '').toLowerCase());
+
+            return haystack.some(value => value.includes(searchTerm));
+
+        },
+
+        matchesDateSearch(order) {
+
+            if (!this.customStartDate.sales) return true;
+
+            return order.date === this.customStartDate.sales;
+
+        }, 
+
+        matchesPaymentStatusSearch(order) {
+            
+            if (!this.paymentStatusFilter.sales) return true;
+
+            return String(order.payment.status) === this.paymentStatusFilter.sales;
+
+        }, 
+
+        matchesPaymentMethodSearch(order) {
+
+            if (!this.paymentMethodsFilter.sales) return true;
+
+            return String(order.payment.type) === this.paymentMethodsFilter.sales;
+
+        },
+
+        matchesFleet(entity, filterValue) {
+
+            if (filterValue === '') {
+                return true;
+            }
+
+            return String(Number(entity.fleet)) === filterValue;
+
         },
 
         // ====================

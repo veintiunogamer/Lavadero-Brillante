@@ -59,6 +59,18 @@ function createOrderFormApp() {
             pending: '',
             history: ''
         },
+        paymentStatusFilters: {
+            pending: '',
+            history: ''
+        },
+        paymentMethodFilters: {
+            pending: '',
+            history: ''
+        },
+        fleetFilters: {
+            pending: '',
+            history: ''
+        },
         currentPage: {
             pending: 1,
             history: 1
@@ -458,41 +470,12 @@ function createOrderFormApp() {
 
         getFilteredOrders(tab = this.currentTab) {
 
-            const searchTerm = (this.searchTerms[tab] || '').toLowerCase().trim();
-
-            if (!searchTerm) return this.orders;
-
-            return this.orders.filter(order => {
-
-                const clientName = order.client?.name || '';
-                const licensePlaque = order.client?.license_plaque || '';
-                const services = Array.isArray(order.services)
-                ? order.services.map(service => service.name).join(' ')
-                : '';
-
-                const userName = order.user?.name || '';
-                const statusText = this.getStatusText(order.status) || '';
-                const creationDate = order.creation_date || '';
-                const hourIn = order.hour_in || '';
-                const hourOut = order.hour_out || '';
-                const total = order.total !== undefined && order.total !== null ? String(order.total) : '';
-                const orderId = order.id !== undefined && order.id !== null ? String(order.id) : '';
-
-                const haystack = [
-                    clientName,
-                    licensePlaque,
-                    services,
-                    userName,
-                    statusText,
-                    creationDate,
-                    hourIn,
-                    hourOut,
-                    total,
-                    orderId
-                ].map(value => String(value).toLowerCase());
-
-                return haystack.some(value => value.includes(searchTerm));
-            });
+            return this.orders.filter(order =>
+                this.matchesGlobalSearch(order, tab) &&
+                this.matchesPaymentStatusSearch(order, tab) &&
+                this.matchesPaymentMethodSearch(order, tab) &&
+                this.matchesFleetSearch(order, tab)
+            );
         },
 
         getPaginatedOrders(tab = this.currentTab) {
@@ -558,6 +541,72 @@ function createOrderFormApp() {
 
                 return order;
             });
+
+        },
+
+        matchesGlobalSearch(order, tab) {
+
+            const searchTerm = (this.searchTerms[tab] || '')
+            .toLowerCase()
+            .trim();
+
+            if (!searchTerm) {
+                return true;
+            }
+
+            const clientName = order.client?.name || '';
+            const licensePlaque = order.client?.license_plaque || '';
+
+            const services = Array.isArray(order.services)
+                ? order.services.map(service => service.name).join(' ')
+                : '';
+
+            const userName = order.user?.name || '';
+
+            const haystack = [
+                clientName,
+                licensePlaque,
+                services,
+                userName
+            ].map(value => String(value).toLowerCase());
+
+            return haystack.some(value => value.includes(searchTerm));
+
+        },
+
+        matchesPaymentStatusSearch (order, tab) {
+
+            const paymentStatusFilter = this.paymentStatusFilters[tab];
+
+            if (!paymentStatusFilter) {
+                return true;
+            }
+
+            return String(order.payment.status) === paymentStatusFilter;
+
+        },
+
+        matchesPaymentMethodSearch(order, tab) {
+
+            const paymentMethodFilter = this.paymentMethodFilters[tab];
+
+            if (!paymentMethodFilter) {
+                return true;
+            }
+
+            return String(order.payment.type) === paymentMethodFilter;
+
+        },
+
+        matchesFleetSearch(order, tab) { 
+
+            const fleetFilter = this.fleetFilters[tab];
+
+            if (!fleetFilter) {
+                return true;
+            }
+
+            return String(Number(order.client.fleet)) === fleetFilter;
 
         },
 

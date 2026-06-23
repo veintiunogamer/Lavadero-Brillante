@@ -619,6 +619,51 @@
                         placeholder="Buscar citas...">
                 </div>
 
+                <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-money-bill text-primary me-1"></i>
+                        Estado de Pago
+                    </label>
+                    <select x-model="paymentStatusFilters[currentTab]"
+                        @change="resetPagination(currentTab)"
+                        class="input form-control pe-5">
+                        <option value="">Todos los estados</option>
+                        <option value="1">Pendiente</option>
+                        <option value="2">Parcial</option>
+                        <option value="3">Pagado</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-clock text-primary me-1"></i>
+                        Metodo de pago
+                    </label>
+                    <select x-model="paymentMethodFilters[currentTab]"
+                        @change="resetPagination(currentTab)"
+                        class="input form-control pe-5">
+                        <option value="">Todos los métodos de pago</option>
+                        <option value="1">Efectivo</option>
+                        <option value="2">TPV</option>
+                        <option value="3">Transferencia</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 col-md-6 col-sm-12 p-1 mt-2">
+                    <label class="fw-bold">
+                        <i class="fa-solid fa-car text-primary me-1"></i>
+                        Filtrar por Flota
+                    </label>
+                    <select x-model="fleetFilters[currentTab]"
+                        @change="resetPagination(currentTab)"
+                        class="input form-control pe-5">
+                        <option value="">Todos</option>
+                        <option value="1">Sí</option>
+                        <option value="0">No</option>
+                    </select>
+
+                </div>
+
             </div>
 
             <!-- Loading spinner -->

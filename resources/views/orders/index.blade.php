@@ -106,6 +106,7 @@
                 </label>
                 <select x-model="searchIsFleet" @change="resetPagination()"
                     class="input form-select">
+                    <option value="">Todos</option>
                     <option value="1">Sí</option>
                     <option value="0">No</option>
                 </select>

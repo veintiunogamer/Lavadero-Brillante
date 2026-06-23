@@ -96,7 +96,7 @@
                             Fecha de orden
                         </label>
                         <input type="date" class="form-control form-control-lg"
-                            x-model="customStartDate"
+                            x-model="customStartDate.sales"
                             @change="changeSalesRange('custom')"
                             :disabled="activeTab !== 'sales'">
                     </div>
@@ -107,9 +107,10 @@
                             Flota
                         </label>
                         <select class="form-select form-select-lg"
-                            x-model="fleetFilter"
+                            x-model="fleetFilter.sales"
                             @change="resetPagination('sales')"
                             :disabled="activeTab !== 'sales'">
+                            <option value="">Todos</option>
                             <option value="1">Si</option>
                             <option value="0">No</option>
                         </select>
@@ -121,7 +122,7 @@
                             Estado de pago
                         </label>
                         <select class="form-select form-select-lg"
-                            x-model="paymentStatusFilter"
+                            x-model="paymentStatusFilter.sales"
                             @change="resetPagination('sales')"
                             :disabled="activeTab !== 'sales'">
                             <option value="">Todos</option>
@@ -137,7 +138,7 @@
                             Método de pago
                         </label>
                         <select class="form-select form-select-lg"
-                            x-model="paymentMethodsFilter"
+                            x-model="paymentMethodsFilter.sales"
                             @change="resetPagination('sales')"
                             :disabled="activeTab !== 'sales'">
                             <option value="">Todos</option>
@@ -197,7 +198,7 @@
 
                                 <tr>
                                     <td x-text="formatOrderNumber(order)"></td>
-                                    <td x-text="formatDate(order.creation_date)"></td>
+                                    <td x-text="order.date"></td>
                                     <td x-text="order.client ? order.client.name : '--'"></td>
                                     <td x-text="order.client && order.client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td>
@@ -334,9 +335,10 @@
                             Flota
                         </label>
                         <select class="form-select form-select-lg"
-                            x-model="fleetFilter"
+                            x-model="fleetFilter.clients"
                             @change="resetPagination('clients')">
-                            <option value=" 1">Si</option>
+                            <option value="">Todos</option>
+                            <option value="1">Si</option>
                             <option value="0">No</option>
                         </select>
                     </div>
