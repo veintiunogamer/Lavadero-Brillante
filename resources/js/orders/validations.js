@@ -334,10 +334,10 @@ class OrderFormValidator extends FormValidator {
         if (paymentPeriod === '2') return valid;
 
         // Validar horas - verificar input visible o select fallback
-        const horaEntradaInput = document.getElementById('hora-entrada');
-        const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
-        const horaSalidaInput = document.getElementById('hora-salida');
-        const horaSalidaFallback = document.getElementById('hora-salida-fallback');
+        const horaEntradaInput = document.getElementById('hour_in');
+        const horaEntradaFallback = document.getElementById('hour_in_fallback');
+        const horaSalidaInput = document.getElementById('hour_out');
+        const horaSalidaFallback = document.getElementById('hour_out_fallback');
 
         // Usar el valor del campo visible (input si está visible, si no el fallback)
         const horaEntrada = (horaEntradaInput && horaEntradaInput.style.display !== 'none') 

@@ -41,8 +41,8 @@ class ReportController extends Controller
             'user:id,name',
             'services:id,name',
             'payments:id,order_id,type,status,subtotal,total'
-        ])->whereBetween('creation_date', [$start, $end])
-            ->orderByDesc('creation_date')
+        ])->whereBetween('date', [$start, $end])
+            ->orderByDesc('date')
             ->get();
 
         $data = $orders->map(function ($order) {
@@ -74,9 +74,21 @@ class ReportController extends Controller
 
         $summary = [
             'orders' => $orders->count(),
-            'cash' => $orders->where('payments.type', 1)->sum('payments.total'),
-            'card' => $orders->where('payments.type', 2)->sum('payments.total'),
-            'transfer' => $orders->where('payments.type', 3)->sum('payments.total'),
+            'cash' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 1 ? $payment->total : 0;
+            }),
+
+            'card' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 2 ? $payment->total : 0;
+            }),
+
+            'transfer' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 3 ? $payment->total : 0;
+            }),
+
             'subtotal' => $orders->sum('subtotal'),
             'discount_value' => $orders->sum('discount_value'),
             'taxes_value' => $orders->sum('taxes_value'),
