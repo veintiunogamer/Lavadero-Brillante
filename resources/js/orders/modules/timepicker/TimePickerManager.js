@@ -87,8 +87,8 @@ export class TimePickerManager {
      */
     syncFlatpickrMinRange() {
 
-        const horaEntradaEl = document.getElementById('hora-entrada');
-        const horaSalidaEl = document.getElementById('hora-salida');
+        const horaEntradaEl = document.getElementById('hour_in');
+        const horaSalidaEl = document.getElementById('hour_out');
 
         if (!horaEntradaEl?._flatpickr || !horaSalidaEl?._flatpickr) return;
 
@@ -132,8 +132,8 @@ export class TimePickerManager {
      */
     validateTimeRange(instance) {
 
-        const horaEntradaEl = document.getElementById('hora-entrada');
-        const horaSalidaEl = document.getElementById('hora-salida');
+        const horaEntradaEl = document.getElementById('hour_in');
+        const horaSalidaEl = document.getElementById('hour_out');
 
         if (!horaEntradaEl?._flatpickr || !horaSalidaEl?._flatpickr) return;
 
@@ -144,7 +144,7 @@ export class TimePickerManager {
 
             window.notyf?.error('La hora de salida debe ser posterior a la hora de entrada');
             
-            if (instance.element.id === 'hora-salida') {
+            if (instance.element.id === 'hour_out') {
                 instance.clear();
             } else {
                 horaSalidaEl._flatpickr.clear();
@@ -179,8 +179,8 @@ export class TimePickerManager {
      */
     bindFallbackValidation() {
 
-        const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
-        const horaSalidaFallback = document.getElementById('hora-salida-fallback');
+        const horaEntradaFallback = document.getElementById('hour_in_fallback');
+        const horaSalidaFallback = document.getElementById('hour_out_fallback');
 
         if (horaEntradaFallback && !horaEntradaFallback.dataset.initialized) {
             
@@ -218,8 +218,8 @@ export class TimePickerManager {
      */
     syncFallbackMinRange() {
 
-        const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
-        const horaSalidaFallback = document.getElementById('hora-salida-fallback');
+        const horaEntradaFallback = document.getElementById('hour_in_fallback');
+        const horaSalidaFallback = document.getElementById('hour_out_fallback');
 
         if (!horaEntradaFallback || !horaSalidaFallback) return;
 
@@ -248,10 +248,10 @@ export class TimePickerManager {
     getHourIn() {
 
         if (this.useFallback) {
-            return document.getElementById('hora-entrada-fallback')?.value || '';
+            return document.getElementById('hour_in_fallback')?.value || '';
         }
 
-        const input = document.getElementById('hora-entrada');
+        const input = document.getElementById('hour_in');
         let value = input?.value || '';
         
         // Asegurar formato HH:MM
@@ -338,8 +338,8 @@ export class TimePickerManager {
 
         if (this.useFallback) {
 
-            const entradaFallback = document.getElementById('hora-entrada-fallback');
-            const salidaFallback = document.getElementById('hora-salida-fallback');
+            const entradaFallback = document.getElementById('hour_in_fallback');
+            const salidaFallback = document.getElementById('hour_out_fallback');
 
             const fallbackIn = normalizedIn ? `${normalizedIn}:00` : '';
             const fallbackOut = normalizedOut ? `${normalizedOut}:00` : '';
@@ -352,8 +352,8 @@ export class TimePickerManager {
 
         }
 
-        const horaEntrada = document.getElementById('hora-entrada');
-        const horaSalida = document.getElementById('hora-salida');
+        const horaEntrada = document.getElementById('hour_in');
+        const horaSalida = document.getElementById('hour_out');
 
         if (horaEntrada?._flatpickr && normalizedIn) {
 
@@ -393,10 +393,10 @@ export class TimePickerManager {
      */
     setDisabled(disabled) {
 
-        const horaEntrada = document.getElementById('hora-entrada');
-        const horaSalida  = document.getElementById('hora-salida');
-        const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
-        const horaSalidaFallback  = document.getElementById('hora-salida-fallback');
+        const horaEntrada = document.getElementById('hour_in');
+        const horaSalida  = document.getElementById('hour_out');
+        const horaEntradaFallback = document.getElementById('hour_in_fallback');
+        const horaSalidaFallback  = document.getElementById('hour_out_fallback');
 
         if (disabled) {
 
@@ -455,16 +455,16 @@ export class TimePickerManager {
 
         if (this.useFallback) {
             
-            const entradaFallback = document.getElementById('hora-entrada-fallback');
-            const salidaFallback = document.getElementById('hora-salida-fallback');
+            const entradaFallback = document.getElementById('hour_in_fallback');
+            const salidaFallback = document.getElementById('hour_out_fallback');
             
             if (entradaFallback) entradaFallback.value = '';
             if (salidaFallback) salidaFallback.value = '';
             
         } else {
             
-            const horaEntrada = document.getElementById('hora-entrada');
-            const horaSalida = document.getElementById('hora-salida');
+            const horaEntrada = document.getElementById('hour_in');
+            const horaSalida = document.getElementById('hour_out');
             
             if (horaEntrada?._flatpickr) horaEntrada._flatpickr.clear();
             if (horaSalida?._flatpickr) horaSalida._flatpickr.clear();

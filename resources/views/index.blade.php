@@ -143,10 +143,10 @@
                     <div class="col-6 px-2">
 
                         <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
-                        <input type="text" class="input form-control required-field time-picker" id="hora-entrada" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
+                        <input type="text" class="input form-control required-field time-picker" id="hour_in" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
 
                         <!-- Fallback select (oculto por defecto) -->
-                        <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hora-entrada-fallback" style="display: none;" data-field-name="Hora de Entrada">
+                        <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hour_in_fallback" style="display: none;" data-field-name="Hora de Entrada">
                             <option value="">Seleccionar</option>
                             @for($h = 8; $h <= 20; $h++)
                                 @foreach(['00', '30' ] as $m)
@@ -160,10 +160,10 @@
                     <div class="col-6 px-2">
 
                         <label class="fw-bold">Hora Salida <span class="required">*</span></label>
-                        <input type="text" class="input form-control required-field time-picker" id="hora-salida" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
+                        <input type="text" class="input form-control required-field time-picker" id="hour_out" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
 
                         <!-- Fallback select (oculto por defecto) -->
-                        <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hora-salida-fallback" style="display: none;" data-field-name="Hora de Salida">
+                        <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hour_out_fallback" style="display: none;" data-field-name="Hora de Salida">
                             <option value="">Seleccionar</option>
                             @for($h = 8; $h <= 20; $h++)
                                 @foreach(['00', '30' ] as $m)

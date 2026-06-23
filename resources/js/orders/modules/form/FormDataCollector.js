@@ -138,10 +138,10 @@ export class FormDataCollector {
         : new Date().toISOString().split('T')[0];
 
         // Determinar si usar inputs o fallbacks
-        const horaEntradaInput = document.getElementById('hora-entrada');
-        const horaEntradaFallback = document.getElementById('hora-entrada-fallback');
-        const horaSalidaInput = document.getElementById('hora-salida');
-        const horaSalidaFallback = document.getElementById('hora-salida-fallback');
+        const horaEntradaInput = document.getElementById('hour_in');
+        const horaEntradaFallback = document.getElementById('hour_in_fallback');
+        const horaSalidaInput = document.getElementById('hour_out');
+        const horaSalidaFallback = document.getElementById('hour_out_fallback');
 
         let hourIn = (horaEntradaInput && horaEntradaInput.style.display !== 'none')
         ? horaEntradaInput.value
