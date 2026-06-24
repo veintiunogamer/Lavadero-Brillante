@@ -24,6 +24,22 @@
             width: 120px;
         }
 
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .company-owner {
+            color: #374151;
+            margin: 2px 0 0;
+        }
+
+        .company-meta {
+            color: #4b4c4d;
+            margin: 2px 0 0;
+        }
+
         .title {
             font-size: 18px;
             margin: 0;
@@ -68,15 +84,29 @@
 
 <body>
 
+    @php
+        $company = $company ?? [
+            'name' => 'Lavadero Brillante',
+            'owner' => 'Eusebio Borrego Lau',
+            'nif' => '28614307F',
+            'address' => 'Calle Dr. Fleming, 21',
+            'city' => '46960 Aldaya',
+            'logo' => public_path('images/logo_alterno.png'),
+        ];
+    @endphp
+
     <table class="header">
 
         <tr>
             <td style="width: 140px;">
-                <img src="{{ public_path('images/logo_alterno.png') }}" alt="Logo" class="logo">
+                <img src="{{ $company['logo'] }}" alt="Logo" class="logo">
             </td>
 
             <td style="text-align: left;">
-                <h1 class="title">{{ $title }}</h1>
+                <h1 class="company-name">{{ $company['name'] }}</h1>
+                <div class="company-owner">{{ $company['owner'] }}</div>
+                <div class="company-meta">{{ $company['nif'] }} | {{ $company['address'] }} | {{ $company['city'] }}</div>
+                <div class="subtitle">{{ $title }}</div>
                 <div class="subtitle">Periodo: {{ $periodLabel }}</div>
             </td>
 
@@ -128,10 +158,10 @@
                 <td>{{ $order->services->pluck('name')->join(', ') }}</td>
 
                 <td>{{ number_format($order->subtotal, 2, ',', '.') }} €</td>
-                <td>{{ number_format($order->tax ?? 0, 2, ',', '.') }} €</td>
+                <td>{{ number_format($order->taxes_value ?? 0, 2, ',', '.') }} €</td>
                 <td>
                     @php
-                    $discountValue = $order->discount ?? 0;
+                    $discountValue = $order->discount_value ?? 0;
                     $discountPercent = $order->subtotal > 0 ? ($discountValue / $order->subtotal) * 100 : 0;
                     @endphp
                     {{ number_format($discountPercent, 0) }}%
@@ -158,7 +188,7 @@
             @empty
 
             <tr>
-                <td colspan="9">No hay datos para el periodo seleccionado.</td>
+                <td colspan="12">No hay datos para el periodo seleccionado.</td>
             </tr>
 
             @endforelse

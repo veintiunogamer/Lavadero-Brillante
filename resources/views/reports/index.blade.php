@@ -51,7 +51,7 @@
                             Ventas y Facturación
                         </h2>
 
-                        <span class="reports-section-hint fw-bold" x-text="getRangeLabel()"></span>
+                        <span class="reports-section-hint fw-bold" x-text="salesPeriodLabel"></span>
                     </div>
 
                 </div>
@@ -81,7 +81,7 @@
                         </label>
                         <select class="form-select form-select-lg"
                             x-model="salesRange"
-                            @change="changeSalesRange()"
+                            @change="refreshSales()"
                             :disabled="activeTab !== 'sales'">
                             <option value="today">Hoy</option>
                             <option value="month">Mensual</option>
@@ -97,7 +97,7 @@
                         </label>
                         <input type="date" class="form-control form-control-lg"
                             x-model="customStartDate.sales"
-                            @change="changeSalesRange('custom')"
+                            @change="refreshSales()"
                             :disabled="activeTab !== 'sales'">
                     </div>
 
@@ -108,7 +108,7 @@
                         </label>
                         <select class="form-select form-select-lg"
                             x-model="fleetFilter.sales"
-                            @change="resetPagination('sales')"
+                            @change="refreshSales()"
                             :disabled="activeTab !== 'sales'">
                             <option value="">Todos</option>
                             <option value="1">Si</option>
@@ -123,7 +123,7 @@
                         </label>
                         <select class="form-select form-select-lg"
                             x-model="paymentStatusFilter.sales"
-                            @change="resetPagination('sales')"
+                            @change="refreshSales()"
                             :disabled="activeTab !== 'sales'">
                             <option value="">Todos</option>
                             <option value="1">Pendiente</option>
@@ -139,7 +139,7 @@
                         </label>
                         <select class="form-select form-select-lg"
                             x-model="paymentMethodsFilter.sales"
-                            @change="resetPagination('sales')"
+                            @change="refreshSales()"
                             :disabled="activeTab !== 'sales'">
                             <option value="">Todos</option>
                             <option value="1">Efectivo</option>
@@ -324,7 +324,7 @@
                         </label>
                         <input type="text"
                             x-model="searchTerms.clients"
-                            @input="resetPagination('clients')"
+                            @input.debounce.300ms="refreshClients()"
                             class="form-control form-control-lg"
                             placeholder="Buscar clientes...">
                     </div>
@@ -336,7 +336,7 @@
                         </label>
                         <select class="form-select form-select-lg"
                             x-model="fleetFilter.clients"
-                            @change="resetPagination('clients')">
+                            @change="refreshClients()">
                             <option value="">Todos</option>
                             <option value="1">Si</option>
                             <option value="0">No</option>
