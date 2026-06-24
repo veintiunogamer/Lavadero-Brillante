@@ -103,7 +103,7 @@
                     <tr x-show="activeUsers.length === 0">
                         <td colspan="7">
                             <div class="citas-empty-state">
-                                <i class="fa-solid fa-user-check citas-empty-icon" style="color:#86efac;"></i>
+                                <i class="fa-solid fa-user-check citas-empty-icon text-warning"></i>
                                 <p class="citas-empty-title">Sin usuarios activos</p>
                                 <p class="citas-empty-sub">No hay usuarios activos en el sistema.<br>Crea uno nuevo usando el botón <strong>Crear Usuario</strong>.</p>
                             </div>
@@ -150,7 +150,7 @@
                     <tr x-show="inactiveUsers.length === 0">
                         <td colspan="7">
                             <div class="citas-empty-state">
-                                <i class="fa-solid fa-user-xmark citas-empty-icon" style="color:#fde68a;"></i>
+                                <i class="fa-solid fa-user-xmark citas-empty-icon text-warning"></i>
                                 <p class="citas-empty-title">Sin usuarios inactivos</p>
                                 <p class="citas-empty-sub">No hay usuarios desactivados.<br>Los usuarios desactivados aparecerán en esta lista.</p>
                             </div>

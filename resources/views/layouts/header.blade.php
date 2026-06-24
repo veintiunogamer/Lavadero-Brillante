@@ -28,6 +28,16 @@
             <span class="nav-text">Agenda</span>
         </a>
 
+        <!-- Gastos - Expenses -->
+        @if($isAdmin)
+        <a href="#" class="{{ request()->routeIs('expenses.*') ? 'active' : '' }} fw-bold">
+            <i class="fa-solid fa-money-bill-wave me-1"></i>
+            <span class="nav-text">Gastos</span>
+        </a>
+        @endif
+
+
+
         <!-- Users - Usuarios (Solo Administradores) -->
         @if($isAdmin)
         <a href="{{ route('users.index') }}" class="{{ request()->routeIs('users.*') ? 'active' : '' }} fw-bold">
@@ -57,7 +67,9 @@
     <!-- Usuario/Admin al extremo derecho -->
     <div class="user-info header-user">
         @auth
+
         <div class="user-dropdown">
+
             <!-- User Toggle Button -->
             <button id="user-toggle" class="user-toggle" aria-expanded="false" aria-label="Usuario">
                 <i class="fa-solid fa-user"></i>

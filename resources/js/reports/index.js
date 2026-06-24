@@ -15,6 +15,7 @@ window.reportsApp = function() {
         activeTab: 'sales',
         salesRange: 'month',
         sales: [],
+        salesPeriodLabel: 'Resumen del mes actual',
         salesSummary: {
             total: 0,
             cash: 0,
@@ -59,9 +60,56 @@ window.reportsApp = function() {
 
         async changeSalesRange() {
 
+            await this.refreshSales();
+
+        },
+
+        async refreshSales() {
             this.resetPagination('sales');
             await this.loadSales();
+        },
 
+        async refreshClients() {
+            this.resetPagination('clients');
+            await this.loadClients();
+        },
+
+        getSalesRequestParams() {
+            const params = new URLSearchParams();
+
+            if (this.customStartDate.sales) {
+                params.set('date', this.customStartDate.sales);
+            } else {
+                params.set('range', this.salesRange);
+            }
+
+            if (this.fleetFilter.sales !== '') {
+                params.set('fleet', this.fleetFilter.sales);
+            }
+
+            if (this.paymentStatusFilter.sales !== '') {
+                params.set('payment_status', this.paymentStatusFilter.sales);
+            }
+
+            if (this.paymentMethodsFilter.sales !== '') {
+                params.set('payment_method', this.paymentMethodsFilter.sales);
+            }
+
+            return params.toString();
+        },
+
+        getClientsRequestParams() {
+            const params = new URLSearchParams();
+
+            if (this.searchTerms.clients) {
+                params.set('search', this.searchTerms.clients);
+            }
+
+            if (this.fleetFilter.clients !== '') {
+                params.set('fleet', this.fleetFilter.clients);
+            }
+
+            return params.toString();
         },
 
         async loadSales() {
@@ -69,7 +117,8 @@ window.reportsApp = function() {
             this.loadingSales = true;
             try {
 
-                const response = await fetch(`/reports/sales?range=${this.salesRange}`, {
+                const query = this.getSalesRequestParams();
+                const response = await fetch(`/reports/sales?${query}`, {
                     headers: { 'Accept': 'application/json' }
                 });
 
@@ -79,12 +128,14 @@ window.reportsApp = function() {
 
                     this.sales = result.data || [];
                     this.salesSummary = result.summary || { total: 0, cash: 0, card: 0, transfer: 0, orders: 0 };
+                    this.salesPeriodLabel = result.periodLabel || this.getRangeLabel();
                     this.ensurePageInRange('sales');
 
                 } else {
 
                     this.sales = [];
                     this.salesSummary = { total: 0, cash: 0, card: 0, transfer: 0, orders: 0 };
+                    this.salesPeriodLabel = this.getRangeLabel();
                     window.notyf?.error(result.message || 'Error al cargar ventas');
                 }
             } catch (error) {
@@ -92,6 +143,7 @@ window.reportsApp = function() {
                 console.error('Error cargando ventas:', error);
                 this.sales = [];
                 this.salesSummary = { total: 0, cash: 0, card: 0, transfer: 0, orders: 0 };
+                this.salesPeriodLabel = this.getRangeLabel();
                 window.notyf?.error('Error al cargar ventas');
 
             } finally {
@@ -105,7 +157,8 @@ window.reportsApp = function() {
 
             try {
 
-                const response = await fetch('/reports/clients', {
+                const query = this.getClientsRequestParams();
+                const response = await fetch(`/reports/clients?${query}`, {
                     headers: { 'Accept': 'application/json' }
                 });
 
@@ -362,6 +415,10 @@ window.reportsApp = function() {
 
         getRangeLabel() {
 
+            if (this.customStartDate.sales) {
+                return `Fecha: ${this.formatDate(this.customStartDate.sales)}`;
+            }
+
             if (this.salesRange === 'today') {
                 return 'Resumen de hoy';
             }
@@ -449,17 +506,25 @@ window.reportsApp = function() {
         getExportUrl(format) {
 
             const base = format === 'excel' ? '/reports/excel/current' : '/reports/pdf/current';
-            let url = `${base}?tab=${this.activeTab}`;
+            const params = new URLSearchParams();
+
+            params.set('tab', this.activeTab);
 
             if (this.activeTab === 'sales') {
-                url += `&range=${this.salesRange}`;
+                const salesParams = this.getSalesRequestParams();
+                if (salesParams) {
+                    new URLSearchParams(salesParams).forEach((value, key) => params.set(key, value));
+                }
             }
 
-            if (this.activeTab === 'clients' && this.searchTerms.clients) {
-                url += `&search=${encodeURIComponent(this.searchTerms.clients)}`;
+            if (this.activeTab === 'clients') {
+                const clientsParams = this.getClientsRequestParams();
+                if (clientsParams) {
+                    new URLSearchParams(clientsParams).forEach((value, key) => params.set(key, value));
+                }
             }
 
-            return url;
+            return `${base}?${params.toString()}`;
 
         },
 

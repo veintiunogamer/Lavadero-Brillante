@@ -11,11 +11,11 @@
     <!-- Card de perfil -->
     <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
-        <div class="col-lg-12 col-md-12 col-sm-12 mb-4 p-2 border-bottom border-2 d-flex flex-column align-items-start">
+        <div class="col-lg-12 col-md-12 col-sm-12 mb-4 p-3 border rounded-3 border-2 d-flex flex-column gap-2 bg-light">
             <h1 class="flex align-items-center fw-bold mb-2">
                 <i class="fa-solid fa-user-circle icon color-blue"></i>
                 <span>Mi Perfil -</span>
-                <span class="badge bg-primary">{{ $user->name }}</span>
+                <span class="badge bg-primary small">{{ $user->name }}</span>
             </h1>
             <p class="fw-bold text-muted">Actualiza tu información personal y contraseña.</p>
         </div>
