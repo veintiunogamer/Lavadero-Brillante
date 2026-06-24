@@ -127,7 +127,7 @@
 
             <template x-if="searchTerm">
                 <div>
-                    <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                    <i class="fa-solid fa-magnifying-glass citas-empty-icon text-warning"></i>
                     <p class="citas-empty-title">Sin resultados</p>
                     <p class="citas-empty-sub">No se encontraron agendamientos para <strong x-text="'&quot;' + searchTerm + '&quot;'"></strong>.<br>Intenta con otro término de búsqueda.</p>
                 </div>
@@ -135,7 +135,7 @@
 
             <template x-if="!searchTerm && currentTab === 1">
                 <div>
-                    <i class="fa-solid fa-clock citas-empty-icon" style="color:#fde68a;"></i>
+                    <i class="fa-solid fa-clock citas-empty-icon text-warning"></i>
                     <p class="citas-empty-title">Sin pendientes</p>
                     <p class="citas-empty-sub">No hay agendamientos pendientes en este momento.<br>Los nuevos agendamientos aparecerán aquí.</p>
                 </div>
@@ -143,7 +143,7 @@
 
             <template x-if="!searchTerm && currentTab === 2">
                 <div>
-                    <i class="fa-solid fa-spinner citas-empty-icon" style="color:#86efac;"></i>
+                    <i class="fa-solid fa-spinner citas-empty-icon text-warning"></i>
                     <p class="citas-empty-title">Nada en proceso</p>
                     <p class="citas-empty-sub">No hay agendamientos en proceso actualmente.<br>Los agendamientos activos aparecerán aquí.</p>
                 </div>
@@ -151,7 +151,7 @@
 
             <template x-if="!searchTerm && currentTab === 3">
                 <div>
-                    <i class="fa-solid fa-circle-check citas-empty-icon" style="color:#bfdbfe;"></i>
+                    <i class="fa-solid fa-circle-check citas-empty-icon text-warning"></i>
                     <p class="citas-empty-title">Sin terminados</p>
                     <p class="citas-empty-sub">Los agendamientos finalizados aparecerán aquí<br>una vez sean completados o cancelados.</p>
                 </div>

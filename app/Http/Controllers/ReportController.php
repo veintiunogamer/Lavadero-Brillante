@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportSalesExport;
@@ -28,22 +29,10 @@ class ReportController extends Controller
      */
     public function sales(Request $request)
     {
-        $range = $request->query('range', 'month');
+        [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
 
-        if (!in_array($range, ['today', 'week', 'month'], true)) {
-            $range = 'month';
-        }
-
-        [$start, $end] = $this->getRangeDates($range);
-
-        $orders = Order::with([
-            'client:id,name,phone,license_plaque,fleet',
-            'user:id,name',
-            'services:id,name',
-            'payments:id,order_id,type,status,subtotal,total'
-        ])->whereBetween('date', [$start, $end])
-            ->orderByDesc('date')
-            ->get();
+        $orders = $this->querySales($start, $end)->get();
+        $orders = $this->filterSalesCollection($orders, $request);
 
         $data = $orders->map(function ($order) {
 
@@ -73,33 +62,15 @@ class ReportController extends Controller
         });
 
         $summary = [
-            'orders' => $orders->count(),
-            'cash' => $orders->sum(function ($order) {
-                $payment = $order->payments->first();
-                return $payment && $payment->type == 1 ? $payment->total : 0;
-            }),
-
-            'card' => $orders->sum(function ($order) {
-                $payment = $order->payments->first();
-                return $payment && $payment->type == 2 ? $payment->total : 0;
-            }),
-
-            'transfer' => $orders->sum(function ($order) {
-                $payment = $order->payments->first();
-                return $payment && $payment->type == 3 ? $payment->total : 0;
-            }),
-
-            'subtotal' => $orders->sum('subtotal'),
-            'discount_value' => $orders->sum('discount_value'),
-            'taxes_value' => $orders->sum('taxes_value'),
-            'total' => $orders->sum('total'),
+            ...$this->buildSalesSummary($orders),
         ];
 
         return response()->json([
             'success' => true,
-            'range' => $range,
+            'range' => $request->query('date') ? 'custom' : $request->query('range', 'month'),
             'start' => $start->toDateString(),
             'end' => $end->toDateString(),
+            'periodLabel' => $periodLabel,
             'data' => $data,
             'summary' => $summary,
         ]);
@@ -108,25 +79,12 @@ class ReportController extends Controller
     /**
      * Datos de clientes y fidelización
      */
-    public function clients()
+    public function clients(Request $request)
     {
-        $clients = DB::table('client as c')
-            ->leftJoin('order as o', 'c.id', '=', 'o.client_id')
-            ->select([
-                'c.id',
-                'c.name',
-                'c.phone',
-                'c.license_plaque',
-                'c.brand',
-                'c.fleet',
-                'c.status',
-                DB::raw('COUNT(o.id) as orders_count'),
-                DB::raw('COALESCE(SUM(o.total), 0) as total_spent'),
-                DB::raw('MAX(o.creation_date) as last_order_date'),
-            ])
-            ->groupBy('c.id', 'c.name', 'c.phone', 'c.license_plaque', 'c.brand', 'c.fleet', 'c.status')
-            ->orderBy('c.name')
-            ->get();
+        $search = $request->query('search');
+        $fleet = $request->query('fleet');
+
+        $clients = $this->queryClients($search, $fleet)->get();
 
         return response()->json([
             'success' => true,
@@ -154,13 +112,7 @@ class ReportController extends Controller
 
         $orders = $this->querySales($start, $end)->get();
 
-        $summary = [
-            'orders' => $orders->count(),
-            'subtotal' => $orders->sum('subtotal'),
-            'taxes_value' => $orders->sum('taxes_value'),
-            'discount_value' => $orders->sum('discount_value'),
-            'total' => $orders->sum('total'),
-        ];
+        $summary = $this->buildSalesSummary($orders);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.pdf.sales', [
             'title' => 'Cierre Diario',
@@ -169,7 +121,8 @@ class ReportController extends Controller
             'summary' => $summary,
             'statusLabels' => $this->getOrderStatusLabels(),
             'paymentStatusLabels' => $this->getPaymentStatusLabels(),
-            'paymentMethodLabels' => $this->getPaymentMethodLabels()
+            'paymentMethodLabels' => $this->getPaymentMethodLabels(),
+            'company' => $this->getCompanyInfo(),
         ]);
 
         $filename = 'cierre-diario-' . $target->format('Ymd') . '.pdf';
@@ -192,27 +145,10 @@ class ReportController extends Controller
         $tab = $request->query('tab', 'sales');
 
         if ($tab === 'sales') {
-            $range = $request->query('range', 'month');
-            if (!in_array($range, ['today', 'week', 'month'], true)) {
-                $range = 'month';
-            }
+            [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
+            $orders = $this->filterSalesCollection($this->querySales($start, $end)->get(), $request);
 
-            [$start, $end] = $this->getRangeDates($range);
-            $orders = $this->querySales($start, $end)->get();
-
-            $summary = [
-                'orders' => $orders->count(),
-                'subtotal' => $orders->sum('subtotal'),
-                'taxes_value' => $orders->sum('taxes_value'),
-                'discount_value' => $orders->sum('discount_value'),
-                'total' => $orders->sum('total'),
-            ];
-
-            $periodLabel = match ($range) {
-                'today' => 'Hoy',
-                'week' => 'Esta semana',
-                default => 'Este mes',
-            };
+            $summary = $this->buildSalesSummary($orders);
 
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.pdf.sales', [
                 'title' => 'Ventas y Facturación',
@@ -222,6 +158,7 @@ class ReportController extends Controller
                 'statusLabels' => $this->getOrderStatusLabels(),
                 'paymentStatusLabels' => $this->getPaymentStatusLabels(),
                 'paymentMethodLabels' => $this->getPaymentMethodLabels(),
+                'company' => $this->getCompanyInfo(),
             ]);
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.pdf';
@@ -231,12 +168,14 @@ class ReportController extends Controller
 
         if ($tab === 'clients') {
             $search = $request->query('search');
-            $clients = $this->queryClients($search)->get();
+            $fleet = $request->query('fleet');
+            $clients = $this->queryClients($search, $fleet)->get();
 
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.pdf.clients', [
                 'title' => 'Clientes y Fidelización',
                 'periodLabel' => 'Informe actual',
                 'clients' => $clients,
+                'company' => $this->getCompanyInfo(),
             ]);
 
             $filename = 'reporte-clientes-' . Carbon::now()->format('Ymd') . '.pdf';
@@ -259,20 +198,23 @@ class ReportController extends Controller
 
         if ($tab === 'sales') {
 
-            $range = $request->query('range', 'month');
+            [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
 
-            if (!in_array($range, ['today', 'week', 'month'], true)) {
-                $range = 'month';
-            }
-
-            [$start, $end] = $this->getRangeDates($range);
-
-            $orders = $this->querySales($start, $end)->get();
+            $orders = $this->filterSalesCollection($this->querySales($start, $end)->get(), $request);
+            $summary = $this->buildSalesSummary($orders);
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.xlsx';
 
             return Excel::download(
-                new ReportSalesExport($orders, $this->getOrderStatusLabels(), $this->getPaymentStatusLabels(), $this->getPaymentMethodLabels()),
+                new ReportSalesExport(
+                    $orders,
+                    $this->getOrderStatusLabels(),
+                    $this->getPaymentStatusLabels(),
+                    $this->getPaymentMethodLabels(),
+                    $this->getCompanyInfo(),
+                    $periodLabel,
+                    $summary
+                ),
                 $filename
             );
         }
@@ -280,12 +222,13 @@ class ReportController extends Controller
         if ($tab === 'clients') {
 
             $search = $request->query('search');
-            $clients = $this->queryClients($search)->get();
+            $fleet = $request->query('fleet');
+            $clients = $this->queryClients($search, $fleet)->get();
 
             $filename = 'reporte-clientes-' . Carbon::now()->format('Ymd') . '.xlsx';
 
             return Excel::download(
-                new ReportClientsExport($clients),
+                new ReportClientsExport($clients, $this->getCompanyInfo(), 'Informe actual'),
                 $filename
             );
         }
@@ -313,6 +256,36 @@ class ReportController extends Controller
         return [$now->copy()->startOfMonth(), $now->copy()->endOfMonth()];
     }
 
+    private function resolveSalesWindow(Request $request): array
+    {
+        $date = $request->query('date');
+
+        if ($date) {
+            $target = Carbon::parse($date);
+            return [
+                $target->copy()->startOfDay(),
+                $target->copy()->endOfDay(),
+                'Fecha: ' . $target->format('d/m/Y'),
+            ];
+        }
+
+        $range = $request->query('range', 'month');
+
+        if (!in_array($range, ['today', 'week', 'month'], true)) {
+            $range = 'month';
+        }
+
+        [$start, $end] = $this->getRangeDates($range);
+
+        $periodLabel = match ($range) {
+            'today' => 'Hoy',
+            'week' => 'Esta semana',
+            default => 'Este mes',
+        };
+
+        return [$start, $end, $periodLabel];
+    }
+
     private function querySales(Carbon $start, Carbon $end)
     {
         return Order::with([
@@ -322,6 +295,8 @@ class ReportController extends Controller
         ])
             ->select([
                 'id',
+                'client_id',
+                'user_id',
                 'consecutive_serial',
                 'consecutive_number',
                 'creation_date',
@@ -336,7 +311,7 @@ class ReportController extends Controller
             ->orderByDesc('date');
     }
 
-    private function queryClients(?string $search = null)
+    private function queryClients(?string $search = null, ?string $fleet = null)
     {
         $query = DB::table('client as c')
             ->leftJoin('order as o', 'c.id', '=', 'o.client_id')
@@ -364,7 +339,83 @@ class ReportController extends Controller
             });
         }
 
+        if ($fleet !== null && $fleet !== '') {
+            $query->where('c.fleet', '=', $fleet);
+        }
+
         return $query;
+    }
+
+    private function filterSalesCollection(Collection $orders, Request $request): Collection
+    {
+        $fleet = $request->query('fleet');
+        $paymentStatus = $request->query('payment_status');
+        $paymentMethod = $request->query('payment_method');
+        $date = $request->query('date');
+
+        return $orders->filter(function ($order) use ($fleet, $paymentStatus, $paymentMethod, $date) {
+            if ($date && (string) $order->date !== (string) $date) {
+                return false;
+            }
+
+            if ($fleet !== null && $fleet !== '') {
+                $orderFleet = data_get($order, 'client.fleet');
+                if ((string) (int) $orderFleet !== (string) $fleet) {
+                    return false;
+                }
+            }
+
+            $payment = $order->payments->first();
+
+            if ($paymentStatus !== null && $paymentStatus !== '') {
+                if (!$payment || (string) $payment->status !== (string) $paymentStatus) {
+                    return false;
+                }
+            }
+
+            if ($paymentMethod !== null && $paymentMethod !== '') {
+                if (!$payment || (string) $payment->type !== (string) $paymentMethod) {
+                    return false;
+                }
+            }
+
+            return true;
+        })->values();
+    }
+
+    private function getCompanyInfo(): array
+    {
+        return [
+            'name' => 'Lavadero Brillante',
+            'owner' => 'Eusebio Borrego Lau',
+            'nif' => '28614307F',
+            'address' => 'Calle Dr. Fleming, 21',
+            'city' => '46960 Aldaya',
+            'logo' => public_path('images/logo_alterno.png'),
+        ];
+    }
+
+    private function buildSalesSummary(Collection $orders): array
+    {
+        return [
+            'orders' => $orders->count(),
+            'cash' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 1 ? $payment->total : 0;
+            }),
+            'card' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 2 ? $payment->total : 0;
+            }),
+            'transfer' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 3 ? $payment->total : 0;
+            }),
+            'subtotal' => $orders->sum('subtotal'),
+            'discount_value' => $orders->sum('discount_value'),
+            'taxes_value' => $orders->sum('taxes_value'),
+            'total' => $orders->sum('total'),
+        ];
     }
 
     private function getOrderStatusLabels(): array
