@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithDrawings;
@@ -18,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithCustomStartCell, WithDrawings, WithEvents
+class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithCustomStartCell, WithDrawings, WithEvents, WithColumnWidths
 {
     private Collection $clients;
     private array $company;
@@ -112,6 +113,9 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
                 $sheet->getRowDimension(3)->setRowHeight(18);
                 $sheet->getRowDimension(4)->setRowHeight(18);
                 $sheet->getRowDimension(5)->setRowHeight(10);
+                $sheet->freezePane('A7');
+                $sheet->setAutoFilter('A6:H6');
+                $sheet->getSheetView()->setZoomScale(90);
             },
         ];
     }
@@ -126,6 +130,20 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
                     'startColor' => ['rgb' => '000000']
                 ],
             ],
+        ];
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 24,
+            'B' => 14,
+            'C' => 16,
+            'D' => 18,
+            'E' => 10,
+            'F' => 10,
+            'G' => 16,
+            'H' => 14,
         ];
     }
 }

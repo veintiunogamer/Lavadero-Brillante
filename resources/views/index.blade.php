@@ -511,60 +511,68 @@
                     </div>
 
                     <!-- Seccion de totales, descuentos e IVA -->
-                    <div class="col-lg-6 col-md-12 col-sm-12 d-flex flex-wrap gap border 
-                    border-2 p-3 rounded-3 justify-content-center align-items-center">
+                    <div class="col-lg-6 col-md-12 col-sm-12 order-summary-shell border border-2 p-4 rounded-4">
 
-                        <div class="col-12 p-2 text-center mb-2 border-bottom">
-                            <h2 class="mb-2 text-secondary fw-bold">RESUMEN DEL PEDIDO</h2>
-                            <p class="fs-5 fw-bold">
-                                <span class="badge bg-secondary">
-                                    <i class="fa fa-barcode"> </i> &nbsp;&nbsp;
+                        <div class="order-summary-header text-center">
+                            <h2 class="order-summary-title mb-2">RESUMEN DEL PEDIDO</h2>
+                            <p class="fs-5 fw-bold mb-0">
+                                <span class="order-summary-badge">
+                                    <i class="fa fa-barcode me-2"></i>
                                     {{ $consecutive['date_code'] }} - {{$consecutive['sequence']}}
                                 </span>
                             </p>
                         </div>
 
-                        <div class="col-lg-12 col-md-12 col-sm-12 p-2 mb-2 d-flex flex-wrap justify-content-center align-items-center">
+                        <div class="row g-3 order-summary-grid mt-1">
 
                             <!-- Subtotal -->
-                            <div class="col-lg-4 col-md-4 col-sm-12 p-2 mb-2 bg-mint-blue rounded-3 fw-bold text-center text-primary">
-                                <label class="fw-bold fs-5">
-                                    <i class="fa-solid fa-cart-shopping me-1"></i>
-                                    SUBTOTAL</label>
-                                <div class="subtotal-section fs-5">0.00 €</div>
-                                <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="order-summary-card order-summary-card--subtotal h-100">
+                                    <label class="order-summary-label">
+                                        <i class="fa-solid fa-cart-shopping me-1"></i>
+                                        SUBTOTAL
+                                    </label>
+                                    <div class="subtotal-section order-summary-value">0.00 €</div>
+                                    <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
+                                </div>
                             </div>
 
                             <!-- Descuentos -->
-                            <div class="col-lg-4 col-md-4 col-sm-12 p-2 mb-2 bg-pastel-yellow rounded-3 fw-bold text-warning text-center">
-                                <label class="fw-bold fs-5">
-                                    <i class="fa-solid fa-tag me-1"></i>
-                                    DESCUENTO
-                                </label>
-                                <div class="discount-section fs-5">- 0.00 €</div>
-                                <input type="hidden" class="discount-value" name="discount_value" value="0.00">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="order-summary-card order-summary-card--discount h-100">
+                                    <label class="order-summary-label">
+                                        <i class="fa-solid fa-tag me-1"></i>
+                                        DESCUENTO
+                                    </label>
+                                    <div class="discount-section order-summary-value">- 0.00 €</div>
+                                    <input type="hidden" class="discount-value" name="discount_value" value="0.00">
+                                </div>
                             </div>
 
                             <!-- IVA (21%) -->
-                            <div class="col-lg-4 col-md-4 col-sm-12 p-2 mb-2  bg-pastel-pink text-danger rounded-3 fw-bold text-center">
-                                <label class="fw-bold fs-5">
-                                    <i class="fa-solid fa-percent me-1"></i>
-                                    IVA
-                                </label>
-                                <div class="tax-section fs-5">0.00 €</div>
-                                <input type="hidden" class="tax-value" name="tax_value" value="0.00">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="order-summary-card order-summary-card--tax h-100">
+                                    <label class="order-summary-label">
+                                        <i class="fa-solid fa-percent me-1"></i>
+                                        IVA
+                                    </label>
+                                    <div class="tax-section order-summary-value">0.00 €</div>
+                                    <input type="hidden" class="tax-value" name="tax_value" value="0.00">
+                                </div>
                             </div>
 
-                        </div>
+                            <!-- Total -->
+                            <div class="col-12">
+                                <div class="order-summary-card order-summary-card--total text-center">
+                                    <label class="order-summary-label order-summary-label--total">
+                                        <i class="fa-solid fa-money-bill me-1"></i>
+                                        TOTAL
+                                    </label>
+                                    <div class="total-section order-summary-value order-summary-value--total">0.00 €</div>
+                                    <input type="hidden" class="total-value" name="total" value="0.00">
+                                </div>
+                            </div>
 
-                        <!-- Total -->
-                        <div class="col-lg-12 col-md-12 col-sm-12 p-2 mb-2 bg-mint-green rounded-3 fw-bold text-center text-success">
-                            <label class="fw-bold fs-4">
-                                <i class="fa-solid fa-money-bill me-1"></i>
-                                TOTAL
-                            </label>
-                            <div class="total-section fs-5">0.00 €</div>
-                            <input type="hidden" class="total-value" name="total" value="0.00">
                         </div>
 
                     </div>

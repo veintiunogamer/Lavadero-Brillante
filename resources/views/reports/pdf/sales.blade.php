@@ -9,23 +9,29 @@
 
     <!-- Usamos DejaVu Sans para asegurar compatibilidad con caracteres especiales en PDF -->
     <style>
+        @page {
+            size: A4 landscape;
+            margin: 10mm 8mm 12mm 8mm;
+        }
+
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 12px;
+            font-size: 10px;
             color: #111827;
         }
 
         .header {
             width: 100%;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            table-layout: fixed;
         }
 
         .logo {
-            width: 120px;
+            width: 105px;
         }
 
         .company-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             margin: 0;
         }
@@ -54,19 +60,28 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 8px;
+            table-layout: fixed;
         }
 
         th,
         td {
             border: 1px solid #e5e7eb;
-            padding: 6px 8px;
+            padding: 4px 5px;
             vertical-align: top;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.25;
         }
 
         th {
             background: #000000;
             color: #ffffff;
             text-align: left;
+            font-size: 8.5px;
+        }
+
+        tbody tr {
+            page-break-inside: avoid;
         }
 
         .summary {
@@ -77,6 +92,35 @@
 
         .summary strong {
             font-size: 13px;
+        }
+
+        .sales-table th:nth-child(1),
+        .sales-table td:nth-child(1) { width: 8%; }
+        .sales-table th:nth-child(2),
+        .sales-table td:nth-child(2) { width: 8%; }
+        .sales-table th:nth-child(3),
+        .sales-table td:nth-child(3) { width: 12%; }
+        .sales-table th:nth-child(4),
+        .sales-table td:nth-child(4) { width: 5%; }
+        .sales-table th:nth-child(5),
+        .sales-table td:nth-child(5) { width: 18%; }
+        .sales-table th:nth-child(6),
+        .sales-table td:nth-child(6) { width: 8%; }
+        .sales-table th:nth-child(7),
+        .sales-table td:nth-child(7) { width: 6%; }
+        .sales-table th:nth-child(8),
+        .sales-table td:nth-child(8) { width: 8%; }
+        .sales-table th:nth-child(9),
+        .sales-table td:nth-child(9) { width: 8%; }
+        .sales-table th:nth-child(10),
+        .sales-table td:nth-child(10) { width: 8%; }
+        .sales-table th:nth-child(11),
+        .sales-table td:nth-child(11) { width: 9%; }
+        .sales-table th:nth-child(12),
+        .sales-table td:nth-child(12) { width: 8%; }
+
+        .sales-table td:nth-child(5) {
+            white-space: normal;
         }
     </style>
 
@@ -115,7 +159,7 @@
     </table>
 
 
-    <table>
+    <table class="sales-table">
 
         <thead>
             <tr>
@@ -127,7 +171,7 @@
 
                 <th>Subtotal</th>
                 <th>IVA</th>
-                <th>Descuento %</th>
+                <th>Descuento (€)</th>
 
                 <th>Pago</th>
                 <th>Método</th>
@@ -162,9 +206,8 @@
                 <td>
                     @php
                     $discountValue = $order->discount_value ?? 0;
-                    $discountPercent = $order->subtotal > 0 ? ($discountValue / $order->subtotal) * 100 : 0;
                     @endphp
-                    {{ number_format($discountPercent, 0) }}%
+                    {{ number_format($discountValue, 2, ',', '.') }} €
                 </td>
 
                 <td>

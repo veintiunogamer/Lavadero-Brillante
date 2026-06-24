@@ -7,6 +7,7 @@ use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
+use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithDrawings;
@@ -18,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithCustomStartCell, WithDrawings, WithEvents
+class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithCustomStartCell, WithDrawings, WithEvents, WithColumnWidths
 {
     private Collection $orders;
     private array $statusLabels;
@@ -52,7 +53,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
             'Servicios',
             'Subtotal',
             'IVA',
-            'Descuento %',
+            'Descuento (€)',
             'Pago',
             'Método',
             'Estado',
@@ -79,17 +80,16 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         $subtotal = (float) ($order->subtotal ?? 0);
         $taxesValue = (float) ($order->taxes_value ?? 0);
         $discountValue = (float) ($order->discount_value ?? 0);
-        $discountPercent = $subtotal > 0 ? ($discountValue / $subtotal) * 100 : 0;
 
         return [
             $orderNumber,
             $order->creation_date ? Carbon::parse($order->creation_date)->format('d/m/Y') : '--',
             optional($order->client)->name ?? '--',
-            optional($order->client)->fleet ?? '--',
+            optional($order->client)->fleet ? 'Sí' : 'No',
             $services ?: '--',
             round($subtotal, 2),
             round($taxesValue, 2),
-            round($discountPercent, 0),
+            round($discountValue, 2),
             $paymentStatus,
             $paymentMethod,
             $this->statusLabels[$order->status] ?? 'Desconocido',
@@ -140,6 +140,9 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                 $sheet->getRowDimension(3)->setRowHeight(18);
                 $sheet->getRowDimension(4)->setRowHeight(18);
                 $sheet->getRowDimension(5)->setRowHeight(10);
+                $sheet->freezePane('A7');
+                $sheet->setAutoFilter('A6:L6');
+                $sheet->getSheetView()->setZoomScale(90);
             },
         ];
     }
@@ -154,6 +157,24 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                     'startColor' => ['rgb' => '000000']
                 ],
             ],
+        ];
+    }
+
+    public function columnWidths(): array
+    {
+        return [
+            'A' => 16,
+            'B' => 12,
+            'C' => 22,
+            'D' => 10,
+            'E' => 38,
+            'F' => 14,
+            'G' => 12,
+            'H' => 15,
+            'I' => 14,
+            'J' => 16,
+            'K' => 14,
+            'L' => 14,
         ];
     }
 }
