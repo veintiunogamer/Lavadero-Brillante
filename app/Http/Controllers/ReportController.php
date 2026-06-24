@@ -258,12 +258,15 @@ class ReportController extends Controller
         $tab = $request->query('tab', 'sales');
 
         if ($tab === 'sales') {
+
             $range = $request->query('range', 'month');
+
             if (!in_array($range, ['today', 'week', 'month'], true)) {
                 $range = 'month';
             }
 
             [$start, $end] = $this->getRangeDates($range);
+
             $orders = $this->querySales($start, $end)->get();
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.xlsx';
@@ -313,9 +316,8 @@ class ReportController extends Controller
     private function querySales(Carbon $start, Carbon $end)
     {
         return Order::with([
-            'client:id,name,phone,license_plaque',
+            'client:id,name,phone,license_plaque,fleet',
             'services:id,name',
-            'order:taxes_value,discount_value,subtotal,total',
             'payments:id,order_id,type,status,subtotal,total'
         ])
             ->select([
@@ -323,14 +325,15 @@ class ReportController extends Controller
                 'consecutive_serial',
                 'consecutive_number',
                 'creation_date',
+                'date',
                 'subtotal',
                 'discount_value',
                 'taxes_value',
                 'total',
                 'status',
             ])
-            ->whereBetween('creation_date', [$start, $end])
-            ->orderByDesc('creation_date');
+            ->whereBetween('date', [$start, $end])
+            ->orderByDesc('date');
     }
 
     private function queryClients(?string $search = null)
