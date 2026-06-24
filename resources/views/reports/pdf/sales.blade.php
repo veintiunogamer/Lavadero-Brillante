@@ -94,6 +94,44 @@
             font-size: 13px;
         }
 
+        .summary-table {
+            margin-top: 14px;
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px 0;
+        }
+
+        .summary-table td {
+            border: 1px solid #dbe3ea;
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: #f8fafc;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .summary-label {
+            display: block;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #64748b;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .summary-value {
+            display: block;
+            font-size: 12px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .summary-table tr:last-child td {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+        }
+
         .sales-table th:nth-child(1),
         .sales-table td:nth-child(1) { width: 8%; }
         .sales-table th:nth-child(2),
@@ -240,10 +278,30 @@
 
     </table>
 
-    <div class="summary">
-        <div>Total facturado: <strong>{{ number_format($summary['total'] ?? 0, 2, ',', '.') }} €</strong></div>
-        <div>Órdenes: <strong>{{ $summary['orders'] ?? 0 }}</strong></div>
-    </div>
+    <table class="summary-table">
+        <tr>
+            <td>
+                <span class="summary-label">Efectivo</span>
+                <span class="summary-value">{{ number_format($summary['cash'] ?? 0, 2, ',', '.') }} €</span>
+            </td>
+            <td>
+                <span class="summary-label">TPV</span>
+                <span class="summary-value">{{ number_format($summary['card'] ?? 0, 2, ',', '.') }} €</span>
+            </td>
+            <td>
+                <span class="summary-label">Transferencia</span>
+                <span class="summary-value">{{ number_format($summary['transfer'] ?? 0, 2, ',', '.') }} €</span>
+            </td>
+            <td>
+                <span class="summary-label">Total facturado</span>
+                <span class="summary-value">{{ number_format($summary['total'] ?? 0, 2, ',', '.') }} €</span>
+            </td>
+            <td>
+                <span class="summary-label">Órdenes</span>
+                <span class="summary-value">{{ $summary['orders'] ?? 0 }}</span>
+            </td>
+        </tr>
+    </table>
 
 </body>
 

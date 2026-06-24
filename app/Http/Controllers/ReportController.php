@@ -62,26 +62,7 @@ class ReportController extends Controller
         });
 
         $summary = [
-            'orders' => $orders->count(),
-            'cash' => $orders->sum(function ($order) {
-                $payment = $order->payments->first();
-                return $payment && $payment->type == 1 ? $payment->total : 0;
-            }),
-
-            'card' => $orders->sum(function ($order) {
-                $payment = $order->payments->first();
-                return $payment && $payment->type == 2 ? $payment->total : 0;
-            }),
-
-            'transfer' => $orders->sum(function ($order) {
-                $payment = $order->payments->first();
-                return $payment && $payment->type == 3 ? $payment->total : 0;
-            }),
-
-            'subtotal' => $orders->sum('subtotal'),
-            'discount_value' => $orders->sum('discount_value'),
-            'taxes_value' => $orders->sum('taxes_value'),
-            'total' => $orders->sum('total'),
+            ...$this->buildSalesSummary($orders),
         ];
 
         return response()->json([
@@ -131,13 +112,7 @@ class ReportController extends Controller
 
         $orders = $this->querySales($start, $end)->get();
 
-        $summary = [
-            'orders' => $orders->count(),
-            'subtotal' => $orders->sum('subtotal'),
-            'taxes_value' => $orders->sum('taxes_value'),
-            'discount_value' => $orders->sum('discount_value'),
-            'total' => $orders->sum('total'),
-        ];
+        $summary = $this->buildSalesSummary($orders);
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.pdf.sales', [
             'title' => 'Cierre Diario',
@@ -173,13 +148,7 @@ class ReportController extends Controller
             [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
             $orders = $this->filterSalesCollection($this->querySales($start, $end)->get(), $request);
 
-            $summary = [
-                'orders' => $orders->count(),
-                'subtotal' => $orders->sum('subtotal'),
-                'taxes_value' => $orders->sum('taxes_value'),
-                'discount_value' => $orders->sum('discount_value'),
-                'total' => $orders->sum('total'),
-            ];
+            $summary = $this->buildSalesSummary($orders);
 
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.pdf.sales', [
                 'title' => 'Ventas y Facturación',
@@ -232,6 +201,7 @@ class ReportController extends Controller
             [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
 
             $orders = $this->filterSalesCollection($this->querySales($start, $end)->get(), $request);
+            $summary = $this->buildSalesSummary($orders);
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.xlsx';
 
@@ -242,7 +212,8 @@ class ReportController extends Controller
                     $this->getPaymentStatusLabels(),
                     $this->getPaymentMethodLabels(),
                     $this->getCompanyInfo(),
-                    $periodLabel
+                    $periodLabel,
+                    $summary
                 ),
                 $filename
             );
@@ -421,6 +392,29 @@ class ReportController extends Controller
             'address' => 'Calle Dr. Fleming, 21',
             'city' => '46960 Aldaya',
             'logo' => public_path('images/logo_alterno.png'),
+        ];
+    }
+
+    private function buildSalesSummary(Collection $orders): array
+    {
+        return [
+            'orders' => $orders->count(),
+            'cash' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 1 ? $payment->total : 0;
+            }),
+            'card' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 2 ? $payment->total : 0;
+            }),
+            'transfer' => $orders->sum(function ($order) {
+                $payment = $order->payments->first();
+                return $payment && $payment->type == 3 ? $payment->total : 0;
+            }),
+            'subtotal' => $orders->sum('subtotal'),
+            'discount_value' => $orders->sum('discount_value'),
+            'taxes_value' => $orders->sum('taxes_value'),
+            'total' => $orders->sum('total'),
         ];
     }
 

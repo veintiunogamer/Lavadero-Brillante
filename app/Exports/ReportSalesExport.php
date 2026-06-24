@@ -15,6 +15,7 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -27,8 +28,9 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
     private array $paymentMethodLabels;
     private array $company;
     private string $periodLabel;
+    private array $summary;
 
-    public function __construct(Collection $orders, array $statusLabels, array $paymentStatusLabels, array $paymentMethodLabels, array $company, string $periodLabel)
+    public function __construct(Collection $orders, array $statusLabels, array $paymentStatusLabels, array $paymentMethodLabels, array $company, string $periodLabel, array $summary = [])
     {
         $this->orders = $orders;
         $this->statusLabels = $statusLabels;
@@ -36,6 +38,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         $this->paymentMethodLabels = $paymentMethodLabels;
         $this->company = $company;
         $this->periodLabel = $periodLabel;
+        $this->summary = $summary;
     }
 
     public function collection(): Collection
@@ -120,6 +123,8 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
+                $dataEndRow = 6 + $this->orders->count();
+                $summaryStartRow = $dataEndRow + 2;
 
                 $sheet->mergeCells('B1:L1');
                 $sheet->mergeCells('B2:L2');
@@ -143,6 +148,47 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                 $sheet->freezePane('A7');
                 $sheet->setAutoFilter('A6:L6');
                 $sheet->getSheetView()->setZoomScale(90);
+
+                $sheet->mergeCells("A{$summaryStartRow}:L{$summaryStartRow}");
+                $sheet->setCellValue("A{$summaryStartRow}", 'RESUMEN DEL REPORTE');
+                $sheet->getStyle("A{$summaryStartRow}")->getFont()->setBold(true)->setSize(12);
+                $sheet->getStyle("A{$summaryStartRow}")->getFill()->setFillType(Fill::FILL_SOLID);
+                $sheet->getStyle("A{$summaryStartRow}")->getFill()->getStartColor()->setRGB('D1FAE5');
+
+                $summaryRows = [
+                    ['label' => 'Efectivo', 'value' => $this->summary['cash'] ?? 0],
+                    ['label' => 'TPV', 'value' => $this->summary['card'] ?? 0],
+                    ['label' => 'Transferencia', 'value' => $this->summary['transfer'] ?? 0],
+                    ['label' => 'Total facturado', 'value' => $this->summary['total'] ?? 0],
+                    ['label' => 'Órdenes', 'value' => $this->summary['orders'] ?? 0],
+                ];
+
+                $row = $summaryStartRow + 1;
+                foreach ($summaryRows as $item) {
+                    $sheet->mergeCells("A{$row}:E{$row}");
+                    $sheet->mergeCells("F{$row}:L{$row}");
+                    $sheet->setCellValue("A{$row}", $item['label']);
+                    $sheet->setCellValue("F{$row}", is_numeric($item['value'])
+                        ? ($item['label'] === 'Órdenes'
+                            ? number_format((float) $item['value'], 0, ',', '.')
+                            : number_format((float) $item['value'], 2, ',', '.') . ' €')
+                        : $item['value']);
+
+                    $sheet->getStyle("A{$row}:L{$row}")->getFont()->setBold(true);
+                    $sheet->getStyle("A{$row}:L{$row}")->getBorders()->getAllBorders()
+                        ->setBorderStyle(Border::BORDER_THIN)
+                        ->getColor()->setRGB('D1D5DB');
+
+                    if ($item['label'] === 'Órdenes') {
+                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->setFillType(Fill::FILL_SOLID);
+                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->getStartColor()->setRGB('ECFDF5');
+                    } else {
+                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->setFillType(Fill::FILL_SOLID);
+                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->getStartColor()->setRGB('F8FAFC');
+                    }
+
+                    $row++;
+                }
             },
         ];
     }
