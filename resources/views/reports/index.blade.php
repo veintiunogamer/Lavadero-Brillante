@@ -161,7 +161,7 @@
 
                 <!-- Empty State -->
                 <div x-show="!loadingSales && getFilteredData('sales').length === 0" class="citas-empty-state" style="min-height: 220px;">
-                    <i class="fa-solid fa-receipt citas-empty-icon" style="color:#fde68a;"></i>
+                    <i class="fa-solid fa-receipt citas-empty-icon text-warning"></i>
                     <p class="citas-empty-title">Sin ventas en este periodo</p>
                     <p class="citas-empty-sub">No hay datos de ventas para el rango de fechas seleccionado.<br>Prueba con otro periodo o verifica que existan citas completadas.</p>
                 </div>
@@ -355,7 +355,7 @@
                 </div>
 
                 <div x-show="!loadingClients && getFilteredData('clients').length === 0" class="citas-empty-state" style="min-height: 220px;">
-                    <i class="fa-solid fa-users citas-empty-icon" style="color:#86efac;"></i>
+                    <i class="fa-solid fa-users citas-empty-icon text-warning"></i>
                     <p class="citas-empty-title">Sin clientes para mostrar</p>
                     <p class="citas-empty-sub">No hay clientes que coincidan con la búsqueda.<br>Intenta ajustar el término o verifica que existan clientes registrados.</p>
                 </div>
@@ -413,7 +413,7 @@
 
             <!-- ==================== PRODUCTIVIDAD OPERATIVA ==================== -->
             <div x-show="activeTab === 'productivity'" class="citas-empty-state" style="min-height: 220px;">
-                <i class="fa-solid fa-chart-line citas-empty-icon" style="color:#bfdbfe;"></i>
+                <i class="fa-solid fa-chart-line citas-empty-icon text-warning"></i>
                 <p class="citas-empty-title">Productividad Operativa</p>
                 <p class="citas-empty-sub fw-bold my-3">Este informe estará disponible en la próxima actualización</p>
             </div>

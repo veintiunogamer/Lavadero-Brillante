@@ -174,6 +174,16 @@
 
                     </div>
 
+                    <div class="col-12 px-2">
+                        <div class="col-12" style="width: 100%;">
+                            <label class="fw-bold">
+                                <i class="fa fa-list text-primary"></i>&nbsp;
+                                Observaciones
+                            </label>
+                            <textarea class="input form-control form-control-lg" name="vehicle_notes" rows="5" maxlength="250" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Fecha y hora de reserva -->
@@ -254,16 +264,6 @@
                         </div>
                     </div>
 
-                </div>
-
-                <div class="col-12 px-2 my-4">
-                    <div class="col-12" style="width: 100%;">
-                        <label class="fw-bold">
-                            <i class="fa fa-list text-primary"></i>&nbsp;
-                            Observaciones
-                        </label>
-                        <textarea class="input form-control form-control-lg" name="vehicle_notes" rows="5" maxlength="250" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
-                    </div>
                 </div>
 
             </div>
@@ -453,7 +453,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 d-flex flex-wrap mt-4">
 
                     <!-- Pagos Formulario -->
-                    <div class="col-lg-6 col-md-12 col-sm-12 d-flex flex-wrap bg-light p-3 rounded-3">
+                    <div class="col-lg-6 col-md-12 col-sm-12 p-3 d-flex flex-wrap bg-light rounded-3">
 
                         <div class="col-12 my-2">
                             <label class="fw-bold px-3">Estado del Pago <span class="required">*</span></label>
@@ -472,7 +472,6 @@
                                 <option value="1" selected>Único</option>
                                 <option value="2">Mensual</option>
                             </select>
-                            <small class="badge bg-secondary my-2">Al elegir Mensual, el calendario se desactiva.</small>
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12 px-2 mt-2">
@@ -506,57 +505,65 @@
                         <div class="col-lg-6 col-md-6 col-sm-12 px-2 mt-2" id="partial-payment-container" style="display: none;">
                             <label class="fw-bold">Abono Parcial <span class="required">*</span></label>
                             <input type="number" class="input form-control" name="partial_payment" id="partial-payment-input" placeholder="0.00" step="0.01" min="0" style="font-size: 1.1rem; min-height: 42px;" data-field-name="Abono Parcial">
-                            <small class="badge bg-secondary my-2">Ingresa el monto del pago parcial</small>
+                            <small class="badge bg-primary my-2">Ingresa el monto del pago parcial</small>
                         </div>
 
                     </div>
 
                     <!-- Seccion de totales, descuentos e IVA -->
-                    <div class="col-lg-6 col-md-12 col-sm-12 d-flex flex-wrap bg-light border 
+                    <div class="col-lg-6 col-md-12 col-sm-12 d-flex flex-wrap gap border 
                     border-2 p-3 rounded-3 justify-content-center align-items-center">
 
                         <div class="col-12 p-2 text-center mb-2 border-bottom">
-                            <h2 class="mb-2 text-dark fw-bold">RESUMEN DEL PEDIDO</h2>
+                            <h2 class="mb-2 text-secondary fw-bold">RESUMEN DEL PEDIDO</h2>
                             <p class="fs-5 fw-bold">
-                                <span class="badge bg-primary">
+                                <span class="badge bg-secondary">
+                                    <i class="fa fa-barcode"> </i> &nbsp;&nbsp;
                                     {{ $consecutive['date_code'] }} - {{$consecutive['sequence']}}
                                 </span>
                             </p>
                         </div>
 
-                        <div class="col-lg-4 col-md-4 col-sm-12 p-2 bg-light rounded-3 fw-bold text-center mb-2">
-                            <label class="fw-bold fs-5">
-                                <i class="fa-solid fa-cart-shopping me-1 text-primary"></i>
-                                SUBTOTAL</label>
-                            <div class="subtotal-section fs-5">0.00€</div>
-                            <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
+                        <div class="col-lg-12 col-md-12 col-sm-12 p-2 mb-2 d-flex flex-wrap justify-content-center align-items-center">
+
+                            <!-- Subtotal -->
+                            <div class="col-lg-4 col-md-4 col-sm-12 p-2 mb-2 bg-mint-blue rounded-3 fw-bold text-center text-primary">
+                                <label class="fw-bold fs-5">
+                                    <i class="fa-solid fa-cart-shopping me-1"></i>
+                                    SUBTOTAL</label>
+                                <div class="subtotal-section fs-5">0.00 €</div>
+                                <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
+                            </div>
+
+                            <!-- Descuentos -->
+                            <div class="col-lg-4 col-md-4 col-sm-12 p-2 mb-2 bg-pastel-yellow rounded-3 fw-bold text-warning text-center">
+                                <label class="fw-bold fs-5">
+                                    <i class="fa-solid fa-tag me-1"></i>
+                                    DESCUENTO
+                                </label>
+                                <div class="discount-section fs-5">- 0.00 €</div>
+                                <input type="hidden" class="discount-value" name="discount_value" value="0.00">
+                            </div>
+
+                            <!-- IVA (21%) -->
+                            <div class="col-lg-4 col-md-4 col-sm-12 p-2 mb-2  bg-pastel-pink text-danger rounded-3 fw-bold text-center">
+                                <label class="fw-bold fs-5">
+                                    <i class="fa-solid fa-percent me-1"></i>
+                                    IVA
+                                </label>
+                                <div class="tax-section fs-5">0.00 €</div>
+                                <input type="hidden" class="tax-value" name="tax_value" value="0.00">
+                            </div>
+
                         </div>
 
-                        <div class="col-lg-4 col-md-4 col-sm-12 p-2 bg-light rounded-3 fw-bold text-center mb-2">
-                            <label class="fw-bold fs-5">
-                                <i class="fa-solid fa-tag me-1 text-primary"></i>
-                                DESCUENTO
-                            </label>
-                            <div class="discount-section fs-5">-0.00€</div>
-                            <input type="hidden" class="discount-value" name="discount_value" value="0.00">
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-4 col-sm-12 p-2 bg-mint-green rounded-3 fw-bold text-center mb-2">
-                            <label class="fw-bold fs-5">
-                                <i class="fa-solid fa-percent me-1 text-success"></i>
-                                IVA
-                            </label>
-                            <div class="tax-section fs-5">0.00€</div>
-                            <input type="hidden" class="tax-value" name="tax_value" value="0.00">
-                        </div>
-
-                        <div class="col-lg-12 col-md-12 col-sm-12 p-2 bg-pastel-pink rounded-3 fw-bold text-center text-danger mb-2">
+                        <!-- Total -->
+                        <div class="col-lg-12 col-md-12 col-sm-12 p-2 mb-2 bg-mint-green rounded-3 fw-bold text-center text-success">
                             <label class="fw-bold fs-4">
                                 <i class="fa-solid fa-money-bill me-1"></i>
                                 TOTAL
                             </label>
-                            <div class="total-section fs-5">0.00€</div>
+                            <div class="total-section fs-5">0.00 €</div>
                             <input type="hidden" class="total-value" name="total" value="0.00">
                         </div>
 
@@ -699,7 +706,7 @@
 
                 <template x-if="searchTerms[currentTab]">
                     <div>
-                        <i class="fa-solid fa-magnifying-glass citas-empty-icon" style="color:#93c5fd;"></i>
+                        <i class="fa-solid fa-magnifying-glass citas-empty-icon text-warning"></i>
                         <p class="citas-empty-title">Sin resultados</p>
                         <p class="citas-empty-sub">No se encontraron citas para <strong x-text="'\"' + searchTerms[currentTab] + ' \"'"></strong>.<br>Intenta con otro término de búsqueda.</p>
                     </div>
@@ -707,7 +714,7 @@
 
                 <template x-if="!searchTerms[currentTab] && currentTab === 'pending'">
                     <div>
-                        <i class="fa-solid fa-calendar-check citas-empty-icon" style="color:#86efac;"></i>
+                        <i class="fa-solid fa-calendar-check citas-empty-icon text-warning"></i>
                         <p class="citas-empty-title">¡Todo al día!</p>
                         <p class="citas-empty-sub">No hay citas pendientes en este momento.<br>Usa el formulario superior para agendar una nueva cita.</p>
                     </div>
@@ -715,7 +722,7 @@
 
                 <template x-if="!searchTerms[currentTab] && currentTab === 'history'">
                     <div>
-                        <i class="fa-solid fa-clock-rotate-left citas-empty-icon" style="color:#bfdbfe;"></i>
+                        <i class="fa-solid fa-clock-rotate-left citas-empty-icon text-warning"></i>
                         <p class="citas-empty-title">Sin historial aún</p>
                         <p class="citas-empty-sub">Las citas completadas y canceladas aparecerán aquí.</p>
                     </div>

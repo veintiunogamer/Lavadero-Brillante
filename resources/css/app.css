@@ -20,7 +20,8 @@
     --color-azul-ceniza: #4a6580;
 
     --color-amarillo: #f0aa13;
-
+    --color-amarillo-tenue: #fef3c7;
+    
     --color-rojo: #f44336;
     --color-rojo-hover: #d32f2f;
     --color-rojo-tenue: #ebcaca;
@@ -111,6 +112,10 @@
 
 .bg-mint-green {
     background-color: var(--color-mint-green) !important;
+}
+
+.bg-pastel-yellow {
+    background-color: var(--color-amarillo-tenue) !important;
 }
 
 .bg-mint-blue {
