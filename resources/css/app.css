@@ -223,7 +223,7 @@
     cursor: pointer;
     padding: 0.45rem 0.9rem; /* increased vertical padding for more height */
     min-height: 38px; /* ensure a taller hit area */
-    border-radius: 999px;
+    border-radius: 12px;
     font-size: 0.95rem;
     font-weight: 700;
 }
@@ -262,13 +262,17 @@
 }
 
 .user-menu a:hover {
-    background: var(--color-blanco);
+    background: var(--color-azul-celeste-claro);
 }
 
 .user-menu .logout-btn { 
     width: 100%; 
     display: block;
     text-align: left;
+}
+
+.user-menu .logout-btn:hover {
+    background: var(--color-rojo-tenue);
 }
 
 .logout-inline { display: none; }

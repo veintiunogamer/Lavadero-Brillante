@@ -420,7 +420,7 @@
                             Ninguno de nuestros precios incluye IVA.
                         </textarea>
 
-                        <small class="badge bg-secondary my-2 text-left">
+                        <small class="badge bg-success my-2 text-left">
                             <i class="fa-solid fa-circle-info me-1"></i>
                             Se actualiza automáticamente según los servicios elegidos.
                         </small>

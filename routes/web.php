@@ -52,6 +52,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/reports/sales', [ReportController::class, 'sales'])->name('reports.sales');
         Route::get('/reports/clients', [ReportController::class, 'clients'])->name('reports.clients');
+
+        # Exportacion de informes (Excel y PDF)
         Route::get('/reports/pdf/daily', [ReportController::class, 'dailyPdf'])->name('reports.pdf.daily');
         Route::get('/reports/pdf/current', [ReportController::class, 'currentPdf'])->name('reports.pdf.current');
         Route::get('/reports/excel/current', [ReportController::class, 'currentExcel'])->name('reports.excel.current');
@@ -59,12 +61,6 @@ Route::middleware('auth')->group(function () {
 
     # Rutas solo para Administrador
     Route::middleware('role:1')->group(function () {
-
-        # Rutas para la gestión de clientes
-        Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
-
-        # Rutas para la gestión de servicios
-        Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
 
         # Rutas para la gestión de usuarios (Solo Administradores)
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
