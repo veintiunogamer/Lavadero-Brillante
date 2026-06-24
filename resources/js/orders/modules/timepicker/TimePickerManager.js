@@ -269,10 +269,10 @@ export class TimePickerManager {
     getHourOut() {
 
         if (this.useFallback) {
-            return document.getElementById('hora-salida-fallback')?.value || '';
+            return document.getElementById('hour_out_fallback')?.value || '';
         }
 
-        const input = document.getElementById('hora-salida');
+        const input = document.getElementById('hour_out');
         let value = input?.value || '';
         
         // Asegurar formato HH:MM

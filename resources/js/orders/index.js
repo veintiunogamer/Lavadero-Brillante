@@ -207,8 +207,6 @@ function createOrderFormApp() {
                 
             }
 
-            timepicker.setHours(order.hour_in || '', order.hour_out || '');
-
             // Pre-llenar datos del cliente
             const clientName = document.querySelector('[name="client_name"]');
             const clientPhone = document.querySelector('[name="client_phone"]');
@@ -219,6 +217,8 @@ function createOrderFormApp() {
 
             if (hour_in) hour_in.value = order.hour_in || '';
             if (hour_out) hour_out.value = order.hour_out || '';
+
+            timepicker.setHours(order.hour_in || '', order.hour_out || '');
             
             if (clientName && order.client) clientName.value = order.client.name || '';
             if (clientPhone && order.client) clientPhone.value = order.client.phone || '';
@@ -354,7 +354,7 @@ function createOrderFormApp() {
             const confirmBtn = document.querySelector('.confirm-btn');
 
             if (confirmBtn) {
-                confirmBtn.innerHTML = '<i class="fa-solid fa-save icon"></i> Guardar Cambios';
+                confirmBtn.innerHTML = '<i class="fa-solid fa-save icon"></i> Confirmar Agendamiento';
             }
 
             // Auto-check términos en edición
@@ -365,7 +365,6 @@ function createOrderFormApp() {
                 termsCheckbox.dispatchEvent(new Event('change'));
             }
 
-            console.log('📝 Modo edición activado para orden:', order.id);
         },
 
         normalizeServicesForEdit(rawServices = []) {
@@ -436,30 +435,25 @@ function createOrderFormApp() {
             try {
 
                 const result = await apiGet('/orders/tab/' + this.currentTab);
-                // console.log('📦 Órdenes cargadas:', result);
 
                 if (result && result.success) {
 
                     this.orders = this.normalizePayments(result.data || []);
-                    // console.log('✅ Total órdenes:', this.orders.length);
                     this.ensurePageInRange(this.currentTab);
 
                 } else if (result && result.message === 'Unauthenticated.') {
 
                     // Usuario no autenticado - redirigir a login
-                    // console.warn('⚠️ Usuario no autenticado');
                     this.orders = [];
 
                 } else {
 
-                    // console.warn('⚠️ Respuesta inesperada:', result);
                     this.orders = [];
 
                 }
 
             } catch (error) {
 
-                // console.error('❌ Error cargando órdenes:', error);
                 this.orders = [];
 
             } finally {
@@ -915,6 +909,7 @@ function createOrderFormApp() {
             try {
 
                 const formData = dataCollector.collect();
+                
                 let result;
 
                 if (this.isEditMode && this.editOrderId) {
@@ -1256,7 +1251,6 @@ function initOrdersModule() {
     if (isInitialized) return;
     isInitialized = true;
 
-    console.log('Orders module loaded');
 }
 
 // Ejecutar inmediatamente (Vite ya maneja el orden de carga)
@@ -1265,3 +1259,4 @@ initOrdersModule();
 // Exportar para uso como módulo ES6
 export { createOrderFormApp, createOrderEditApp };
 export default initOrdersModule;
+ 
