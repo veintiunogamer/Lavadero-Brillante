@@ -143,8 +143,8 @@ class OrderController extends Controller
                 'total' => 'required|numeric|min:0',
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
-                'hour_in' => 'required_if:payment_period,1|nullable|date_format:H:i',
-                'hour_out' => 'required_if:payment_period,1|nullable|date_format:H:i|after:hour_in',
+                'hour_in' => 'nullable|date_format:H:i',
+                'hour_out' => 'nullable|date_format:H:i|after:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='TPV', 3='transferencia'
@@ -340,8 +340,6 @@ class OrderController extends Controller
     {
         try {
 
-            dd($request);
-
             $validated = $request->validate([
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'nullable|string|max:20',
@@ -398,8 +396,6 @@ class OrderController extends Controller
             $hourOut = !empty($validated['hour_out'])
                 ? Carbon::parse($selectedDate->toDateString() . ' ' . $validated['hour_out'])
                 : null;
-
-            dd($validated, $hourIn, $hourOut);
 
             // Actualizar orden
             $order->update([

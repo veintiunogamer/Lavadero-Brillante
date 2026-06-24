@@ -53,19 +53,19 @@
                 </div>
 
                 <!-- Datos del cliente -->
-                <div class="col-lg-6 col-md-6 col-sm-12 d-flex flex-wrap mb-5 pb-3">
+                <div class="col-lg-6 col-md-12 col-sm-12 d-flex flex-wrap mb-5 pb-3">
 
-                    <div class="col-md-6 mb-3 px-2">
+                    <div class="col-lg-6 col-md-12 col-sm-12 mb-3 px-2">
                         <label class="fw-bold">Nombre Cliente<span class="required">*</span></label>
                         <input type="text" class="input form-control required-field" name="client_name" placeholder="Nombre completo" maxlength="30" data-field-name="Nombre del Cliente">
                     </div>
 
-                    <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-3 px-2 d-flex flex-column align-items-start">
                         <label class="form-check-label fw-bold mb-1">Flota<span class="required">*</span></label>
                         <input class="ms-0" type="checkbox" role="switch" name="fleet" id="fleet">
                     </div>
 
-                    <div class="col-md-3 mb-3 px-2 d-flex flex-column align-items-start">
+                    <div class="col-lg-3 col-md-6 col-sm-6 mb-3 px-2 d-flex flex-column align-items-start">
 
                         <label class="form-check-label fw-bold mb-1" for="get-invoice">
                             Factura
@@ -74,12 +74,12 @@
 
                     </div>
 
-                    <div class="col-md-6 mb-3 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold">Teléfono <span class="required">*</span></label>
                         <input type="text" id="telefono-whatsapp" class="input form-control required-field phone-field" name="client_phone" placeholder="Ej: +34 612 345 678" maxlength="12" data-phone="true" required data-field-name="Teléfono">
                     </div>
 
-                    <div class="col-md-6 mb-3 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold d-flex justify-content-between align-items-center gap-2">
                             <span>Matrícula <span class="required">*</span></span>
                             <small id="license-plate-info" class="text-success text-nowrap" style="display: none;">
@@ -96,7 +96,7 @@
                             style="text-transform: uppercase;">
                     </div>
 
-                    <div class="col-md-6 mb-3 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold">Modelo</label>
                         <input type="text"
                             class="input form-control"
@@ -107,7 +107,7 @@
                             data-field-name="Modelo">
                     </div>
 
-                    <div class="col-md-6 mb-3 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold">Tipo Vehículo <span class="required">*</span></label>
                         <select class="input form-control required-field vehicle-type" name="vehicle_type_id" data-field-name="Tipo de Vehículo">
                             <option value="">Selecciona un tipo</option>
@@ -118,7 +118,7 @@
                     </div>
 
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold">Suciedad <span class="required">*</span></label>
                         <select class="input form-control required-field service-dirt" name="dirt_level" data-field-name="Suciedad">
                             <option value="1">Bajo</option>
@@ -127,7 +127,7 @@
                         </select>
                     </div>
 
-                    <div class="col-md-6 mb-3 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold">Lava Coches <span class="required">*</span></label>
                         <select class="input form-control required-field" name="assigned_user" data-field-name="Detallador">
                             <option value="">Seleccionar</option>
@@ -140,7 +140,7 @@
                     </div>
 
 
-                    <div class="col-6 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 px-2">
 
                         <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
                         <input type="text" class="input form-control required-field time-picker" id="hour_in" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
@@ -157,7 +157,7 @@
 
                     </div>
 
-                    <div class="col-6 px-2">
+                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
 
                         <label class="fw-bold">Hora Salida <span class="required">*</span></label>
                         <input type="text" class="input form-control required-field time-picker" id="hour_out" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
@@ -177,7 +177,7 @@
                 </div>
 
                 <!-- Fecha y hora de reserva -->
-                <div class="col-lg-6 col-md-6 col-sm-12 d-flex justify-content-center align-items-center">
+                <div class="col-lg-6 col-md-12 col-sm-12 d-flex justify-content-center align-items-center">
 
                     <div class="calendar-box calendar-enhanced">
 
@@ -282,21 +282,21 @@
                         <small class="text-muted d-block fw-bold">Complete la información fiscal para emitir la factura</small>
                     </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold mb-1">
                             Razón Social <span class="required">*</span>
                         </label>
                         <input type="text" class="form-control" name="invoice_business_name" id="razon-social" maxlength="40" placeholder="Nombre de la empresa" data-field-name="Razón Social">
                     </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold mb-1">
                             NIF / CIF <span class="required">*</span>
                         </label>
                         <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678" maxlength="10" data-field-name="NIF/CIF">
                     </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold mb-1">
                             Email
                         </label>
@@ -304,7 +304,7 @@
                     </div>
 
 
-                    <div class="col-lg-3 col-md-3 col-sm-12 mb-3 px-2">
+                    <div class="col-lg-3 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold mb-1">
                             Telefono
                         </label>
@@ -453,7 +453,7 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 d-flex flex-wrap mt-4">
 
                     <!-- Pagos Formulario -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 d-flex flex-wrap bg-light p-3 rounded-3">
+                    <div class="col-lg-6 col-md-12 col-sm-12 d-flex flex-wrap bg-light p-3 rounded-3">
 
                         <div class="col-12 my-2">
                             <label class="fw-bold px-3">Estado del Pago <span class="required">*</span></label>
@@ -512,30 +512,51 @@
                     </div>
 
                     <!-- Seccion de totales, descuentos e IVA -->
-                    <div class="col-lg-6 col-md-6 col-sm-12 d-flex flex-wrap bg-light border p-3 rounded-3">
+                    <div class="col-lg-6 col-md-12 col-sm-12 d-flex flex-wrap bg-light border 
+                    border-2 p-3 rounded-3 justify-content-center align-items-center">
 
-                        <div class="col-lg-6 col-md-3 col-sm-12 p-2 rounded-3 fw-bold text-center">
-                            <label class="fw-bold">SUBTOTAL</label>
-                            <div class="subtotal-section">0.00€</div>
+                        <div class="col-12 p-2 text-center mb-2 border-bottom">
+                            <h2 class="mb-2 text-dark fw-bold">RESUMEN DEL PEDIDO</h2>
+                            <p class="fs-5 fw-bold">
+                                <span class="badge bg-primary">
+                                    {{ $consecutive['date_code'] }} - {{$consecutive['sequence']}}
+                                </span>
+                            </p>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-12 p-2 bg-light rounded-3 fw-bold text-center mb-2">
+                            <label class="fw-bold fs-5">
+                                <i class="fa-solid fa-cart-shopping me-1 text-primary"></i>
+                                SUBTOTAL</label>
+                            <div class="subtotal-section fs-5">0.00€</div>
                             <input type="hidden" class="subtotal-value" name="subtotal" value="0.00">
                         </div>
 
-                        <div class="col-lg-6 col-md-3 col-sm-12 p-2 rounded-3 fw-bold text-center">
-                            <label class="fw-bold">DESCUENTO</label>
-                            <div class="discount-section">-0.00€</div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 p-2 bg-light rounded-3 fw-bold text-center mb-2">
+                            <label class="fw-bold fs-5">
+                                <i class="fa-solid fa-tag me-1 text-primary"></i>
+                                DESCUENTO
+                            </label>
+                            <div class="discount-section fs-5">-0.00€</div>
                             <input type="hidden" class="discount-value" name="discount_value" value="0.00">
                         </div>
 
 
-                        <div class="col-lg-6 col-md-3 col-sm-12 rounded-3 p-2 fw-bold text-center">
-                            <label class="fw-bold">IVA</label>
-                            <div class="tax-section">0.00€</div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 p-2 bg-mint-green rounded-3 fw-bold text-center mb-2">
+                            <label class="fw-bold fs-5">
+                                <i class="fa-solid fa-percent me-1 text-success"></i>
+                                IVA
+                            </label>
+                            <div class="tax-section fs-5">0.00€</div>
                             <input type="hidden" class="tax-value" name="tax_value" value="0.00">
                         </div>
 
-                        <div class="col-lg-6 col-md-3 col-sm-12 p-2 rounded-3 fw-bold text-center">
-                            <label class="fw-bold">TOTAL</label>
-                            <div class="total-section">0.00€</div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 p-2 bg-pastel-pink rounded-3 fw-bold text-center text-danger mb-2">
+                            <label class="fw-bold fs-4">
+                                <i class="fa-solid fa-money-bill me-1"></i>
+                                TOTAL
+                            </label>
+                            <div class="total-section fs-5">0.00€</div>
                             <input type="hidden" class="total-value" name="total" value="0.00">
                         </div>
 

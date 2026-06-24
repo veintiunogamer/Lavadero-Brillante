@@ -23,7 +23,7 @@
 
     --color-rojo: #f44336;
     --color-rojo-hover: #d32f2f;
-    --color-rojo-tenue: #ffeaea;
+    --color-rojo-tenue: #ebcaca;
 
     --color-verde: #198754;
     --color-mint-green: #d2eed7;
@@ -110,15 +110,15 @@
 }
 
 .bg-mint-green {
-    background-color: var(--color-mint-green);
+    background-color: var(--color-mint-green) !important;
 }
 
 .bg-mint-blue {
-    background-color: var(--color-azul-celeste-claro);
+    background-color: var(--color-azul-celeste-claro) !important;
 }
 
 .bg-pastel-pink {
-    background-color: var(--color-rojo-tenue);
+    background-color: var(--color-rojo-tenue) !important;
 }
 
 .text-warning {
