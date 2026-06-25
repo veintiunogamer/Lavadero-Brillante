@@ -60,8 +60,6 @@ export class TimePickerManager {
                 dateFormat: "H:i",
                 time_24hr: true,
                 minuteIncrement: 30,
-                minTime: "08:00",
-                maxTime: "20:30",
                 locale: this.getLocaleConfig(),
                 onReady: (dateObj, dateStr, instance) => {
 
@@ -69,41 +67,19 @@ export class TimePickerManager {
                 },
                 onChange: (selectedDates, dateStr, instance) => {
 
-                    this.syncFlatpickrMinRange();
-                    this.validateTimeRange(instance);
-
                     document.dispatchEvent(new CustomEvent('formFieldChanged'));
 
                 }
             });
 
         });
-
-        this.syncFlatpickrMinRange();
     }
 
     /**
      * Sincroniza el rango mínimo de hora de salida según hora de entrada (Flatpickr)
      */
     syncFlatpickrMinRange() {
-
-        const horaEntradaEl = document.getElementById('hour_in');
-        const horaSalidaEl = document.getElementById('hour_out');
-
-        if (!horaEntradaEl?._flatpickr || !horaSalidaEl?._flatpickr) return;
-
-        const entradaDate = horaEntradaEl._flatpickr.selectedDates[0] || null;
-        const minTime = entradaDate
-            ? `${String(entradaDate.getHours()).padStart(2, '0')}:${String(entradaDate.getMinutes()).padStart(2, '0')}`
-            : '08:00';
-
-        horaSalidaEl._flatpickr.set('minTime', minTime);
-
-        const salidaDate = horaSalidaEl._flatpickr.selectedDates[0] || null;
-
-        if (entradaDate && salidaDate && salidaDate < entradaDate) {
-            horaSalidaEl._flatpickr.clear();
-        }
+        return;
     }
 
     /**
@@ -131,26 +107,7 @@ export class TimePickerManager {
      * @param {Object} instance - Instancia de Flatpickr
      */
     validateTimeRange(instance) {
-
-        const horaEntradaEl = document.getElementById('hour_in');
-        const horaSalidaEl = document.getElementById('hour_out');
-
-        if (!horaEntradaEl?._flatpickr || !horaSalidaEl?._flatpickr) return;
-
-        const entrada = horaEntradaEl._flatpickr.selectedDates[0];
-        const salida = horaSalidaEl._flatpickr.selectedDates[0];
-
-        if (entrada && salida && salida <= entrada) {
-
-            window.notyf?.error('La hora de salida debe ser posterior a la hora de entrada');
-            
-            if (instance.element.id === 'hour_out') {
-                instance.clear();
-            } else {
-                horaSalidaEl._flatpickr.clear();
-            }
-
-        }
+        return;
     }
 
     /**
@@ -185,7 +142,7 @@ export class TimePickerManager {
         if (horaEntradaFallback && !horaEntradaFallback.dataset.initialized) {
             
             horaEntradaFallback.addEventListener('change', () => {
-                this.syncFallbackMinRange();
+                document.dispatchEvent(new CustomEvent('formFieldChanged'));
             });
 
             horaEntradaFallback.dataset.initialized = 'true';
@@ -194,51 +151,19 @@ export class TimePickerManager {
         if (horaEntradaFallback && horaSalidaFallback && !horaSalidaFallback.dataset.initialized) {
             
             horaSalidaFallback.addEventListener('change', () => {
-
-                this.syncFallbackMinRange();
-
-                const entrada = horaEntradaFallback.value;
-                const salida = horaSalidaFallback.value;
-
-                if (entrada && salida && salida <= entrada) {
-                    window.notyf?.error('La hora de salida debe ser posterior a la hora de entrada');
-                    horaSalidaFallback.value = '';
-                }
-
+                document.dispatchEvent(new CustomEvent('formFieldChanged'));
             });
 
             horaSalidaFallback.dataset.initialized = 'true';
         }
 
-        this.syncFallbackMinRange();
     }
 
     /**
-     * Restringe opciones de hora salida en fallback para que sean >= hora entrada
+     * Compatibilidad para llamadas anteriores.
      */
     syncFallbackMinRange() {
-
-        const horaEntradaFallback = document.getElementById('hour_in_fallback');
-        const horaSalidaFallback = document.getElementById('hour_out_fallback');
-
-        if (!horaEntradaFallback || !horaSalidaFallback) return;
-
-        const entrada = horaEntradaFallback.value || '';
-
-        Array.from(horaSalidaFallback.options).forEach(option => {
-
-            if (!option.value) {
-                option.disabled = false;
-                return;
-            }
-
-            option.disabled = entrada ? option.value < entrada : false;
-
-        });
-
-        if (horaSalidaFallback.value && entrada && horaSalidaFallback.value < entrada) {
-            horaSalidaFallback.value = '';
-        }
+        return;
     }
 
     /**
@@ -347,7 +272,6 @@ export class TimePickerManager {
             if (entradaFallback) entradaFallback.value = fallbackIn;
             
             if (salidaFallback) salidaFallback.value = fallbackOut;
-            this.syncFallbackMinRange();
             return;
 
         }
@@ -383,7 +307,6 @@ export class TimePickerManager {
 
         }
 
-        this.syncFlatpickrMinRange();
     }
 
     /**
