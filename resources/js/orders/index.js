@@ -212,12 +212,6 @@ function createOrderFormApp() {
             const clientPhone = document.querySelector('[name="client_phone"]');
             const licensePlateInput = document.querySelector('[name="license_plaque"]');
 
-            const hour_in = document.querySelector('[name="hour_in"]');
-            const hour_out = document.querySelector('[name="hour_out"]');
-
-            if (hour_in) hour_in.value = order.hour_in || '';
-            if (hour_out) hour_out.value = order.hour_out || '';
-
             timepicker.setHours(order.hour_in || '', order.hour_out || '');
             
             if (clientName && order.client) clientName.value = order.client.name || '';

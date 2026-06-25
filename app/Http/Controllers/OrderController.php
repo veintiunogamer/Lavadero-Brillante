@@ -120,6 +120,11 @@ class OrderController extends Controller
 
             \DB::beginTransaction();
 
+            $request->merge([
+                'hour_in' => $this->normalizeTimeInput($request->input('hour_in')),
+                'hour_out' => $this->normalizeTimeInput($request->input('hour_out')),
+            ]);
+
             // Validar datos básicos
             $validated = $request->validate([
                 'client_name' => 'required|string|max:100',
@@ -144,7 +149,7 @@ class OrderController extends Controller
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'nullable|date_format:H:i',
-                'hour_out' => 'nullable|date_format:H:i|after:hour_in',
+                'hour_out' => 'nullable|date_format:H:i',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='TPV', 3='transferencia'
@@ -340,6 +345,11 @@ class OrderController extends Controller
     {
         try {
 
+            $request->merge([
+                'hour_in' => $this->normalizeTimeInput($request->input('hour_in')),
+                'hour_out' => $this->normalizeTimeInput($request->input('hour_out')),
+            ]);
+
             $validated = $request->validate([
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'nullable|string|max:20',
@@ -364,7 +374,7 @@ class OrderController extends Controller
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'nullable|date_format:H:i',
-                'hour_out' => 'nullable|date_format:H:i|after:hour_in',
+                'hour_out' => 'nullable|date_format:H:i',
                 'payment_status' => 'required|integer|in:1,2,3',
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3,4',
@@ -721,6 +731,36 @@ class OrderController extends Controller
                 'success' => false,
                 'message' => 'Error al cargar las órdenes'
             ], 500);
+        }
+    }
+
+    /**
+     * Normaliza cualquier valor de hora a formato H:i para validación y guardado.
+     *
+     * @param mixed $value
+     * @return string|null
+     */
+    private function normalizeTimeInput($value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        $value = trim((string) $value);
+
+        if ($value === '') {
+            return null;
+        }
+
+        if (preg_match('/(\d{2}):(\d{2})/', $value, $matches)) {
+            return $matches[1] . ':' . $matches[2];
+        }
+
+        try {
+            $date = Carbon::parse(str_replace(' ', 'T', $value));
+            return $date->format('H:i');
+        } catch (\Exception $e) {
+            return null;
         }
     }
 }

@@ -130,9 +130,6 @@ export class FormDataCollector {
      */
     getScheduleData() {
 
-        const paymentPeriod = parseInt(document.querySelector('select[name="payment_period"]')?.value || '1');
-        const isMonthly = paymentPeriod === 2;
-
         const selectedDateValue = window.selectedOrderDate
         ? window.selectedOrderDate.toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0];
@@ -151,14 +148,13 @@ export class FormDataCollector {
         ? horaSalidaInput.value
         : horaSalidaFallback?.value;
 
-        // Asegurar formato HH:MM
-        if (hourIn && hourIn.length > 5) hourIn = hourIn.substring(0, 5);
-        if (hourOut && hourOut.length > 5) hourOut = hourOut.substring(0, 5);
+        hourIn = this.normalizeTimeValue(hourIn);
+        hourOut = this.normalizeTimeValue(hourOut);
 
         return {
             selected_date: selectedDateValue,
-            hour_in: isMonthly ? null : (hourIn || ''),
-            hour_out: isMonthly ? null : (hourOut || '')
+            hour_in: hourIn || '',
+            hour_out: hourOut || ''
         };
     }
 
@@ -214,6 +210,33 @@ export class FormDataCollector {
 
         return { invoice_required: false };
 
+    }
+
+    /**
+     * Normaliza cualquier valor de hora a formato HH:MM.
+     * Acepta valores como HH:MM, HH:MM:SS o datetime completo.
+     * @param {string|null|undefined} value
+     * @returns {string}
+     */
+    normalizeTimeValue(value) {
+
+        if (!value) return '';
+
+        const strValue = String(value).trim();
+
+        const hhmmMatch = strValue.match(/(\d{2}):(\d{2})/);
+        if (hhmmMatch) {
+            return `${hhmmMatch[1]}:${hhmmMatch[2]}`;
+        }
+
+        const parsed = new Date(strValue.replace(' ', 'T'));
+        if (!Number.isNaN(parsed.getTime())) {
+            const hh = String(parsed.getHours()).padStart(2, '0');
+            const mm = String(parsed.getMinutes()).padStart(2, '0');
+            return `${hh}:${mm}`;
+        }
+
+        return '';
     }
     
 }
