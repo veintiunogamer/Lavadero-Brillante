@@ -30,12 +30,11 @@
 
         <!-- Gastos - Expenses -->
         @if($isAdmin)
-        <a href="#" class="{{ request()->routeIs('expenses.*') ? 'active' : '' }} fw-bold">
+        <!--<a href="#" class="{{ request()->routeIs('expenses.*') ? 'active' : '' }} fw-bold">
             <i class="fa-solid fa-money-bill-wave me-1"></i>
             <span class="nav-text">Gastos</span>
-        </a>
+        </a> -->
         @endif
-
 
 
         <!-- Users - Usuarios (Solo Administradores) -->

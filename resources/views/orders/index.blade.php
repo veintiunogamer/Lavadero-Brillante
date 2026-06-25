@@ -46,7 +46,7 @@
                 </label>
             </div>
 
-            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+            <div class="col-lg-3 col-md-3 col-sm-12 p-1 mt-2">
                 <label class="fw-bold mb-1">
                     <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
                     Búsqueda global
@@ -58,7 +58,7 @@
                     placeholder="Buscar agendamientos...">
             </div>
 
-            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+            <div class="col-lg-3 col-md-3 col-sm-12 p-1 mt-2">
                 <label class="fw-bold mb-1">
                     <i class="fa-solid fa-calendar-check text-primary me-1"></i>
                     Fecha de orden
@@ -71,13 +71,25 @@
 
             <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
                 <label class="fw-bold mb-1">
+                    <i class="fa-solid fa-car text-primary me-1"></i>
+                    Flota
+                </label>
+                <select x-model="searchIsFleet" @change="resetPagination()"
+                    class="input form-select">
+                    <option value="">Todos</option>
+                    <option value="1">Sí</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                <label class="fw-bold mb-1">
                     <i class="fa-solid fa-exchange text-primary me-1"></i>
                     Estados de pago
                 </label>
                 <select class="input form-select form-select-lg"
                     x-model="paymentStatusFilter"
-                    @change="resetPagination('sales')"
-                    :disabled="activeTab !== 'sales'">
+                    @change="resetPagination('sales')">
                     <option value="">Todos</option>
                     <option value="1">Pendiente</option>
                     <option value="2">Parcial</option>
@@ -96,19 +108,6 @@
                     <option value="1">Efectivo</option>
                     <option value="2">TPV</option>
                     <option value="3">Transferencias</option>
-                </select>
-            </div>
-
-            <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
-                <label class="fw-bold mb-1">
-                    <i class="fa-solid fa-car text-primary me-1"></i>
-                    Flota
-                </label>
-                <select x-model="searchIsFleet" @change="resetPagination()"
-                    class="input form-select">
-                    <option value="">Todos</option>
-                    <option value="1">Sí</option>
-                    <option value="0">No</option>
                 </select>
             </div>
 
