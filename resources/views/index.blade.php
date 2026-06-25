@@ -523,10 +523,10 @@
                             </p>
                         </div>
 
-                        <div class="row g-3 order-summary-grid mt-1">
+                        <div class="row row-cols-1 row-cols-sm-3 g-3 order-summary-grid mt-1 justify-content-center">
 
                             <!-- Subtotal -->
-                            <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="col">
                                 <div class="order-summary-card order-summary-card--subtotal h-100">
                                     <label class="order-summary-label">
                                         <i class="fa-solid fa-cart-shopping me-1"></i>
@@ -538,7 +538,7 @@
                             </div>
 
                             <!-- Descuentos -->
-                            <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="col">
                                 <div class="order-summary-card order-summary-card--discount h-100">
                                     <label class="order-summary-label">
                                         <i class="fa-solid fa-tag me-1"></i>
@@ -550,7 +550,7 @@
                             </div>
 
                             <!-- IVA (21%) -->
-                            <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="col">
                                 <div class="order-summary-card order-summary-card--tax h-100">
                                     <label class="order-summary-label">
                                         <i class="fa-solid fa-percent me-1"></i>
