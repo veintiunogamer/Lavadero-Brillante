@@ -66,23 +66,30 @@
                 <div class="col-12 filter-section
                     d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1 border-2 border-white">
-                        <label class="fw-bold mb-1 fs-5">
+                    <div class="col-12 border-bottom mb-1 border-2 border-white p-2">
+                        <label class="fw-bold mb-1 fs-4">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
+
+                        <button class="btn btn-success text-white float-end" @click="openExportModal()">
+                            <i class="fa-solid fa-download me-1"></i>
+                            Exportar
+                        </button>
+
                     </div>
 
 
-                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12 p-1 mt-2">
                         <label class="fw-bold">
                             <i class="fa-solid fa-clock text-primary me-1"></i>
                             Periodo
                         </label>
                         <select class="form-select form-select-lg"
                             x-model="salesRange"
-                            @change="refreshSales()"
+                            @change="changeSalesRange()"
                             :disabled="activeTab !== 'sales'">
+                            <option value="">Todo</option>
                             <option value="today">Hoy</option>
                             <option value="month">Mensual</option>
                             <option value="week">Semanal</option>
@@ -90,14 +97,14 @@
 
                     </div>
 
-                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12 p-1 mt-2">
                         <label class="fw-bold">
                             <i class="fa-solid fa-calendar-check text-primary me-1"></i>
                             Fecha de orden
                         </label>
-                        <input type="date" class="form-control form-control-lg"
+                        <input type="date" class="form-control form-control-lg sales-report-date-picker"
                             x-model="customStartDate.sales"
-                            @change="refreshSales()"
+                            @change="changeSalesDate()"
                             :disabled="activeTab !== 'sales'">
                     </div>
 
@@ -146,15 +153,6 @@
                             <option value="2">TPV</option>
                             <option value="3">Transferencia</option>
                         </select>
-                    </div>
-
-                    <div class="col-lg-2 col-md-2 col-sm-12 p-1 mt-2">
-
-                        <button class="btn btn-success text-white btn-lg mt-4 float-end" @click="openExportModal()">
-                            <i class="fa-solid fa-download me-1"></i>
-                            Exportar
-                        </button>
-
                     </div>
 
                 </div>
@@ -309,15 +307,21 @@
                 <div class="col-12 filter-section
                     d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1 border-2 border-white">
-                        <label class="fw-bold mb-1 fs-5">
+                    <div class="col-12 border-bottom mb-1 p-2 border-2 border-white">
+                        <label class="fw-bold mb-1 fs-4">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
                         </label>
+
+                        <button class="btn btn-success text-white float-end" @click="openExportModal()">
+                            <i class="fa-solid fa-download me-1"></i>
+                            Exportar
+                        </button>
+
                     </div>
 
 
-                    <div class="col-3 p-1 mt-2">
+                    <div class="col-4 p-1 mt-2">
                         <label class="fw-bold">
                             <i class="fa-solid fa-magnifying-glass text-primary me-1"></i>
                             Búsqueda global
@@ -341,15 +345,6 @@
                             <option value="1">Si</option>
                             <option value="0">No</option>
                         </select>
-                    </div>
-
-                    <div class="col-6 p-1 mt-2">
-
-                        <button class="btn btn-success text-white btn-lg float-end mt-4" @click="openExportModal()">
-                            <i class="fa-solid fa-download me-1"></i>
-                            Exportar
-                        </button>
-
                     </div>
 
                 </div>

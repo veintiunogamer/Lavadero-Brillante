@@ -59,9 +59,18 @@ window.reportsApp = function() {
         },
 
         async changeSalesRange() {
-
+            if (this.salesRange) {
+                this.customStartDate.sales = '';
+            }
             await this.refreshSales();
 
+        },
+
+        async changeSalesDate() {
+            if (this.customStartDate.sales) {
+                this.salesRange = '';
+            }
+            await this.refreshSales();
         },
 
         async refreshSales() {
@@ -75,11 +84,15 @@ window.reportsApp = function() {
         },
 
         getSalesRequestParams() {
+
             const params = new URLSearchParams();
 
             if (this.customStartDate.sales) {
+
                 params.set('date', this.customStartDate.sales);
+
             } else {
+
                 params.set('range', this.salesRange);
             }
 
