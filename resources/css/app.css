@@ -1125,13 +1125,6 @@ hr {
     letter-spacing: 1px;
 }
 
-.login-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--color-azul-logo);
-}
-
 .login-desc {
     font-size: 1rem;
     color: var(--color-negro);
@@ -1158,11 +1151,11 @@ hr {
     cursor: not-allowed;
 }
 .login-error {
-    color: var(--color-rojo);
-    background: var(--color-rojo-tenue);
+    color: var(--color-azul-bg);
+    background: var(--color-amarillo);
     border-radius: 8px;
     padding: 0.7rem 1rem;
-    margin-top: 0.7rem;
+    margin-top: 2rem;
     font-size: 1rem;
     text-align: center;
 }
