@@ -42,6 +42,8 @@
 
         .header-table td {
             vertical-align: top;
+            display: flex;
+            flex-direction: column;
         }
 
         .brand-title {
@@ -53,7 +55,7 @@
         }
 
         .logo-main {
-            width: 315px;
+            width: 215px;
             max-height: 126px;
         }
 
@@ -246,82 +248,83 @@
 
 <body>
     @php
-        $company = [
-            'name' => 'Lavadero Brillante',
-            'owner' => 'Eusebio Borrego Lau',
-            'nif' => '28614307F',
-            'address' => 'Calle Dr. Fleming, 21',
-            'city' => '46960 Aldaya',
-            'phone' => '682 145 020 - 620 800 224',
-            'email' => 'lavaderobrillante22@gmail.com',
-        ];
+    $company = [
+    'name' => 'Lavadero Brillante',
+    'owner' => 'Eusebio Borrego Lau',
+    'nif' => '28614307F',
+    'address' => 'Calle Dr. Fleming, 21',
+    'city' => '46960 Aldaya',
+    'phone' => '682 145 020 - 620 800 224',
+    'email' => 'lavaderobrillante22@gmail.com',
+    ];
 
-        $logoPath = public_path('images/logo.png');
-        if (!file_exists($logoPath)) {
-            $logoPath = public_path('images/logo_alterno.png');
-        }
+    $logoPath = public_path('images/logo_alterno.png');
+    if (!file_exists($logoPath)) {
+    $logoPath = public_path('images/logo.png');
+    }
 
-        $client = optional($order->client);
-        $clientName = $client->name ?? '--';
-        $clientPhone = $client->phone ?? '--';
-        $licensePlaque = $client->license_plaque ?? '--';
-        $clientAddress = $client->address
-            ?? $client->invoice_address
-            ?? $client->billing_address
-            ?? '--';
-        $clientDocument = $client->tax_id
-            ?? $client->invoice_tax_id
-            ?? $client->nif
-            ?? $client->document
-            ?? '--';
+    $client = optional($order->client);
+    $clientName = $client->name ?? '--';
+    $clientPhone = $client->phone ?? '--';
+    $licensePlaque = $client->license_plaque ?? '--';
+    $clientAddress = $client->address
+    ?? $client->invoice_address
+    ?? $client->billing_address
+    ?? '--';
+    $clientDocument = $client->tax_id
+    ?? $client->invoice_tax_id
+    ?? $client->nif
+    ?? $client->document
+    ?? '--';
 
-        $vehicleCat = optional($order->vehicleType)->name ?? '--';
-        $operario = optional($order->user)->name ?? '--';
+    $vehicleCat = optional($order->vehicleType)->name ?? '--';
+    $operario = optional($order->user)->name ?? '--';
 
-        $entryDate = $order->hour_in
-            ? \Carbon\Carbon::parse($order->hour_in)->locale('es')->isoFormat('D [de] MMMM [de] YYYY [a las] HH:mm')
-            : '--';
-        $exitTime = $order->hour_out
-            ? \Carbon\Carbon::parse($order->hour_out)->format('H:i')
-            : '--';
-        $invoiceDate = $order->creation_date
-            ? \Carbon\Carbon::parse($order->creation_date)->format('d/m/Y')
-            : ($order->date ? \Carbon\Carbon::parse($order->date)->format('d/m/Y') : '--');
+    $entryDate = $order->hour_in
+    ? \Carbon\Carbon::parse($order->hour_in)->locale('es')->isoFormat('D [de] MMMM [de] YYYY [a las] HH:mm')
+    : '--';
+    $exitTime = $order->hour_out
+    ? \Carbon\Carbon::parse($order->hour_out)->format('H:i')
+    : '--';
+    $invoiceDate = $order->creation_date
+    ? \Carbon\Carbon::parse($order->creation_date)->format('d/m/Y')
+    : ($order->date ? \Carbon\Carbon::parse($order->date)->format('d/m/Y') : '--');
 
-        $dirtLabels = [1 => 'Bajo', 2 => 'Medio', 3 => 'Alto'];
-        $dirtLabel = $dirtLabels[$order->dirt_level] ?? '--';
+    $dirtLabels = [1 => 'Bajo', 2 => 'Medio', 3 => 'Alto'];
+    $dirtLabel = $dirtLabels[$order->dirt_level] ?? '--';
 
-        $subtotal = $order->subtotal ?? 0;
-        $total = $order->total ?? 0;
-        $discount = $order->discount_value ?? 0;
-        $taxesValue = $order->taxes_value ?? 0;
-        $taxBase = max(0, (float) $subtotal - (float) $discount);
-        $taxRateLabel = $taxesValue > 0 ? '21%' : '0%';
-        $partialPayment = $order->partial_payment ?? null;
-        $observations = $order->order_notes ?? '';
+    $subtotal = $order->subtotal ?? 0;
+    $total = $order->total ?? 0;
+    $discount = $order->discount_value ?? 0;
+    $taxesValue = $order->taxes_value ?? 0;
+    $taxBase = max(0, (float) $subtotal - (float) $discount);
+    $taxRateLabel = $taxesValue > 0 ? '21%' : '0%';
+    $partialPayment = $order->partial_payment ?? null;
+    $observations = $order->order_notes ?? '';
 
-        $paymentStatus = 1;
-        $paymentType = 1;
-        $paymentTypeNames = [1 => 'Efectivo', 2 => 'TPV', 3 => 'Transferencia'];
-        $paymentStatusNames = [1 => 'Pago pendiente', 2 => 'Abono parcial', 3 => 'Pagado'];
+    $paymentStatus = 1;
+    $paymentType = 1;
+    $paymentTypeNames = [1 => 'Efectivo', 2 => 'TPV', 3 => 'Transferencia'];
+    $paymentStatusNames = [1 => 'Pago pendiente', 2 => 'Abono parcial', 3 => 'Pagado'];
 
-        if ($order->payments && $order->payments->count() > 0) {
-            $payment = $order->payments->first();
-            $paymentStatus = $payment->status ?? 1;
-            $paymentType = $payment->type ?? 1;
-        }
+    if ($order->payments && $order->payments->count() > 0) {
+    $payment = $order->payments->first();
+    $paymentStatus = $payment->status ?? 1;
+    $paymentType = $payment->type ?? 1;
+    }
 
-        $services = $order->services ?? collect();
-        $mainServices = $services->filter(fn($s) => optional($s->category)->cat_name === 'Lavados');
-        $extraServices = $services->filter(fn($s) => optional($s->category)->cat_name !== 'Lavados');
-        $serviceCount = $services->count();
-        $money = fn($value) => number_format((float) $value, 2, ',', '.') . ' &euro;';
+    $services = $order->services ?? collect();
+    $mainServices = $services->filter(fn($s) => optional($s->category)->cat_name === 'Lavados');
+    $extraServices = $services->filter(fn($s) => optional($s->category)->cat_name !== 'Lavados');
+    $serviceCount = $services->count();
+    $money = fn($value) => number_format((float) $value, 2, ',', '.') . ' &euro;';
     @endphp
 
     {{-- Marca de agua --}}
     <img src="{{ $logoPath }}" alt="Marca de agua" class="watermark">
 
     <div class="page">
+
         {{-- Empresa --}}
         <table class="t-full header-table">
             <tr>
@@ -405,33 +408,33 @@
             </thead>
             <tbody>
                 @forelse($services as $service)
-                    @php
-                        $lineTotal = $service->pivot->total ?? $service->value ?? 0;
-                        $quantity = $service->pivot->quantity ?? $order->quantity ?? 1;
-                        $quantity = max(1, (int) $quantity);
-                        $unitPrice = $quantity > 0 ? ((float) $lineTotal / $quantity) : (float) $lineTotal;
-                        $lineDiscount = ($serviceCount === 1 && $discount > 0) ? $money($discount) : '--';
-                        $categoryName = optional($service->category)->cat_name;
-                    @endphp
-                    <tr>
-                        <td class="center">{{ $quantity }}</td>
-                        <td>
-                            <div class="service-name">{{ $service->name }}</div>
-                            <div class="service-meta">
-                                Categoria: {{ $categoryName ?: 'Servicio' }} |
-                                Vehiculo: {{ $vehicleCat }} |
-                                Nivel de suciedad: {{ $dirtLabel }}
-                            </div>
-                        </td>
-                        <td class="center">{{ $licensePlaque }}</td>
-                        <td class="right">{!! $lineDiscount !!}</td>
-                        <td class="right">{!! $money($unitPrice) !!}</td>
-                        <td class="right"><strong>{!! $money($lineTotal) !!}</strong></td>
-                    </tr>
+                @php
+                $lineTotal = $service->pivot->total ?? $service->value ?? 0;
+                $quantity = $service->pivot->quantity ?? $order->quantity ?? 1;
+                $quantity = max(1, (int) $quantity);
+                $unitPrice = $quantity > 0 ? ((float) $lineTotal / $quantity) : (float) $lineTotal;
+                $lineDiscount = ($serviceCount === 1 && $discount > 0) ? $money($discount) : '--';
+                $categoryName = optional($service->category)->cat_name;
+                @endphp
+                <tr>
+                    <td class="center">{{ $quantity }}</td>
+                    <td>
+                        <div class="service-name">{{ $service->name }}</div>
+                        <div class="service-meta">
+                            Categoria: {{ $categoryName ?: 'Servicio' }} |
+                            Vehiculo: {{ $vehicleCat }} |
+                            Nivel de suciedad: {{ $dirtLabel }}
+                        </div>
+                    </td>
+                    <td class="center">{{ $licensePlaque }}</td>
+                    <td class="right">{!! $lineDiscount !!}</td>
+                    <td class="right">{!! $money($unitPrice) !!}</td>
+                    <td class="right"><strong>{!! $money($lineTotal) !!}</strong></td>
+                </tr>
                 @empty
-                    <tr>
-                        <td colspan="6" class="center muted">Sin servicios registrados.</td>
-                    </tr>
+                <tr>
+                    <td colspan="6" class="center muted">Sin servicios registrados.</td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
@@ -449,7 +452,7 @@
                         <div class="payment-line"><strong>Operario:</strong> {{ $operario }}</div>
                         <div class="payment-line"><strong>Estado:</strong> {{ $paymentStatusNames[$paymentStatus] ?? 'Pago pendiente' }}</div>
                         @if($paymentStatus == 2)
-                            <div class="payment-line"><strong>Abono:</strong> {!! $partialPayment ? $money($partialPayment) : '--' !!}</div>
+                        <div class="payment-line"><strong>Abono:</strong> {!! $partialPayment ? $money($partialPayment) : '--' !!}</div>
                         @endif
                         <div class="payment-line"><strong>Metodo:</strong> {{ $paymentTypeNames[$paymentType] ?? 'Efectivo' }}</div>
                     </div>
@@ -461,10 +464,10 @@
                             <td class="totals-value">{!! $money($taxBase) !!}</td>
                         </tr>
                         @if($discount > 0)
-                            <tr>
-                                <td class="totals-label">Descuento</td>
-                                <td class="totals-value totals-discount">-{!! $money($discount) !!}</td>
-                            </tr>
+                        <tr>
+                            <td class="totals-label">Descuento</td>
+                            <td class="totals-value totals-discount">-{!! $money($discount) !!}</td>
+                        </tr>
                         @endif
                         <tr>
                             <td class="totals-label">IVA</td>

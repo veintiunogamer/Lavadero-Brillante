@@ -20,7 +20,7 @@
                     Detalle de Orden
 
                     <span class="text-primary me-2" x-text="selectedOrder 
-                    ? (selectedOrder.consecutive_serial + ' - ' + selectedOrder.consecutive_number) 
+                    ? (selectedOrder.consecutive_number + ' - ' + selectedOrder.consecutive_serial) 
                     : ''"></span>
 
                     <span class="badge fs-6" :class="getStatusBadge(selectedOrder?.status)"

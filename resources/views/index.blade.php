@@ -32,9 +32,9 @@
                         Consecutivo
                     </label>
                     <div class="d-flex justify-content-end" style="gap: 0.5rem;">
-                        <input type="text" class="input float-right" name="consecutive_serial" data-field-name="Serial" style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
                         <input type="text" class="input float-right" name="consecutive_number"
                             id="consecutive_number" value="{{ $consecutive['sequence'] ?? '' }}" data-field-name="Número" style="width: 70px;">
+                        <input type="text" class="input float-right" name="consecutive_serial" data-field-name="Serial" style="width: 120px;" value="{{ $consecutive['date_code'] ?? '' }}">
                     </div>
 
                 </div>
