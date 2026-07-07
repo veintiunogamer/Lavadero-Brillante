@@ -3,375 +3,494 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Orden de Servicio {{ $invoiceNumber }}</title>
+    <title>Factura {{ $invoiceNumber }}</title>
     <style>
-        body {
-            font-family: 'DejaVu Sans', sans-serif;
-            font-size: 11px;
-            color: #1f2937;
-            margin: 24px 32px;
+        @page {
+            margin: 24px 30px 28px;
         }
 
-        /* ── Header ── */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 10.5px;
+            color: #2f3137;
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 35%;
+            left: 16%;
+            width: 68%;
+            opacity: 0.08;
+            z-index: -1000;
+        }
+
         .t-full {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .brand-blue {
-            color: #1e40af;
-            font-size: 26px;
+        .header-table td {
+            vertical-align: top;
+        }
+
+        .brand-title {
+            font-size: 21px;
             font-weight: bold;
-            line-height: 1.1;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            margin: 0 0 10px;
         }
 
-        .brand-orange {
-            color: #f59e0b;
-            font-size: 26px;
-            font-weight: bold;
-            line-height: 1.1;
+        .logo-main {
+            width: 315px;
+            max-height: 126px;
         }
 
-        .brand-owner {
-            font-size: 9px;
-            color: #374151;
-            font-weight: bold;
-            margin-top: 5px;
+        .box {
+            border: 1.2px solid #4a4d55;
+            background: rgba(255, 255, 255, 0.93);
         }
 
-        .brand-info {
-            font-size: 9px;
-            color: #6b7280;
-            margin-top: 3px;
+        .box-pad {
+            padding: 8px 9px;
         }
 
-        .doc-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1e40af;
-            text-align: right;
-        }
-
-        .doc-number {
-            font-size: 13px;
-            font-weight: bold;
-            text-align: right;
-            margin-top: 4px;
-        }
-
-        /* ── Dividers ── */
-        .hr-main {
-            border: none;
-            border-top: 2px solid #1e40af;
-            margin: 12px 0;
-        }
-
-        .hr-section {
-            border: none;
-            border-top: 1px solid #e5e7eb;
-            margin: 10px 0;
-        }
-
-        /* ── Info sections ── */
-        .section-label {
-            color: #1e40af;
-            font-weight: bold;
+        .box-title {
+            background: #eeeeef;
+            border-bottom: 1.2px solid #4a4d55;
+            color: #2f3137;
             font-size: 10px;
-            margin-bottom: 6px;
-        }
-
-        .info-row {
-            font-size: 11px;
-            margin-bottom: 3px;
-        }
-
-        /* ── Services ── */
-        .services-title {
-            color: #1e40af;
             font-weight: bold;
-            font-size: 13px;
-            border-bottom: 2px solid #f59e0b;
-            padding-bottom: 4px;
-            margin: 14px 0 10px;
+            text-transform: uppercase;
+            padding: 5px 8px;
         }
 
-        .svc-name {
+        .info-line {
+            margin-bottom: 4px;
+        }
+
+        .info-label {
+            display: inline-block;
+            min-width: 74px;
+            color: #555963;
             font-weight: bold;
-            font-size: 11px;
-        }
-
-        .svc-price {
-            font-weight: bold;
-            font-size: 11px;
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        .svc-sub-l {
-            color: #6b7280;
+            text-transform: uppercase;
             font-size: 9px;
         }
 
-        .svc-sub-r {
-            color: #6b7280;
-            font-size: 9px;
-            text-align: right;
-            white-space: nowrap;
+        .client-table td,
+        .invoice-table td {
+            border: 1.2px solid #4a4d55;
+            padding: 7px 8px;
+            vertical-align: middle;
         }
 
-        .extras-lbl {
-            font-weight: bold;
-            font-size: 11px;
-            margin: 10px 0 5px;
-        }
-
-        .extra-price {
-            text-align: right;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        /* ── Payment ── */
-        .pay-label {
-            color: #1e40af;
-            font-weight: bold;
+        .field-label {
+            width: 28%;
+            color: #555963;
             font-size: 10px;
-            margin-bottom: 8px;
+            text-transform: uppercase;
         }
 
-        .radio-row {
+        .field-value {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .invoice-number {
+            background: #eeeeef;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .pill-title {
+            background: #3b3d43;
+            color: #ffffff;
+            border-radius: 16px;
+            display: inline-block;
+            font-size: 17px;
+            font-weight: bold;
+            line-height: 1;
+            padding: 8px 32px;
+            text-transform: uppercase;
+        }
+
+        .section-gap {
+            height: 14px;
+        }
+
+        .services-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .services-table th {
+            background: #3b3d43;
+            color: #ffffff;
+            border: 1.2px solid #3b3d43;
+            font-size: 10.5px;
+            padding: 7px 5px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .services-table td {
+            border: 1.1px solid #4f525a;
+            padding: 7px 6px;
+            vertical-align: top;
+        }
+
+        .services-table .center {
+            text-align: center;
+        }
+
+        .services-table .right {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .service-name {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .service-meta {
+            color: #696d77;
+            font-size: 9px;
+            margin-top: 2px;
+        }
+
+        .payment-box {
+            border: 1.2px solid #4a4d55;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 8px 9px;
+            min-height: 74px;
+        }
+
+        .payment-title,
+        .notes-title {
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #3b3d43;
             margin-bottom: 5px;
-            font-size: 11px;
         }
 
-        .method-row {
-            font-size: 11px;
-            margin-top: 6px;
-        }
-
-        .sub-row {
-            text-align: right;
-            font-size: 11px;
-            color: #374151;
+        .payment-line {
             margin-bottom: 3px;
         }
 
-        .total-lbl {
+        .totals-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.94);
+        }
+
+        .totals-table td {
+            border: 1.2px solid #4a4d55;
+            padding: 6px 8px;
+        }
+
+        .totals-label {
+            width: 56%;
+            background: #3b3d43;
+            color: #ffffff;
+            font-weight: bold;
             text-align: right;
-            font-size: 13px;
-            font-weight: bold;
-            margin-top: 6px;
+            text-transform: uppercase;
         }
 
-        .total-amt {
-            color: #f59e0b;
-            font-size: 20px;
+        .totals-value {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .totals-discount {
+            color: #b42318;
             font-weight: bold;
         }
 
-        /* ── Observations ── */
-        .obs-label {
-            color: #1e40af;
+        .grand-total .totals-label,
+        .grand-total .totals-value {
+            background: #eeeeef;
+            color: #25272d;
+            font-size: 15px;
             font-weight: bold;
-            font-size: 10px;
-            margin: 14px 0 5px;
         }
 
-        .obs-box {
-            border: 1px solid #d1d5db;
-            padding: 8px 10px;
-            font-size: 10px;
-            color: #6b7280;
+        .notes-box {
+            border: 1.2px solid #4a4d55;
+            background: rgba(255, 255, 255, 0.92);
+            padding: 8px 9px;
+            min-height: 48px;
+        }
+
+        .muted {
+            color: #777b84;
         }
     </style>
 </head>
 
 <body>
-
     @php
-    $clientName = optional($order->client)->name ?? '--';
-    $clientPhone = optional($order->client)->phone ?? '--';
-    $licensePlaque = optional($order->client)->license_plaque ?? '--';
-    $vehicleCat = optional($order->vehicleType)->name ?? '--';
-    $operario = optional($order->user)->name ?? '--';
+        $company = [
+            'name' => 'Lavadero Brillante',
+            'owner' => 'Eusebio Borrego Lau',
+            'nif' => '28614307F',
+            'address' => 'Calle Dr. Fleming, 21',
+            'city' => '46960 Aldaya',
+            'phone' => '682 145 020 - 620 800 224',
+            'email' => 'lavaderobrillante22@gmail.com',
+        ];
 
-    $entryDate = $order->hour_in
-    ? \Carbon\Carbon::parse($order->hour_in)->locale('es')
-    ->isoFormat('D [de] MMMM [de] YYYY [a las] HH:mm')
-    : '--';
-    $exitTime = $order->hour_out
-    ? \Carbon\Carbon::parse($order->hour_out)->format('H:i')
-    : '--';
+        $logoPath = public_path('images/logo.png');
+        if (!file_exists($logoPath)) {
+            $logoPath = public_path('images/logo_alterno.png');
+        }
 
-    $dirtLabels = [1 => 'Bajo', 2 => 'Medio', 3 => 'Alto'];
-    $dirtLabel = $dirtLabels[$order->dirt_level] ?? '--';
+        $client = optional($order->client);
+        $clientName = $client->name ?? '--';
+        $clientPhone = $client->phone ?? '--';
+        $licensePlaque = $client->license_plaque ?? '--';
+        $clientAddress = $client->address
+            ?? $client->invoice_address
+            ?? $client->billing_address
+            ?? '--';
+        $clientDocument = $client->tax_id
+            ?? $client->invoice_tax_id
+            ?? $client->nif
+            ?? $client->document
+            ?? '--';
 
-    $subtotal = $order->subtotal ?? 0;
-    $total = $order->total ?? 0;
-    $discount = $order->discount_value ?? 0;
-    $taxesValue = $order->taxes_value ?? 0;
-    $partialPayment = $order->partial_payment ?? null;
-    $observations = $order->order_notes ?? '';
+        $vehicleCat = optional($order->vehicleType)->name ?? '--';
+        $operario = optional($order->user)->name ?? '--';
 
-    $paymentStatus = 1;
-    $paymentType = 1;
-    $paymentTypeNames = [1 => 'Efectivo', 2 => 'TPV', 3 => 'Transferencia'];
+        $entryDate = $order->hour_in
+            ? \Carbon\Carbon::parse($order->hour_in)->locale('es')->isoFormat('D [de] MMMM [de] YYYY [a las] HH:mm')
+            : '--';
+        $exitTime = $order->hour_out
+            ? \Carbon\Carbon::parse($order->hour_out)->format('H:i')
+            : '--';
+        $invoiceDate = $order->creation_date
+            ? \Carbon\Carbon::parse($order->creation_date)->format('d/m/Y')
+            : ($order->date ? \Carbon\Carbon::parse($order->date)->format('d/m/Y') : '--');
 
-    if ($order->payments && $order->payments->count() > 0) {
-    $payment = $order->payments->first();
-    $paymentStatus = $payment->status ?? 1;
-    $paymentType = $payment->type ?? 1;
-    }
+        $dirtLabels = [1 => 'Bajo', 2 => 'Medio', 3 => 'Alto'];
+        $dirtLabel = $dirtLabels[$order->dirt_level] ?? '--';
 
-    $mainServices = $order->services->filter(fn($s) => optional($s->category)->cat_name === 'Lavados');
-    $extraServices = $order->services->filter(fn($s) => optional($s->category)->cat_name !== 'Lavados');
+        $subtotal = $order->subtotal ?? 0;
+        $total = $order->total ?? 0;
+        $discount = $order->discount_value ?? 0;
+        $taxesValue = $order->taxes_value ?? 0;
+        $taxBase = max(0, (float) $subtotal - (float) $discount);
+        $taxRateLabel = $taxesValue > 0 ? '21%' : '0%';
+        $partialPayment = $order->partial_payment ?? null;
+        $observations = $order->order_notes ?? '';
+
+        $paymentStatus = 1;
+        $paymentType = 1;
+        $paymentTypeNames = [1 => 'Efectivo', 2 => 'TPV', 3 => 'Transferencia'];
+        $paymentStatusNames = [1 => 'Pago pendiente', 2 => 'Abono parcial', 3 => 'Pagado'];
+
+        if ($order->payments && $order->payments->count() > 0) {
+            $payment = $order->payments->first();
+            $paymentStatus = $payment->status ?? 1;
+            $paymentType = $payment->type ?? 1;
+        }
+
+        $services = $order->services ?? collect();
+        $mainServices = $services->filter(fn($s) => optional($s->category)->cat_name === 'Lavados');
+        $extraServices = $services->filter(fn($s) => optional($s->category)->cat_name !== 'Lavados');
+        $serviceCount = $services->count();
+        $money = fn($value) => number_format((float) $value, 2, ',', '.') . ' &euro;';
     @endphp
 
-    {{-- ═══════════════ HEADER ═══════════════ --}}
-    <table class="t-full">
-        <tr>
-            <td style="width:50%; vertical-align:top;">
-                <div class="brand-blue">LAVADERO</div>
-                <div class="brand-orange">BRILLANTE</div>
-                <div class="brand-owner">Eusebio Borrego Lau</div>
-                <div class="brand-info">NIF: 28614307F</div>
-                <div class="brand-info">Calle Dr. Fleming, 21</div>
-                <div class="brand-info">46960 Aldaya</div>
-            </td>
-            <td style="width:50%; vertical-align:top; text-align:right;">
-                <div class="doc-title">ORDEN DE SERVICIO</div>
-                <div class="doc-number">{{ $invoiceNumber }}</div>
-            </td>
-        </tr>
-    </table>
+    {{-- Marca de agua --}}
+    <img src="{{ $logoPath }}" alt="Marca de agua" class="watermark">
 
-    <hr class="hr-main">
+    <div class="page">
+        {{-- Empresa --}}
+        <table class="t-full header-table">
+            <tr>
+                <td style="width: 44%; padding-right: 18px;">
+                    <div class="brand-title">{{ $company['name'] }}</div>
+                    <div class="box">
+                        <div class="box-title">Datos empresa</div>
+                        <div class="box-pad">
+                            <div class="info-line"><strong>{{ $company['owner'] }}</strong></div>
+                            <div class="info-line"><span class="info-label">Direccion</span>{{ $company['address'] }}</div>
+                            <div class="info-line"><span class="info-label">Ciudad</span>{{ $company['city'] }}</div>
+                            <div class="info-line"><span class="info-label">NIF</span>{{ $company['nif'] }}</div>
+                            <div class="info-line"><span class="info-label">Telefono</span>{{ $company['phone'] }}</div>
+                            <div class="info-line"><span class="info-label">Email</span>{{ $company['email'] }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td style="width: 56%; text-align: center;">
+                    <img src="{{ $logoPath }}" alt="{{ $company['name'] }}" class="logo-main">
+                </td>
+            </tr>
+        </table>
 
-    {{-- ═══════════════ CLIENTE + VEHÍCULO ═══════════════ --}}
-    <table class="t-full">
-        <tr>
-            <td style="width:50%; padding-right:20px; vertical-align:top;">
-                <div class="section-label">Datos del Cliente</div>
-                <div class="info-row"><strong>Nombre:</strong> {{ $clientName }}</div>
-                <div class="info-row"><strong>Teléfono:</strong> {{ $clientPhone }}</div>
-            </td>
-            <td style="width:50%; vertical-align:top;">
-                <div class="section-label">Datos del Vehículo</div>
-                <div class="info-row"><strong>Categoría:</strong> {{ $vehicleCat }}</div>
-                <div class="info-row"><strong>Matrícula:</strong> {{ $licensePlaque }}</div>
-            </td>
-        </tr>
-    </table>
+        <div class="section-gap"></div>
 
-    <hr class="hr-section">
+        {{-- Cliente --}}
+        <table class="t-full">
+            <tr>
+                <td style="width: 56%; padding-right: 15px; vertical-align: top;">
+                    <table class="client-table t-full">
+                        <tr>
+                            <td class="field-label">Nombre</td>
+                            <td class="field-value">{{ $clientName }}</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label">Direccion</td>
+                            <td>{{ $clientAddress }}</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label">Documento/NIF</td>
+                            <td>{{ $clientDocument }}</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label">Telefono</td>
+                            <td>{{ $clientPhone }}</td>
+                        </tr>
+                    </table>
+                </td>
 
-    {{-- ═══════════════ FECHA + OPERARIO ═══════════════ --}}
-    <table class="t-full">
-        <tr>
-            <td style="width:50%; padding-right:20px; vertical-align:top;">
-                <div class="section-label">Fecha y Hora</div>
-                <div class="info-row"><strong>Entrada:</strong> {{ $entryDate }}</div>
-                <div class="info-row"><strong>Entrega:</strong> {{ $exitTime }}</div>
-            </td>
-            <td style="width:50%; vertical-align:top;">
-                <div class="section-label">Operario</div>
-                <div class="info-row">{{ $operario }}</div>
-            </td>
-        </tr>
-    </table>
+                {{-- Factura --}}
+                <td style="width: 44%; vertical-align: top;">
+                    <table class="invoice-table t-full">
+                        <tr>
+                            <td class="field-label">Fecha factura</td>
+                            <td class="field-value" style="text-align: center;">{{ $invoiceDate }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">
+                                <span class="pill-title">Factura</span>
+                            </td>
+                            <td class="invoice-number">{{ $invoiceNumber }}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
-    {{-- ═══════════════ SERVICIOS ═══════════════ --}}
-    <div class="services-title">Servicios Contratados</div>
+        <div class="section-gap"></div>
 
-    @forelse($mainServices as $service)
-    @php $lineTotal = $service->pivot->total ?? $service->value ?? 0; @endphp
-    <table class="t-full" style="margin-bottom:6px;">
-        <tr>
-            <td class="svc-name">{{ $service->name }}</td>
-            <td class="svc-price">{{ number_format($lineTotal, 2, '.', '.') }}€</td>
-        </tr>
-        <tr>
-            <td class="svc-sub-l">Nivel de suciedad: {{ $dirtLabel }}</td>
-            <td class="svc-sub-r"></td>
-        </tr>
-    </table>
-    @empty
-    <div style="color:#6b7280; font-size:11px; margin-bottom:6px;">Sin servicios de lavado.</div>
-    @endforelse
+        {{-- Servicios --}}
+        <table class="services-table">
+            <thead>
+                <tr>
+                    <th style="width: 9%;">Cantidad</th>
+                    <th style="width: 35%;">Descripcion</th>
+                    <th style="width: 15%;">Matricula</th>
+                    <th style="width: 11%;">Descuento</th>
+                    <th style="width: 14%;">Precio</th>
+                    <th style="width: 16%;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($services as $service)
+                    @php
+                        $lineTotal = $service->pivot->total ?? $service->value ?? 0;
+                        $quantity = $service->pivot->quantity ?? $order->quantity ?? 1;
+                        $quantity = max(1, (int) $quantity);
+                        $unitPrice = $quantity > 0 ? ((float) $lineTotal / $quantity) : (float) $lineTotal;
+                        $lineDiscount = ($serviceCount === 1 && $discount > 0) ? $money($discount) : '--';
+                        $categoryName = optional($service->category)->cat_name;
+                    @endphp
+                    <tr>
+                        <td class="center">{{ $quantity }}</td>
+                        <td>
+                            <div class="service-name">{{ $service->name }}</div>
+                            <div class="service-meta">
+                                Categoria: {{ $categoryName ?: 'Servicio' }} |
+                                Vehiculo: {{ $vehicleCat }} |
+                                Nivel de suciedad: {{ $dirtLabel }}
+                            </div>
+                        </td>
+                        <td class="center">{{ $licensePlaque }}</td>
+                        <td class="right">{!! $lineDiscount !!}</td>
+                        <td class="right">{!! $money($unitPrice) !!}</td>
+                        <td class="right"><strong>{!! $money($lineTotal) !!}</strong></td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="center muted">Sin servicios registrados.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
 
-    @if($extraServices->count() > 0)
-    <div class="extras-lbl">Extras y Suplementos:</div>
-    @foreach($extraServices as $service)
-    @php $lineTotal = $service->pivot->total ?? $service->value ?? 0; @endphp
-    <table class="t-full" style="margin-bottom:4px;">
-        <tr>
-            <td style="font-size:11px;">{{ $service->name }}</td>
-            <td class="extra-price" style="font-size:11px;">+{{ number_format($lineTotal, 2, '.', '.') }}€</td>
-        </tr>
-    </table>
-    @endforeach
-    @endif
+        <div class="section-gap"></div>
 
-    <hr class="hr-section">
+        {{-- Totales --}}
+        <table class="t-full">
+            <tr>
+                <td style="width: 56%; padding-right: 20px; vertical-align: top;">
+                    <div class="payment-box">
+                        <div class="payment-title">Informacion de servicio y pago</div>
+                        <div class="payment-line"><strong>Entrada:</strong> {{ $entryDate }}</div>
+                        <div class="payment-line"><strong>Entrega:</strong> {{ $exitTime }}</div>
+                        <div class="payment-line"><strong>Operario:</strong> {{ $operario }}</div>
+                        <div class="payment-line"><strong>Estado:</strong> {{ $paymentStatusNames[$paymentStatus] ?? 'Pago pendiente' }}</div>
+                        @if($paymentStatus == 2)
+                            <div class="payment-line"><strong>Abono:</strong> {!! $partialPayment ? $money($partialPayment) : '--' !!}</div>
+                        @endif
+                        <div class="payment-line"><strong>Metodo:</strong> {{ $paymentTypeNames[$paymentType] ?? 'Efectivo' }}</div>
+                    </div>
+                </td>
+                <td style="width: 44%; vertical-align: top;">
+                    <table class="totals-table">
+                        <tr>
+                            <td class="totals-label">Base imponible</td>
+                            <td class="totals-value">{!! $money($taxBase) !!}</td>
+                        </tr>
+                        @if($discount > 0)
+                            <tr>
+                                <td class="totals-label">Descuento</td>
+                                <td class="totals-value totals-discount">-{!! $money($discount) !!}</td>
+                            </tr>
+                        @endif
+                        <tr>
+                            <td class="totals-label">IVA</td>
+                            <td class="totals-value">{{ $taxRateLabel }}</td>
+                        </tr>
+                        <tr>
+                            <td class="totals-label">Total IVA</td>
+                            <td class="totals-value">{!! $money($taxesValue) !!}</td>
+                        </tr>
+                        <tr class="grand-total">
+                            <td class="totals-label">TOTAL</td>
+                            <td class="totals-value">{!! $money($total) !!}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
 
-    {{-- ═══════════════ PAGO + TOTAL ═══════════════ --}}
-    <table class="t-full" style="margin-top:4px;">
-        <tr>
-            <td style="width:50%; vertical-align:top;">
-                <div class="pay-label">Estado del Pago</div>
+        <div class="section-gap"></div>
 
-                <div class="radio-row">
-                    @if($paymentStatus == 1)
-                    <span style="color:#1e40af;">&#9679;</span>
-                    @else
-                    <span style="color:#9ca3af;">&#9675;</span>
-                    @endif
-                    &nbsp;Pago Pendiente
-                </div>
-                <div class="radio-row">
-                    @if($paymentStatus == 2)
-                    <span style="color:#1e40af;">&#9679;</span>
-                    @else
-                    <span style="color:#9ca3af;">&#9675;</span>
-                    @endif
-                    &nbsp;Abono Parcial:&nbsp;{{ $partialPayment ? number_format($partialPayment, 2, ',', '.') . '€' : '............€' }}
-                </div>
-                <div class="radio-row">
-                    @if($paymentStatus == 3)
-                    <span style="color:#1e40af;">&#9679;</span>
-                    @else
-                    <span style="color:#9ca3af;">&#9675;</span>
-                    @endif
-                    &nbsp;Pagado:&nbsp;............€
-                </div>
-
-                <div class="method-row"><strong>Método:</strong> {{ $paymentTypeNames[$paymentType] ?? 'Efectivo' }}</div>
-            </td>
-            <td style="width:50%; vertical-align:top;">
-                <div class="sub-row">Subtotal: {{ number_format($subtotal, 2, ',', '.') }}€</div>
-                @if($discount > 0)
-                <div class="sub-row" style="color:#dc3545;">
-                    Descuento: -{{ number_format($discount, 2, ',', '.') }}€
-                </div>
-                @endif
-                @if($taxesValue > 0)
-                <div class="sub-row" style="color:#198754;">
-                    IVA (21%): +{{ number_format($taxesValue, 2, ',', '.') }}€
-                </div>
-                @endif
-                <div class="total-lbl">
-                    Total: <span class="total-amt">{{ number_format($total, 2, ',', '.') }}€</span>
-                </div>
-            </td>
-        </tr>
-    </table>
-
-    <hr class="hr-section">
-
-    {{-- ═══════════════ OBSERVACIONES ═══════════════ --}}
-    <div class="obs-label">Observaciones</div>
-    <div class="obs-box">{{ $observations ?: 'Sin observaciones.' }}</div>
-
+        {{-- Factura --}}
+        <div class="notes-box">
+            <div class="notes-title">Observaciones</div>
+            {{ $observations ?: 'Sin observaciones.' }}
+        </div>
+    </div>
 </body>
 
 </html>
