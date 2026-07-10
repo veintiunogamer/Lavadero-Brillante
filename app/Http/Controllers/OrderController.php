@@ -674,7 +674,7 @@ class OrderController extends Controller
         $order->load(['client', 'services.category', 'payments', 'user', 'vehicleType']);
 
         $invoiceNumber = $order->consecutive_serial && $order->consecutive_number
-            ? $order->consecutive_serial . '-' . $order->consecutive_number
+            ? $order->consecutive_number . '-' . $order->consecutive_serial
             : strtoupper(substr($order->id, 0, 8));
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('orders.pdf.invoice', [
