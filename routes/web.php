@@ -39,6 +39,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/orders/{order}/print', [OrderController::class, 'invoicePdf'])->name('orders.print');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
+        // Vista de depuración (solo local) para previsualizar la factura en navegador.
+        Route::get('/dev/invoice-preview', [OrderController::class, 'invoicePreview'])
+            ->middleware('role:1')
+            ->name('dev.invoice.preview');
+
+
         # API necesaria para autocompletar cliente desde Agenda
         Route::get('/api/clients/check-license-plate', [ClientController::class, 'findByLicensePlate'])->name('clients.check.license');
 

@@ -21,6 +21,16 @@
             line-height: 1.35;
         }
 
+        /* Previsualización en navegador: fuerza tamaño tipo PDF (A4) */
+        .pdf-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 24px 30px 28px;
+            background: #ffffff;
+        }
+
+
         .page {
             position: relative;
             z-index: 1;
@@ -76,6 +86,12 @@
             font-weight: bold;
             text-transform: uppercase;
             padding: 5px 8px;
+        }
+
+        .header-brand-section {
+            display: flex !important;
+            justify-content: center !important;
+            align-content: center !important;
         }
 
         .info-line {
@@ -323,14 +339,26 @@
     {{-- Marca de agua --}}
     <img src="{{ $logoPath }}" alt="Marca de agua" class="watermark">
 
-    <div class="page">
+    <div class="pdf-page">
 
-        {{-- Empresa --}}
-        <table class="t-full header-table">
-            <tr>
-                <td style="width: 44%; padding-right: 18px;">
-                    <div class="brand-title">{{ $company['name'] }}</div>
+        <div class="page">
+
+
+            {{-- Empresa --}}
+            <table class="t-full header-table">
+                <tr>
+                    <div class="header-brand-section">
+
+                        <div class="brand-title">{{ $company['name'] }}</div>
+
+                        <div class="brand-title-logo">
+                            <img src="{{ $logoPath }}" alt="{{ $company['name'] }}" class="logo-main">
+                        </div>
+
+                    </div>
+
                     <div class="box">
+
                         <div class="box-title">Datos empresa</div>
                         <div class="box-pad">
                             <div class="info-line"><strong>{{ $company['owner'] }}</strong></div>
@@ -340,160 +368,163 @@
                             <div class="info-line"><span class="info-label">Telefono</span>{{ $company['phone'] }}</div>
                             <div class="info-line"><span class="info-label">Email</span>{{ $company['email'] }}</div>
                         </div>
+
                     </div>
-                </td>
-                <td style="width: 56%; text-align: center;">
-                    <img src="{{ $logoPath }}" alt="{{ $company['name'] }}" class="logo-main">
-                </td>
-            </tr>
-        </table>
 
-        <div class="section-gap"></div>
+                    </td>
 
-        {{-- Cliente --}}
-        <table class="t-full">
-            <tr>
-                <td style="width: 56%; padding-right: 15px; vertical-align: top;">
-                    <table class="client-table t-full">
-                        <tr>
-                            <td class="field-label">Nombre</td>
-                            <td class="field-value">{{ $clientName }}</td>
-                        </tr>
-                        <tr>
-                            <td class="field-label">Direccion</td>
-                            <td>{{ $clientAddress }}</td>
-                        </tr>
-                        <tr>
-                            <td class="field-label">Documento/NIF</td>
-                            <td>{{ $clientDocument }}</td>
-                        </tr>
-                        <tr>
-                            <td class="field-label">Telefono</td>
-                            <td>{{ $clientPhone }}</td>
-                        </tr>
-                    </table>
-                </td>
-
-                {{-- Factura --}}
-                <td style="width: 44%; vertical-align: top;">
-                    <table class="invoice-table t-full">
-                        <tr>
-                            <td class="field-label">Fecha factura</td>
-                            <td class="field-value" style="text-align: center;">{{ $invoiceDate }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;">
-                                <span class="pill-title">Factura</span>
-                            </td>
-                            <td class="invoice-number">{{ $invoiceNumber }}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <div class="section-gap"></div>
-
-        {{-- Servicios --}}
-        <table class="services-table">
-            <thead>
-                <tr>
-                    <th style="width: 9%;">Cantidad</th>
-                    <th style="width: 35%;">Descripcion</th>
-                    <th style="width: 15%;">Matricula</th>
-                    <th style="width: 11%;">Descuento</th>
-                    <th style="width: 14%;">Precio</th>
-                    <th style="width: 16%;">Total</th>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($services as $service)
-                @php
-                $lineTotal = $service->pivot->total ?? $service->value ?? 0;
-                $quantity = $service->pivot->quantity ?? $order->quantity ?? 1;
-                $quantity = max(1, (int) $quantity);
-                $unitPrice = $quantity > 0 ? ((float) $lineTotal / $quantity) : (float) $lineTotal;
-                $lineDiscount = ($serviceCount === 1 && $discount > 0) ? $money($discount) : '--';
-                $categoryName = optional($service->category)->cat_name;
-                @endphp
+
+            </table>
+
+            <div class="section-gap"></div>
+
+            {{-- Cliente --}}
+            <table class="t-full">
                 <tr>
-                    <td class="center">{{ $quantity }}</td>
-                    <td>
-                        <div class="service-name">{{ $service->name }}</div>
-                        <div class="service-meta">
-                            Categoria: {{ $categoryName ?: 'Servicio' }} |
-                            Vehiculo: {{ $vehicleCat }} |
-                            Nivel de suciedad: {{ $dirtLabel }}
+                    <td style="width: 56%; padding-right: 15px; vertical-align: top;">
+                        <table class="client-table t-full">
+                            <tr>
+                                <td class="field-label">Nombre</td>
+                                <td class="field-value">{{ $clientName }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field-label">Direccion</td>
+                                <td>{{ $clientAddress }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field-label">Documento/NIF</td>
+                                <td>{{ $clientDocument }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field-label">Telefono</td>
+                                <td>{{ $clientPhone }}</td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    {{-- Factura --}}
+                    <td style="width: 44%; vertical-align: top;">
+                        <table class="invoice-table t-full">
+                            <tr>
+                                <td class="field-label">Fecha factura</td>
+                                <td class="field-value" style="text-align: center;">{{ $invoiceDate }}</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">
+                                    <span class="pill-title">Factura</span>
+                                </td>
+                                <td class="invoice-number">{{ $invoiceNumber }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="section-gap"></div>
+
+            {{-- Servicios --}}
+            <table class="services-table">
+                <thead>
+                    <tr>
+                        <th style="width: 9%;">Cantidad</th>
+                        <th style="width: 35%;">Descripcion</th>
+                        <th style="width: 15%;">Matricula</th>
+                        <th style="width: 11%;">Descuento</th>
+                        <th style="width: 14%;">Precio</th>
+                        <th style="width: 16%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($services as $service)
+                    @php
+                    $lineTotal = $service->pivot->total ?? $service->value ?? 0;
+                    $quantity = $service->pivot->quantity ?? $order->quantity ?? 1;
+                    $quantity = max(1, (int) $quantity);
+                    $unitPrice = $quantity > 0 ? ((float) $lineTotal / $quantity) : (float) $lineTotal;
+                    $lineDiscount = ($serviceCount === 1 && $discount > 0) ? $money($discount) : '--';
+                    $categoryName = optional($service->category)->cat_name;
+                    @endphp
+                    <tr>
+                        <td class="center">{{ $quantity }}</td>
+                        <td>
+                            <div class="service-name">{{ $service->name }}</div>
+                            <div class="service-meta">
+                                Categoria: {{ $categoryName ?: 'Servicio' }} |
+                                Vehiculo: {{ $vehicleCat }} |
+                                Nivel de suciedad: {{ $dirtLabel }}
+                            </div>
+                        </td>
+                        <td class="center">{{ $licensePlaque }}</td>
+                        <td class="right">{!! $lineDiscount !!}</td>
+                        <td class="right">{!! $money($unitPrice) !!}</td>
+                        <td class="right"><strong>{!! $money($lineTotal) !!}</strong></td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="6" class="center muted">Sin servicios registrados.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+
+            <div class="section-gap"></div>
+
+            {{-- Totales --}}
+            <table class="t-full">
+                <tr>
+                    <td style="width: 56%; padding-right: 20px; vertical-align: top;">
+                        <div class="payment-box">
+                            <div class="payment-title">Informacion de servicio y pago</div>
+                            <div class="payment-line"><strong>Entrada:</strong> {{ $entryDate }}</div>
+                            <div class="payment-line"><strong>Entrega:</strong> {{ $exitTime }}</div>
+                            <div class="payment-line"><strong>Operario:</strong> {{ $operario }}</div>
+                            <div class="payment-line"><strong>Estado:</strong> {{ $paymentStatusNames[$paymentStatus] ?? 'Pago pendiente' }}</div>
+                            @if($paymentStatus == 2)
+                            <div class="payment-line"><strong>Abono:</strong> {!! $partialPayment ? $money($partialPayment) : '--' !!}</div>
+                            @endif
+                            <div class="payment-line"><strong>Metodo:</strong> {{ $paymentTypeNames[$paymentType] ?? 'Efectivo' }}</div>
                         </div>
                     </td>
-                    <td class="center">{{ $licensePlaque }}</td>
-                    <td class="right">{!! $lineDiscount !!}</td>
-                    <td class="right">{!! $money($unitPrice) !!}</td>
-                    <td class="right"><strong>{!! $money($lineTotal) !!}</strong></td>
+                    <td style="width: 44%; vertical-align: top;">
+                        <table class="totals-table">
+                            <tr>
+                                <td class="totals-label">Base imponible</td>
+                                <td class="totals-value">{!! $money($taxBase) !!}</td>
+                            </tr>
+                            @if($discount > 0)
+                            <tr>
+                                <td class="totals-label">Descuento</td>
+                                <td class="totals-value totals-discount">-{!! $money($discount) !!}</td>
+                            </tr>
+                            @endif
+                            <tr>
+                                <td class="totals-label">IVA</td>
+                                <td class="totals-value">{{ $taxRateLabel }}</td>
+                            </tr>
+                            <tr>
+                                <td class="totals-label">Total IVA</td>
+                                <td class="totals-value">{!! $money($taxesValue) !!}</td>
+                            </tr>
+                            <tr class="grand-total">
+                                <td class="totals-label">TOTAL</td>
+                                <td class="totals-value">{!! $money($total) !!}</td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="center muted">Sin servicios registrados.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+            </table>
 
-        <div class="section-gap"></div>
+            <div class="section-gap"></div>
 
-        {{-- Totales --}}
-        <table class="t-full">
-            <tr>
-                <td style="width: 56%; padding-right: 20px; vertical-align: top;">
-                    <div class="payment-box">
-                        <div class="payment-title">Informacion de servicio y pago</div>
-                        <div class="payment-line"><strong>Entrada:</strong> {{ $entryDate }}</div>
-                        <div class="payment-line"><strong>Entrega:</strong> {{ $exitTime }}</div>
-                        <div class="payment-line"><strong>Operario:</strong> {{ $operario }}</div>
-                        <div class="payment-line"><strong>Estado:</strong> {{ $paymentStatusNames[$paymentStatus] ?? 'Pago pendiente' }}</div>
-                        @if($paymentStatus == 2)
-                        <div class="payment-line"><strong>Abono:</strong> {!! $partialPayment ? $money($partialPayment) : '--' !!}</div>
-                        @endif
-                        <div class="payment-line"><strong>Metodo:</strong> {{ $paymentTypeNames[$paymentType] ?? 'Efectivo' }}</div>
-                    </div>
-                </td>
-                <td style="width: 44%; vertical-align: top;">
-                    <table class="totals-table">
-                        <tr>
-                            <td class="totals-label">Base imponible</td>
-                            <td class="totals-value">{!! $money($taxBase) !!}</td>
-                        </tr>
-                        @if($discount > 0)
-                        <tr>
-                            <td class="totals-label">Descuento</td>
-                            <td class="totals-value totals-discount">-{!! $money($discount) !!}</td>
-                        </tr>
-                        @endif
-                        <tr>
-                            <td class="totals-label">IVA</td>
-                            <td class="totals-value">{{ $taxRateLabel }}</td>
-                        </tr>
-                        <tr>
-                            <td class="totals-label">Total IVA</td>
-                            <td class="totals-value">{!! $money($taxesValue) !!}</td>
-                        </tr>
-                        <tr class="grand-total">
-                            <td class="totals-label">TOTAL</td>
-                            <td class="totals-value">{!! $money($total) !!}</td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <div class="section-gap"></div>
-
-        {{-- Factura --}}
-        <div class="notes-box">
-            <div class="notes-title">Observaciones</div>
-            {{ $observations ?: 'Sin observaciones.' }}
+            {{-- Factura --}}
+            <div class="notes-box">
+                <div class="notes-title">Observaciones</div>
+                {{ $observations ?: 'Sin observaciones.' }}
+            </div>
         </div>
     </div>
 </body>
+
 
 </html>
