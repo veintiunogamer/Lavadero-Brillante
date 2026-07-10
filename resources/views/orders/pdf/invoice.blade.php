@@ -36,6 +36,71 @@
             z-index: 1;
         }
 
+        .col-1 {
+            width: 8.33333333%;
+        }
+
+        .col-2 {
+            width: 16.66666667%;
+        }
+
+        .col-3 {
+            width: 25%;
+        }
+
+        .col-4 {
+            width: 33.33333333%;
+        }
+
+        .col-5 {
+            width: 41.66666667%;
+        }
+
+        .col-6 {
+            width: 50%;
+        }
+
+        .col-7 {
+            width: 58.33333333%;
+        }
+
+        .col-8 {
+            width: 66.66666667%;
+        }
+
+        .col-9 {
+            width: 75%;
+        }
+
+        .col-10 {
+            width: 83.33333333%;
+        }
+
+        .col-11 {
+            width: 91.66666667%;
+        }
+
+        .col-12 {
+            width: 100%;
+        }
+
+        .col {
+            flex: 1 0 0%;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .float-end {
+            float: right !important;
+        }
+
+        .float-start {
+            float: left !important
+        }
+
         .watermark {
             position: fixed;
             top: 35%;
@@ -78,24 +143,82 @@
             padding: 8px 9px;
         }
 
-        .box-title {
-            background: #eeeeef;
-            border-bottom: 1.2px solid #4a4d55;
-            color: #2f3137;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            padding: 5px 8px;
+        .d-flex {
+            display: flex !important;
+        }
+
+        .color-blue {
+            color: #044688 !important;
+        }
+
+        .fw-bold {
+            font-weight: bold !important;
         }
 
         .header-brand-section {
             display: flex !important;
             justify-content: center !important;
-            align-content: center !important;
+            padding: 2em;
+        }
+
+        .border {
+            border: 1.2px solid #4a4d55 !important;
+        }
+
+        .mt-1 {
+            margin-top: 0.6em !important
+        }
+
+        .mt-2 {
+            margin-top: 1em !important
+        }
+
+        .mt-3 {
+            margin-top: 1.8em !important
+        }
+
+        .mt-4 {
+            margin-top: 2.1em !important
+        }
+
+        .mt-5 {
+            margin-top: 2.5em !important
+        }
+
+        .mb-1 {
+            margin-bottom: 0.6em !important;
+        }
+
+        .mb-2 {
+            margin-bottom: 1em !important;
+        }
+
+        .mb-3 {
+            margin-bottom: 1.8em !important;
+        }
+
+        .mb-4 {
+            margin-bottom: 2.1em !important;
+        }
+
+        .mb-5 {
+            margin-bottom: 2.5em !important;
         }
 
         .info-line {
-            margin-bottom: 4px;
+            margin-bottom: 7px;
+        }
+
+        .p-2 {
+            padding: 1em !important;
+        }
+
+        .p-3 {
+            padding: 2em !important;
+        }
+
+        .gap-2 {
+            gap: 2em !important;
         }
 
         .info-label {
@@ -107,7 +230,12 @@
             font-size: 9px;
         }
 
-        .client-table td,
+        .client-table td {
+            border: 1.2px solid #4a4d55;
+            padding: 11px 10px;
+            vertical-align: middle;
+        }
+
         .invoice-table td {
             border: 1.2px solid #4a4d55;
             padding: 7px 8px;
@@ -233,6 +361,7 @@
 
         .totals-value {
             text-align: right;
+            font-size: 13px;
             white-space: nowrap;
         }
 
@@ -259,6 +388,8 @@
         .muted {
             color: #777b84;
         }
+
+        .bg-invoice {}
     </style>
 </head>
 
@@ -266,10 +397,10 @@
     @php
     $company = [
     'name' => 'Lavadero Brillante',
-    'owner' => 'Eusebio Borrego Lau',
-    'nif' => '28614307F',
+    'owner' => 'Eusebio Borrego Lao',
+    'nif' => '28.614.307-F',
     'address' => 'Calle Dr. Fleming, 21',
-    'city' => '46960 Aldaya',
+    'city' => '46960/Aldaya - Valencia',
     'phone' => '682 145 020 - 620 800 224',
     'email' => 'lavaderobrillante22@gmail.com',
     ];
@@ -343,84 +474,81 @@
 
         <div class="page">
 
+            <!-- Cabecera -->
+            <div class="col-12 header-brand-section mb-1">
 
-            {{-- Empresa --}}
-            <table class="t-full header-table">
-                <tr>
-                    <div class="header-brand-section">
+                <div class="brand-title col-6">
+                    <b class="float-start color-blue">{{ $company['name'] }}</b>
+                </div>
 
-                        <div class="brand-title">{{ $company['name'] }}</div>
+                <div class="brand-title-logo col-6">
+                    <img src="{{ $logoPath }}" alt="{{ $company['name'] }}" class="logo-main float-end">
+                </div>
 
-                        <div class="brand-title-logo">
-                            <img src="{{ $logoPath }}" alt="{{ $company['name'] }}" class="logo-main">
-                        </div>
+            </div>
 
-                    </div>
+            <div class="col-12 d-flex gap-2">
 
-                    <div class="box">
+                <!-- Datos de la empresa -->
+                <div class="col-6 mb-3">
 
-                        <div class="box-title">Datos empresa</div>
-                        <div class="box-pad">
+                    <div class="border">
+
+                        <div class="box-pad mt-2 mb-2">
                             <div class="info-line"><strong>{{ $company['owner'] }}</strong></div>
-                            <div class="info-line"><span class="info-label">Direccion</span>{{ $company['address'] }}</div>
-                            <div class="info-line"><span class="info-label">Ciudad</span>{{ $company['city'] }}</div>
-                            <div class="info-line"><span class="info-label">NIF</span>{{ $company['nif'] }}</div>
-                            <div class="info-line"><span class="info-label">Telefono</span>{{ $company['phone'] }}</div>
-                            <div class="info-line"><span class="info-label">Email</span>{{ $company['email'] }}</div>
+                            <div class="info-line">{{ $company['address'] }}</div>
+                            <div class="info-line">{{ $company['city'] }} - Valencia</div>
+                            <div class="info-line">{{ $company['nif'] }}</div>
+
                         </div>
 
                     </div>
 
-                    </td>
+                    <div class="border mt-4 p-2">
+                        <div class="info-line">{{ $company['phone'] }}</div>
+                        <div class="info-line mb-3">{{ $company['email'] }}</div>
+                    </div>
 
-                </tr>
+                </div>
 
-            </table>
+                <!-- Datos del cliente -->
+                <div class="col-6 mb-3">
+
+                    <table class="client-table t-full mb-4">
+                        <tr>
+                            <td class="field-label fw-bold">Nombre</td>
+                            <td class="field-value">{{ $clientName }}</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label fw-bold">Direccion</td>
+                            <td>{{ $clientAddress }}</td>
+                        </tr>
+                        <tr>
+                            <td class="field-label fw-bold">CIF - NIF - DNI</td>
+                            <td>{{ $clientDocument }}</td>
+                        </tr>
+                    </table>
+
+                    <table class="invoice-table t-full">
+                        <tr>
+                            <td class="field-label fw-bold">Fecha factura</td>
+                            <td class="field-value" style="text-align: center;">{{ $invoiceDate }}</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">
+                                <span class="pill-title">Factura</span>
+                            </td>
+                            <td class="invoice-number">{{ $invoiceNumber }}</td>
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
 
             <div class="section-gap"></div>
 
             {{-- Cliente --}}
-            <table class="t-full">
-                <tr>
-                    <td style="width: 56%; padding-right: 15px; vertical-align: top;">
-                        <table class="client-table t-full">
-                            <tr>
-                                <td class="field-label">Nombre</td>
-                                <td class="field-value">{{ $clientName }}</td>
-                            </tr>
-                            <tr>
-                                <td class="field-label">Direccion</td>
-                                <td>{{ $clientAddress }}</td>
-                            </tr>
-                            <tr>
-                                <td class="field-label">Documento/NIF</td>
-                                <td>{{ $clientDocument }}</td>
-                            </tr>
-                            <tr>
-                                <td class="field-label">Telefono</td>
-                                <td>{{ $clientPhone }}</td>
-                            </tr>
-                        </table>
-                    </td>
-
-                    {{-- Factura --}}
-                    <td style="width: 44%; vertical-align: top;">
-                        <table class="invoice-table t-full">
-                            <tr>
-                                <td class="field-label">Fecha factura</td>
-                                <td class="field-value" style="text-align: center;">{{ $invoiceDate }}</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center;">
-                                    <span class="pill-title">Factura</span>
-                                </td>
-                                <td class="invoice-number">{{ $invoiceNumber }}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-
             <div class="section-gap"></div>
 
             {{-- Servicios --}}
@@ -430,7 +558,7 @@
                         <th style="width: 9%;">Cantidad</th>
                         <th style="width: 35%;">Descripcion</th>
                         <th style="width: 15%;">Matricula</th>
-                        <th style="width: 11%;">Descuento</th>
+                        <th style="width: 11%;">Dto</th>
                         <th style="width: 14%;">Precio</th>
                         <th style="width: 16%;">Total</th>
                     </tr>
@@ -449,11 +577,6 @@
                         <td class="center">{{ $quantity }}</td>
                         <td>
                             <div class="service-name">{{ $service->name }}</div>
-                            <div class="service-meta">
-                                Categoria: {{ $categoryName ?: 'Servicio' }} |
-                                Vehiculo: {{ $vehicleCat }} |
-                                Nivel de suciedad: {{ $dirtLabel }}
-                            </div>
                         </td>
                         <td class="center">{{ $licensePlaque }}</td>
                         <td class="right">{!! $lineDiscount !!}</td>
@@ -465,7 +588,90 @@
                         <td colspan="6" class="center muted">Sin servicios registrados.</td>
                     </tr>
                     @endforelse
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+
                 </tbody>
+
             </table>
 
             <div class="section-gap"></div>
@@ -473,57 +679,72 @@
             {{-- Totales --}}
             <table class="t-full">
                 <tr>
-                    <td style="width: 56%; padding-right: 20px; vertical-align: top;">
-                        <div class="payment-box">
-                            <div class="payment-title">Informacion de servicio y pago</div>
-                            <div class="payment-line"><strong>Entrada:</strong> {{ $entryDate }}</div>
-                            <div class="payment-line"><strong>Entrega:</strong> {{ $exitTime }}</div>
-                            <div class="payment-line"><strong>Operario:</strong> {{ $operario }}</div>
-                            <div class="payment-line"><strong>Estado:</strong> {{ $paymentStatusNames[$paymentStatus] ?? 'Pago pendiente' }}</div>
-                            @if($paymentStatus == 2)
-                            <div class="payment-line"><strong>Abono:</strong> {!! $partialPayment ? $money($partialPayment) : '--' !!}</div>
-                            @endif
-                            <div class="payment-line"><strong>Metodo:</strong> {{ $paymentTypeNames[$paymentType] ?? 'Efectivo' }}</div>
-                        </div>
-                    </td>
-                    <td style="width: 44%; vertical-align: top;">
+                    <td style="width:60%"></td>
+                    <td style="width: 40%; vertical-align: top;">
+
                         <table class="totals-table">
+
                             <tr>
                                 <td class="totals-label">Base imponible</td>
                                 <td class="totals-value">{!! $money($taxBase) !!}</td>
                             </tr>
+
                             @if($discount > 0)
                             <tr>
                                 <td class="totals-label">Descuento</td>
                                 <td class="totals-value totals-discount">-{!! $money($discount) !!}</td>
                             </tr>
                             @endif
+
                             <tr>
-                                <td class="totals-label">IVA</td>
+                                <td class="totals-label">Tipo de IVA</td>
                                 <td class="totals-value">{{ $taxRateLabel }}</td>
                             </tr>
+
                             <tr>
                                 <td class="totals-label">Total IVA</td>
                                 <td class="totals-value">{!! $money($taxesValue) !!}</td>
                             </tr>
+
                             <tr class="grand-total">
-                                <td class="totals-label">TOTAL</td>
+                                <td class="totals-label">&nbsp;</td>
                                 <td class="totals-value">{!! $money($total) !!}</td>
                             </tr>
+
                         </table>
+
                     </td>
+
                 </tr>
+
             </table>
 
             <div class="section-gap"></div>
 
-            {{-- Factura --}}
-            <div class="notes-box">
+            <!-- <td style="width: 56%; padding-right: 20px; vertical-align: top;">
+                <div class="payment-box">
+                    <div class="payment-title">Informacion de servicio y pago</div>
+                    <div class="payment-line"><strong>Entrada:</strong> {{ $entryDate }}</div>
+                    <div class="payment-line"><strong>Entrega:</strong> {{ $exitTime }}</div>
+                    <div class="payment-line"><strong>Operario:</strong> {{ $operario }}</div>
+                    <div class="payment-line"><strong>Estado:</strong> {{ $paymentStatusNames[$paymentStatus] ?? 'Pago pendiente' }}</div>
+                    @if($paymentStatus == 2)
+                    <div class="payment-line"><strong>Abono:</strong> {!! $partialPayment ? $money($partialPayment) : '--' !!}</div>
+                    @endif
+                    <div class="payment-line"><strong>Metodo:</strong> {{ $paymentTypeNames[$paymentType] ?? 'Efectivo' }}</div>
+                </div>
+            </td> -->
+
+            {{-- Observaciones --}}
+            <!-- <div class="notes-box">
                 <div class="notes-title">Observaciones</div>
                 {{ $observations ?: 'Sin observaciones.' }}
-            </div>
+            </div> -->
+
         </div>
+
     </div>
+
 </body>
 
 
