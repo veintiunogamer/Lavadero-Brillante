@@ -7,6 +7,9 @@ use App\Models\Client;
 use App\Models\OrderService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 
 
 class OrderController extends Controller
@@ -686,6 +689,109 @@ class OrderController extends Controller
 
         return $pdf->download($filename);
     }
+
+    /**
+     * Vista de depuración (solo local) para previsualizar la factura en navegador.
+     *
+     * Nota de seguridad: en producción devuelve 404/403 para evitar que quede expuesta.
+     */
+    public function invoicePreview()
+    {
+        // Solo en local (ajústalo si usas otro entorno)
+        if (!app()->environment('local')) {
+            abort(404);
+        }
+
+        // Datos mock (fixture) para renderizar la misma Blade que usa el PDF.
+        $client = (object) [
+            'name' => 'Cliente Demo',
+            'phone' => '682 000 000',
+            'license_plaque' => '1234 ABC',
+            'address' => 'Calle Ficticia 123',
+            'tax_id' => 'B12345678',
+            // Algunos campos alternativos por si la Blade intenta leerlos
+            'invoice_address' => 'Calle Ficticia 123',
+            'billing_address' => 'Calle Ficticia 123',
+            'invoice_tax_id' => 'B12345678',
+            'nif' => 'B12345678',
+            'document' => 'B12345678',
+        ];
+
+        $vehicleType = (object) [
+            'name' => 'Turismo',
+        ];
+
+        $operario = (object) [
+            'name' => 'Operario Demo',
+        ];
+
+        $lavadosCategory = (object) ['cat_name' => 'Lavados'];
+        $extrasCategory = (object) ['cat_name' => 'Extras'];
+
+        $payment = (object) [
+            'status' => 3, // 1 pendiente, 2 parcial, 3 pagado
+            'type' => 2,   // 1 efectivo, 2 TPV, 3 transferencia
+        ];
+
+        $service1 = (object) [
+            'name' => 'Lavado Exterior',
+            'value' => 25,
+            'category' => $lavadosCategory,
+            'pivot' => (object) [
+                'quantity' => 1,
+                'total' => 25,
+            ],
+        ];
+
+        $service2 = (object) [
+            'name' => 'Cera Premium',
+            'value' => 10,
+            'category' => $extrasCategory,
+            'pivot' => (object) [
+                'quantity' => 2,
+                'total' => 20,
+            ],
+        ];
+
+        // Crear un objeto Order suficientemente “parecido” a un Eloquent para la Blade.
+        $order = (object) [
+            'id' => 'a1b2c3d4e5f6g7h8',
+            'client' => $client,
+            'services' => collect([$service1, $service2]),
+            'payments' => collect([$payment]),
+            'user' => $operario,
+            'vehicleType' => $vehicleType,
+
+            // Campos usados por la Blade
+            'hour_in' => now()->subHours(2)->format('H:i'),
+            'hour_out' => now()->format('H:i'),
+            'creation_date' => now()->toDateString(),
+            'date' => now()->toDateString(),
+            'dirt_level' => 2,
+
+            'subtotal' => 45,
+            'total' => 45,
+            'discount_value' => 0,
+            'taxes_value' => 0,
+            'partial_payment' => null,
+
+            'order_notes' => 'Gracias por su visita.',
+
+            // Consecutivos para el número de factura
+            'consecutive_serial' => '001',
+            'consecutive_number' => '2025-0001',
+        ];
+
+        $invoiceNumber = $order->consecutive_serial && $order->consecutive_number
+            ? $order->consecutive_number . '-' . $order->consecutive_serial
+            : strtoupper(substr((string) $order->id, 0, 8));
+
+        return view('orders.pdf.invoice', [
+            'order' => $order,
+            'invoiceNumber' => $invoiceNumber,
+        ]);
+    }
+
 
     /**
      * Obtiene órdenes para los tabs (Pendientes vs Historial)
