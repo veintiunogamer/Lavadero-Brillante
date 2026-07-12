@@ -6,7 +6,7 @@
     <title>Factura {{ $invoiceNumber }}</title>
     <style>
         @page {
-            margin: 24px 30px 28px;
+            margin: 20px;
         }
 
         * {
@@ -23,10 +23,9 @@
 
         /* Previsualización en navegador: fuerza tamaño tipo PDF (A4) */
         .pdf-page {
-            width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
-            padding: 24px 30px 28px;
+            width: 100%;
+            margin: 0;
+            padding: 0;
             background: #ffffff;
         }
 
@@ -310,6 +309,7 @@
 
         .totals-table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             background: rgba(255, 255, 255, 0.94);
         }
@@ -320,7 +320,7 @@
         }
 
         .totals-label {
-            width: 56%;
+            width: 55%;
             background: #3b3d43;
             color: #ffffff;
             font-weight: bold;
@@ -712,7 +712,7 @@
                 <tr>
 
                     <!-- DATOS BANCARIOS -->
-                    <td style="width:60%; vertical-align:center;">
+                    <td style="width:55%; vertical-align:bottom;">
 
                         <table style="width:260px;border-collapse:collapse;border:1px solid #4a4d55;margin-top:15px;">
 
@@ -732,7 +732,7 @@
 
                     </td>
 
-                    <td style="width: 40%; vertical-align: top;">
+                    <td style="width: 45%; vertical-align: top;">
 
                         <table class="totals-table">
 
