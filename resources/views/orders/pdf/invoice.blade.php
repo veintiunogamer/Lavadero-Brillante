@@ -84,30 +84,12 @@
             width: 100%;
         }
 
-        .col {
-            flex: 1 0 0%;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-        }
-
         .float-end {
             float: right !important;
         }
 
         .float-start {
             float: left !important
-        }
-
-        .watermark {
-            position: fixed;
-            top: 35%;
-            left: 16%;
-            width: 68%;
-            opacity: 0.08;
-            z-index: -1000;
         }
 
         .t-full {
@@ -143,22 +125,12 @@
             padding: 8px 9px;
         }
 
-        .d-flex {
-            display: flex !important;
-        }
-
         .color-blue {
             color: #044688 !important;
         }
 
         .fw-bold {
             font-weight: bold !important;
-        }
-
-        .header-brand-section {
-            display: flex !important;
-            justify-content: center !important;
-            padding: 2em;
         }
 
         .border {
@@ -217,9 +189,6 @@
             padding: 2em !important;
         }
 
-        .gap-2 {
-            gap: 2em !important;
-        }
 
         .info-label {
             display: inline-block;
@@ -389,7 +358,25 @@
             color: #777b84;
         }
 
-        .bg-invoice {}
+        .services-wrapper {
+            position: relative;
+        }
+
+        .services-watermark {
+            position: absolute;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 520px;
+            opacity: 0.08;
+            z-index: 0;
+        }
+
+        .services-table {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+        }
     </style>
 </head>
 
@@ -467,84 +454,120 @@
     $money = fn($value) => number_format((float) $value, 2, ',', '.') . ' &euro;';
     @endphp
 
-    {{-- Marca de agua --}}
-    <img src="{{ $logoPath }}" alt="Marca de agua" class="watermark">
-
     <div class="pdf-page">
 
         <div class="page">
 
-            <!-- Cabecera -->
-            <div class="col-12 header-brand-section mb-1">
+            <!-- CABECERA -->
+            <table width="100%" cellspacing="0" cellpadding="0" style="margin-bottom:20px;">
+                <tr>
 
-                <div class="brand-title col-6">
-                    <b class="float-start color-blue">{{ $company['name'] }}</b>
-                </div>
+                    <td width="50%" valign="middle">
+                        <div class="brand-title">
+                            <span class="color-blue">
+                                {{ strtoupper($company['name']) }}
+                            </span>
+                        </div>
+                    </td>
 
-                <div class="brand-title-logo col-6">
-                    <img src="{{ $logoPath }}" alt="{{ $company['name'] }}" class="logo-main float-end">
-                </div>
+                    <td width="50%" align="right" valign="middle">
+                        <img src="{{ $logoPath }}"
+                            alt="{{ $company['name'] }}"
+                            class="logo-main">
+                    </td>
 
-            </div>
+                </tr>
+            </table>
 
-            <div class="col-12 d-flex gap-2">
+            <!-- EMPRESA + CLIENTE -->
+            <table width="100%" cellspacing="0" cellpadding="0">
+                <tr>
 
-                <!-- Datos de la empresa -->
-                <div class="col-6 mb-3">
+                    <!-- EMPRESA -->
+                    <td width="48%" valign="top">
 
-                    <div class="border">
+                        <div class="border">
 
-                        <div class="box-pad mt-2 mb-2">
-                            <div class="info-line"><strong>{{ $company['owner'] }}</strong></div>
-                            <div class="info-line">{{ $company['address'] }}</div>
-                            <div class="info-line">{{ $company['city'] }} - Valencia</div>
-                            <div class="info-line">{{ $company['nif'] }}</div>
+                            <div class="box-pad mt-2 mb-2">
+                                <div class="info-line">
+                                    <strong>{{ $company['owner'] }}</strong>
+                                </div>
+
+                                <div class="info-line">
+                                    {{ $company['address'] }}
+                                </div>
+
+                                <div class="info-line">
+                                    {{ $company['city'] }} - Valencia
+                                </div>
+
+                                <div class="info-line">
+                                    {{ $company['nif'] }}
+                                </div>
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="border mt-4 p-2">
+                            <div class="info-line">
+                                {{ $company['phone'] }}
+                            </div>
 
-                    <div class="border mt-4 p-2">
-                        <div class="info-line">{{ $company['phone'] }}</div>
-                        <div class="info-line mb-3">{{ $company['email'] }}</div>
-                    </div>
+                            <div class="info-line">
+                                {{ $company['email'] }}
+                            </div>
+                        </div>
 
-                </div>
+                    </td>
 
-                <!-- Datos del cliente -->
-                <div class="col-6 mb-3">
+                    <td width="3%"></td>
 
-                    <table class="client-table t-full mb-4">
-                        <tr>
-                            <td class="field-label fw-bold">Nombre</td>
-                            <td class="field-value">{{ $clientName }}</td>
-                        </tr>
-                        <tr>
-                            <td class="field-label fw-bold">Direccion</td>
-                            <td>{{ $clientAddress }}</td>
-                        </tr>
-                        <tr>
-                            <td class="field-label fw-bold">CIF - NIF - DNI</td>
-                            <td>{{ $clientDocument }}</td>
-                        </tr>
-                    </table>
+                    <!-- CLIENTE -->
+                    <td width="49%" valign="top">
 
-                    <table class="invoice-table t-full">
-                        <tr>
-                            <td class="field-label fw-bold">Fecha factura</td>
-                            <td class="field-value" style="text-align: center;">{{ $invoiceDate }}</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;">
-                                <span class="pill-title">Factura</span>
-                            </td>
-                            <td class="invoice-number">{{ $invoiceNumber }}</td>
-                        </tr>
-                    </table>
+                        <table class="client-table t-full mb-4">
+                            <tr>
+                                <td class="field-label fw-bold">Nombre</td>
+                                <td class="field-value">{{ $clientName }}</td>
+                            </tr>
 
-                </div>
+                            <tr>
+                                <td class="field-label fw-bold">Direccion</td>
+                                <td>{{ $clientAddress }}</td>
+                            </tr>
 
-            </div>
+                            <tr>
+                                <td class="field-label fw-bold">CIF - NIF - DNI</td>
+                                <td>{{ $clientDocument }}</td>
+                            </tr>
+                        </table>
+
+                        <table class="invoice-table t-full">
+                            <tr>
+                                <td class="field-label fw-bold">Fecha factura</td>
+                                <td class="field-value" style="text-align:center;">
+                                    {{ $invoiceDate }}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align:center;">
+                                    <span class="pill-title">
+                                        Factura
+                                    </span>
+                                </td>
+
+                                <td class="invoice-number">
+                                    {{ $invoiceNumber }}
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                </tr>
+
+            </table>
 
             <div class="section-gap"></div>
 
@@ -552,134 +575,163 @@
             <div class="section-gap"></div>
 
             {{-- Servicios --}}
-            <table class="services-table">
-                <thead>
-                    <tr>
-                        <th style="width: 9%;">Cantidad</th>
-                        <th style="width: 35%;">Descripcion</th>
-                        <th style="width: 15%;">Matricula</th>
-                        <th style="width: 11%;">Dto</th>
-                        <th style="width: 14%;">Precio</th>
-                        <th style="width: 16%;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($services as $service)
-                    @php
-                    $lineTotal = $service->pivot->total ?? $service->value ?? 0;
-                    $quantity = $service->pivot->quantity ?? $order->quantity ?? 1;
-                    $quantity = max(1, (int) $quantity);
-                    $unitPrice = $quantity > 0 ? ((float) $lineTotal / $quantity) : (float) $lineTotal;
-                    $lineDiscount = ($serviceCount === 1 && $discount > 0) ? $money($discount) : '--';
-                    $categoryName = optional($service->category)->cat_name;
-                    @endphp
-                    <tr>
-                        <td class="center">{{ $quantity }}</td>
-                        <td>
-                            <div class="service-name">{{ $service->name }}</div>
-                        </td>
-                        <td class="center">{{ $licensePlaque }}</td>
-                        <td class="right">{!! $lineDiscount !!}</td>
-                        <td class="right">{!! $money($unitPrice) !!}</td>
-                        <td class="right"><strong>{!! $money($lineTotal) !!}</strong></td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="6" class="center muted">Sin servicios registrados.</td>
-                    </tr>
-                    @endforelse
+            <div class="services-wrapper">
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                <img
+                    src="{{ $logoPath }}"
+                    class="services-watermark"
+                    alt="Logo">
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                <table class="services-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 9%;">Cantidad</th>
+                            <th style="width: 35%;">Descripcion</th>
+                            <th style="width: 15%;">Matricula</th>
+                            <th style="width: 11%;">Dto</th>
+                            <th style="width: 14%;">Precio</th>
+                            <th style="width: 16%;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($services as $service)
+                        @php
+                        $lineTotal = $service->pivot->total ?? $service->value ?? 0;
+                        $quantity = $service->pivot->quantity ?? $order->quantity ?? 1;
+                        $quantity = max(1, (int) $quantity);
+                        $unitPrice = $quantity > 0 ? ((float) $lineTotal / $quantity) : (float) $lineTotal;
+                        $lineDiscount = ($serviceCount === 1 && $discount > 0) ? $money($discount) : '--';
+                        $categoryName = optional($service->category)->cat_name;
+                        @endphp
+                        <tr>
+                            <td class="center">{{ $quantity }}</td>
+                            <td>
+                                <div class="service-name">{{ $service->name }}</div>
+                            </td>
+                            <td class="center">{{ $licensePlaque }}</td>
+                            <td class="right">{!! $lineDiscount !!}</td>
+                            <td class="right">{!! $money($unitPrice) !!}</td>
+                            <td class="right"><strong>{!! $money($lineTotal) !!}</strong></td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="center muted">Sin servicios registrados.</td>
+                        </tr>
+                        @endforelse
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-                </tbody>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
 
-            </table>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
             <div class="section-gap"></div>
 
-            {{-- Totales --}}
             <table class="t-full">
                 <tr>
-                    <td style="width:60%"></td>
+
+                    <!-- DATOS BANCARIOS -->
+                    <td style="width:60%; vertical-align:center;">
+
+                        <table style="width:260px;border-collapse:collapse;border:1px solid #4a4d55;margin-top:15px;">
+
+                            <tr>
+                                <td style="padding:6px 8px;">
+                                    ES70 2100 1639 2002 0058 1160
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding:6px 8px;">
+                                    Caixabank
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+
                     <td style="width: 40%; vertical-align: top;">
 
                         <table class="totals-table">
