@@ -130,7 +130,7 @@
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
                         <label class="fw-bold">Lava Coches <span class="required">*</span></label>
                         <select class="input form-control required-field" name="assigned_user" data-field-name="Detallador">
-                            <option value="">Seleccionar</option>
+                            <option value="">Seleccionar Detallador</option>
                             @foreach($users as $user)
                             <option value="{{ $user->id }}">
                                 {{ $user->name }}
@@ -147,7 +147,7 @@
 
                         <!-- Fallback select (oculto por defecto) -->
                         <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hour_in_fallback" style="display: none;" data-field-name="Hora de Entrada">
-                            <option value="">Seleccionar</option>
+                            <option value="">Seleccionar Hora</option>
                             @for($h = 8; $h <= 20; $h++)
                                 @foreach(['00', '30' ] as $m)
                                 <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
@@ -164,7 +164,7 @@
 
                         <!-- Fallback select (oculto por defecto) -->
                         <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hour_out_fallback" style="display: none;" data-field-name="Hora de Salida">
-                            <option value="">Seleccionar</option>
+                            <option value="">Seleccionar Hora</option>
                             @for($h = 8; $h <= 20; $h++)
                                 @foreach(['00', '30' ] as $m)
                                 <option value="{{ sprintf('%02d:%s:00', $h, $m) }}">{{ sprintf('%02d:%s', $h, $m) }}</option>
@@ -178,7 +178,7 @@
                         <div class="col-12" style="width: 100%;">
                             <label class="fw-bold">
                                 <i class="fa fa-list text-primary"></i>&nbsp;
-                                Observaciones
+                                Observaciones de la orden
                             </label>
                             <textarea class="input form-control form-control-lg" name="vehicle_notes" rows="5" maxlength="250" placeholder="Anotaciones internas sobre el servicio, cliente o estado del vehículo..."></textarea>
                         </div>
