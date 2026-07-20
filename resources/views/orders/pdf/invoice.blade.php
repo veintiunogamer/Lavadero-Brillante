@@ -393,6 +393,7 @@
     ];
 
     $logoPath = public_path('images/logo_alterno.png');
+
     if (!file_exists($logoPath)) {
     $logoPath = public_path('images/logo.png');
     }
@@ -401,10 +402,12 @@
     $clientName = $client->name ?? '--';
     $clientPhone = $client->phone ?? '--';
     $licensePlaque = $client->license_plaque ?? '--';
+
     $clientAddress = $client->address
     ?? $client->invoice_address
     ?? $client->billing_address
     ?? '--';
+
     $clientDocument = $client->tax_id
     ?? $client->invoice_tax_id
     ?? $client->nif
@@ -417,9 +420,11 @@
     $entryDate = $order->hour_in
     ? \Carbon\Carbon::parse($order->hour_in)->locale('es')->isoFormat('D [de] MMMM [de] YYYY [a las] HH:mm')
     : '--';
+
     $exitTime = $order->hour_out
     ? \Carbon\Carbon::parse($order->hour_out)->format('H:i')
     : '--';
+
     $invoiceDate = $order->creation_date
     ? \Carbon\Carbon::parse($order->creation_date)->format('d/m/Y')
     : ($order->date ? \Carbon\Carbon::parse($order->date)->format('d/m/Y') : '--');
@@ -451,6 +456,7 @@
     $mainServices = $services->filter(fn($s) => optional($s->category)->cat_name === 'Lavados');
     $extraServices = $services->filter(fn($s) => optional($s->category)->cat_name !== 'Lavados');
     $serviceCount = $services->count();
+
     $money = fn($value) => number_format((float) $value, 2, ',', '.') . ' &euro;';
     @endphp
 
