@@ -143,7 +143,7 @@
                     <div class="col-lg-6 col-md-6 col-sm-12 px-2">
 
                         <label class="fw-bold">Hora Entrada <span class="required">*</span></label>
-                        <input type="text" class="input form-control required-field time-picker" id="hour_in" placeholder="Selecciona hora" readonly data-field-name="Hora de Entrada">
+                        <input type="text" class="input form-control required-field time-picker" id="hour_in" placeholder="Seleccionar hora" readonly data-field-name="Hora de Entrada">
 
                         <!-- Fallback select (oculto por defecto) -->
                         <select class="input form-control required-field time-picker-fallback" name="hour_in" id="hour_in_fallback" style="display: none;" data-field-name="Hora de Entrada">
@@ -160,7 +160,7 @@
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
 
                         <label class="fw-bold">Hora Salida <span class="required">*</span></label>
-                        <input type="text" class="input form-control required-field time-picker" id="hour_out" placeholder="Selecciona hora" readonly data-field-name="Hora de Salida">
+                        <input type="text" class="input form-control required-field time-picker" id="hour_out" placeholder="Seleccionar hora" readonly data-field-name="Hora de Salida">
 
                         <!-- Fallback select (oculto por defecto) -->
                         <select class="input form-control required-field time-picker-fallback" name="hour_out" id="hour_out_fallback" style="display: none;" data-field-name="Hora de Salida">
