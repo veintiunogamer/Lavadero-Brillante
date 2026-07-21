@@ -21,7 +21,7 @@
 
 <body class="app-bg">
 
-    <div class="login-container">
+    <div class="login-container" style="background-image: url('{{ asset('/images/bg_login.png') }}')">
 
         <div class="login-card" x-data="loginForm()">
 

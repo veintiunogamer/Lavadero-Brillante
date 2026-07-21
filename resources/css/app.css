@@ -1108,7 +1108,9 @@ hr {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--color-azul-bg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .login-card {
