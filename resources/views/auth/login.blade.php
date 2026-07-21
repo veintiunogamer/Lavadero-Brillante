@@ -39,18 +39,22 @@
 
                 <div class="input-group my-2">
                     <label class="fw-bold text-primary fs-5" for="username">
-                        <i class="fa fa-user text-warning"></i>&nbsp;
                         Usuario
                     </label>
-                    <input type="text" name="username" id="username" class="input" required>
+                    <div class="input-icon-wrapper">
+                        <i class="fa fa-user input-icon"></i>
+                        <input type="text" name="username" id="username" class="input rounded col-12" required>
+                    </div>
                 </div>
 
                 <div class="input-group my-3">
                     <label class="fw-bold text-primary fs-5" for="password">
-                        <i class="fa fa-lock text-warning"></i>&nbsp;
                         Contraseña
                     </label>
-                    <input type="password" name="password" id="password" class="input" required>
+                    <div class="input-icon-wrapper">
+                        <i class="fa fa-lock input-icon"></i>
+                        <input type="password" name="password" id="password" class="input rounded col-12" required>
+                    </div>
                 </div>
 
                 <template x-if="loading">
