@@ -342,7 +342,11 @@ export class ServiceManager {
             const serviceId = item.querySelector('.service-select')?.value;
             const quantity = item.querySelector('.service-quantity')?.value;
             const priceInput = item.querySelector('.service-price');
-            const price = parseFloat(priceInput?.value || 0);
+            const cleave = this.cleaveInstances.get(priceInput);
+            const rawPrice = cleave
+                ? cleave.getRawValue()
+                : (priceInput?.dataset.rawPrice || priceInput?.value || '0');
+            const price = parseFloat(rawPrice) || 0;
 
             if (serviceId) {
 
@@ -384,7 +388,17 @@ export class ServiceManager {
             const priceInput = firstService.querySelector('.service-price');
             
             if (quantityInput) quantityInput.value = 1;
-            if (priceInput) priceInput.value = '0.00';
+            
+            if (priceInput) {
+                const cleave = this.cleaveInstances.get(priceInput);
+                priceInput.dataset.rawPrice = '0';
+                priceInput.dataset.basePrice = '0';
+                if (cleave) {
+                    cleave.setRawValue('0.00');
+                } else {
+                    priceInput.value = '0.00';
+                }
+            }
         }
 
         this.rowCounter = 1;
@@ -465,8 +479,15 @@ export class ServiceManager {
 
             // Establecer precio de línea
             if (priceInput) {
-                priceInput.value = lineTotalValue.toFixed(2);
+                const cleave = this.cleaveInstances.get(priceInput);
+                const rawPrice = lineTotalValue.toFixed(2);
+                priceInput.dataset.rawPrice = rawPrice;
                 priceInput.dataset.basePrice = basePriceValue.toFixed(2);
+                if (cleave) {
+                    cleave.setRawValue(rawPrice);
+                } else {
+                    priceInput.value = rawPrice;
+                }
             }
         }
 
