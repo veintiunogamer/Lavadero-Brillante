@@ -201,8 +201,9 @@ export class FormDataCollector {
             return {
                 invoice_required: true,
                 invoice_business_name: document.getElementById('razon-social')?.value || '',
-                invoice_tax_id: document.getElementById('nif-cif')?.value || '',
+                invoice_nif: document.getElementById('nif-cif')?.value || '',
                 invoice_email: document.getElementById('email-factura')?.value || '',
+                invoice_phone: document.getElementById('telefono-factura')?.value || '',
                 invoice_address: document.getElementById('direccion-calle')?.value || '',
                 invoice_postal_code: document.getElementById('direccion-cp')?.value || '',
                 invoice_city: document.getElementById('direccion-ciudad')?.value || ''

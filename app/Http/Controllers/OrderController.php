@@ -162,8 +162,9 @@ class OrderController extends Controller
                 // Datos de facturación (opcionales)
                 'invoice_required' => 'nullable|boolean',
                 'invoice_business_name' => 'required_if:invoice_required,true|nullable|string|max:200',
-                'invoice_tax_id' => 'required_if:invoice_required,true|nullable|string|max:50',
+                'invoice_nif' => 'required_if:invoice_required,true|nullable|string|max:50',
                 'invoice_email' => 'nullable|email|max:100',
+                'invoice_phone' => 'nullable|string|max:20',
                 'invoice_address' => 'required_if:invoice_required,true|nullable|string|max:250',
                 'invoice_postal_code' => 'required_if:invoice_required,true|nullable|string|max:10',
                 'invoice_city' => 'required_if:invoice_required,true|nullable|string|max:100',
@@ -257,7 +258,23 @@ class OrderController extends Controller
                 'creation_date' => now(),
             ]);
 
-            // 4. Asociar servicios a la orden
+            // 4. Guardar datos de facturación si se requiere
+            if (!empty($validated['invoice_required']) && $validated['invoice_required']) {
+                \App\Models\Invoice::create([
+                    'id' => \Illuminate\Support\Str::uuid(),
+                    'order_id' => $order->id,
+                    'business_name' => $validated['invoice_business_name'],
+                    'nif' => $validated['invoice_nif'],
+                    'email' => $validated['invoice_email'] ?? null,
+                    'phone' => $validated['invoice_phone'] ?? null,
+                    'address' => $validated['invoice_address'],
+                    'city' => $validated['invoice_city'],
+                    'zipcode' => $validated['invoice_postal_code'],
+                    'creation_date' => now(),
+                ]);
+            }
+
+            // 5. Asociar servicios a la orden
             foreach ($validated['services'] as $service) {
 
                 \App\Models\OrderService::create([
@@ -315,7 +332,7 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         // Cargar relaciones necesarias
-        $order->load(['client', 'services', 'user', 'payments']);
+        $order->load(['client', 'services', 'user', 'payments', 'invoice']);
 
         $generatedConsecutive = $this->getConsecutive();
         $consecutive = [
@@ -360,6 +377,13 @@ class OrderController extends Controller
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
                 'invoice_required' => 'nullable|boolean',
+                'invoice_business_name' => 'required_if:invoice_required,true|nullable|string|max:200',
+                'invoice_nif' => 'required_if:invoice_required,true|nullable|string|max:50',
+                'invoice_email' => 'nullable|email|max:100',
+                'invoice_phone' => 'nullable|string|max:20',
+                'invoice_address' => 'required_if:invoice_required,true|nullable|string|max:250',
+                'invoice_postal_code' => 'required_if:invoice_required,true|nullable|string|max:10',
+                'invoice_city' => 'required_if:invoice_required,true|nullable|string|max:100',
                 'assigned_user' => 'nullable|uuid',
                 'vehicle_type_id' => 'required|uuid|exists:vehicle_type,id',
                 'dirt_level' => 'required|integer|in:1,2,3',
@@ -464,6 +488,41 @@ class OrderController extends Controller
                 'status' => $validated['payment_status'],
                 'creation_date' => now(),
             ]);
+
+            // Manejar datos de facturación
+            if (!empty($validated['invoice_required']) && $validated['invoice_required']) {
+                // Si existe invoice, actualizarla; si no, crearla
+                $order->load('invoice');
+                $invoice = $order->invoice;
+
+                if ($invoice) {
+                    $invoice->update([
+                        'business_name' => $validated['invoice_business_name'],
+                        'nif' => $validated['invoice_nif'],
+                        'email' => $validated['invoice_email'] ?? null,
+                        'phone' => $validated['invoice_phone'] ?? null,
+                        'address' => $validated['invoice_address'],
+                        'city' => $validated['invoice_city'],
+                        'zipcode' => $validated['invoice_postal_code'],
+                    ]);
+                } else {
+                    \App\Models\Invoice::create([
+                        'id' => \Illuminate\Support\Str::uuid(),
+                        'order_id' => $order->id,
+                        'business_name' => $validated['invoice_business_name'],
+                        'nif' => $validated['invoice_nif'],
+                        'email' => $validated['invoice_email'] ?? null,
+                        'phone' => $validated['invoice_phone'] ?? null,
+                        'address' => $validated['invoice_address'],
+                        'city' => $validated['invoice_city'],
+                        'zipcode' => $validated['invoice_postal_code'],
+                        'creation_date' => now(),
+                    ]);
+                }
+            } else {
+                // Si el switch de factura está desactivado, eliminar invoice si existe
+                $order->invoice()->delete();
+            }
 
             \DB::commit();
 
@@ -644,7 +703,7 @@ class OrderController extends Controller
     {
         try {
 
-            $order->load(['client', 'services.category', 'user', 'payments']);
+            $order->load(['client', 'services.category', 'user', 'payments', 'invoice']);
 
             return response()->json([
                 'success' => true,
