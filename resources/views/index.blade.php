@@ -293,7 +293,7 @@
                         <label class="fw-bold mb-1">
                             NIF / CIF <span class="required">*</span>
                         </label>
-                        <input type="text" class="form-control" name="invoice_tax_id" id="nif-cif" placeholder="Ej: B12345678" maxlength="10" data-field-name="NIF/CIF">
+                        <input type="text" class="form-control" name="invoice_nif" id="nif-cif" placeholder="Ej: B12345678" maxlength="10" data-field-name="NIF/CIF">
                     </div>
 
                     <div class="col-lg-3 col-md-6 col-sm-12 mb-3 px-2">

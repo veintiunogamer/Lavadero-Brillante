@@ -112,4 +112,12 @@ class Order extends Model
     {
         return $this->hasMany(Payment::class, 'order_id', 'id');
     }
+
+    /**
+     * Relación con Factura (1:1)
+     */
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'order_id', 'id');
+    }
 }
