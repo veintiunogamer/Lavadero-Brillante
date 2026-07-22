@@ -12,7 +12,7 @@
         <div class="my-4 p-4">
 
             <!-- Cabezera -->
-            <div class="col-12 d-flex flex-wrap mb-4 p-3 border bg-light rounded-3">
+            <div class="col-12 d-flex flex-wrap mb-4 p-3">
 
                 <div class="col-lg-10 col-md-6 col-sm-12 d-flex flex-column 
                 justify-content-center">

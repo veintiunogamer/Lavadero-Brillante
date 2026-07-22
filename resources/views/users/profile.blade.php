@@ -11,13 +11,18 @@
     <!-- Card de perfil -->
     <div class="card shadow-lg rounded-4 bg-white p-4 w-100" style="max-width: 1400px;">
 
-        <div class="col-lg-12 col-md-12 col-sm-12 mb-4 p-3 border rounded-3 border-2 d-flex flex-column gap-2 bg-light">
-            <h1 class="flex align-items-center fw-bold mb-2">
-                <i class="fa-solid fa-user-circle icon color-blue"></i>
-                <span>Mi Perfil -</span>
-                <span class="badge bg-primary small">{{ $user->name }}</span>
-            </h1>
-            <p class="fw-bold text-muted">Actualiza tu información personal y contraseña.</p>
+        <div class="col-lg-12 col-md-12 col-sm-12 p-3 d-flex border-bottom">
+
+            <div class="col-lg-8 col-md-8 col-sm-12">
+
+                <h1 class="flex align-items-center fw-bold mb-2">
+                    <i class="fa-solid fa-user-circle icon color-blue fs-1"></i>
+                    <span>Mi Perfil</span>
+                </h1>
+                <p class="fw-bold text-muted">Administra tu cuenta, datos personales y seguridad</p>
+
+            </div>
+
         </div>
 
         <form @submit.prevent="saveProfile()" class="form">
@@ -28,7 +33,7 @@
 
                     <!-- Información Personal -->
                     <div class="col-12 border-bottom border-2 mb-2">
-                        <h2 class="fw-bold">
+                        <h2 class="fw-bold m-0">
                             <i class="fa-solid fa-id-card me-2 text-primary"></i>
                             Información Personal
                         </h2>

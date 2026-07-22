@@ -1,7 +1,9 @@
 <header class="main-header">
 
     <div class="logo">
-        <img src="{{ asset('/images/logo.png') }}" alt="Logo" class="logo-img">
+        <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }} fw-bold">
+            <img src="{{ asset('/images/logo.png') }}" alt="Logo" class="logo-img">
+        </a>
     </div>
 
     <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menú">

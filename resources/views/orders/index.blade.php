@@ -217,7 +217,7 @@
                                         <i class="fa-solid fa-exchange-alt"></i>
                                     </button>
 
-                                    <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar" x-show="order.status !== 3">
+                                    <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar">
                                         <i class="fa-solid fa-edit"></i>
                                     </a>
 
