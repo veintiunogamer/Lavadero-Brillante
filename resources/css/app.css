@@ -41,7 +41,7 @@
 }
 
 .app-bg {
-    background: var(--color-azul-bg);
+    background: var(--color-gris-claro);
     min-height: 100vh;
 }
 
