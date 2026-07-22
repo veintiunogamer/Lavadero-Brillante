@@ -496,6 +496,7 @@ class OrderController extends Controller
                 $invoice = $order->invoice;
 
                 if ($invoice) {
+
                     $invoice->update([
                         'business_name' => $validated['invoice_business_name'],
                         'nif' => $validated['invoice_nif'],
@@ -506,6 +507,7 @@ class OrderController extends Controller
                         'zipcode' => $validated['invoice_postal_code'],
                     ]);
                 } else {
+
                     \App\Models\Invoice::create([
                         'id' => \Illuminate\Support\Str::uuid(),
                         'order_id' => $order->id,
