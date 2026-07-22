@@ -81,13 +81,15 @@ export class FormDataCollector {
 
             const serviceId = item.querySelector('.service-select')?.value;
             const quantity = item.querySelector('.service-quantity')?.value;
-            const price = item.querySelector('.service-price')?.value;
+            const priceInput = item.querySelector('.service-price');
+            const rawPrice = priceInput?.dataset?.rawPrice || priceInput?.value || '0';
+            const price = parseFloat(rawPrice) || 0;
 
             if (serviceId) {
                 services.push({
                     service_id: serviceId,
                     quantity: parseInt(quantity),
-                    price: parseFloat(price)
+                    price: price
                 });
             }
         });

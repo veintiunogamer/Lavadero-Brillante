@@ -116,14 +116,13 @@ export class PriceCalculator {
             ? cleave.getRawValue()
             : (priceInput?.dataset.rawPrice || priceInput?.value || '0');
 
-            // const price = parseFloat(rawStr || 0);
-
-            const price = parseFloat(
-                String(rawStr).slice(0, -2) + '.' + String(rawStr).slice(-2)
-            );
+            const price = parseFloat(rawStr) || 0;
             subtotal += price;
 
         });
+
+        // Redondear subtotal a 2 decimales para evitar errores de punto flotante
+        subtotal = Math.round(subtotal * 100) / 100;
 
         // Habilitar/deshabilitar descuento
         if (this.discountSelect) {
@@ -135,16 +134,14 @@ export class PriceCalculator {
 
         // Calcular descuento
         const discountPercent = parseFloat(this.discountSelect?.value || 0);
-        const discountAmount = (subtotal * discountPercent) / 100;
+        const discountAmount = Math.round((subtotal * discountPercent) / 100 * 100) / 100;
 
         // Calcular IVA (21%) — solo si se requiere factura
         const invoiceRequired = this.invoiceCheckbox?.checked || false;
-        const taxBase = subtotal - discountAmount;
-        const taxesAmount = invoiceRequired ? Math.max(0, taxBase * 0.21) : 0;
+        const taxBase = Math.round((subtotal - discountAmount) * 100) / 100;
+        const taxesAmount = invoiceRequired ? Math.max(0, Math.round(taxBase * 0.21 * 100) / 100) : 0;
 
-        const total = taxBase + taxesAmount;
-
-        // console.log("Asi llegan las cosas en mis calculos", { subtotal, discountPercent, discountAmount, taxBase, taxesAmount, total });
+        const total = Math.round((taxBase + taxesAmount) * 100) / 100;
 
         // Actualizar displays
         this.updateDisplays(subtotal, discountAmount, taxesAmount, total);
