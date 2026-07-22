@@ -399,20 +399,14 @@
     }
 
     $client = optional($order->client);
-    $clientName = $client->name ?? '--';
+    $invoice = optional($order->invoice);
+
+    $clientName = $invoice->business_name ?? $client->name ?? '--';
     $clientPhone = $client->phone ?? '--';
     $licensePlaque = $client->license_plaque ?? '--';
 
-    $clientAddress = $client->address
-    ?? $client->invoice_address
-    ?? $client->billing_address
-    ?? '--';
-
-    $clientDocument = $client->tax_id
-    ?? $client->invoice_tax_id
-    ?? $client->nif
-    ?? $client->document
-    ?? '--';
+    $clientAddress = $invoice->address ?? $client->address ?? '--';
+    $clientDocument = $invoice->nif ?? '--';
 
     $vehicleCat = optional($order->vehicleType)->name ?? '--';
     $operario = optional($order->user)->name ?? '--';
