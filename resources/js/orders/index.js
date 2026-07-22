@@ -228,11 +228,54 @@ function createOrderFormApp() {
                 fleetSwitch.checked = !!order.client.fleet;
             }
 
+            // Pre-llenar datos de facturación
             const invoiceSwitch = document.getElementById('get-invoice');
+            const hasInvoice = order.invoice && Object.keys(order.invoice).length > 0;
 
             if (invoiceSwitch) {
-                invoiceSwitch.checked = order.taxes;
-                document.getElementById('datos-facturacion').style.display = invoiceSwitch.checked ? 'block' : 'none';
+                invoiceSwitch.checked = hasInvoice;
+                document.getElementById('datos-facturacion').style.display = hasInvoice ? 'block' : 'none';
+            }
+
+            if (hasInvoice) {
+                const invoice = order.invoice;
+                const razonSocial = document.getElementById('razon-social');
+                const nifCif = document.getElementById('nif-cif');
+                const emailFactura = document.getElementById('email-factura');
+                const telefonoFactura = document.getElementById('telefono-factura');
+                const direccionCalle = document.getElementById('direccion-calle');
+                const direccionCiudad = document.getElementById('direccion-ciudad');
+                const direccionCp = document.getElementById('direccion-cp');
+
+                if (razonSocial) razonSocial.value = invoice.business_name || '';
+                if (nifCif) nifCif.value = invoice.nif || '';
+                if (emailFactura) emailFactura.value = invoice.email || '';
+                if (telefonoFactura) telefonoFactura.value = invoice.phone || '';
+                if (direccionCalle) direccionCalle.value = invoice.address || '';
+                if (direccionCiudad) direccionCiudad.value = invoice.city || '';
+                if (direccionCp) direccionCp.value = invoice.zipcode || '';
+
+                // Agregar required y clase de validación a los campos obligatorios
+                if (razonSocial) {
+                    razonSocial.required = true;
+                    razonSocial.classList.add('required-field');
+                }
+                if (nifCif) {
+                    nifCif.required = true;
+                    nifCif.classList.add('required-field');
+                }
+                if (direccionCalle) {
+                    direccionCalle.required = true;
+                    direccionCalle.classList.add('required-field');
+                }
+                if (direccionCp) {
+                    direccionCp.required = true;
+                    direccionCp.classList.add('required-field');
+                }
+                if (direccionCiudad) {
+                    direccionCiudad.required = true;
+                    direccionCiudad.classList.add('required-field');
+                }
             }
 
             // Pre-llenar tipo de vehículo
