@@ -286,7 +286,7 @@
                         <label class="fw-bold mb-1">
                             Razón Social <span class="required">*</span>
                         </label>
-                        <input type="text" class="form-control" name="invoice_business_name" id="razon-social" maxlength="40" placeholder="Nombre de la empresa" data-field-name="Razón Social">
+                        <input type="text" class="form-control" name="invoice_business_name" id="razon-social" maxlength="80" placeholder="Nombre de la empresa" data-field-name="Razón Social">
                     </div>
 
                     <div class="col-lg-3 col-md-6 col-sm-12 mb-3 px-2">
@@ -320,7 +320,7 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2 my-2">
-                        <input type="text" class="form-control" name="invoice_address" id="direccion-calle" maxlength="40" placeholder="Calle, número, puerta" data-field-name="Dirección">
+                        <input type="text" class="form-control" name="invoice_address" id="direccion-calle" maxlength="100" placeholder="Calle, número, puerta" data-field-name="Dirección">
                     </div>
 
                     <div class="col-lg-4 col-md-3 col-sm-12 mb-3 px-2 my-2">
