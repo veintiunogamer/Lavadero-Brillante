@@ -820,31 +820,14 @@
             </div>
 
             <!-- Paginador -->
-            <div x-show="!loadingOrders && getTotalPages() > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                <div class="badge bg-primary text-light p-2 col-1">
-                    Página <span x-text="currentPage[currentTab]"></span> de <span x-text="getTotalPages()"></span>
-                </div>
-
-                <nav>
-
-                    <ul class="pagination pagination-sm mb-0">
-                        <li class="page-item" :class="currentPage[currentTab] === 1 ? 'disabled' : ''">
-                            <button class="page-link" @click="goToPage(currentTab, currentPage[currentTab] - 1)">«</button>
-                        </li>
-                        <template x-for="page in getTotalPages()" :key="page">
-                            <li class="page-item" :class="page === currentPage[currentTab] ? 'active' : ''">
-                                <button class="page-link" @click="goToPage(currentTab, page)" x-text="page"></button>
-                            </li>
-                        </template>
-                        <li class="page-item" :class="currentPage[currentTab] === getTotalPages() ? 'disabled' : ''">
-                            <button class="page-link" @click="goToPage(currentTab, currentPage[currentTab] + 1)">»</button>
-                        </li>
-                    </ul>
-
-                </nav>
-
-            </div>
+            @include('partials._pagination', [
+                'current' => 'currentPage[currentTab]',
+                'total' => 'getTotalPages()',
+                'go' => '(p) => goToPage(currentTab, p)',
+                'count' => 'getFilteredOrders().length',
+                'class' => 'mt-3',
+                'show' => '!loadingOrders && getTotalPages() > 1',
+            ])
 
         </div>
 

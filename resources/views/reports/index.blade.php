@@ -265,21 +265,12 @@
                     </div>
 
                     <!-- paginador -->
-                    <nav x-show="getTotalPages('sales') > 1">
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item" :class="currentPage.sales === 1 ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('sales', currentPage.sales - 1)">«</button>
-                            </li>
-                            <template x-for="page in getTotalPages('sales')" :key="page">
-                                <li class="page-item" :class="page === currentPage.sales ? 'active' : ''">
-                                    <button class="page-link" @click="goToPage('sales', page)" x-text="page"></button>
-                                </li>
-                            </template>
-                            <li class="page-item" :class="currentPage.sales === getTotalPages('sales') ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('sales', currentPage.sales + 1)">»</button>
-                            </li>
-                        </ul>
-                    </nav>
+                    @include('partials._pagination', [
+                        'current' => 'currentPage.sales',
+                        'total' => "getTotalPages('sales')",
+                        'go' => "(p) => goToPage('sales', p)",
+                        'class' => 'app-pagination--footer',
+                    ])
                 </div>
 
             </div>
@@ -387,21 +378,12 @@
                 </div>
 
                 <div x-show="!loadingClients && getFilteredData('clients').length > 0" class="reports-footer d-flex justify-content-end">
-                    <nav x-show="getTotalPages('clients') > 1">
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item" :class="currentPage.clients === 1 ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('clients', currentPage.clients - 1)">«</button>
-                            </li>
-                            <template x-for="page in getTotalPages('clients')" :key="page">
-                                <li class="page-item" :class="page === currentPage.clients ? 'active' : ''">
-                                    <button class="page-link" @click="goToPage('clients', page)" x-text="page"></button>
-                                </li>
-                            </template>
-                            <li class="page-item" :class="currentPage.clients === getTotalPages('clients') ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('clients', currentPage.clients + 1)">»</button>
-                            </li>
-                        </ul>
-                    </nav>
+                    @include('partials._pagination', [
+                        'current' => 'currentPage.clients',
+                        'total' => "getTotalPages('clients')",
+                        'go' => "(p) => goToPage('clients', p)",
+                        'class' => 'app-pagination--footer',
+                    ])
                 </div>
 
             </div>
