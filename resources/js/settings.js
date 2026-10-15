@@ -175,6 +175,27 @@ window.settingsApp = function() {
             this.currentPage[type] = 1;
         },
 
+        // Asegura que la página actual siga dentro de rango tras cambiar el
+        // total de páginas (cargas, borrados, búsquedas). Mismo patrón que
+        // orders/index.js, orders/orders.js y reports/index.js.
+        ensurePageInRange(type) {
+
+            const totalPages = this.getTotalPages(type);
+
+            if (!totalPages) {
+                this.currentPage[type] = 1;
+                return;
+            }
+
+            if (this.currentPage[type] > totalPages) {
+                this.currentPage[type] = totalPages;
+            }
+
+            if (this.currentPage[type] < 1) {
+                this.currentPage[type] = 1;
+            }
+        },
+
         // Inicialización
         async initData() {
             await this.loadCategories();
@@ -196,6 +217,7 @@ window.settingsApp = function() {
                 this.categories = data;
                 this.categoriesForServices = data.filter(c => c.status === 1);
                 this.applySorting('categories');
+                this.ensurePageInRange('categories');
 
 
             } catch (error) {
@@ -324,6 +346,7 @@ window.settingsApp = function() {
 
                 this.services = data;
                 this.applySorting('services');
+                this.ensurePageInRange('services');
 
             } catch (error) {
                 console.error('Error cargando servicios:', error);
@@ -515,6 +538,7 @@ window.settingsApp = function() {
 
                 this.vehicleTypes = data;
                 this.applySorting('vehicleTypes');
+                this.ensurePageInRange('vehicleTypes');
 
             } catch (error) {
 
@@ -641,6 +665,7 @@ window.settingsApp = function() {
 
                 this.clients = data;
                 this.applySorting('clients');
+                this.ensurePageInRange('clients');
 
             } catch (error) {
                 console.error('Error cargando clientes:', error);
