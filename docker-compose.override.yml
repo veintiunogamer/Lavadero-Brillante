@@ -6,6 +6,19 @@ services:
       - brillante
       - app
 
+  brillante-nginx:
+    networks:
+      - brillante
+      - app
+    ports:
+      - "8000:80" # Acceso directo sin Traefik (solo dev)
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT_NAME}.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.${PROJECT_NAME}.entrypoints=http"
+      - "traefik.http.services.${PROJECT_NAME}.loadbalancer.server.port=80"
+      - "traefik.docker.network=app"
+
   brillante-phpmyadmin:
     networks:
       - brillante
