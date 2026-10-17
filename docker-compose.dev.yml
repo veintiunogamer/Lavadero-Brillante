@@ -1,3 +1,8 @@
+# Configuración de DESARROLLO (solo local)
+# Uso: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+# Este archivo NO se auto-carga (a diferencia de docker-compose.override.yml),
+# por lo que es seguro tenerlo en producción: un plain `docker compose up -d`
+# en el server solo levantaría docker-compose.yml.
 services:
   brillante-db:
     ports:
