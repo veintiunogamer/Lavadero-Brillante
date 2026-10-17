@@ -1,0 +1,25 @@
+services:
+  brillante-nginx:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT_NAME}.rule=Host(`${DOMAIN_NAME}`)"
+      - "traefik.http.routers.${PROJECT_NAME}.entrypoints=https"
+      - "traefik.http.routers.${PROJECT_NAME}.tls=true"
+      - "traefik.http.routers.${PROJECT_NAME}.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.${PROJECT_NAME}.middlewares=redirect-to-https"
+      - "traefik.http.services.${PROJECT_NAME}.loadbalancer.server.port=80"
+      - "traefik.docker.network=app"
+
+  brillante-phpmyadmin:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${PROJECT_NAME}-phpmyadmin.rule=Host(`${PHPMYADMIN_DOMAIN_NAME}`)"
+      - "traefik.http.routers.${PROJECT_NAME}-phpmyadmin.entrypoints=https"
+      - "traefik.http.routers.${PROJECT_NAME}-phpmyadmin.tls=true"
+      - "traefik.http.routers.${PROJECT_NAME}-phpmyadmin.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${PROJECT_NAME}-phpmyadmin.loadbalancer.server.port=80"
+      - "traefik.docker.network=app"
+
+networks:
+  app:
+    external: true
