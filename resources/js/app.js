@@ -1,4 +1,5 @@
 import './bootstrap';
+import './pagination.js'; // Debe cargarse antes de alpine.js: window.paginationItems lo usan las vistas
 import './users.js';
 import './profile.js';
 import './orders/validations.js';
