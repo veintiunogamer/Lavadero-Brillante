@@ -1050,6 +1050,167 @@ hr {
 }
 
 /* =========================
+   Pagination (reutilizable)
+   partial: partials/_pagination.blade.php
+   lógica: resources/js/pagination.js
+========================= */
+
+/* Contenedor: flex fluido con wrap -> nunca desborda horizontalmente,
+   aunque quepa en varias líneas no hay scroll de página. */
+.app-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+}
+
+/* Variante para pies de reportes (fila ya saturada de totales):
+   ocupa el resto de la fila y alinea el conjunto a la derecha. */
+.app-pagination--footer {
+    flex: 1 1 20rem;
+    justify-content: flex-end;
+    gap: 0.5rem 1.5rem;
+}
+
+.app-pagination__info {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    min-width: 0;
+    font-size: 0.875rem;
+}
+
+.app-pagination__indicator {
+    font-weight: 600;
+    color: var(--color-azul-ceniza);
+    white-space: nowrap;
+}
+
+/* Rango de registros: solo cuando hay espacio (>= 1200px). */
+.app-pagination__range {
+    color: var(--color-gris);
+    white-space: nowrap;
+}
+
+.app-pagination__nav {
+    min-width: 0;
+}
+
+.app-pagination__list {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 0;
+}
+
+/* Anula los márgenes negativos de Bootstrap para que cada botón
+   mantenga su área táctil sin solaparse con el vecino. */
+.app-pagination__list .page-item:not(:first-child) .page-link {
+    margin-left: 0;
+}
+
+.app-pagination__list .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;   /* 36px mínimo de área táctil en escritorio */
+    min-height: 2.25rem;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--color-gris-claro);
+    border-radius: 0.5rem;
+    background-color: var(--color-blanco);
+    color: var(--color-negro);
+    font-weight: 600;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.app-pagination__list .page-link:hover {
+    background-color: var(--color-azul-celeste-claro);
+    border-color: var(--color-azul-logo-claro);
+    color: var(--color-azul-logo);
+}
+
+.app-pagination__list .page-link:focus-visible {
+    outline: 2px solid var(--color-azul-logo);
+    outline-offset: 2px;
+}
+
+.app-pagination__list .page-item.active > .page-link {
+    background-color: var(--color-azul-logo);
+    border-color: var(--color-azul-logo);
+    color: var(--color-blanco);
+}
+
+.app-pagination__list .page-item.active > .page-link:hover {
+    background-color: var(--color-azul-logo);
+    border-color: var(--color-azul-logo);
+    color: var(--color-blanco);
+}
+
+/* Deshabilitado: los botones llevan el atributo `disabled` REAL
+   (no reciben clic ni foco); este estilo solo comunica el estado. */
+.app-pagination__list .page-item.disabled > .page-link {
+    background-color: var(--color-blanco);
+    border-color: var(--color-gris-claro);
+    color: var(--color-gris-oscuro);
+}
+
+/* Anterior / Siguiente */
+.app-pagination__step .page-link {
+    color: var(--color-azul-logo);
+}
+
+/* Puntos suspensivos: no son interactivos ni enfocables. */
+.app-pagination__gap .page-link {
+    min-width: 1.5rem;
+    padding: 0.25rem 0.25rem;
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--color-gris);
+    pointer-events: none;
+}
+
+/* Portátiles reducidos y tablets: se ocultan los números "lejanos"
+   (marcados por pagination.js) y el rango de registros; los gaps
+   siguen representando omisiones reales. */
+@media (max-width: 1199.98px) {
+    .app-pagination__range {
+        display: none;
+    }
+
+    .app-pagination__item--dim {
+        display: none;
+    }
+}
+
+/* Móvil: variante compacta -> Anterior + "Página X de Y" + Siguiente.
+   La lista de números y gaps se oculta por completo. */
+@media (max-width: 767.98px) {
+    .app-pagination,
+    .app-pagination--footer {
+        justify-content: center;
+    }
+
+    .app-pagination__list .page-item:not(.app-pagination__step) {
+        display: none;
+    }
+
+    .app-pagination__list .page-link {
+        min-width: 2.5rem;   /* 40px de área táctil */
+        min-height: 2.5rem;
+    }
+
+    .app-pagination__indicator {
+        font-size: 0.9375rem;
+    }
+}
+
+
+/* =========================
    Invoice Modal
 ========================= */
 .invoice-modal-backdrop {

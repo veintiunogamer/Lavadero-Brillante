@@ -184,35 +184,13 @@
                 </table>
 
                 <!-- Paginador -->
-                <div x-show="getTotalPages('categories') > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                    <div class="badge bg-primary text-light p-2 col-1">
-                        Página <span x-text="currentPage.categories"></span> de <span x-text="getTotalPages('categories')"></span>
-                    </div>
-
-                    <nav>
-
-                        <ul class="pagination pagination-sm mb-0">
-
-                            <li class="page-item" :class="currentPage.categories === 1 ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('categories', currentPage.categories - 1)">«</button>
-                            </li>
-
-                            <template x-for="page in getTotalPages('categories')" :key="page">
-                                <li class="page-item" :class="page === currentPage.categories ? 'active' : ''">
-                                    <button class="page-link" @click="goToPage('categories', page)" x-text="page"></button>
-                                </li>
-                            </template>
-
-                            <li class="page-item" :class="currentPage.categories === getTotalPages('categories') ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('categories', currentPage.categories + 1)">»</button>
-                            </li>
-
-                        </ul>
-
-                    </nav>
-
-                </div>
+                @include('partials._pagination', [
+                    'current' => 'currentPage.categories',
+                    'total' => "getTotalPages('categories')",
+                    'go' => "(p) => goToPage('categories', p)",
+                    'count' => "getFilteredData('categories').length",
+                    'class' => 'mt-3',
+                ])
 
             </div>
 
@@ -348,31 +326,13 @@
                 </table>
 
                 <!-- Paginador -->
-                <div x-show="getTotalPages('services') > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                    <div class="badge bg-primary text-light p-2 col-1">
-                        Página <span x-text="currentPage.services"></span> de <span x-text="getTotalPages('services')"></span>
-                    </div>
-
-                    <nav>
-
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item" :class="currentPage.services === 1 ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('services', currentPage.services - 1)">«</button>
-                            </li>
-                            <template x-for="page in getTotalPages('services')" :key="page">
-                                <li class="page-item" :class="page === currentPage.services ? 'active' : ''">
-                                    <button class="page-link" @click="goToPage('services', page)" x-text="page"></button>
-                                </li>
-                            </template>
-                            <li class="page-item" :class="currentPage.services === getTotalPages('services') ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('services', currentPage.services + 1)">»</button>
-                            </li>
-                        </ul>
-
-                    </nav>
-
-                </div>
+                @include('partials._pagination', [
+                    'current' => 'currentPage.services',
+                    'total' => "getTotalPages('services')",
+                    'go' => "(p) => goToPage('services', p)",
+                    'count' => "getFilteredData('services').length",
+                    'class' => 'mt-3',
+                ])
 
             </div>
 
@@ -499,35 +459,13 @@
                 </table>
 
                 <!-- Paginador -->
-                <div x-show="getTotalPages('vehicleTypes') > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                    <div class="badge bg-primary text-light p-2 col-1">
-                        Página <span x-text="currentPage.vehicleTypes"></span> de <span x-text="getTotalPages('vehicleTypes')"></span>
-                    </div>
-
-                    <nav>
-
-                        <ul class="pagination pagination-sm mb-0">
-
-                            <li class="page-item" :class="currentPage.vehicleTypes === 1 ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes - 1)">«</button>
-                            </li>
-
-                            <template x-for="page in getTotalPages('vehicleTypes')" :key="page">
-                                <li class="page-item" :class="page === currentPage.vehicleTypes ? 'active' : ''">
-                                    <button class="page-link" @click="goToPage('vehicleTypes', page)" x-text="page"></button>
-                                </li>
-                            </template>
-
-                            <li class="page-item" :class="currentPage.vehicleTypes === getTotalPages('vehicleTypes') ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('vehicleTypes', currentPage.vehicleTypes + 1)">»</button>
-                            </li>
-
-                        </ul>
-
-                    </nav>
-
-                </div>
+                @include('partials._pagination', [
+                    'current' => 'currentPage.vehicleTypes',
+                    'total' => "getTotalPages('vehicleTypes')",
+                    'go' => "(p) => goToPage('vehicleTypes', p)",
+                    'count' => "getFilteredData('vehicleTypes').length",
+                    'class' => 'mt-3',
+                ])
 
 
             </div>
@@ -667,33 +605,13 @@
                 </table>
 
                 <!-- Paginador -->
-                <div x-show="getTotalPages('clients') > 1" class="d-flex justify-content-between align-items-center mt-3">
-
-                    <div class="badge bg-primary text-light p-2 col-1">
-                        Página <span x-text="currentPage.clients"></span> de <span x-text="getTotalPages('clients')"></span>
-                    </div>
-
-                    <nav>
-
-                        <ul class="pagination pagination-sm mb-0">
-                            <li class="page-item" :class="currentPage.clients === 1 ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('clients', currentPage.clients - 1)">«</button>
-                            </li>
-
-                            <template x-for="page in getTotalPages('clients')" :key="page">
-                                <li class="page-item" :class="page === currentPage.clients ? 'active' : ''">
-                                    <button class="page-link" @click="goToPage('clients', page)" x-text="page"></button>
-                                </li>
-                            </template>
-
-                            <li class="page-item" :class="currentPage.clients === getTotalPages('clients') ? 'disabled' : ''">
-                                <button class="page-link" @click="goToPage('clients', currentPage.clients + 1)">»</button>
-                            </li>
-                        </ul>
-
-                    </nav>
-
-                </div>
+                @include('partials._pagination', [
+                    'current' => 'currentPage.clients',
+                    'total' => "getTotalPages('clients')",
+                    'go' => "(p) => goToPage('clients', p)",
+                    'count' => "getFilteredData('clients').length",
+                    'class' => 'mt-3',
+                ])
 
             </div>
 
