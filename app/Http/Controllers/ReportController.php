@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ReportSalesExport;
 use App\Exports\ReportClientsExport;
+use App\Services\OrderReportService;
 
 class ReportController extends Controller
 {
@@ -119,9 +120,7 @@ class ReportController extends Controller
             'periodLabel' => $target->format('d/m/Y'),
             'orders' => $orders,
             'summary' => $summary,
-            'statusLabels' => $this->getOrderStatusLabels(),
-            'paymentStatusLabels' => $this->getPaymentStatusLabels(),
-            'paymentMethodLabels' => $this->getPaymentMethodLabels(),
+            'report' => $this->orderReportService(),
             'company' => $this->getCompanyInfo(),
         ]);
 
@@ -155,9 +154,7 @@ class ReportController extends Controller
                 'periodLabel' => $periodLabel,
                 'orders' => $orders,
                 'summary' => $summary,
-                'statusLabels' => $this->getOrderStatusLabels(),
-                'paymentStatusLabels' => $this->getPaymentStatusLabels(),
-                'paymentMethodLabels' => $this->getPaymentMethodLabels(),
+                'report' => $this->orderReportService(),
                 'company' => $this->getCompanyInfo(),
             ]);
 
@@ -208,9 +205,7 @@ class ReportController extends Controller
             return Excel::download(
                 new ReportSalesExport(
                     $orders,
-                    $this->getOrderStatusLabels(),
-                    $this->getPaymentStatusLabels(),
-                    $this->getPaymentMethodLabels(),
+                    $this->orderReportService(),
                     $this->getCompanyInfo(),
                     $periodLabel,
                     $summary
@@ -290,6 +285,8 @@ class ReportController extends Controller
     {
         return Order::with([
             'client:id,name,phone,license_plaque,fleet',
+            'user:id,name',
+            'vehicleType:id,name',
             'services:id,name',
             'payments:id,order_id,type,status,subtotal,total'
         ])
@@ -297,6 +294,7 @@ class ReportController extends Controller
                 'id',
                 'client_id',
                 'user_id',
+                'vehicle_type_id',
                 'consecutive_serial',
                 'consecutive_number',
                 'creation_date',
@@ -306,9 +304,23 @@ class ReportController extends Controller
                 'taxes_value',
                 'total',
                 'status',
+                'vehicle_notes',
             ])
-            ->whereBetween('date', [$start, $end])
+            ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
             ->orderByDesc('date');
+    }
+
+    /**
+     * Servicio compartido que prepara las filas del informe de órdenes
+     * para Excel y PDF (misma lógica, mismos datos).
+     */
+    private function orderReportService(): OrderReportService
+    {
+        return new OrderReportService(
+            $this->getOrderStatusLabels(),
+            $this->getPaymentStatusLabels(),
+            $this->getPaymentMethodLabels(),
+        );
     }
 
     private function queryClients(?string $search = null, ?string $fleet = null)
