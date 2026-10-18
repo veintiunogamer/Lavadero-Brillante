@@ -63,6 +63,11 @@
             table-layout: fixed;
         }
 
+        /* Repite los encabezados en cada página cuando la tabla continúa */
+        thead {
+            display: table-header-group;
+        }
+
         th,
         td {
             border: 1px solid #e5e7eb;
@@ -78,6 +83,29 @@
             color: #ffffff;
             text-align: left;
             font-size: 8.5px;
+        }
+
+        /* Tabla de 17 columnas: tipografía y padding reducidos para legibilidad */
+        .sales-table {
+            font-size: 8px;
+        }
+
+        .sales-table th,
+        .sales-table td {
+            padding: 3px 4px;
+        }
+
+        .sales-table th {
+            font-size: 7.5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .sales-table td:nth-child(11),
+        .sales-table td:nth-child(12),
+        .sales-table td:nth-child(13),
+        .sales-table td:nth-child(17) {
+            text-align: right;
         }
 
         tbody tr {
@@ -133,33 +161,39 @@
         }
 
         .sales-table th:nth-child(1),
-        .sales-table td:nth-child(1) { width: 8%; }
+        .sales-table td:nth-child(1) { width: 6%; }
         .sales-table th:nth-child(2),
-        .sales-table td:nth-child(2) { width: 8%; }
+        .sales-table td:nth-child(2) { width: 5%; }
         .sales-table th:nth-child(3),
-        .sales-table td:nth-child(3) { width: 12%; }
+        .sales-table td:nth-child(3) { width: 7%; }
         .sales-table th:nth-child(4),
-        .sales-table td:nth-child(4) { width: 5%; }
+        .sales-table td:nth-child(4) { width: 6%; }
         .sales-table th:nth-child(5),
-        .sales-table td:nth-child(5) { width: 18%; }
+        .sales-table td:nth-child(5) { width: 6%; }
         .sales-table th:nth-child(6),
-        .sales-table td:nth-child(6) { width: 8%; }
+        .sales-table td:nth-child(6) { width: 6%; }
         .sales-table th:nth-child(7),
-        .sales-table td:nth-child(7) { width: 6%; }
+        .sales-table td:nth-child(7) { width: 4%; }
         .sales-table th:nth-child(8),
-        .sales-table td:nth-child(8) { width: 8%; }
+        .sales-table td:nth-child(8) { width: 10%; }
         .sales-table th:nth-child(9),
-        .sales-table td:nth-child(9) { width: 8%; }
+        .sales-table td:nth-child(9) { width: 11%; }
         .sales-table th:nth-child(10),
-        .sales-table td:nth-child(10) { width: 8%; }
+        .sales-table td:nth-child(10) { width: 6.5%; }
         .sales-table th:nth-child(11),
-        .sales-table td:nth-child(11) { width: 9%; }
+        .sales-table td:nth-child(11) { width: 5%; }
         .sales-table th:nth-child(12),
-        .sales-table td:nth-child(12) { width: 8%; }
-
-        .sales-table td:nth-child(5) {
-            white-space: normal;
-        }
+        .sales-table td:nth-child(12) { width: 4%; }
+        .sales-table th:nth-child(13),
+        .sales-table td:nth-child(13) { width: 4.5%; }
+        .sales-table th:nth-child(14),
+        .sales-table td:nth-child(14) { width: 4.5%; }
+        .sales-table th:nth-child(15),
+        .sales-table td:nth-child(15) { width: 5%; }
+        .sales-table th:nth-child(16),
+        .sales-table td:nth-child(16) { width: 4.5%; }
+        .sales-table th:nth-child(17),
+        .sales-table td:nth-child(17) { width: 5%; }
     </style>
 
 </head>
@@ -190,6 +224,7 @@
                 <div class="company-meta">{{ $company['nif'] }} | {{ $company['address'] }} | {{ $company['city'] }}</div>
                 <div class="subtitle">{{ $title }}</div>
                 <div class="subtitle">Periodo: {{ $periodLabel }}</div>
+                <div class="subtitle">Generado: {{ now()->format('d/m/Y H:i') }}</div>
             </td>
 
         </tr>
@@ -201,21 +236,9 @@
 
         <thead>
             <tr>
-                <th># Orden</th>
-                <th>Fecha</th>
-                <th>Cliente</th>
-                <th>Flota</th>
-                <th>Servicios</th>
-
-                <th>Subtotal</th>
-                <th>IVA</th>
-                <th>Descuento (€)</th>
-
-                <th>Pago</th>
-                <th>Método</th>
-                <th>Estado</th>
-
-                <th>Total</th>
+                @foreach(\App\Services\OrderReportService::headings() as $heading)
+                    <th>{{ $heading }}</th>
+                @endforeach
             </tr>
         </thead>
 
@@ -223,53 +246,26 @@
 
             @forelse($orders as $order)
 
+            @php
+                $row = $report->row($order);
+            @endphp
+
             <tr>
-                <td>
-                    @php
-                    $orderNumber = $order->consecutive_serial && $order->consecutive_number
-                    ? $order->consecutive_serial . '-' . $order->consecutive_number
-                    : strtoupper(substr($order->id, 0, 8));
-                    @endphp
-                    {{ $orderNumber }}
-                </td>
-                <td>{{ \Carbon\Carbon::parse($order->creation_date)->format('d/m/Y') }}</td>
-
-                <td>{{ optional($order->client)->name ?? '--' }}</td>
-                <td>{{ optional($order->client)->fleet == 1 ? 'Sí' : 'No' }}</td>
-
-                <td>{{ $order->services->pluck('name')->join(', ') }}</td>
-
-                <td>{{ number_format($order->subtotal, 2, ',', '.') }} €</td>
-                <td>{{ number_format($order->taxes_value ?? 0, 2, ',', '.') }} €</td>
-                <td>
-                    @php
-                    $discountValue = $order->discount_value ?? 0;
-                    @endphp
-                    {{ number_format($discountValue, 2, ',', '.') }} €
-                </td>
-
-                <td>
-                    @php
-                    $payment = $order->payments->first();
-                    $paymentStatus = $payment ? ($paymentStatusLabels[$payment->status] ?? 'Desconocido') : '--';
-                    @endphp
-                    {{ $paymentStatus }}
-                </td>
-                <td>
-                    @php
-                    $paymentMethod = $payment ? ($paymentMethodLabels[$payment->type] ?? 'Desconocido') : '--';
-                    @endphp
-                    {{ $paymentMethod }}
-                </td>
-                <td>{{ $statusLabels[$order->status] ?? 'Desconocido' }}</td>
-
-                <td>{{ number_format($order->total, 2, ',', '.') }} €</td>
+                @foreach($row as $field => $value)
+                    <td>
+                        @if(in_array($field, \App\Services\OrderReportService::AMOUNT_FIELDS, true) && is_numeric($value))
+                            {{ number_format((float) $value, 2, ',', '.') }} €
+                        @else
+                            {{ $value }}
+                        @endif
+                    </td>
+                @endforeach
             </tr>
 
             @empty
 
             <tr>
-                <td colspan="12">No hay datos para el periodo seleccionado.</td>
+                <td colspan="{{ count(\App\Services\OrderReportService::headings()) }}">No hay datos para el periodo seleccionado.</td>
             </tr>
 
             @endforelse

@@ -19,3 +19,5 @@ Homestead.json
 /storage/framework/views/*
 /storage/logs/*
 public/build/
+/phpunit.result.cache
+!/public/build/manifest.json

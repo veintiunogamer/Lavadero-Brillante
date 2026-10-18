@@ -18,8 +18,16 @@ return new class extends Migration
             }
 
             Schema::table('sessions', function (Blueprint $table) {
-                $table->string('user_id')->nullable()->index()->change();
+                $table->string('user_id')->nullable()->change();
             });
+
+            // Solo re-crea el índice si no existe (evita error "index already
+            // exists" en SQLite, donde el rebuild de tabla lo conserva).
+            if (!Schema::hasIndex('sessions', 'sessions_user_id_index')) {
+                Schema::table('sessions', function (Blueprint $table) {
+                    $table->index('user_id');
+                });
+            }
         }
     }
 
