@@ -2,8 +2,8 @@
 
 namespace App\Exports;
 
+use App\Services\OrderReportService;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
@@ -23,19 +23,15 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithCustomStartCell, WithDrawings, WithEvents, WithColumnWidths
 {
     private Collection $orders;
-    private array $statusLabels;
-    private array $paymentStatusLabels;
-    private array $paymentMethodLabels;
+    private OrderReportService $reportService;
     private array $company;
     private string $periodLabel;
     private array $summary;
 
-    public function __construct(Collection $orders, array $statusLabels, array $paymentStatusLabels, array $paymentMethodLabels, array $company, string $periodLabel, array $summary = [])
+    public function __construct(Collection $orders, OrderReportService $reportService, array $company, string $periodLabel, array $summary = [])
     {
         $this->orders = $orders;
-        $this->statusLabels = $statusLabels;
-        $this->paymentStatusLabels = $paymentStatusLabels;
-        $this->paymentMethodLabels = $paymentMethodLabels;
+        $this->reportService = $reportService;
         $this->company = $company;
         $this->periodLabel = $periodLabel;
         $this->summary = $summary;
@@ -48,20 +44,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
 
     public function headings(): array
     {
-        return [
-            '# Orden',
-            'Fecha',
-            'Cliente',
-            'Flota',
-            'Servicios',
-            'Subtotal',
-            'IVA',
-            'Descuento (€)',
-            'Pago',
-            'Método',
-            'Estado',
-            'Total',
-        ];
+        return OrderReportService::headings();
     }
 
     public function startCell(): string
@@ -69,35 +52,14 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         return 'A6';
     }
 
+    /**
+     * Fila de datos: los 17 campos del informe, en el orden de los encabezados.
+     * Los importes se devuelven como números (sin símbolos monetarios) para
+     * que Excel los almacene como celdas numéricas.
+     */
     public function map($order): array
     {
-        $orderNumber = $order->consecutive_serial && $order->consecutive_number
-            ? $order->consecutive_serial . '-' . $order->consecutive_number
-            : strtoupper(substr($order->id, 0, 8));
-
-        $services = $order->services->pluck('name')->join(', ');
-        $payment = $order->payments->first();
-        $paymentStatus = $payment ? ($this->paymentStatusLabels[$payment->status] ?? 'Desconocido') : '--';
-        $paymentMethod = $payment ? ($this->paymentMethodLabels[$payment->type] ?? 'Desconocido') : '--';
-
-        $subtotal = (float) ($order->subtotal ?? 0);
-        $taxesValue = (float) ($order->taxes_value ?? 0);
-        $discountValue = (float) ($order->discount_value ?? 0);
-
-        return [
-            $orderNumber,
-            $order->creation_date ? Carbon::parse($order->creation_date)->format('d/m/Y') : '--',
-            optional($order->client)->name ?? '--',
-            optional($order->client)->fleet ? 'Sí' : 'No',
-            $services ?: '--',
-            round($subtotal, 2),
-            round($taxesValue, 2),
-            round($discountValue, 2),
-            $paymentStatus,
-            $paymentMethod,
-            $this->statusLabels[$order->status] ?? 'Desconocido',
-            round((float) ($order->total ?? 0), 2),
-        ];
+        return array_values($this->reportService->row($order));
     }
 
     public function drawings(): array
@@ -126,10 +88,10 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                 $dataEndRow = 6 + $this->orders->count();
                 $summaryStartRow = $dataEndRow + 2;
 
-                $sheet->mergeCells('B1:L1');
-                $sheet->mergeCells('B2:L2');
-                $sheet->mergeCells('B3:L3');
-                $sheet->mergeCells('B4:L4');
+                $sheet->mergeCells('B1:Q1');
+                $sheet->mergeCells('B2:Q2');
+                $sheet->mergeCells('B3:Q3');
+                $sheet->mergeCells('B4:Q4');
 
                 $sheet->setCellValue('B1', $this->company['name'] ?? 'Lavadero Brillante');
                 $sheet->setCellValue('B2', $this->company['owner'] ?? '');
@@ -146,10 +108,10 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                 $sheet->getRowDimension(4)->setRowHeight(18);
                 $sheet->getRowDimension(5)->setRowHeight(10);
                 $sheet->freezePane('A7');
-                $sheet->setAutoFilter('A6:L6');
+                $sheet->setAutoFilter('A6:Q6');
                 $sheet->getSheetView()->setZoomScale(90);
 
-                $sheet->mergeCells("A{$summaryStartRow}:L{$summaryStartRow}");
+                $sheet->mergeCells("A{$summaryStartRow}:Q{$summaryStartRow}");
                 $sheet->setCellValue("A{$summaryStartRow}", 'RESUMEN DEL REPORTE');
                 $sheet->getStyle("A{$summaryStartRow}")->getFont()->setBold(true)->setSize(12);
                 $sheet->getStyle("A{$summaryStartRow}")->getFill()->setFillType(Fill::FILL_SOLID);
@@ -166,7 +128,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                 $row = $summaryStartRow + 1;
                 foreach ($summaryRows as $item) {
                     $sheet->mergeCells("A{$row}:E{$row}");
-                    $sheet->mergeCells("F{$row}:L{$row}");
+                    $sheet->mergeCells("F{$row}:Q{$row}");
                     $sheet->setCellValue("A{$row}", $item['label']);
                     $sheet->setCellValue("F{$row}", is_numeric($item['value'])
                         ? ($item['label'] === 'Órdenes'
@@ -174,17 +136,17 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                             : number_format((float) $item['value'], 2, ',', '.') . ' €')
                         : $item['value']);
 
-                    $sheet->getStyle("A{$row}:L{$row}")->getFont()->setBold(true);
-                    $sheet->getStyle("A{$row}:L{$row}")->getBorders()->getAllBorders()
+                    $sheet->getStyle("A{$row}:Q{$row}")->getFont()->setBold(true);
+                    $sheet->getStyle("A{$row}:Q{$row}")->getBorders()->getAllBorders()
                         ->setBorderStyle(Border::BORDER_THIN)
                         ->getColor()->setRGB('D1D5DB');
 
                     if ($item['label'] === 'Órdenes') {
-                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->setFillType(Fill::FILL_SOLID);
-                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->getStartColor()->setRGB('ECFDF5');
+                        $sheet->getStyle("A{$row}:Q{$row}")->getFill()->setFillType(Fill::FILL_SOLID);
+                        $sheet->getStyle("A{$row}:Q{$row}")->getFill()->getStartColor()->setRGB('ECFDF5');
                     } else {
-                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->setFillType(Fill::FILL_SOLID);
-                        $sheet->getStyle("A{$row}:L{$row}")->getFill()->getStartColor()->setRGB('F8FAFC');
+                        $sheet->getStyle("A{$row}:Q{$row}")->getFill()->setFillType(Fill::FILL_SOLID);
+                        $sheet->getStyle("A{$row}:Q{$row}")->getFill()->getStartColor()->setRGB('F8FAFC');
                     }
 
                     $row++;
@@ -202,6 +164,10 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => '000000']
                 ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
+                ],
             ],
         ];
     }
@@ -209,18 +175,23 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
     public function columnWidths(): array
     {
         return [
-            'A' => 16,
-            'B' => 12,
-            'C' => 22,
-            'D' => 10,
-            'E' => 38,
-            'F' => 14,
-            'G' => 12,
-            'H' => 15,
-            'I' => 14,
-            'J' => 16,
-            'K' => 14,
-            'L' => 14,
+            'A' => 16, // # Orden
+            'B' => 12, // Fecha
+            'C' => 24, // Cliente
+            'D' => 14, // Teléfono
+            'E' => 14, // Matrícula
+            'F' => 16, // Categoría
+            'G' => 9,  // Flota
+            'H' => 36, // Servicios
+            'I' => 40, // Observaciones
+            'J' => 20, // Nombre Lavad.
+            'K' => 13, // Subtotal
+            'L' => 11, // IVA
+            'M' => 15, // Descuento ($)
+            'N' => 13, // Pago
+            'O' => 15, // Método
+            'P' => 13, // Estado
+            'Q' => 13, // Total
         ];
     }
 }
