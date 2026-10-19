@@ -29,7 +29,7 @@ class OrderReportService
         'Flota',
         'Servicios',
         'Observaciones',
-        'Nombre Lavad.',
+        'Detallador',
         'Subtotal',
         'IVA',
         'Descuento ($)',
@@ -83,8 +83,11 @@ class OrderReportService
 
         return [
             'orden'       => $this->orderNumber($order),
-            'fecha'       => $order->creation_date
-                ? Carbon::parse($order->creation_date)->format('d/m/Y')
+            // Fecha del servicio (order.date), la misma fuente que pinta la
+            // tabla del informe y que usa el filtro por rango: no creation_date
+            // (instante de registro), para que tabla y exportación coincidan.
+            'fecha'       => $order->date
+                ? Carbon::parse($order->date)->format('d/m/Y')
                 : '--',
             'cliente'     => optional($client)->name ?? '--',
             'telefono'    => optional($client)->phone ?? '--',
