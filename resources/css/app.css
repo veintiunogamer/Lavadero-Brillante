@@ -1549,12 +1549,44 @@ hr {
     background-color: var(--color-azul-logo);
 }
 
+/* Combinación de filtros del sistema: amarillo tenue con iconos en azul
+   corporativo, el mismo lenguaje visual del bloque Consecutivo */
 .filter-section {
-    background: var(--color-azul-celeste-claro) !important;
+    background-color: var(--color-amarillo-tenue) !important;
+    background-image: linear-gradient(180deg, rgba(240, 170, 19, 0.12), rgba(240, 170, 19, 0.04));
+    border: 1px solid rgba(240, 170, 19, 0.35);
+    border-left: 4px solid var(--color-amarillo);
     border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(240, 170, 19, 0.12);
     padding: 1rem;
     margin-bottom: 1.5rem;
     margin-top: 1.5rem;
+}
+
+/* Iconos del título del filtro en azul corporativo (text-primary de
+   Bootstrap es un !important, se necesita !important para alinearlos) */
+.filter-section label i {
+    color: var(--color-azul-logo) !important;
+}
+
+/* Botón Exportar dentro de los filtros de Informes: outline amarillo
+   (interior tenue, borde más oscuro) con texto e icono en azul */
+.reports-export-btn {
+    background-color: var(--color-amarillo-tenue);
+    border: 2px solid var(--color-amarillo);
+    color: var(--color-azul-logo);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.45rem 1.5rem;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reports-export-btn:hover,
+.reports-export-btn:focus {
+    background-color: #fde4a4;
+    border-color: #d99508;
+    color: var(--color-azul-logo);
+    box-shadow: 0 2px 6px rgba(240, 170, 19, 0.35);
 }
 
 .filter-section > input, .filter-section > select {
@@ -2017,6 +2049,145 @@ hr {
     }
 
     .license-plate-quick-field .input {
+        transition: none;
+    }
+}
+
+/* =============================================================
+   CONSECUTIVO – CABECERA DEL FORMULARIO (solo presentación)
+   Replica el estilo del bloque de matrícula para el par
+   Serial/Número. Los inputs conservan sus atributos name,
+   id y class: FormDataCollector y orders/index.js los
+   localizan por input[name=...] y la validación no los toca
+   (usan la clase required, no required-field).
+   ============================================================= */
+
+.consecutive-quick {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 1rem 1.1rem;
+    text-align: left;
+    background-color: var(--color-amarillo-tenue);
+    background-image: linear-gradient(180deg, rgba(240, 170, 19, 0.12), rgba(240, 170, 19, 0.04));
+    border: 1px solid rgba(240, 170, 19, 0.35);
+    border-left: 4px solid var(--color-amarillo);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(240, 170, 19, 0.12);
+    animation: consecutive-quick-in 0.45s ease-out both;
+}
+
+.consecutive-quick-label {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    margin: 0;
+}
+
+.consecutive-quick-label-main {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+}
+
+.consecutive-quick-label-icon {
+    color: var(--color-azul-logo);
+    font-size: 0.95rem;
+}
+
+.consecutive-quick-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.55rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--color-azul-logo);
+    background-color: rgba(2, 91, 181, 0.1);
+    border: 1px solid rgba(2, 91, 181, 0.3);
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.consecutive-quick-field {
+    position: relative;
+}
+
+/* Normaliza el texto escrito: la clase base .required (heredada del diseño
+   original) pinta el contenido en rojo y 1.1em, lo que simula un error */
+.consecutive-quick-field .input {
+    color: var(--color-negro);
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Borde base del campo: cede ante los estados de validación (is-valid / is-invalid) */
+.consecutive-quick-field .input:not(.is-invalid):not(.is-valid) {
+    border: 1px solid rgba(2, 91, 181, 0.5) !important;
+}
+
+/* Enfoque con resplandor sutil en el azul corporativo */
+.consecutive-quick-field .input:focus {
+    border-color: var(--color-azul-logo) !important;
+    box-shadow: 0 0 0 0.28rem rgba(2, 91, 181, 0.18) !important;
+}
+
+/* El estado inválido conserva su rojo, también con foco */
+.consecutive-quick-field .input.is-invalid {
+    border-color: var(--color-rojo) !important;
+}
+
+.consecutive-quick-field .input.is-invalid:focus {
+    box-shadow: 0 0 0 0.28rem rgba(244, 67, 54, 0.18) !important;
+}
+
+.consecutive-quick-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.4rem;
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--color-azul-ceniza);
+}
+
+.consecutive-quick-hint i {
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--color-azul-logo);
+}
+
+/* Entrada única y discreta: sin repeticiones ni parpadeos */
+@keyframes consecutive-quick-in {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .consecutive-quick {
+        padding: 0.85rem 0.9rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .consecutive-quick {
+        animation: none;
+    }
+
+    .consecutive-quick-field .input {
         transition: none;
     }
 }
