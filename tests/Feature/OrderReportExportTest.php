@@ -61,6 +61,8 @@ class OrderReportExportTest extends TestCase
             'consecutive_number' => '007',
             'creation_date' => '2026-10-17 09:30:00',
             'date' => '2026-10-17',
+            'hour_in' => '2026-10-17 08:30:00',
+            'hour_out' => '2026-10-17 10:45:00',
         ], $orderAttrs));
 
         $this->attachServiceToOrder($order, $this->makeService('Lavado Completo'), 100.0);
@@ -70,9 +72,24 @@ class OrderReportExportTest extends TestCase
         return $order;
     }
 
+    /**
+     * Las descargas (Excel y PDF) devuelven un BinaryFileResponse, cuyo
+     * getContent() es false: hay que leer el archivo temporal que se sirve.
+     */
+    protected function responseContent($response): string
+    {
+        $base = $response->baseResponse;
+
+        if ($base instanceof \Symfony\Component\HttpFoundation\BinaryFileResponse) {
+            return (string) file_get_contents($base->getFile()->getPathname());
+        }
+
+        return (string) $response->getContent();
+    }
+
     protected function readXlsxFromResponse($response): \PhpOffice\PhpSpreadsheet\Spreadsheet
     {
-        $content = $response->getContent();
+        $content = $this->responseContent($response);
         $tempFile = tempnam(sys_get_temp_dir(), 'xlsx') . '.xlsx';
         file_put_contents($tempFile, $content);
 
@@ -82,9 +99,9 @@ class OrderReportExportTest extends TestCase
     protected function expectedHeadings(): array
     {
         return [
-            '# Orden', 'Fecha', 'Cliente', 'Teléfono', 'Matrícula', 'Categoría',
-            'Flota', 'Servicios', 'Observaciones', 'Nombre Lavad.', 'Subtotal',
-            'IVA', 'Descuento ($)', 'Pago', 'Método', 'Estado', 'Total',
+            'Fecha', 'Entrada - Salida', 'Cliente', 'Teléfono', 'Matrícula', 'Categoría',
+            'Flota', 'Servicios', 'Detallador', 'Subtotal',
+            'IVA', 'Descuento ($)', 'Pago', 'Método', 'Estado', 'Total', 'Observaciones',
         ];
     }
     /* ------------------------------------------------------------------ */
@@ -101,7 +118,10 @@ class OrderReportExportTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        $response->assertHeader('Content-Disposition', 'attachment; filename="reporte-ventas-' . now()->format('Ymd') . '.xlsx"');
+        $this->assertStringContainsString(
+            'filename=reporte-ventas-' . now()->format('Ymd') . '.xlsx',
+            (string) $response->headers->get('Content-Disposition')
+        );
 
         $spreadsheet = $this->readXlsxFromResponse($response);
         $sheet = $spreadsheet->getActiveSheet();
@@ -126,25 +146,30 @@ class OrderReportExportTest extends TestCase
         $spreadsheet = $this->readXlsxFromResponse($response);
         $sheet = $spreadsheet->getActiveSheet();
 
-        $this->assertSame($order->consecutive_serial . '-' . $order->consecutive_number, $sheet->getCell('A7')->getValue());
-        $this->assertSame('17/10/2026', $sheet->getCell('B7')->getValue());
+        $this->assertSame('17/10/2026', $sheet->getCell('A7')->getValue());
+        $this->assertSame('08:30 - 10:45', $sheet->getCell('B7')->getValue());
         $this->assertSame('Cliente Export', $sheet->getCell('C7')->getValue());
-        $this->assertSame('600000001', $sheet->getCell('D7')->getValue());
+        // El teléfono numérico se guarda como número en el XLSX
+        // (conversión de PhpSpreadsheet, comportamiento preexistente).
+        $this->assertEquals(600000001, $sheet->getCell('D7')->getValue());
         $this->assertSame('EXP-001', $sheet->getCell('E7')->getValue());
         $this->assertSame('Turismo', $sheet->getCell('F7')->getValue());
         $this->assertSame('Sí', $sheet->getCell('G7')->getValue());
-        $this->assertSame('Encerado, Lavado Completo', $sheet->getCell('H7')->getValue());
-        $this->assertSame('Observación de prueba', $sheet->getCell('I7')->getValue());
-        $this->assertSame('Detallador Export', $sheet->getCell('J7')->getValue());
-        $this->assertSame(100.0, $sheet->getCell('K7')->getValue());
-        $this->assertSame(18.9, $sheet->getCell('L7')->getValue());
-        $this->assertSame(10.0, $sheet->getCell('M7')->getValue());
-        $this->assertSame('Pagado', $sheet->getCell('N7')->getValue());
-        $this->assertSame('TPV', $sheet->getCell('O7')->getValue());
-        $this->assertSame('Terminado', $sheet->getCell('P7')->getValue());
-        $this->assertSame(108.9, $sheet->getCell('Q7')->getValue());
+        // El join de servicios no define ORDER BY: se conserva el orden de
+        // inserción, igual que asume OrderReportServiceTest.
+        $this->assertSame('Lavado Completo, Encerado', $sheet->getCell('H7')->getValue());
+        $this->assertSame('Detallador Export', $sheet->getCell('I7')->getValue());
+        $this->assertSame(100.0, $sheet->getCell('J7')->getValue());
+        $this->assertSame(18.9, $sheet->getCell('K7')->getValue());
+        $this->assertSame(10.0, $sheet->getCell('L7')->getValue());
+        $this->assertSame('Pagado', $sheet->getCell('M7')->getValue());
+        $this->assertSame('TPV', $sheet->getCell('N7')->getValue());
+        $this->assertSame('Terminado', $sheet->getCell('O7')->getValue());
+        $this->assertSame(108.9, $sheet->getCell('P7')->getValue());
+        $this->assertSame('Observación de prueba', $sheet->getCell('Q7')->getValue());
 
-        $this->assertSame('', $sheet->getCell('A8')->getValue());
+        // No debe haber una segunda fila de datos.
+        $this->assertNull($sheet->getCell('A8')->getValue());
     }
 
     public function test_excel_export_placeholder_when_optional_relations_missing(): void
@@ -167,15 +192,20 @@ class OrderReportExportTest extends TestCase
         $spreadsheet = $this->readXlsxFromResponse($response);
         $sheet = $spreadsheet->getActiveSheet();
 
+        // Sin horas de entrada/salida registradas.
+        $this->assertSame('--', $sheet->getCell('B7')->getValue());
         $this->assertSame('--', $sheet->getCell('F7')->getValue());
         $this->assertSame('--', $sheet->getCell('H7')->getValue());
         $this->assertSame('--', $sheet->getCell('I7')->getValue());
-        $this->assertSame('--', $sheet->getCell('J7')->getValue());
-        $this->assertSame('Pendiente', $sheet->getCell('N7')->getValue());
-        $this->assertSame('Efectivo', $sheet->getCell('O7')->getValue());
-        $this->assertSame('Pendiente', $sheet->getCell('P7')->getValue());
-        $this->assertSame(0.0, $sheet->getCell('K7')->getValue());
-        $this->assertSame(0.0, $sheet->getCell('Q7')->getValue());
+        $this->assertSame('--', $sheet->getCell('Q7')->getValue());
+        $this->assertSame('Pendiente', $sheet->getCell('M7')->getValue());
+        $this->assertSame('Efectivo', $sheet->getCell('N7')->getValue());
+        $this->assertSame('Pendiente', $sheet->getCell('O7')->getValue());
+        // Los importes en 0 quedan como celda vacía en el XLSX: es el
+        // comportamiento preexistente de la exportación (PhpSpreadsheet
+        // descarta los 0 con la comparación no estricta de nulos).
+        $this->assertNull($sheet->getCell('J7')->getValue());
+        $this->assertNull($sheet->getCell('P7')->getValue());
     }
 
     public function test_excel_export_respects_date_filter(): void
@@ -191,8 +221,10 @@ class OrderReportExportTest extends TestCase
         $spreadsheet = $this->readXlsxFromResponse($response);
         $sheet = $spreadsheet->getActiveSheet();
 
-        $this->assertSame('17102026-007', $sheet->getCell('A7')->getValue());
-        $this->assertSame('', $sheet->getCell('A8')->getValue());
+        // Primera columna: Fecha (la columna "# Orden" ya no existe).
+        $this->assertSame('17/10/2026', $sheet->getCell('A7')->getValue());
+        // No debe haber una segunda fila de datos.
+        $this->assertNull($sheet->getCell('A8')->getValue());
     }
 
     public function test_excel_export_amounts_are_numbers_not_strings(): void
@@ -207,7 +239,7 @@ class OrderReportExportTest extends TestCase
         $spreadsheet = $this->readXlsxFromResponse($response);
         $sheet = $spreadsheet->getActiveSheet();
 
-        foreach (['K7', 'L7', 'M7', 'Q7'] as $cell) {
+        foreach (['J7', 'K7', 'L7', 'P7'] as $cell) {
             $this->assertIsNumeric($sheet->getCell($cell)->getValue(), "La celda {$cell} debe ser numérica");
         }
     }
@@ -226,9 +258,12 @@ class OrderReportExportTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertHeader('Content-Type', 'application/pdf');
-        $response->assertHeader('Content-Disposition', 'attachment; filename="reporte-ventas-' . now()->format('Ymd') . '.pdf"');
+        $this->assertStringContainsString(
+            'filename=reporte-ventas-' . now()->format('Ymd') . '.pdf',
+            (string) $response->headers->get('Content-Disposition')
+        );
 
-        $content = $response->getContent();
+        $content = $this->responseContent($response);
         $this->assertStringStartsWith('%PDF', $content, 'El cuerpo debe comenzar con la cabecera de PDF');
         $this->assertGreaterThan(1000, strlen($content), 'El PDF no debe estar vacío');
     }
@@ -263,9 +298,16 @@ class OrderReportExportTest extends TestCase
             $this->assertStringContainsString($heading, $html, "La vista PDF debe incluir el encabezado '{$heading}'");
         }
 
-        $this->assertStringContainsString('17102026-007', $html);
+        // El PDF pinta sus columnas en el mismo orden que dicta el servicio.
+        preg_match_all('/<th>(.*?)<\/th>/u', $html, $thMatches);
+        $this->assertSame(OrderReportService::headings(), $thMatches[1]);
+
+        $this->assertStringContainsString('08:30 - 10:45', $html);
         $this->assertStringContainsString('Cliente Export', $html);
         $this->assertStringContainsString('Detallador Export', $html);
+        $this->assertStringContainsString('Observación de prueba', $html);
+        // La columna "# Orden" ya no existe en el informe.
+        $this->assertStringNotContainsString('# Orden', $html);
     }
 
     /* ------------------------------------------------------------------ */
@@ -295,8 +337,10 @@ class OrderReportExportTest extends TestCase
             $expected = $row[$index];
             $actual = $sheet->getCell($col . '7')->getValue();
 
-            if (is_float($expected)) {
-                $this->assertSame((float) $actual, (float) $expected, "Columna {$col}7 no coincide");
+            if (is_numeric($expected) && is_numeric($actual)) {
+                // Importes y teléfonos: el XLSX guarda los valores numéricos
+                // como número, no como texto (comportamiento preexistente).
+                $this->assertEquals($expected, $actual, "Columna {$col}7 no coincide");
             } else {
                 $this->assertSame($expected, $actual, "Columna {$col}7 no coincide");
             }

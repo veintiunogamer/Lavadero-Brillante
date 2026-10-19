@@ -17,16 +17,15 @@ class OrderReportServiceTest extends TestCase
     public function test_headings_contain_the_seventeen_required_fields_in_order(): void
     {
         $this->assertSame([
-            '# Orden',
             'Fecha',
+            'Entrada - Salida',
             'Cliente',
             'Teléfono',
             'Matrícula',
             'Categoría',
             'Flota',
             'Servicios',
-            'Observaciones',
-            'Nombre Lavad.',
+            'Detallador',
             'Subtotal',
             'IVA',
             'Descuento ($)',
@@ -34,6 +33,7 @@ class OrderReportServiceTest extends TestCase
             'Método',
             'Estado',
             'Total',
+            'Observaciones',
         ], OrderReportService::headings());
     }
 
@@ -67,6 +67,9 @@ class OrderReportServiceTest extends TestCase
             // la tabla del informe y con el filtro por rango.
             'date' => '2026-10-17',
             'creation_date' => '2026-10-16 23:50:00',
+            // Horas reales de entrada y salida, distintas de creation_date.
+            'hour_in' => '2026-10-17 08:30:00',
+            'hour_out' => '2026-10-17 10:45:00',
         ]);
         $this->attachServiceToOrder($order, $service, 100.0);
         $this->makePayment($order, ['type' => 2, 'status' => 3, 'total' => 108.9]);
@@ -74,13 +77,13 @@ class OrderReportServiceTest extends TestCase
         $row = $this->reportService()->row($this->loadOrder($order->id));
 
         $this->assertSame([
-            'orden', 'fecha', 'cliente', 'telefono', 'matricula', 'categoria',
-            'flota', 'servicios', 'observaciones', 'nombre_lavad', 'subtotal',
-            'iva', 'descuento', 'pago', 'metodo', 'estado', 'total',
+            'fecha', 'entrada_salida', 'cliente', 'telefono', 'matricula', 'categoria',
+            'flota', 'servicios', 'nombre_lavad', 'subtotal',
+            'iva', 'descuento', 'pago', 'metodo', 'estado', 'total', 'observaciones',
         ], array_keys($row));
 
-        $this->assertSame('17102026-005', $row['orden']);
         $this->assertSame('17/10/2026', $row['fecha']);
+        $this->assertSame('08:30 - 10:45', $row['entrada_salida']);
         $this->assertSame('María Pérez', $row['cliente']);
         $this->assertSame('612345678', $row['telefono']);
         $this->assertSame('AB123CD', $row['matricula']);
@@ -137,6 +140,7 @@ class OrderReportServiceTest extends TestCase
 
         $row = $this->reportService()->row($this->loadOrder($order->id));
 
+        $this->assertSame('--', $row['entrada_salida']);
         $this->assertSame('--', $row['cliente']);
         $this->assertSame('--', $row['telefono']);
         $this->assertSame('--', $row['matricula']);
@@ -146,6 +150,30 @@ class OrderReportServiceTest extends TestCase
         $this->assertSame('--', $row['nombre_lavad']);
         $this->assertSame('--', $row['pago']);
         $this->assertSame('--', $row['metodo']);
+    }
+
+    public function test_row_handles_missing_or_partial_entry_exit_hours(): void
+    {
+        $client = $this->makeClient();
+
+        $withoutHours = $this->makeOrder(['client_id' => $client->id]);
+        $onlyEntry = $this->makeOrder([
+            'client_id' => $client->id,
+            'hour_in' => '2026-10-17 08:30:00',
+            'hour_out' => null,
+        ]);
+
+        // Sin horas registradas: un único placeholder, sin inventar valores.
+        $this->assertSame(
+            '--',
+            $this->reportService()->row($this->loadOrder($withoutHours->id))['entrada_salida']
+        );
+
+        // Solo hora de entrada: cada hueco conserva su posición.
+        $this->assertSame(
+            '08:30 - --',
+            $this->reportService()->row($this->loadOrder($onlyEntry->id))['entrada_salida']
+        );
     }
 
     public function test_row_uses_stored_amounts_without_recalculating_them(): void
@@ -216,10 +244,14 @@ class OrderReportServiceTest extends TestCase
     {
         $client = $this->makeClient();
 
-        $simple = $this->makeOrder(['client_id' => $client->id, 'creation_date' => now()->subMinute()]);
+        $simple = $this->makeOrder([
+            'client_id' => $client->id,
+            'creation_date' => now()->subMinute(),
+            'date' => '2026-10-17',
+        ]);
         $this->attachServiceToOrder($simple, $this->makeService('Lavado Exterior'), 25.0);
 
-        $complex = $this->makeOrder(['client_id' => $client->id]);
+        $complex = $this->makeOrder(['client_id' => $client->id, 'date' => '2026-10-18']);
         $this->attachServiceToOrder($complex, $this->makeService('Lavado Exterior'), 25.0);
         $this->attachServiceToOrder($complex, $this->makeService('Encerado Rápido'), 15.0);
         $this->attachServiceToOrder($complex, $this->makeService('Aspirado', 'Extras'), 8.0);
@@ -231,9 +263,8 @@ class OrderReportServiceTest extends TestCase
         $rows = $orders->map(fn ($order) => $this->reportService()->row($order));
 
         $this->assertCount(2, $rows);
-        $this->assertSame(
-            [$this->orderNumber($simple), $this->orderNumber($complex)],
-            $rows->pluck('orden')->all()
-        );
+        // Cada orden genera una única fila, identificable ahora por su fecha
+        // (la columna "# Orden" ya no forma parte del informe).
+        $this->assertSame(['17/10/2026', '18/10/2026'], $rows->pluck('fecha')->all());
     }
 }
