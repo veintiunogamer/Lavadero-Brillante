@@ -101,10 +101,10 @@
             vertical-align: middle;
         }
 
+        .sales-table td:nth-child(10),
         .sales-table td:nth-child(11),
         .sales-table td:nth-child(12),
-        .sales-table td:nth-child(13),
-        .sales-table td:nth-child(17) {
+        .sales-table td:nth-child(16) {
             text-align: right;
         }
 
@@ -161,39 +161,39 @@
         }
 
         .sales-table th:nth-child(1),
-        .sales-table td:nth-child(1) { width: 6%; }
+        .sales-table td:nth-child(1) { width: 6%; }   /* Fecha */
         .sales-table th:nth-child(2),
-        .sales-table td:nth-child(2) { width: 5%; }
+        .sales-table td:nth-child(2) { width: 8%; }   /* Entrada - Salida */
         .sales-table th:nth-child(3),
-        .sales-table td:nth-child(3) { width: 7%; }
+        .sales-table td:nth-child(3) { width: 6%; }   /* Cliente */
         .sales-table th:nth-child(4),
-        .sales-table td:nth-child(4) { width: 6%; }
+        .sales-table td:nth-child(4) { width: 6%; }   /* Teléfono */
         .sales-table th:nth-child(5),
-        .sales-table td:nth-child(5) { width: 6%; }
+        .sales-table td:nth-child(5) { width: 6%; }   /* Matrícula */
         .sales-table th:nth-child(6),
-        .sales-table td:nth-child(6) { width: 6%; }
+        .sales-table td:nth-child(6) { width: 6%; }   /* Categoría */
         .sales-table th:nth-child(7),
-        .sales-table td:nth-child(7) { width: 4%; }
+        .sales-table td:nth-child(7) { width: 4%; }   /* Flota */
         .sales-table th:nth-child(8),
-        .sales-table td:nth-child(8) { width: 10%; }
+        .sales-table td:nth-child(8) { width: 9%; }   /* Servicios */
         .sales-table th:nth-child(9),
-        .sales-table td:nth-child(9) { width: 11%; }
+        .sales-table td:nth-child(9) { width: 5.5%; } /* Detallador */
         .sales-table th:nth-child(10),
-        .sales-table td:nth-child(10) { width: 6.5%; }
+        .sales-table td:nth-child(10) { width: 5%; }  /* Subtotal */
         .sales-table th:nth-child(11),
-        .sales-table td:nth-child(11) { width: 5%; }
+        .sales-table td:nth-child(11) { width: 4%; }  /* IVA */
         .sales-table th:nth-child(12),
-        .sales-table td:nth-child(12) { width: 4%; }
+        .sales-table td:nth-child(12) { width: 4.5%; } /* Descuento ($) */
         .sales-table th:nth-child(13),
-        .sales-table td:nth-child(13) { width: 4.5%; }
+        .sales-table td:nth-child(13) { width: 4.5%; } /* Pago */
         .sales-table th:nth-child(14),
-        .sales-table td:nth-child(14) { width: 4.5%; }
+        .sales-table td:nth-child(14) { width: 5%; }  /* Método */
         .sales-table th:nth-child(15),
-        .sales-table td:nth-child(15) { width: 5%; }
+        .sales-table td:nth-child(15) { width: 4.5%; } /* Estado */
         .sales-table th:nth-child(16),
-        .sales-table td:nth-child(16) { width: 4.5%; }
+        .sales-table td:nth-child(16) { width: 5%; }  /* Total */
         .sales-table th:nth-child(17),
-        .sales-table td:nth-child(17) { width: 5%; }
+        .sales-table td:nth-child(17) { width: 11%; } /* Observaciones */
     </style>
 
 </head>

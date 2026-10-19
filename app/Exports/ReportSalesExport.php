@@ -175,23 +175,23 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
     public function columnWidths(): array
     {
         return [
-            'A' => 26, // # Orden
-            'B' => 12, // Fecha
+            'A' => 12, // Fecha
+            'B' => 20, // Entrada - Salida
             'C' => 30, // Cliente
             'D' => 14, // Teléfono
             'E' => 14, // Matrícula
             'F' => 26, // Categoría
             'G' => 9,  // Flota
             'H' => 50, // Servicios
-            'I' => 60, // Observaciones
-            'J' => 20, // Detallador
-            'K' => 13, // Subtotal
-            'L' => 11, // IVA
-            'M' => 15, // Descuento ($)
-            'N' => 13, // Pago
-            'O' => 15, // Método
-            'P' => 13, // Estado
-            'Q' => 13, // Total
+            'I' => 20, // Detallador
+            'J' => 13, // Subtotal
+            'K' => 11, // IVA
+            'L' => 15, // Descuento ($)
+            'M' => 13, // Pago
+            'N' => 15, // Método
+            'O' => 13, // Estado
+            'P' => 13, // Total
+            'Q' => 60, // Observaciones
         ];
     }
 }

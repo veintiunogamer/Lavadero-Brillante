@@ -299,6 +299,8 @@ class ReportController extends Controller
                 'consecutive_number',
                 'creation_date',
                 'date',
+                'hour_in',
+                'hour_out',
                 'subtotal',
                 'discount_value',
                 'taxes_value',
