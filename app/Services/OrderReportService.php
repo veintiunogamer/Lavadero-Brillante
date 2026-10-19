@@ -20,15 +20,14 @@ class OrderReportService
      * Encabezados del informe, en el orden exacto requerido.
      */
     public const HEADINGS = [
-        '# Orden',
         'Fecha',
+        'Entrada - Salida',
         'Cliente',
         'Teléfono',
         'Matrícula',
         'Categoría',
         'Flota',
         'Servicios',
-        'Observaciones',
         'Detallador',
         'Subtotal',
         'IVA',
@@ -37,6 +36,7 @@ class OrderReportService
         'Método',
         'Estado',
         'Total',
+        'Observaciones',
     ];
 
     /**
@@ -72,6 +72,9 @@ class OrderReportService
      *   pintarlos. Son los valores ya guardados en la orden: no se recalculan.
      * - Las relaciones opcionales inexistentes se muestran como '--'.
      * - Los servicios se unen con ", " para no perder ninguno.
+     * - "entrada_salida" muestra las horas reales de la orden
+     *   (order.hour_in / order.hour_out) en formato 24 h ("08:30 - 10:45");
+     *   lo que falte se muestra como '--'.
      *
      * @return array<string, mixed> Filas con las claves en orden de self::HEADINGS
      */
@@ -82,20 +85,21 @@ class OrderReportService
         $observations = trim((string) ($order->vehicle_notes ?? ''));
 
         return [
-            'orden'       => $this->orderNumber($order),
             // Fecha del servicio (order.date), la misma fuente que pinta la
             // tabla del informe y que usa el filtro por rango: no creation_date
             // (instante de registro), para que tabla y exportación coincidan.
             'fecha'       => $order->date
                 ? Carbon::parse($order->date)->format('d/m/Y')
                 : '--',
+            // Horas reales de entrada y salida de la orden (no la fecha de
+            // creación del registro).
+            'entrada_salida' => $this->entryExitHours($order),
             'cliente'     => optional($client)->name ?? '--',
             'telefono'    => optional($client)->phone ?? '--',
             'matricula'   => optional($client)->license_plaque ?? '--',
             'categoria'   => optional($order->vehicleType)->name ?? '--',
             'flota'       => $client ? ($client->fleet ? 'Sí' : 'No') : '--',
             'servicios'   => $order->services->pluck('name')->filter()->join(', ') ?: '--',
-            'observaciones' => $observations !== '' ? $observations : '--',
             // Detallador asignado a la orden (order.user_id → users.name)
             'nombre_lavad' => optional($order->user)->name ?? '--',
             'subtotal'    => round((float) ($order->subtotal ?? 0), 2),
@@ -109,17 +113,45 @@ class OrderReportService
                 : '--',
             'estado'      => $this->statusLabels[$order->status] ?? 'Desconocido',
             'total'       => round((float) ($order->total ?? 0), 2),
+            // Observaciones al final del informe.
+            'observaciones' => $observations !== '' ? $observations : '--',
         ];
     }
 
     /**
-     * Número de orden: consecutivo del sistema o, en su defecto, las primeras
-     * letras del UUID.
+     * Horas de entrada y salida de la orden en una única columna
+     * ("08:30 - 10:45"), con el mismo formato de 24 horas que usa el resto
+     * del sistema (factura PDF, validaciones del formulario).
+     *
+     * Si falta una de las dos horas se conserva la posición con '--'; si
+     * faltan ambas, se muestra un único '--'. No se inventan valores.
      */
-    private function orderNumber(Order $order): string
+    private function entryExitHours(Order $order): string
     {
-        return $order->consecutive_serial && $order->consecutive_number
-            ? $order->consecutive_serial . '-' . $order->consecutive_number
-            : strtoupper(substr($order->id, 0, 8));
+        $entry = $this->formatHour($order->hour_in);
+        $exit = $this->formatHour($order->hour_out);
+
+        if ($entry === '--' && $exit === '--') {
+            return '--';
+        }
+
+        return $entry . ' - ' . $exit;
+    }
+
+    /**
+     * Formatea una hora (order.hour_in / order.hour_out) como "H:i".
+     * Valores vacíos o no interpretables: '--'.
+     */
+    private function formatHour(mixed $value): string
+    {
+        if ($value === null || trim((string) $value) === '') {
+            return '--';
+        }
+
+        try {
+            return Carbon::parse($value)->format('H:i');
+        } catch (\Throwable $e) {
+            return '--';
+        }
     }
 }
