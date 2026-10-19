@@ -72,7 +72,7 @@
                             Filtros de búsqueda
                         </label>
 
-                        <button class="btn btn-success text-white float-end" @click="openExportModal()">
+                        <button class="btn reports-export-btn float-end" @click="openExportModal()">
                             <i class="fa-solid fa-download me-1"></i>
                             Exportar
                         </button>
@@ -304,7 +304,7 @@
                             Filtros de búsqueda
                         </label>
 
-                        <button class="btn btn-success text-white float-end" @click="openExportModal()">
+                        <button class="btn reports-export-btn float-end" @click="openExportModal()">
                             <i class="fa-solid fa-download me-1"></i>
                             Exportar
                         </button>
