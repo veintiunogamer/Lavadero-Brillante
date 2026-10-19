@@ -61,7 +61,12 @@ class OrderReportServiceTest extends TestCase
             'status' => 2,
             'consecutive_serial' => '17102026',
             'consecutive_number' => '005',
-            'creation_date' => '2026-10-17 09:30:00',
+            // Orden creada el 16/10 para un servicio el 17/10: la columna
+            // "Fecha" debe reflejar la fecha del servicio (order.date) y no
+            // el instante de registro (creation_date), para que coincida con
+            // la tabla del informe y con el filtro por rango.
+            'date' => '2026-10-17',
+            'creation_date' => '2026-10-16 23:50:00',
         ]);
         $this->attachServiceToOrder($order, $service, 100.0);
         $this->makePayment($order, ['type' => 2, 'status' => 3, 'total' => 108.9]);

@@ -80,20 +80,37 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="fw-bold d-flex justify-content-between align-items-center gap-2">
-                            <span>Matrícula <span class="required">*</span></span>
-                            <small id="license-plate-info" class="text-success text-nowrap" style="display: none;">
-                                <i class="fa-solid fa-check-circle"></i> Cliente encontrado
-                            </small>
-                        </label>
-                        <input type="text"
-                            class="input form-control required-field license-plate-order border-primary"
-                            name="license_plaque"
-                            id="license-plaque-input"
-                            placeholder="Ej: 1234 ABC"
-                            data-field-name="Matrícula"
-                            maxlength="7"
-                            style="text-transform: uppercase;">
+                        <!-- Acceso rápido: punto de inicio para localizar al cliente por matrícula -->
+                        <div class="license-plate-quick">
+                            <label class="fw-bold license-plate-quick-label" for="license-plaque-input">
+                                <span class="license-plate-quick-label-main">
+                                    <i class="fa-solid fa-magnifying-glass license-plate-quick-label-icon" aria-hidden="true"></i>
+                                    <span>Matrícula <span class="required">*</span></span>
+                                    <span class="license-plate-quick-chip">
+                                        <i class="fa-solid fa-bolt" aria-hidden="true"></i> Acceso rápido
+                                    </span>
+                                </span>
+                                <small id="license-plate-info" class="text-success text-nowrap" style="display: none;">
+                                    <i class="fa-solid fa-check-circle"></i> Cliente encontrado
+                                </small>
+                            </label>
+                            <div class="license-plate-quick-field">
+                                <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon" aria-hidden="true"></i>
+                                <input type="text"
+                                    class="input form-control required-field license-plate-order border-primary"
+                                    name="license_plaque"
+                                    id="license-plaque-input"
+                                    placeholder="Ej: 1234 ABC"
+                                    data-field-name="Matrícula"
+                                    maxlength="7"
+                                    aria-describedby="license-plate-hint"
+                                    style="text-transform: uppercase;">
+                            </div>
+                            <p class="license-plate-quick-hint" id="license-plate-hint">
+                                <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                                Ingresa la matrícula del vehículo para encontrar rápidamente al cliente
+                            </p>
+                        </div>
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
