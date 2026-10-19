@@ -830,8 +830,9 @@
                                     <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`
                                 ">
                                     </td>
-                                    <td
-                                        x-html="order.client ? order.client.name + '<br>' + order.client.license_plaque : '--'">
+                                    <td>
+                                        <div x-text="order.client ? order.client.name : '--'"></div>
+                                        <div class="mt-1" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
                                     </td>
                                     <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                                     <td>

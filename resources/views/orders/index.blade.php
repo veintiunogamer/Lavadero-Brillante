@@ -187,7 +187,10 @@
                                 <span class='badge bg-success'>${formatTime(order.hour_in)}</span> -
                                 <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`
                             ">
-                            <td x-html="order.client ? order.client.name + '<br>' + order.client.license_plaque : '--'"></td>
+                            <td>
+                                <span x-text="order.client?.name || '--'"></span>
+                                <div x-show="order.client?.license_plaque" x-html="licensePlate(order.client?.license_plaque)"></div>
+                            </td>
                             <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                             <td>
                                 <template x-for="service in order.services" :key="service.id">

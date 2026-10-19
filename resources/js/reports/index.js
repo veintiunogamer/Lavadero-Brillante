@@ -1,5 +1,8 @@
 // Reports Module - Alpine.js component for reports view
 
+import { renderLicensePlate } from '../orders/utils/licensePlate.js';
+import { formatTime as formatTimeHelper } from '../orders/utils/formatters.js';
+
 function reportsModuleActive() {
     return !!document.getElementById('reports-root');
 }
@@ -410,6 +413,28 @@ window.reportsApp = function() {
                 month: '2-digit',
                 year: 'numeric'
             });
+
+        },
+
+        /**
+         * Formatea una hora en formato 24h (HH:MM)
+         * @param {Date|string} time
+         * @returns {string}
+         */
+        formatTime(time) {
+
+            return formatTimeHelper(time);
+
+        },
+
+        /**
+         * Renderiza la matrícula como placa europea (badge)
+         * @param {string} plate
+         * @returns {string} - HTML de la placa
+         */
+        licensePlate(plate) {
+
+            return renderLicensePlate(plate);
 
         },
 

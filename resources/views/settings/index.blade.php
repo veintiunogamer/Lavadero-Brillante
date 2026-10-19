@@ -549,7 +549,7 @@
                             <tr :class="client.status ? '' : 'table-secondary'">
                                 <td x-text="client.name"></td>
                                 <td x-text="client.phone || '--'"></td>
-                                <td x-text="client.license_plaque || '--'"></td>
+                                <td x-html="licensePlate(client.license_plaque)"></td>
                                 <td x-text="client.brand || '--'"></td>
                                 <td x-text="client.fleet ? 'Sí' : 'No'"></td>
                                 <td>
