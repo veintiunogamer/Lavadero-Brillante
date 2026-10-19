@@ -4,7 +4,7 @@
 /public/js/*.js
 /public/css/*.css
 /public/mix-manifest.json
-/public/build
+/public/build/*
 /vendor
 /.env
 /.env.*
@@ -18,6 +18,5 @@ Homestead.json
 /storage/framework/sessions/*
 /storage/framework/views/*
 /storage/logs/*
-public/build/
-/phpunit.result.cache
+/.phpunit.result.cache
 !/public/build/manifest.json
