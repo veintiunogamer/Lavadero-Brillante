@@ -16,6 +16,7 @@ import { FormDataCollector } from './modules/form/FormDataCollector.js';
 import { FormSubmitHandler } from './modules/form/FormSubmitHandler.js';
 import { apiGet, apiPost, apiPut, apiPatch } from './utils/api.js';
 import * as formatters from './utils/formatters.js';
+import { renderLicensePlate } from './utils/licensePlate.js';
 
 // Flag para prevenir inicialización múltiple
 let isInitialized = false;
@@ -1116,7 +1117,14 @@ function createOrderFormApp() {
         formatTime: (time) => formatters.formatTime(time),
         formatCurrency: (amount) => formatters.formatCurrency(amount),
         getStatusText: (status) => formatters.getStatusText(status),
-        getStatusBadge: (status) => formatters.getStatusBadge(status)
+        getStatusBadge: (status) => formatters.getStatusBadge(status),
+
+        /**
+         * Renderiza la matrícula como placa europea (badge)
+         * @param {string} plate
+         * @returns {string} - HTML de la placa
+         */
+        licensePlate: (plate) => renderLicensePlate(plate)
 
     };
 }
@@ -1268,7 +1276,14 @@ function createOrderEditApp() {
         formatTime: (time) => formatters.formatTime(time),
         formatCurrency: (amount) => formatters.formatCurrency(amount),
         getStatusText: (status) => formatters.getStatusText(status),
-        getStatusBadge: (status) => formatters.getStatusBadge(status)
+        getStatusBadge: (status) => formatters.getStatusBadge(status),
+
+        /**
+         * Renderiza la matrícula como placa europea (badge)
+         * @param {string} plate
+         * @returns {string} - HTML de la placa
+         */
+        licensePlate: (plate) => renderLicensePlate(plate)
     };
 }
 

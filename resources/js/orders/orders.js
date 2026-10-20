@@ -3,6 +3,8 @@
  * Este archivo maneja la lógica de la vista de agendamiento con Alpine.js
  */
 
+import { renderLicensePlate } from './utils/licensePlate.js';
+
 // Verificar si estamos en la vista de agendamiento
 function agendamientoModuleActive() {
     return !!document.getElementById('agendamiento-root');
@@ -475,6 +477,17 @@ window.agendamientoApp = function() {
                 style: 'currency',
                 currency: 'EUR'
             }).format(amount);
+
+        },
+
+        /**
+         * Renderiza la matrícula como placa europea (badge)
+         * @param {string} plate
+         * @returns {string} - HTML de la placa
+         */
+        licensePlate(plate) {
+
+            return renderLicensePlate(plate);
 
         },
 

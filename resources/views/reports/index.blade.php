@@ -172,7 +172,6 @@
 
                         <thead>
                             <tr>
-                                <th># Orden</th>
                                 <th>Fecha</th>
                                 <th>Cliente</th>
                                 <th>Flota</th>
@@ -195,9 +194,17 @@
                             <template x-for="order in getPaginatedData('sales')" :key="order.id">
 
                                 <tr>
-                                    <td x-text="formatOrderNumber(order)"></td>
-                                    <td x-text="order.date"></td>
-                                    <td x-text="order.client ? order.client.name : '--'"></td>
+                                    <td>
+                                        <div x-text="order.date"></div>
+                                        <div class="mt-1 d-flex flex-wrap gap-1">
+                                            <span class="badge bg-success" x-text="formatTime(order.hour_in)"></span>
+                                            <span class="badge bg-danger" x-text="formatTime(order.hour_out)"></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div x-text="order.client ? order.client.name : '--'"></div>
+                                        <div class="mt-1" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
+                                    </td>
                                     <td x-text="order.client && order.client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td>
                                         <template x-if="order.services && order.services.length">
@@ -233,44 +240,58 @@
 
                         </tbody>
 
+                        <tfoot x-show="!loadingSales && getFilteredData('sales').length > 0">
+                            <tr>
+                                <td colspan="11" class="reports-tfoot__cell">
+
+                                    <div class="reports-tfoot__inner">
+
+                                        <!-- Totales por método de pago -->
+                                        <div class="reports-tfoot__metrics">
+
+                                            <div class="reports-tfoot__metric">
+                                                <span class="reports-tfoot__label">Efectivo</span>
+                                                <span class="reports-tfoot__value" x-text="formatCurrency(getSalesSummary().cash)"></span>
+                                            </div>
+
+                                            <div class="reports-tfoot__metric">
+                                                <span class="reports-tfoot__label">TPV</span>
+                                                <span class="reports-tfoot__value" x-text="formatCurrency(getSalesSummary().card)"></span>
+                                            </div>
+
+                                            <div class="reports-tfoot__metric">
+                                                <span class="reports-tfoot__label">Transferencia</span>
+                                                <span class="reports-tfoot__value" x-text="formatCurrency(getSalesSummary().transfer)"></span>
+                                            </div>
+
+                                            <div class="reports-tfoot__metric reports-tfoot__metric--total">
+                                                <span class="reports-tfoot__label">Total facturado</span>
+                                                <span class="reports-tfoot__value" x-text="formatCurrency(getSalesSummary().total)"></span>
+                                            </div>
+
+                                            <div class="reports-tfoot__metric">
+                                                <span class="reports-tfoot__label">Órdenes</span>
+                                                <span class="reports-tfoot__value" x-text="getSalesSummary().orders"></span>
+                                            </div>
+
+                                        </div>
+
+                                        <!-- paginador -->
+                                        @include('partials._pagination', [
+                                            'current' => 'currentPage.sales',
+                                            'total' => "getTotalPages('sales')",
+                                            'go' => "(p) => goToPage('sales', p)",
+                                            'class' => 'app-pagination--footer',
+                                        ])
+
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </tfoot>
+
                     </table>
 
-                </div>
-
-                <div x-show="!loadingSales && getFilteredData('sales').length > 0" class="reports-footer d-flex justify-content-between bg-mint-green align-items-center flex-wrap gap-2">
-
-                    <!-- Resumen & Totales -->
-                    <div class="fw-bold">
-                        Efectivo:
-                        <strong x-text="formatCurrency(getSalesSummary().cash)"></strong>
-                    </div>
-
-                    <div class="fw-bold">
-                        TPV:
-                        <strong x-text="formatCurrency(getSalesSummary().card)"></strong>
-                    </div>
-
-                    <div class="fw-bold">
-                        Transferencia:
-                        <strong x-text="formatCurrency(getSalesSummary().transfer)"></strong>
-                    </div>
-
-                    <div class="fw-bold">
-                        Total facturado:
-                        <strong x-text="formatCurrency(getSalesSummary().total)"></strong>
-                    </div>
-
-                    <div class="fw-bold">
-                        Órdenes: <span x-text="getSalesSummary().orders"></span>
-                    </div>
-
-                    <!-- paginador -->
-                    @include('partials._pagination', [
-                        'current' => 'currentPage.sales',
-                        'total' => "getTotalPages('sales')",
-                        'go' => "(p) => goToPage('sales', p)",
-                        'class' => 'app-pagination--footer',
-                    ])
                 </div>
 
             </div>
@@ -365,7 +386,7 @@
                                 <tr>
                                     <td x-text="client.name"></td>
                                     <td x-text="client.phone || '--'"></td>
-                                    <td x-text="client.license_plaque || '--'"></td>
+                                    <td x-html="licensePlate(client.license_plaque)"></td>
                                     <td x-text="client.brand || '--'"></td>
                                     <td x-text="client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td x-text="client.orders_count"></td>

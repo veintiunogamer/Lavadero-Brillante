@@ -104,6 +104,59 @@ class OrderReportExportTest extends TestCase
             'IVA', 'Descuento ($)', 'Pago', 'Método', 'Estado', 'Total', 'Observaciones',
         ];
     }
+    public function test_reports_view_has_no_order_number_column_and_renders_plate(): void
+    {
+        $this->actAsAdmin();
+
+        $response = $this->get('/reports');
+
+        $response->assertStatus(200);
+
+        $html = $response->getContent();
+
+        // La columna "# Orden" se ha retirado de la tabla de ventas.
+        $this->assertStringNotContainsString('# Orden', $html);
+        $this->assertStringNotContainsString('formatOrderNumber(order)', $html);
+
+        // Se muestran la placa del cliente y las horas de entrada/salida.
+        $this->assertStringContainsString('licensePlate(order.client ? order.client.license_plaque : null)', $html);
+        $this->assertStringContainsString('licensePlate(client.license_plaque)', $html);
+        $this->assertStringContainsString('formatTime(order.hour_in)', $html);
+        $this->assertStringContainsString('formatTime(order.hour_out)', $html);
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* JSON del endpoint de ventas                                       */
+    /* ------------------------------------------------------------------ */
+
+    public function test_sales_endpoint_returns_plate_and_entry_exit_hours(): void
+    {
+        $this->actAsAdmin();
+
+        $client = $this->makeClient([
+            'name' => 'Cliente JSON',
+            'license_plaque' => '1234ABC',
+        ]);
+
+        $this->makeOrder([
+            'client_id' => $client->id,
+            'date' => now()->toDateString(),
+            'hour_in' => '2026-10-17 08:30:00',
+            'hour_out' => '2026-10-17 10:45:00',
+        ]);
+
+        $response = $this->get('/reports/sales?range=month');
+
+        $response->assertStatus(200);
+
+        $row = $response->json('data.0');
+
+        $this->assertSame('Cliente JSON', $row['client']['name']);
+        $this->assertSame('1234ABC', $row['client']['license_plaque']);
+        $this->assertSame('2026-10-17 08:30:00', $row['hour_in']);
+        $this->assertSame('2026-10-17 10:45:00', $row['hour_out']);
+    }
+
     /* ------------------------------------------------------------------ */
     /* Excel                                                              */
     /* ------------------------------------------------------------------ */
