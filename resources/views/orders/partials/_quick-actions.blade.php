@@ -54,7 +54,7 @@
 
                     <div class="col-lg-3 col-md-3 col-sm-12">
                         <label class="fw-bold small">Matrícula</label>
-                        <p class="mb-2" x-text="selectedOrder?.client?.license_plaque || '--'"></p>
+                        <div x-html="licensePlate(selectedOrder?.client?.license_plaque)"></div>
                     </div>
 
                     <div class="col-lg-3 col-md-3 col-sm-12">

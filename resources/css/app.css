@@ -965,6 +965,71 @@ hr {
     color: var(--color-negro);
 }
 
+.reports-table tfoot td {
+    background: var(--color-azul-celeste-claro);
+    border-color: var(--color-azul-celeste-claro);
+    color: var(--color-negro);
+    /* Sobrescribe el padding de celda estándar de Bootstrap: el pie
+       agrupa métricas + paginador y necesita aire propio. */
+    padding: 0;
+}
+
+.reports-table tfoot tr:hover td {
+    background: var(--color-azul-celeste-claro);
+}
+
+/* El pie se apoya en un filete oscuro que hace de contrapunto al
+   encabezado negro y cierra visualmente la tabla. */
+.reports-table tfoot tr:first-child td {
+    border-top: 2px solid var(--color-negro);
+}
+
+.reports-tfoot__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    padding: 0.85rem 1rem;
+}
+
+.reports-tfoot__metrics {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.75rem;
+}
+
+.reports-tfoot__metric {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.reports-tfoot__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-azul-ceniza);
+}
+
+.reports-tfoot__value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-negro);
+}
+
+.reports-tfoot__metric--total {
+    padding-left: 1rem;
+    border-left: 1px solid var(--color-azul-logo-claro);
+}
+
+.reports-tfoot__metric--total .reports-tfoot__value {
+    font-size: 1.05rem;
+    color: var(--color-azul-logo);
+}
+
 .reports-footer {
     border-top: 1px solid var(--color-gris-claro);
     padding: 2em;
@@ -2189,6 +2254,115 @@ hr {
 
     .consecutive-quick-field .input {
         transition: none;
+    }
+}
+
+/* =============================================================
+   MATRÍCULA – PLACA EUROPEA (solo presentación)
+   Badge con estética de placa española: banda azul con las 12
+   estrellas de la UE y cuerpo blanco con el número y las letras.
+   Se usa en las tablas de /orders y en los modales de estado/pago.
+   ============================================================= */
+
+.eu-plate {
+    display: inline-flex;
+    align-items: stretch;
+    height: 30px;
+    min-width: 118px;
+    border: 1px solid #b3bcc6;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px rgba(12, 12, 12, 0.18);
+    vertical-align: middle;
+    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+/* Banda azul europea con las 12 estrellas */
+.eu-plate__band {
+    flex: 0 0 auto;
+    width: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+    background-color: #003399;
+    border-right: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.eu-plate__stars {
+    width: 100%;
+    height: 100%;
+    fill: #ffcc00;
+}
+
+/* Cuerpo blanco con la matrícula */
+.eu-plate__body {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 9px;
+    color: #111111;
+    font-size: 0.86rem;
+    letter-spacing: 0.05em;
+}
+
+.eu-plate__number {
+    font-weight: 800;
+}
+
+.eu-plate__letters {
+    font-weight: 700;
+}
+
+/* Matrículas con formato no reconocido: se muestran tal cual */
+.eu-plate__raw {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+/* Matrícula vacía */
+.eu-plate--empty {
+    min-width: 0;
+    height: auto;
+    padding: 0.2rem 0.5rem;
+    color: var(--color-gris);
+    background-color: var(--color-gris-claro);
+    border-color: var(--color-gris-oscuro);
+    box-shadow: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.eu-plate--empty .eu-plate__band {
+    display: none;
+}
+
+/* Versión compacta para zonas con poco espacio */
+.eu-plate--sm {
+    height: 24px;
+    min-width: 98px;
+}
+
+.eu-plate--sm .eu-plate__band {
+    width: 22px;
+}
+
+.eu-plate--sm .eu-plate__body {
+    padding: 0 7px;
+    font-size: 0.76rem;
+    gap: 4px;
+}
+
+/* La placa mantiene su color al imprimirse */
+@media print {
+    .eu-plate {
+        box-shadow: none;
     }
 }
 

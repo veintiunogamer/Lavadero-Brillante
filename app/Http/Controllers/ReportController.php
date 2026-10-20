@@ -45,6 +45,8 @@ class ReportController extends Controller
                 'consecutive_number' => $order->consecutive_number ?? null,
                 'creation_date' => $order->creation_date,
                 'date' => $order->date,
+                'hour_in' => $order->hour_in,
+                'hour_out' => $order->hour_out,
                 'subtotal' => $order->subtotal,
                 'discount_value' => $order->discount_value,
                 'taxes_value' => $order->taxes_value,

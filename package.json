@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "test:js": "node --test tests/js/pagination.test.mjs tests/js/pagination-instances.test.mjs"
+        "test:js": "node --test tests/js/pagination.test.mjs tests/js/pagination-instances.test.mjs tests/js/license-plate.test.mjs"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",

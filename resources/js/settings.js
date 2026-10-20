@@ -1,4 +1,5 @@
 import Cleave from 'cleave.js';
+import { renderLicensePlate } from './orders/utils/licensePlate.js';
 
 // Solo mostrar logs si estamos en la vista de settings
 function settingsModuleActive() {
@@ -1099,6 +1100,17 @@ window.settingsApp = function() {
         formatDate(date) {
             if (!date) return '--';
             return new Date(date).toLocaleDateString('es-ES');
+        },
+
+        /**
+         * Renderiza la matrícula como placa europea (badge)
+         * @param {string} plate
+         * @returns {string} - HTML de la placa
+         */
+        licensePlate(plate) {
+
+            return renderLicensePlate(plate);
+
         },
 
         formatDateTime(date) {

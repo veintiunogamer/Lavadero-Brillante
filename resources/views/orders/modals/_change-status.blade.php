@@ -30,7 +30,7 @@
 
                     <div>
                         <span class="text-muted">Placa:</span>
-                        <strong x-text="statusModalOrder?.client?.license_plaque || '--'"></strong>
+                        <div class="d-inline-block ms-1" x-html="licensePlate(statusModalOrder?.client?.license_plaque)"></div>
                     </div>
                 </div>
 
