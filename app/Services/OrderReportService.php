@@ -119,6 +119,27 @@ class OrderReportService
     }
 
     /**
+     * Hora de entrada de la orden en formato "H:i" (o "--" si falta).
+     *
+     * Se expone por separado para que las vistas PDF puedan pintar cada
+     * hora como un badge independiente. La columna del informe sigue siendo
+     * la única "entrada_salida" (formato "08:30 - 10:45"), de modo que Excel
+     * y PDF continúan mostrando exactamente los mismos datos.
+     */
+    public function entryHour(Order $order): string
+    {
+        return $this->formatHour($order->hour_in);
+    }
+
+    /**
+     * Hora de salida de la orden en formato "H:i" (o "--" si falta).
+     */
+    public function exitHour(Order $order): string
+    {
+        return $this->formatHour($order->hour_out);
+    }
+
+    /**
      * Horas de entrada y salida de la orden en una única columna
      * ("08:30 - 10:45"), con el mismo formato de 24 horas que usa el resto
      * del sistema (factura PDF, validaciones del formulario).
@@ -128,8 +149,8 @@ class OrderReportService
      */
     private function entryExitHours(Order $order): string
     {
-        $entry = $this->formatHour($order->hour_in);
-        $exit = $this->formatHour($order->hour_out);
+        $entry = $this->entryHour($order);
+        $exit = $this->exitHour($order);
 
         if ($entry === '--' && $exit === '--') {
             return '--';

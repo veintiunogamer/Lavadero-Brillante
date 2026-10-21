@@ -68,6 +68,68 @@
             color: #ffffff;
             text-align: left;
         }
+
+        /* Placa europea con la matrícula */
+        .eu-plate {
+            display: inline-block;
+            border: 1px solid #b3bcc6;
+            border-radius: 4px;
+            background-color: #ffffff;
+            font-weight: bold;
+            line-height: 1;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .eu-plate__band {
+            display: inline-block;
+            width: 22px;
+            height: 16px;
+            background-color: #003399;
+            border-right: 1px solid rgba(255, 255, 255, 0.55);
+            vertical-align: top;
+        }
+
+        .eu-plate__band img {
+            display: block;
+            width: 22px;
+            height: 16px;
+        }
+
+        .eu-plate__body {
+            display: inline-block;
+            padding: 2px 6px;
+            color: #111111;
+            font-size: 9px;
+            letter-spacing: 0.04em;
+            vertical-align: top;
+        }
+
+        .eu-plate__number {
+            font-weight: 800;
+            margin-right: 5px;
+        }
+
+        .eu-plate__letters {
+            font-weight: 700;
+        }
+
+        .eu-plate__raw {
+            font-weight: 700;
+        }
+
+        .eu-plate--empty {
+            padding: 1px 5px;
+            color: #6b7280;
+            background-color: #f3f4f6;
+            border-color: #d1d5db;
+            font-size: 8.5px;
+            font-weight: 600;
+        }
+
+        .eu-plate--empty .eu-plate__band {
+            display: none;
+        }
     </style>
 
 </head>
@@ -124,7 +186,7 @@
             <tr>
                 <td>{{ $client->name }}</td>
                 <td>{{ $client->phone ?? '--' }}</td>
-                <td>{{ $client->license_plaque ?? '--' }}</td>
+                <td>{!! \App\Helpers\LicensePlateHelper::render($client->license_plaque) !!}</td>
                 <td>{{ $client->brand ?? '--' }}</td>
                 <td>{{ $client->fleet == 1 ? 'Sí' : 'No' }}</td>
                 <td>{{ isset($client->orders_count) ? $client->orders_count : '0' }}</td>
