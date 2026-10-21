@@ -39,7 +39,7 @@
         <div class="col-12 filter-section 
             d-flex flex-wrap align-items-center">
 
-            <div class="col-12 border-bottom mb-1 border-2 border-white">
+            <div class="col-12 filter-divider mb-1">
                 <label class="fw-bold mb-1 fs-5">
                     <i class="fa-solid fa-filter text-primary me-1"></i>
                     Filtros de búsqueda
