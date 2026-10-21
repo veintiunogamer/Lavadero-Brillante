@@ -21,6 +21,8 @@
 
     --color-amarillo: #f0aa13;
     --color-amarillo-tenue: #fef3c7;
+    --color-amarillo-activo: #fce38c;
+    --color-amarillo-texto: #7a5200;
     
     --color-rojo: #f44336;
     --color-rojo-hover: #d32f2f;
@@ -33,6 +35,8 @@
     --color-gris: #888;
     --color-gris-oscuro: #b3b1b1;
     --color-gris-claro: #f3eeee;
+    --color-gris-tenue: #eef1f4;
+    --color-gris-borde: #d7dce1;
 
     --color-blanco: #ffffff;
     --color-negro: #0c0c0c;
@@ -816,16 +820,16 @@ hr {
 }
 
 .citas-tab:hover {
-    background: var(--color-azul-celeste-claro);
+    background: var(--color-amarillo-tenue);
     color: var(--color-azul-bg);
 }
 
 .citas-tab-active {
-    background: var(--color-azul-celeste-claro);
-    border-color: var(--color-azul-logo-claro);
-    color: var(--color-azul-logo);
+    background: var(--color-amarillo-activo);
+    border-color: var(--color-amarillo);
+    color: var(--color-amarillo-texto);
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(59,130,246,0.12);
+    box-shadow: 0 2px 8px rgba(240, 170, 19, 0.18);
 }
 
 .citas-content {
@@ -904,16 +908,16 @@ hr {
 }
 
 .reports-tab:hover {
-    background: var(--color-azul-celeste-claro);
+    background: var(--color-amarillo-tenue);
     color: var(--color-azul-bg);
 }
 
 .reports-tab.active {
-    background: var(--color-azul-celeste-claro);
-    border-color: var(--color-azul-logo-claro);
-    color: var(--color-azul-logo);
+    background: var(--color-amarillo-activo);
+    border-color: var(--color-amarillo);
+    color: var(--color-amarillo-texto);
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(59,130,246,0.12);
+    box-shadow: 0 2px 8px rgba(240, 170, 19, 0.18);
 }
 
 .reports-panel {
@@ -1439,17 +1443,26 @@ hr {
 }
 
 .nav-tabs .nav-link:hover {
-    background-color: var(--color-azul-celeste-claro) !important;
+    background-color: var(--color-amarillo-tenue) !important;
     color: var(--color-azul-logo) !important;
     border-color: transparent !important;
 }
 
 .nav-tabs .nav-link.active {
-    background-color: var(--color-azul-celeste-claro) !important;
-    border-color: var(--color-azul-logo-claro) !important;
-    color: var(--color-azul-logo) !important;
+    background-color: var(--color-amarillo-activo) !important;
+    border-color: var(--color-amarillo) !important;
+    color: var(--color-amarillo-texto) !important;
     font-weight: 700;
-    box-shadow: 0 2px 8px rgba(59,130,246,0.12);
+    box-shadow: 0 2px 8px rgba(240, 170, 19, 0.18);
+}
+
+/* Iconos de los tabs: en inactivos heredan el color del texto; en el tab
+   activo pasan a azul corporativo, igual que los títulos de los filtros
+   (el icono es acento de marca y el texto comunica el estado) */
+.citas-tab-active i,
+.reports-tab.active i,
+.nav-tabs .nav-link.active i {
+    color: var(--color-azul-logo);
 }
 
 
@@ -1614,18 +1627,24 @@ hr {
     background-color: var(--color-azul-logo);
 }
 
-/* Combinación de filtros del sistema: amarillo tenue con iconos en azul
+/* Combinación de filtros del sistema: gris tenue con iconos en azul
    corporativo, el mismo lenguaje visual del bloque Consecutivo */
 .filter-section {
-    background-color: var(--color-amarillo-tenue) !important;
-    background-image: linear-gradient(180deg, rgba(240, 170, 19, 0.12), rgba(240, 170, 19, 0.04));
-    border: 1px solid rgba(240, 170, 19, 0.35);
-    border-left: 4px solid var(--color-amarillo);
+    background-color: var(--color-gris-tenue) !important;
+    background-image: linear-gradient(180deg, rgba(120, 130, 140, 0.08), rgba(120, 130, 140, 0.02));
+    border: 1px solid var(--color-gris-borde);
+    border-left: 4px solid var(--color-gris-oscuro);
     border-radius: 12px;
-    box-shadow: 0 1px 3px rgba(240, 170, 19, 0.12);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
     padding: 1rem;
     margin-bottom: 1.5rem;
     margin-top: 1.5rem;
+}
+
+/* Separador del título "Filtros de búsqueda" dentro del bloque de filtros.
+   Antes usaba border-white, invisible sobre el fondo tenue de la sección */
+.filter-divider {
+    border-bottom: 2px solid var(--color-gris-borde) !important;
 }
 
 /* Iconos del título del filtro en azul corporativo (text-primary de
@@ -1634,8 +1653,9 @@ hr {
     color: var(--color-azul-logo) !important;
 }
 
-/* Botón Exportar dentro de los filtros de Informes: outline amarillo
-   (interior tenue, borde más oscuro) con texto e icono en azul */
+/* Botón Exportar dentro de los filtros de Informes: es el único acento
+   amarillo del bloque (los filtros ya van en gris tenue), por eso mantiene
+   su identidad de acción principal. Outline amarillo con texto en azul */
 .reports-export-btn {
     background-color: var(--color-amarillo-tenue);
     border: 2px solid var(--color-amarillo);

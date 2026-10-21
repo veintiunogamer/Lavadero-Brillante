@@ -66,7 +66,7 @@
                 <div class="col-12 filter-section
                     d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1 border-2 border-white p-2">
+                    <div class="col-12 filter-divider mb-1 p-2">
                         <label class="fw-bold mb-1 fs-4">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
@@ -319,7 +319,7 @@
                 <div class="col-12 filter-section
                     d-flex flex-wrap align-items-center">
 
-                    <div class="col-12 border-bottom mb-1 p-2 border-2 border-white">
+                    <div class="col-12 filter-divider mb-1 p-2">
                         <label class="fw-bold mb-1 fs-4">
                             <i class="fa-solid fa-filter text-primary me-1"></i>
                             Filtros de búsqueda
