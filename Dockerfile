@@ -1,4 +1,4 @@
-FROM php:8.3-fpm
+FROM php:8.3.36-fpm
 
 # Argumentos para UID y GID
 ARG UID=1000
@@ -8,7 +8,7 @@ ARG GID=1000
 RUN apt-get update && apt-get install -y \
     git curl libpng-dev libonig-dev libxml2-dev zip unzip \
     libpq-dev libzip-dev libmcrypt-dev libssl-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
 
 RUN apt-get update && apt-get install -y default-mysql-client
 
