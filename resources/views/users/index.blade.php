@@ -171,8 +171,10 @@
 
             <div class="user-form-header">
                 <div>
-                    <span class="user-form-eyebrow">Configuración de cuenta</span>
-                    <h2 x-text="isEditing ? 'Editar Usuario' : 'Crear Usuario'"></h2>
+                    <h2 class="user-form-title">
+                        <i class="fa-solid" :class="isEditing ? 'fa-user-pen' : 'fa-user-plus'" aria-hidden="true"></i>
+                        <span x-text="isEditing ? 'Editar Usuario' : 'Crear Usuario'"></span>
+                    </h2>
                     <p x-text="isEditing ? 'Mantén actualizada la información de tu perfil.' : 'Completa la información para crear una cuenta de usuario.'"></p>
                 </div>
                 <button @click="closeModal()" type="button" class="user-form-close" aria-label="Cerrar">

@@ -288,7 +288,7 @@ html {
 /* Modal de creación y edición de usuarios */
 .user-form-modal {
     width: 95%;
-    max-width: 720px;
+    max-width: 900px;
     max-height: 92vh;
     overflow-y: auto;
     padding: 1.25rem 1.4rem 1rem;
@@ -307,22 +307,17 @@ html {
     border-bottom: 1px solid #e5eaf0;
 }
 
-.user-form-eyebrow {
-    display: block;
-    margin-bottom: 0.2rem;
-    color: var(--color-azul-bg);
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-}
-
-.user-form-header h2 {
+.user-form-header h2.user-form-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
     margin: 0;
-    color: var(--color-azul-bg);
+    color: var(--color-negro);
     font-size: 1.35rem;
     font-weight: 700;
 }
+
+.user-form-title i { color: var(--color-azul-logo); }
 
 .user-form-header p {
     margin: 0.2rem 0 0;
@@ -358,7 +353,7 @@ html {
 .user-form-field .form-label {
     display: block;
     margin-bottom: 0.3rem;
-    color: var(--color-azul-bg);
+    color: var(--color-negro);
     font-size: 0.76rem;
     font-weight: 700;
 }
