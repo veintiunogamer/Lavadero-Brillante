@@ -165,7 +165,7 @@
     </div>
 
     <!-- Modal para Crear/Editar Usuario (moved inside x-data scope) -->
-    <div x-cloak @click.self="closeModal()" @keydown.escape.window="closeModal()" :class="showModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+    <div x-cloak @click.self="closeModal()" @keydown.escape.window="closeModal()" :class="showModal ? 'd-flex' : 'd-none'" class="user-form-overlay" x-transition>
 
         <div class="user-form-modal" tabindex="-1">
 
