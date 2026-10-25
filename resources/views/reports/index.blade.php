@@ -425,24 +425,28 @@
 
         <div class="reports-export-modal" @click.stop>
 
-            <div class="reports-export-header border-bottom pb-3">
-                <h4 class="mb-0">
-                    <i class="fa-solid fa-download text-primary"></i>&nbsp;
-                    Exportar informe
-                </h4>
+            <div class="reports-export-header">
+                <span class="reports-export-title-icon"><i class="fa-solid fa-download"></i></span>
+                <div class="reports-export-title-copy">
+                    <h2>Exportar informe</h2>
+                    <p>Elige el formato para descargar tu reporte.</p>
+                </div>
                 <button class="btn-close" type="button" aria-label="Cerrar" @click="closeExportModal()"></button>
             </div>
 
+            <p class="reports-export-label">Formato de exportación</p>
             <div class="reports-export-options">
 
                 <button class="reports-export-option reports-export-option--pdf" @click="downloadCurrent('pdf')">
-                    <i class="fa-solid fa-file-pdf"></i>
-                    <span>PDF</span>
+                    <span class="reports-export-option-icon"><i class="fa-solid fa-file-pdf"></i></span>
+                    <span class="reports-export-option-title">PDF</span>
+                    <small>Documento listo para compartir</small>
                 </button>
 
                 <button class="reports-export-option reports-export-option--excel" @click="downloadCurrent('excel')">
-                    <i class="fa-solid fa-file-excel"></i>
-                    <span>Excel</span>
+                    <span class="reports-export-option-icon"><i class="fa-solid fa-file-excel"></i></span>
+                    <span class="reports-export-option-title">Excel</span>
+                    <small>Datos editables en hoja de cálculo</small>
                 </button>
 
             </div>
