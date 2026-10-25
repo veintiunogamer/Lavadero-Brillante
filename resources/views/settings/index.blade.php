@@ -69,7 +69,7 @@
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
 
-                        <button @click="openCategoryModal()" class="btn btn-success btn-lg fw-bold float-end">
+                        <button @click="openCategoryModal()" class="btn-action btn-lg float-end">
                             <i class="fa-solid fa-plus me-2"></i>
                             Crear Categoría
                         </button>
@@ -213,7 +213,7 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
-                        <button @click="openServiceModal()" class="btn btn-success fw-bold float-end btn-lg">
+                        <button @click="openServiceModal()" class="btn-action float-end btn-lg">
                             <i class="fa-solid fa-plus me-2"></i>
                             Crear Servicio
                         </button>
@@ -355,7 +355,7 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
-                        <button @click="openVehicleTypeModal()" class="btn btn-success fw-bold float-end btn-lg">
+                        <button @click="openVehicleTypeModal()" class="btn-action float-end btn-lg">
                             <i class="fa-solid fa-plus me-2"></i>
                             Crear Tipo de Vehículo
                         </button>
@@ -489,7 +489,7 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 mb-3 mb-md-0">
-                        <button @click="openClientModal()" class="btn btn-success fw-bold float-end btn-lg">
+                        <button @click="openClientModal()" class="btn-action float-end btn-lg">
                             <i class="fa-solid fa-plus me-2"></i>
                             Crear Cliente
                         </button>
