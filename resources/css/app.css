@@ -320,7 +320,7 @@ html {
     border-bottom: 1px solid #e5eaf0;
 }
 
-.user-form-header h2.user-form-title {
+.user-form-title {
     display: flex;
     align-items: center;
     gap: 0.55rem;
@@ -330,7 +330,8 @@ html {
     font-weight: 700;
 }
 
-.user-form-title i { color: var(--color-azul-logo); }
+.user-form-title i,
+.user-form-title .text-primary { color: var(--color-azul-logo) !important; }
 
 .user-form-header p {
     margin: 0.35rem 0 0;
@@ -474,7 +475,20 @@ html {
     font-weight: 600;
 }
 
-.user-form-actions .btn-action { min-height: 48px; padding: 0.65rem 1.25rem; font-size: 0.92rem; }
+.user-form-actions .btn-action { min-width: 190px; min-height: 48px; padding: 0.65rem 1.25rem; font-size: 0.92rem; }
+.user-form-actions .user-form-cancel { min-width: 145px; }
+
+/* Modales de configuración comparten la presentación del modal de usuarios. */
+.settings-form-modal { max-width: 1180px; }
+.settings-form-modal--compact { max-width: 900px; }
+.settings-form-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem 1.25rem;
+}
+.settings-form-fields--single { grid-template-columns: 1fr; }
+.settings-form-field--full { grid-column: 1 / -1; }
+.settings-form-modal textarea.form-control { min-height: 110px; resize: vertical; }
 
 @media (max-width: 767.98px) {
     .profile-page { padding: 1rem 0.75rem; }
@@ -488,6 +502,10 @@ html {
     .user-form-overlay { align-items: flex-start; padding: 1rem 0.65rem; }
     .user-form-modal { width: 100%; padding: 1rem; }
     .user-form-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .settings-form-fields { grid-template-columns: 1fr; }
+    .settings-form-field--full { grid-column: auto; }
+    .user-form-actions .btn-action { min-width: 0; }
+    .user-form-actions .user-form-cancel { min-width: 0; }
 }
 
 @media (max-width: 420px) {

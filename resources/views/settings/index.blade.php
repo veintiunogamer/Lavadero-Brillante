@@ -621,30 +621,30 @@
 
     <!-- ==================== MODAL CATEGORÍA ==================== -->
     <div x-cloak @click.self="closeCategoryModal()" @keydown.escape.window="closeCategoryModal()"
-        :class="showCategoryModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'"
-        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showCategoryModal ? 'd-flex' : 'd-none'" class="user-form-overlay" x-transition>
 
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
+        <div class="user-form-modal settings-form-modal settings-form-modal--compact" tabindex="-1">
 
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+            <div class="user-form-header">
 
-                <h4 class="mb-0 fw-bold" x-html="isEditingCategory 
+                <h2 class="user-form-title" x-html="isEditingCategory
                 ? '<i class=\'fa fa-edit text-primary\'></i> &nbsp;Editar Categoría' 
-                : '<i class=\'fa fa-plus-circle text-primary\'></i>  Crear Categoría'"></h4>
+                : '<i class=\'fa fa-plus-circle text-primary\'></i>  Crear Categoría'"></h2>
 
-                <button @click="closeCategoryModal()" type="button" class="btn-close"></button>
+                <button @click="closeCategoryModal()" type="button" class="user-form-close" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
 
             </div>
 
-            <form @submit.prevent="saveCategory()">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+            <form @submit.prevent="saveCategory()" class="user-form-content">
+                <div class="settings-form-fields settings-form-fields--single">
+                <div class="user-form-field">
+                    <label class="form-label">Nombre <span class="text-danger">*</span></label>
                     <input type="text" x-model="categoryForm.cat_name" class="form-control" maxlength="30" required>
                     <span x-show="errors.category.cat_name" x-text="errors.category.cat_name?.[0]" class="text-danger small"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Estado</label>
+                <div class="user-form-field">
+                    <label class="form-label">Estado</label>
                     <select x-model="categoryForm.status" class="form-select">
                         <option value="1">Activo</option>
                         <option value="0">Inactivo</option>
@@ -652,19 +652,20 @@
                     <span x-show="errors.category.status" x-text="errors.category.status?.[0]" class="text-danger small"></span>
                 </div>
 
-                <div class="d-flex justify-content-center gap-2 my-4">
-
-                    <button type="button" @click="closeCategoryModal()" class="btn btn-danger col-5">
-                        <i class="fa-solid fa-xmark me-2"></i>
-                        Cancelar
-                    </button>
-
-                    <button type="submit" class="btn btn-success col-5">
-                        <i class="fa-solid fa-save me-2"></i>
-                        <span x-text="isEditingCategory ? 'Actualizar' : 'Guardar'"></span>
-                    </button>
-
                 </div>
+                <footer class="user-form-footer">
+                    <span class="user-form-required"><span class="text-danger">*</span> Campos obligatorios</span>
+                    <div class="user-form-actions">
+
+                    <button type="button" @click="closeCategoryModal()" class="user-form-cancel">Cancelar</button>
+
+                    <button type="submit" class="btn-action">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span x-text="isEditingCategory ? 'Actualizar Categoría' : 'Crear Categoría'"></span>
+                    </button>
+
+                    </div>
+                </footer>
 
             </form>
 
@@ -674,33 +675,32 @@
 
     <!-- ==================== MODAL SERVICIO ==================== -->
     <div x-cloak @click.self="closeServiceModal()" @keydown.escape.window="closeServiceModal()"
-        :class="showServiceModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'"
-        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showServiceModal ? 'd-flex' : 'd-none'" class="user-form-overlay" x-transition>
 
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 700px; width: 95%;">
+        <div class="user-form-modal settings-form-modal" tabindex="-1">
 
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+            <div class="user-form-header">
 
-                <h4 class="mb-0 fw-bold" x-html="isEditingService 
+                <h2 class="user-form-title" x-html="isEditingService
                 ? '<i class=\'fa fa-edit text-primary\'></i>  Editar Servicio' 
-                : '<i class=\'fa fa-plus-circle text-primary\'></i>  Crear Servicio'"></h4>
+                : '<i class=\'fa fa-plus-circle text-primary\'></i>  Crear Servicio'"></h2>
 
-                <button @click="closeServiceModal()" type="button" class="btn-close"></button>
+                <button @click="closeServiceModal()" type="button" class="user-form-close" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
 
             </div>
 
-            <form @submit.prevent="saveService()">
+            <form @submit.prevent="saveService()" class="user-form-content">
 
-                <div class="col-12 d-flex flex-wrap mx-n2">
+                <div class="settings-form-fields">
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                    <div class="user-form-field">
+                        <label class="form-label">Nombre <span class="text-danger">*</span></label>
                         <input type="text" x-model="serviceForm.name" class="form-control" maxlength="30" placeholder="Ej: Lavado Premium" required>
                         <span x-show="errors.service.name" x-text="errors.service.name?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Categoría <span class="text-danger">*</span></label>
+                    <div class="user-form-field">
+                        <label class="form-label">Categoría <span class="text-danger">*</span></label>
                         <select x-model="serviceForm.category_id" class="form-select" required>
                             <option value="">Seleccionar categoría</option>
                             <template x-for="cat in categoriesForServices" :key="cat.id">
@@ -710,37 +710,36 @@
                         <span x-show="errors.service.category_id" x-text="errors.service.category_id?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Detalles <span class="text-danger">*</span></label>
+                    <div class="user-form-field settings-form-field--full">
+                        <label class="form-label">Detalles <span class="text-danger">*</span></label>
                         <textarea x-model="serviceForm.details" class="form-control" rows="3" maxlength="100" placeholder="Descripción del servicio..." required></textarea>
                         <span x-show="errors.service.details" x-text="errors.service.details?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Precio (€) <span class="text-danger">*</span></label>
+                    <div class="user-form-field">
+                        <label class="form-label">Precio (€) <span class="text-danger">*</span></label>
                         <input type="text" x-ref="servicePriceInput" class="form-control" placeholder="0,00" required>
                         <span x-show="errors.service.value" x-text="errors.service.value?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Duración (min) <span class="text-danger">*</span></label>
+                    <div class="user-form-field">
+                        <label class="form-label">Duración (min) <span class="text-danger">*</span></label>
                         <input type="number" min="1" x-model="serviceForm.duration" class="form-control" placeholder="60" required>
                         <span x-show="errors.service.duration" x-text="errors.service.duration?.[0]" class="text-danger small"></span>
                     </div>
                 </div>
+                <footer class="user-form-footer">
+                    <span class="user-form-required"><span class="text-danger">*</span> Campos obligatorios</span>
+                    <div class="user-form-actions">
+                    <button type="button" @click="closeServiceModal()" class="user-form-cancel">Cancelar</button>
 
-                <div class="col-12 d-flex justify-content-center gap-2 my-4">
-                    <button type="button" @click="closeServiceModal()" class="btn btn-danger col-5">
-                        <i class="fa-solid fa-xmark me-2"></i>
-                        Cancelar
+                    <button type="submit" class="btn-action">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span x-text="isEditingService ? 'Actualizar Servicio' : 'Crear Servicio'"></span>
                     </button>
 
-                    <button type="submit" class="btn btn-success col-5">
-                        <i class="fa-solid fa-save me-2"></i>
-                        <span x-text="isEditingService ? 'Actualizar' : 'Guardar'"></span>
-                    </button>
-
-                </div>
+                    </div>
+                </footer>
 
             </form>
 
@@ -750,40 +749,41 @@
 
     <!-- ==================== MODAL TIPO DE VEHÍCULO ==================== -->
     <div x-cloak @click.self="closeVehicleTypeModal()" @keydown.escape.window="closeVehicleTypeModal()"
-        :class="showVehicleTypeModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'"
-        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showVehicleTypeModal ? 'd-flex' : 'd-none'" class="user-form-overlay" x-transition>
 
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 500px; width: 95%;">
+        <div class="user-form-modal settings-form-modal settings-form-modal--compact" tabindex="-1">
 
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+            <div class="user-form-header">
 
-                <h4 class="mb-0 fw-bold" x-html="isEditingVehicleType 
+                <h2 class="user-form-title" x-html="isEditingVehicleType
                 ? '<i class=\'fa fa-edit text-primary\'></i> &nbsp;Editar Tipo de Vehículo' 
-                : '<i class=\'fa fa-plus-circle text-primary\'></i> &nbsp;Crear Tipo de Vehículo'"></h4>
+                : '<i class=\'fa fa-plus-circle text-primary\'></i> &nbsp;Crear Tipo de Vehículo'"></h2>
 
-                <button @click="closeVehicleTypeModal()" type="button" class="btn-close"></button>
+                <button @click="closeVehicleTypeModal()" type="button" class="user-form-close" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
 
             </div>
 
-            <form @submit.prevent="saveVehicleType()">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+            <form @submit.prevent="saveVehicleType()" class="user-form-content">
+                <div class="settings-form-fields settings-form-fields--single">
+                <div class="user-form-field">
+                    <label class="form-label">Nombre <span class="text-danger">*</span></label>
                     <input type="text" x-model="vehicleTypeForm.name" class="form-control" maxlength="30" required>
                     <span x-show="errors.vehicleType.name" x-text="errors.vehicleType.name?.[0]" class="text-danger small"></span>
                 </div>
 
-                <div class="d-flex col-12 justify-content-center gap-2 my-4">
-                    <button type="button" @click="closeVehicleTypeModal()" class="btn btn-danger col-5">
-                        <i class="fa-solid fa-xmark me-2"></i>
-                        Cancelar
-                    </button>
-
-                    <button type="submit" class="btn btn-success col-5">
-                        <i class="fa-solid fa-save me-2"></i>
-                        <span x-text="isEditingVehicleType ? 'Actualizar' : 'Guardar'"></span>
-                    </button>
-
                 </div>
+                <footer class="user-form-footer">
+                    <span class="user-form-required"><span class="text-danger">*</span> Campos obligatorios</span>
+                    <div class="user-form-actions">
+                    <button type="button" @click="closeVehicleTypeModal()" class="user-form-cancel">Cancelar</button>
+
+                    <button type="submit" class="btn-action">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span x-text="isEditingVehicleType ? 'Actualizar Tipo' : 'Crear Tipo'"></span>
+                    </button>
+
+                    </div>
+                </footer>
             </form>
 
         </div>
@@ -791,31 +791,30 @@
 
     <!-- ==================== MODAL CLIENTE ==================== -->
     <div x-cloak @click.self="closeClientModal()" @keydown.escape.window="closeClientModal()"
-        :class="showClientModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'"
-        style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+        :class="showClientModal ? 'd-flex' : 'd-none'" class="user-form-overlay" x-transition>
 
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 600px; width: 95%;">
+        <div class="user-form-modal settings-form-modal" tabindex="-1">
 
-            <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
-                <h4 class="mb-0 fw-bold" x-html="isEditingClient 
+            <div class="user-form-header">
+                <h2 class="user-form-title" x-html="isEditingClient
                 ? '<i class=\'fa fa-edit text-primary\'></i> &nbsp;Editar Cliente' 
-                : '<i class=\'fa fa-plus-circle text-primary\'></i> &nbsp;Crear Cliente'"></h4>
+                : '<i class=\'fa fa-plus-circle text-primary\'></i> &nbsp;Crear Cliente'"></h2>
 
-                <button @click="closeClientModal()" type="button" class="btn-close"></button>
+                <button @click="closeClientModal()" type="button" class="user-form-close" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
             </div>
 
-            <form @submit.prevent="saveClient()">
+            <form @submit.prevent="saveClient()" class="user-form-content">
 
-                <div class="col-12 d-flex flex-wrap mx-n2">
+                <div class="settings-form-fields">
 
-                    <div class="col-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Nombre <span class="text-danger">*</span></label>
+                    <div class="user-form-field">
+                        <label class="form-label">Nombre <span class="text-danger">*</span></label>
                         <input type="text" x-model="clientForm.name" class="form-control" maxlength="30" required>
                         <span x-show="errors.client.name" x-text="errors.client.name?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Matrícula</label>
+                    <div class="user-form-field">
+                        <label class="form-label">Matrícula</label>
                         <input type="text"
                             x-model="clientForm.license_plaque"
                             @input.debounce.500ms="checkLicensePlate($event.target.value)"
@@ -829,31 +828,27 @@
                         </small>
                     </div>
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Modelo</label>
+                    <div class="user-form-field">
+                        <label class="form-label">Modelo</label>
                         <input type="text" x-model="clientForm.brand" class="form-control" maxlength="30" placeholder="Ej: Toyota Corolla">
                         <span x-show="errors.client.brand" x-text="errors.client.brand?.[0]" class="text-danger small"></span>
                     </div>
 
-                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                        <label class="form-label fw-bold">Teléfono</label>
+                    <div class="user-form-field">
+                        <label class="form-label">Teléfono</label>
                         <input type="tel" x-model="clientForm.phone" class="form-control" data-phone="true" placeholder="612 345 678" maxlength="11">
                         <span x-show="errors.client.phone" x-text="errors.client.phone?.[0]" class="text-danger small"></span>
                     </div>
 
 
                 </div>
-
-                <div class="d-flex col-12 justify-content-center gap-2 my-4">
-                    <button type="button" @click="closeClientModal()" class="btn btn-danger col-5">
-                        <i class="fa-solid fa-xmark me-2"></i>
-                        Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-success col-5">
-                        <i class="fa-solid fa-save me-2"></i>
-                        <span x-text="isEditingClient ? 'Actualizar' : 'Guardar'"></span>
-                    </button>
-                </div>
+                <footer class="user-form-footer">
+                    <span class="user-form-required"><span class="text-danger">*</span> Campos obligatorios</span>
+                    <div class="user-form-actions">
+                    <button type="button" @click="closeClientModal()" class="user-form-cancel">Cancelar</button>
+                    <button type="submit" class="btn-action"><i class="fa-solid fa-floppy-disk"></i><span x-text="isEditingClient ? 'Actualizar Cliente' : 'Crear Cliente'"></span></button>
+                    </div>
+                </footer>
             </form>
 
         </div>
