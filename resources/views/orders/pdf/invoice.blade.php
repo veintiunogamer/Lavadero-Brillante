@@ -415,6 +415,13 @@
     $licensePlaque = $client->license_plaque ?? '--';
 
     $clientAddress = $invoice->address ?? $client->address ?? '--';
+    if ($invoice->address) {
+        $clientAddressParts = array_filter([
+            $invoice->address,
+            trim(($invoice->zipcode ?? '') . ' ' . ($invoice->city ?? '')),
+        ]);
+        $clientAddress = implode(', ', $clientAddressParts);
+    }
     $clientDocument = $invoice->nif ?? '--';
 
     $vehicleCat = optional($order->vehicleType)->name ?? '--';
@@ -507,7 +514,7 @@
                                 </div>
 
                                 <div class="info-line">
-                                    {{ $company['city'] }} - Valencia
+                                    {{ $company['city'] }}
                                 </div>
 
                                 <div class="info-line">
