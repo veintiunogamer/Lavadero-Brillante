@@ -661,7 +661,7 @@
 
                     <br>
 
-                    <button class="confirm-btn col-6" disabled>
+                    <button class="btn-action btn-action--large confirm-btn col-6" disabled>
                         <i class="fa-solid fa-check icon"></i>
                         Confirmar Agendamiento
                     </button>

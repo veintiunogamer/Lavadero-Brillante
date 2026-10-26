@@ -1,37 +1,57 @@
-<!-- 
-    Modal: Selector de tipo de cambio (Estado de orden vs Estado de pago)
--->
-
+<!-- Modal: Selector del tipo de cambio de estado -->
 <template x-if="showStatusTypeModal">
     <div x-cloak @click.self="closeStatusTypeModal()" @keydown.escape.window="closeStatusTypeModal()"
-    class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-    style="background: rgba(0,0,0,0.5); z-index: 9999; display: none;" x-transition>
+        class="order-status-overlay" x-transition.opacity>
 
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 480px; width: 95%;">
-
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h4 class="mb-0 fw-bold">
-                    <i class="fa-solid fa-sliders color-blue me-2"></i>
-                    Cambiar estado
-                </h4>
-                <button @click="closeStatusTypeModal()" type="button" class="btn-close"></button>
-            </div>
-
-            <p class="text-muted mb-4">Selecciona el tipo de estado que deseas actualizar.</p>
-
-            <div class="d-flex gap-3 flex-wrap">
-                <button class="btn btn-outline-primary flex-fill" @click="openOrderStatusFromType()"
-                        x-show="statusTypeOrder?.status !== 3">
-                    <i class="fa-solid fa-clipboard-check me-1"></i>
-                    Estado de la orden
+        <section class="order-status-modal order-status-modal--selector" @click.stop>
+            <header class="order-status-header">
+                <div class="order-status-heading">
+                    <span class="order-status-icon"><i class="fa-solid fa-sliders"></i></span>
+                    <div>
+                        <h2>Cambiar estado</h2>
+                        <p>Selecciona qué parte de la orden quieres actualizar.</p>
+                    </div>
+                </div>
+                <button @click="closeStatusTypeModal()" type="button" class="order-status-close" aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
-                <button class="btn btn-outline-success flex-fill" @click="openPaymentStatusFromType()"
-                        x-show="statusTypeOrder?.payment?.status !== 3">
-                    <i class="fa-solid fa-credit-card me-1"></i>
-                    Estado de pago
-                </button>
-            </div>
+            </header>
 
-        </div>
+            <div class="order-status-body">
+                <section class="order-status-context order-status-context--compact">
+                    <div class="order-status-context__client">
+                        <label>Cliente</label>
+                        <strong x-text="statusTypeOrder?.client?.name || '--'"></strong>
+                    </div>
+                    <div class="order-status-context__current">
+                        <label>Estado de la orden</label>
+                        <span class="badge" :class="getStatusBadge(statusTypeOrder?.status)"
+                            x-text="getStatusText(statusTypeOrder?.status)"></span>
+                    </div>
+                </section>
+
+                <div class="order-status-type-options">
+                    <button type="button" class="order-status-type-option order-status-type-option--order"
+                        @click="openOrderStatusFromType()" x-show="statusTypeOrder?.status !== 3">
+                        <span class="order-status-type-option__icon"><i class="fa-solid fa-clipboard-check"></i></span>
+                        <span class="order-status-type-option__copy">
+                            <strong>Estado de la orden</strong>
+                            <small>Gestiona si está pendiente, en proceso, terminada o cancelada.</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right order-status-type-option__arrow"></i>
+                    </button>
+
+                    <button type="button" class="order-status-type-option order-status-type-option--payment"
+                        @click="openPaymentStatusFromType()" x-show="statusTypeOrder?.payment?.status !== 3">
+                        <span class="order-status-type-option__icon"><i class="fa-regular fa-credit-card"></i></span>
+                        <span class="order-status-type-option__copy">
+                            <strong>Estado de pago</strong>
+                            <small>Actualiza el pago como pendiente, parcial o pagado.</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right order-status-type-option__arrow"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
     </div>
 </template>
