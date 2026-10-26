@@ -48,7 +48,8 @@ class OrderController extends Controller
         $today = Carbon::today();
         $dateCode = $today->format('dmY');
 
-        $todayOrders = Order::whereDate('creation_date', $today)->count();
+        // Los consecutivos archivados también deben reservar su número histórico.
+        $todayOrders = Order::withTrashed()->whereDate('creation_date', $today)->count();
         $sequence = str_pad((string) ($todayOrders + 1), 3, '0', STR_PAD_LEFT);
 
         return [
@@ -505,6 +506,7 @@ class OrderController extends Controller
                         'address' => $validated['invoice_address'],
                         'city' => $validated['invoice_city'],
                         'zipcode' => $validated['invoice_postal_code'],
+                        'status' => \App\Models\Invoice::STATUS_ENABLED,
                     ]);
                 } else {
 
@@ -522,8 +524,8 @@ class OrderController extends Controller
                     ]);
                 }
             } else {
-                // Si el switch de factura está desactivado, eliminar invoice si existe
-                $order->invoice()->delete();
+                // Conservar el registro de factura por trazabilidad, pero deshabilitarlo.
+                $order->invoice()->update(['status' => \App\Models\Invoice::STATUS_DISABLED]);
             }
 
             \DB::commit();
@@ -728,6 +730,13 @@ class OrderController extends Controller
      */
     public function invoicePdf(Order $order)
     {
+        if ($order->invoice && (int) $order->invoice->status !== \App\Models\Invoice::STATUS_ENABLED) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La factura de esta orden está inhabilitada.',
+            ], 410);
+        }
+
         if (!class_exists('Barryvdh\\DomPDF\\Facade\\Pdf')) {
             return response()->json([
                 'success' => false,
@@ -899,6 +908,66 @@ class OrderController extends Controller
                 'message' => 'Error al cargar las órdenes'
             ], 500);
         }
+    }
+
+    /** Lista órdenes archivadas para que un administrador pueda restaurarlas. */
+    public function archived()
+    {
+        $orders = Order::onlyTrashed()
+            ->with(['client', 'services', 'user', 'payments', 'invoice', 'deletedByUser'])
+            ->orderByDesc('deleted_at')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $orders,
+            'count' => $orders->count(),
+        ]);
+    }
+
+    /** Archiva lógicamente una orden, preservando sus relaciones y trazabilidad. */
+    public function archive(Request $request, string $order)
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'min:5', 'max:500'],
+        ]);
+
+        $order = Order::with(['payments', 'invoice'])->findOrFail($order);
+
+        if (!in_array((int) $order->status, [Order::STATUS_PENDING, Order::STATUS_CANCELED], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Solo se pueden archivar órdenes pendientes o canceladas.',
+            ], 422);
+        }
+
+        DB::transaction(function () use ($order, $request, $validated) {
+            $order->invoice()->update(['status' => \App\Models\Invoice::STATUS_DISABLED]);
+            $order->deleted_by = $request->user()->id;
+            $order->deletion_reason = trim($validated['reason']);
+            $order->save();
+            $order->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Orden archivada correctamente.',
+        ]);
+    }
+
+    /** Restaura una orden archivada previamente. */
+    public function restore(string $order)
+    {
+        $order = Order::onlyTrashed()->findOrFail($order);
+        DB::transaction(function () use ($order) {
+            $order->restore();
+            $order->invoice()->update(['status' => \App\Models\Invoice::STATUS_ENABLED]);
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Orden restaurada correctamente.',
+        ]);
     }
 
     /**

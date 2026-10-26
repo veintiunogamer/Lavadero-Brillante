@@ -352,6 +352,7 @@ class ReportController extends Controller
     {
         $query = DB::table('client as c')
             ->leftJoin('order as o', 'c.id', '=', 'o.client_id')
+            ->whereNull('o.deleted_at')
             ->select([
                 'c.id',
                 'c.name',

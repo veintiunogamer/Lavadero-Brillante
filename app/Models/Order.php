@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
+    use SoftDeletes;
+
     public $incrementing = false;
     public $timestamps = false;
 
@@ -51,7 +54,9 @@ class Order extends Model
         'status',
         'creation_date',
         'consecutive_serial',
-        'consecutive_number'
+        'consecutive_number',
+        'deleted_by',
+        'deletion_reason',
     ];
 
     protected $casts = [
@@ -119,5 +124,17 @@ class Order extends Model
     public function invoice()
     {
         return $this->hasOne(Invoice::class, 'order_id', 'id');
+    }
+
+    public function enabledInvoice()
+    {
+        return $this->hasOne(Invoice::class, 'order_id', 'id')
+            ->where('status', Invoice::STATUS_ENABLED);
+    }
+
+    /** Usuario que archivó la orden más recientemente. */
+    public function deletedByUser()
+    {
+        return $this->belongsTo(User::class, 'deleted_by', 'id');
     }
 }

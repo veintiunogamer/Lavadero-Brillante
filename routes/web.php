@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/orders/status/{status}', [OrderController::class, 'getByStatus'])->name('orders.getByStatus');
         Route::get('/orders/tab/{tab}', [OrderController::class, 'getOrdersByTab'])->name('orders.getByTab');
         Route::get('/api/services/category/{categoryId}', [OrderController::class, 'getServicesByCategory'])->name('orders.servicesByCategory');
+        Route::get('/orders/archived', [OrderController::class, 'archived'])->middleware('role:1')->name('orders.archived');
 
         # Nuevas rutas para edición y acciones rápidas
         Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
@@ -67,6 +68,10 @@ Route::middleware('auth')->group(function () {
 
     # Rutas solo para Administrador
     Route::middleware('role:1')->group(function () {
+
+        # Archivo lógico de órdenes (solo administradores)
+        Route::delete('/orders/{order}/archive', [OrderController::class, 'archive'])->name('orders.archive');
+        Route::patch('/orders/{order}/restore', [OrderController::class, 'restore'])->name('orders.restore');
 
         # Rutas para la gestión de usuarios (Solo Administradores)
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

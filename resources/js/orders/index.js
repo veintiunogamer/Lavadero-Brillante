@@ -231,7 +231,9 @@ function createOrderFormApp() {
 
             // Pre-llenar datos de facturación
             const invoiceSwitch = document.getElementById('get-invoice');
-            const hasInvoice = order.invoice && Object.keys(order.invoice).length > 0;
+            const hasInvoice = order.invoice
+                && Object.keys(order.invoice).length > 0
+                && Number(order.invoice.status) === 1;
 
             if (invoiceSwitch) {
                 invoiceSwitch.checked = hasInvoice;
