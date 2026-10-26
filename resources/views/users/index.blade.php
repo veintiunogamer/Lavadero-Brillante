@@ -27,7 +27,7 @@
             </div>
 
             <div class="col-6">
-                <button @click="openModal()" class="btn btn-success btn-lg mb-3 float-end">
+                <button @click="openModal()" class="btn-action btn-lg mb-3 float-end">
                     <i class="fa-solid fa-plus me-2"></i>
                     Crear Usuario
                 </button>
@@ -165,58 +165,58 @@
     </div>
 
     <!-- Modal para Crear/Editar Usuario (moved inside x-data scope) -->
-    <div x-cloak @click.self="closeModal()" @keydown.escape.window="closeModal()" :class="showModal ? 'position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center' : 'd-none'" style="background: rgba(0,0,0,0.5); z-index: 9999;" x-transition>
+    <div x-cloak @click.self="closeModal()" @keydown.escape.window="closeModal()" :class="showModal ? 'd-flex' : 'd-none'" class="user-form-overlay" x-transition>
 
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 1200px; width: 95%;" tabindex="-1">
+        <div class="user-form-modal" tabindex="-1">
 
-            <div class="d-flex justify-content-between align-items-center mb-4">
-
-                <h3 class="mb-0 fw-bold" x-html="isEditing ? 'Editar Usuario' : 'Crear Usuario'">
-
-                    <i class="fa color-blue" :class="typeof isEditing !== 'undefined' && isEditing 
-                    ? 'fa-edit' : 'fa-plus'"></i>
-
-                </h3>
-                <button @click="closeModal()" type="button" class="btn-close" aria-label="Close"></button>
+            <div class="user-form-header">
+                <div>
+                    <h2 class="user-form-title">
+                        <i class="fa-solid" :class="isEditing ? 'fa-user-pen' : 'fa-user-plus'" aria-hidden="true"></i>
+                        <span x-text="isEditing ? 'Editar Usuario' : 'Crear Usuario'"></span>
+                    </h2>
+                    <p x-text="isEditing ? 'Mantén actualizada la información de tu perfil.' : 'Completa la información para crear una cuenta de usuario.'"></p>
+                </div>
+                <button @click="closeModal()" type="button" class="user-form-close" aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
-            <br>
+            <form @submit.prevent="saveUser()" class="user-form-content">
 
-            <form @submit.prevent="saveUser()">
+                <div class="user-form-fields">
 
-                <div class="row justify-content-center">
-
-                    <div class="col-lg-3 col-md-4 col-sm-12">
-                        <label class="form-label fw-bold">
+                    <div class="user-form-field">
+                        <label class="form-label">
                             Nombre Completo <span class="text-danger">*</span>
                         </label>
                         <input type="text" x-model="form.name" class="form-control" maxlength="30" required>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-12">
-                        <label class="form-label fw-bold">
+                    <div class="user-form-field">
+                        <label class="form-label">
                             Correo Electrónico <span class="text-danger">*</span>
                         </label>
                         <input type="email" x-model="form.email" class="form-control" maxlength="40" required>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-12">
-                        <label class="form-label fw-bold">
+                    <div class="user-form-field">
+                        <label class="form-label">
                             Teléfono Movil <span class="text-danger">*</span>
                         </label>
                         <input type="tel" :value="form.phone" @input="form.phone = formatPhoneInput($event.target.value.replace(/[^0-9\s\+\(\)\-]/g, ''))" @blur="validatePhone()" x-ref="phoneInput" class="form-control" maxlength="15" inputmode="tel">
                         <span x-text="errors.phone" x-show="errors.phone" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-12">
-                        <label class="form-label fw-bold">
+                    <div class="user-form-field">
+                        <label class="form-label">
                             Usuario <span class="text-danger">*</span>
                         </label>
                         <input type="text" x-model="form.username" class="form-control" maxlength="20" required>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-12">
-                        <label class="form-label fw-bold">
+                    <div class="user-form-field">
+                        <label class="form-label">
                             Rol <span class="text-danger">*</span>
                         </label>
                         <select x-model="form.rol" class="form-select" required>
@@ -227,45 +227,49 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-12" x-show="isEditing">
-                        <label class="form-label fw-bold">Estado </label>
+                    <div class="user-form-field" x-show="isEditing">
+                        <label class="form-label">Estado</label>
                         <select x-model="form.status" class="form-select">
                             <option value="1">Activo</option>
                             <option value="0">Inactivo</option>
                         </select>
                     </div>
 
-                    <div class="col-lg-3 col-md-4 col-sm-12" x-show="!isEditing">
-                        <label class="form-label fw-bold">
-                            Contraseña <span class="text-danger">*</span>
+                </div>
+
+                <section class="user-security-panel">
+                    <div class="user-security-heading">
+                        <span class="user-security-icon"><i class="fa-solid fa-lock"></i></span>
+                        <div>
+                            <h3>Seguridad de acceso</h3>
+                            <p x-text="isEditing ? 'Deja la contraseña vacía si no quieres realizar cambios.' : 'Define una contraseña segura para esta cuenta.'"></p>
+                        </div>
+                    </div>
+                    <div class="user-form-field user-password-field">
+                        <label class="form-label">
+                            <span x-text="isEditing ? 'Nueva Contraseña' : 'Contraseña'"></span>
+                            <span class="text-danger" x-show="!isEditing">*</span>
                         </label>
-                        <div class="position-relative">
-                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5" :required="!isEditing" maxlength="20">
-                            <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
+                        <div class="user-password-input">
+                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control" :required="!isEditing" maxlength="20" :placeholder="isEditing ? 'Introduce una nueva contraseña' : 'Crea una contraseña'">
+                            <button type="button" @click="togglePassword()" aria-label="Mostrar u ocultar contraseña">
                                 <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
                             </button>
                         </div>
-                        <span x-text="errors.password" x-show="errors.password" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
+                        <span x-text="errors.password" x-show="errors.password" class="text-danger small mt-1"></span>
                     </div>
+                </section>
 
-                    <div class="col-lg-3 col-md-4 col-sm-12" x-show="isEditing">
-                        <label class="form-label fw-bold">Nueva Contraseña</label>
-                        <div class="position-relative">
-                            <input :type="showPassword ? 'text' : 'password'" x-model="form.password" @input="validatePassword()" class="form-control pe-5">
-                            <button type="button" @click="togglePassword()" class="btn btn-outline-secondary btn-sm position-absolute top-50 end-0 translate-middle-y me-1">
-                                <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'"></i>
-                            </button>
-                        </div>
-                        <span x-text="errors.password" x-show="errors.password" class="text-danger small mt-1" style="font-size: 0.75rem;"></span>
-                    </div>
-
-                    <div class="col-12 d-flex justify-content-center my-4">
-                        <button type="submit" class="btn btn-success btn-lg col-lg-4 col-md-6 col-sm-12" style="min-width: 180px;" :disabled="!isFormValid()">
-                            <span x-text="isEditing ? 'Actualizar Informacion' : 'Crear Usuario'"></span>
+                <footer class="user-form-footer">
+                    <span class="user-form-required"><span class="text-danger">*</span> Campos obligatorios</span>
+                    <div class="user-form-actions">
+                        <button @click="closeModal()" type="button" class="user-form-cancel">Cancelar</button>
+                        <button type="submit" class="btn-action" :disabled="!isFormValid()">
+                            <i class="fa-solid" :class="isEditing ? 'fa-floppy-disk' : 'fa-user-plus'"></i>
+                            <span x-text="isEditing ? 'Actualizar Información' : 'Crear Usuario'"></span>
                         </button>
                     </div>
-
-                </div>
+                </footer>
 
             </form>
 

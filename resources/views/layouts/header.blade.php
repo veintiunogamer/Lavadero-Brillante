@@ -6,11 +6,11 @@
         </a>
     </div>
 
-    <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menú">
+    <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-navigation">
         <span class="hamburger"></span>
     </button>
 
-    <nav class="main-nav" role="navigation">
+    <nav id="main-navigation" class="main-nav" aria-label="Navegación principal">
 
         @php
         $roleType = Auth::check() && Auth::user()->role ? Auth::user()->role->type : null;
@@ -72,14 +72,14 @@
         <div class="user-dropdown">
 
             <!-- User Toggle Button -->
-            <button id="user-toggle" class="user-toggle" aria-expanded="false" aria-label="Usuario">
+            <button id="user-toggle" class="user-toggle" aria-expanded="false" aria-haspopup="true" aria-controls="user-menu" aria-label="Opciones de {{ Auth::user()->username }}">
                 <i class="fa-solid fa-user"></i>
                 <span class="user-name">{{ Auth::user()->username }}</span>
                 <i class="fa-solid fa-caret-down caret"></i>
             </button>
 
             <!-- User Menu -->
-            <div class="user-menu" aria-hidden="true">
+            <div id="user-menu" class="user-menu" aria-hidden="true">
 
                 <a href="{{ route('profile.index') }}" class="fw-bold">
                     <i class="fa-solid fa-user-circle me-1 text-primary"></i>
