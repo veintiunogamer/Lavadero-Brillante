@@ -94,7 +94,7 @@ window.reportsApp = function() {
 
                 params.set('date', this.customStartDate.sales);
 
-            } else {
+            } else if (this.salesRange) {
 
                 params.set('range', this.salesRange);
             }
@@ -367,6 +367,37 @@ window.reportsApp = function() {
                     case 3:
                         summary.transfer += Number(payment.total || 0);
                         break;
+                }
+            });
+
+            return summary;
+        },
+
+        getClientsSummary() {
+
+            const clients = this.getFilteredData('clients');
+            const summary = {
+                clients: clients.length,
+                fleet: 0,
+                nonFleet: 0,
+                topClientNames: [],
+                topClientOrders: 0,
+            };
+
+            clients.forEach(client => {
+                if (Number(client.fleet) === 1) {
+                    summary.fleet += 1;
+                } else {
+                    summary.nonFleet += 1;
+                }
+
+                const orderCount = Number(client.orders_count || 0);
+
+                if (orderCount > summary.topClientOrders) {
+                    summary.topClientOrders = orderCount;
+                    summary.topClientNames = [client.name];
+                } else if (orderCount > 0 && orderCount === summary.topClientOrders) {
+                    summary.topClientNames.push(client.name);
                 }
             });
 

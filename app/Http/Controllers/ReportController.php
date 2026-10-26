@@ -14,6 +14,8 @@ use App\Services\OrderReportService;
 
 class ReportController extends Controller
 {
+    private const MAX_SALES_PDF_ROWS = 50;
+
     /**
      * Muestra la vista de informes.
      *
@@ -32,7 +34,7 @@ class ReportController extends Controller
     {
         [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
 
-        $orders = $this->querySales($start, $end)->get();
+        $orders = collect($this->querySales($start, $end)->cursor());
         $orders = $this->filterSalesCollection($orders, $request);
 
         $data = $orders->map(function ($order) {
@@ -71,8 +73,8 @@ class ReportController extends Controller
         return response()->json([
             'success' => true,
             'range' => $request->query('date') ? 'custom' : $request->query('range', 'month'),
-            'start' => $start->toDateString(),
-            'end' => $end->toDateString(),
+            'start' => $start ? $start->toDateString() : '0000-01-01',
+            'end' => $end ? $end->toDateString() : '9999-12-31',
             'periodLabel' => $periodLabel,
             'data' => $data,
             'summary' => $summary,
@@ -113,7 +115,13 @@ class ReportController extends Controller
         $start = $target->copy()->startOfDay();
         $end = $target->copy()->endOfDay();
 
-        $orders = $this->querySales($start, $end)->get();
+        $orders = $this->querySales($start, $end)
+            ->limit(self::MAX_SALES_PDF_ROWS + 1)
+            ->get();
+
+        if ($orders->count() > self::MAX_SALES_PDF_ROWS) {
+            return $this->salesPdfLimitResponse();
+        }
 
         $summary = $this->buildSalesSummary($orders);
 
@@ -147,7 +155,13 @@ class ReportController extends Controller
 
         if ($tab === 'sales') {
             [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
-            $orders = $this->filterSalesCollection($this->querySales($start, $end)->get(), $request);
+            $orders = $this->querySales($start, $end)
+                ->limit(self::MAX_SALES_PDF_ROWS + 1)
+                ->get();
+
+            if ($orders->count() > self::MAX_SALES_PDF_ROWS) {
+                return $this->salesPdfLimitResponse();
+            }
 
             $summary = $this->buildSalesSummary($orders);
 
@@ -199,7 +213,7 @@ class ReportController extends Controller
 
             [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
 
-            $orders = $this->filterSalesCollection($this->querySales($start, $end)->get(), $request);
+            $orders = collect($this->querySales($start, $end)->cursor());
             $summary = $this->buildSalesSummary($orders);
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.xlsx';
@@ -266,7 +280,12 @@ class ReportController extends Controller
             ];
         }
 
-        $range = $request->query('range', 'month');
+        $range = $request->query('range');
+
+        // Sin rango ni fecha: mostrar TODOS los registros del sistema
+        if (!isset($range)) {
+            return [null, null, 'Todos los registros'];
+        }
 
         if (!in_array($range, ['today', 'week', 'month'], true)) {
             $range = 'month';
@@ -283,7 +302,7 @@ class ReportController extends Controller
         return [$start, $end, $periodLabel];
     }
 
-    private function querySales(Carbon $start, Carbon $end)
+    private function querySales(?Carbon $start = null, ?Carbon $end = null)
     {
         return Order::with([
             'client:id,name,phone,license_plaque,fleet',
@@ -310,7 +329,9 @@ class ReportController extends Controller
                 'status',
                 'vehicle_notes',
             ])
-            ->whereBetween('date', [$start->toDateString(), $end->toDateString()])
+            ->when($start && $end, function ($query) use ($start, $end) {
+                $query->whereBetween('date', [$start->toDateString(), $end->toDateString()]);
+            })
             ->orderByDesc('date');
     }
 
@@ -409,6 +430,14 @@ class ReportController extends Controller
             'city' => '46960 Aldaya',
             'logo' => public_path('images/logo_alterno.png'),
         ];
+    }
+
+    private function salesPdfLimitResponse(): \Illuminate\Http\JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'El PDF admite hasta ' . self::MAX_SALES_PDF_ROWS . ' registros. Reduce el periodo o descarga el informe en Excel.',
+        ], 422);
     }
 
     private function buildSalesSummary(Collection $orders): array

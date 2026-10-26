@@ -395,16 +395,46 @@
                                 </tr>
                             </template>
                         </tbody>
-                    </table>
-                </div>
 
-                <div x-show="!loadingClients && getFilteredData('clients').length > 0" class="reports-footer d-flex justify-content-end">
-                    @include('partials._pagination', [
-                        'current' => 'currentPage.clients',
-                        'total' => "getTotalPages('clients')",
-                        'go' => "(p) => goToPage('clients', p)",
-                        'class' => 'app-pagination--footer',
-                    ])
+                        <tfoot x-show="!loadingClients && getFilteredData('clients').length > 0">
+                            <tr>
+                                <td colspan="8" class="reports-tfoot__cell">
+                                    <div class="reports-tfoot__inner reports-clients-footer__inner">
+                                        <div class="reports-tfoot__metrics reports-clients-footer__metrics">
+                                            <div class="reports-tfoot__metric">
+                                                <span class="reports-tfoot__label">Clientes</span>
+                                                <span class="reports-tfoot__value" x-text="getClientsSummary().clients"></span>
+                                            </div>
+
+                                            <div class="reports-tfoot__metric">
+                                                <span class="reports-tfoot__label">Flota</span>
+                                                <span class="reports-tfoot__value" x-text="getClientsSummary().fleet"></span>
+                                            </div>
+
+                                            <div class="reports-tfoot__metric">
+                                                <span class="reports-tfoot__label">Particulares</span>
+                                                <span class="reports-tfoot__value" x-text="getClientsSummary().nonFleet"></span>
+                                            </div>
+
+                                            <div class="reports-tfoot__metric reports-clients-footer__top-client">
+                                                <span class="reports-tfoot__label">Cliente con más citas</span>
+                                                <span class="reports-tfoot__value" x-text="getClientsSummary().topClientNames.join(', ') || '—'"></span>
+                                                <span class="reports-clients-footer__detail" x-show="getClientsSummary().topClientOrders > 0" x-text="getClientsSummary().topClientOrders + (getClientsSummary().topClientOrders === 1 ? ' cita' : ' citas')"></span>
+                                            </div>
+
+                                        </div>
+
+                                        @include('partials._pagination', [
+                                            'current' => 'currentPage.clients',
+                                            'total' => "getTotalPages('clients')",
+                                            'go' => "(p) => goToPage('clients', p)",
+                                            'class' => 'app-pagination--footer',
+                                        ])
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
 
             </div>
@@ -437,10 +467,10 @@
             <p class="reports-export-label">Formato de exportación</p>
             <div class="reports-export-options">
 
-                <button class="reports-export-option reports-export-option--pdf" @click="downloadCurrent('pdf')">
+                <button class="reports-export-option reports-export-option--pdf" type="button" disabled aria-describedby="reports-pdf-disabled-message">
                     <span class="reports-export-option-icon"><i class="fa-solid fa-file-pdf"></i></span>
                     <span class="reports-export-option-title">PDF</span>
-                    <small>Documento listo para compartir</small>
+                    <small id="reports-pdf-disabled-message">Temporalmente deshabilitado</small>
                 </button>
 
                 <button class="reports-export-option reports-export-option--excel" @click="downloadCurrent('excel')">
