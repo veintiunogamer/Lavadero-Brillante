@@ -1,114 +1,89 @@
-<!-- 
-    Modal: Cambio Rápido de Estado
-    Se usa con Alpine.js para cambiar el estado de una orden
--->
-
+<!-- Modal: Cambio de estado de una orden -->
 <template x-if="showStatusModal">
-
     <div x-cloak @click.self="closeStatusModal()" @keydown.escape.window="closeStatusModal()"
-        class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-        style="background: rgba(0,0,0,0.5); z-index: 9999; display: none;" x-transition>
+        class="order-status-overlay" x-transition.opacity>
 
-        <div class="bg-white rounded-4 p-4 shadow-lg" style="max-width: 650px; width: 95%;">
-
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="mb-0 fw-bold">
-                    <i class="fa-solid fa-exchange-alt color-blue me-2"></i>
-                    Cambiar Estado
-                </h4>
-                <button @click="closeStatusModal()" type="button" class="btn-close"></button>
-            </div>
-
-            <!-- Info actual -->
-            <div class="bg-light rounded-3 p-3 mb-4">
-                <div class="d-flex justify-content-between align-items-center">
+        <section class="order-status-modal order-status-modal--editor" @click.stop>
+            <header class="order-status-header">
+                <div class="order-status-heading">
+                    <span class="order-status-icon"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
                     <div>
-                        <span class="text-muted">Cliente:</span>
+                        <h2>Cambiar estado de orden</h2>
+                        <p>Selecciona el nuevo estado del servicio.</p>
+                    </div>
+                </div>
+                <button @click="closeStatusModal()" type="button" class="order-status-close" aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </header>
+
+            <div class="order-status-body">
+                <section class="order-status-context">
+                    <div class="order-status-context__client">
+                        <label>Cliente</label>
                         <strong x-text="statusModalOrder?.client?.name || '--'"></strong>
                     </div>
-
-                    <div>
-                        <span class="text-muted">Placa:</span>
-                        <div class="d-inline-block ms-1" x-html="licensePlate(statusModalOrder?.client?.license_plaque)"></div>
+                    <div class="order-status-context__plate">
+                        <label>Placa</label>
+                        <div x-html="licensePlate(statusModalOrder?.client?.license_plaque)"></div>
                     </div>
-                </div>
+                    <div class="order-status-context__current">
+                        <label>Estado actual</label>
+                        <span class="badge" :class="getStatusBadge(statusModalOrder?.status)"
+                            x-text="getStatusText(statusModalOrder?.status)"></span>
+                    </div>
+                </section>
 
-                <div class="mt-2">
-                    <span class="text-muted">Estado actual:</span>
-                    <span class="badge ms-2" :class="getStatusBadge(statusModalOrder?.status)"
-                        x-text="getStatusText(statusModalOrder?.status)"></span>
-                </div>
+                <section class="order-status-selection">
+                    <div class="order-status-section-heading">
+                        <span class="order-status-section-icon"><i class="fa-solid fa-list-check"></i></span>
+                        <div>
+                            <h3>Nuevo estado</h3>
+                            <p>El cambio se aplicará a esta orden.</p>
+                        </div>
+                    </div>
 
+                    <div class="order-status-choices">
+                        <button type="button" class="order-status-choice order-status-choice--pending"
+                            @click="newStatus = 1" :aria-pressed="newStatus === 1"
+                            :class="newStatus === 1 ? 'is-selected' : ''">
+                            <i class="fa-regular fa-clock"></i><span>Pendiente</span>
+                        </button>
+                        <button type="button" class="order-status-choice order-status-choice--progress"
+                            @click="newStatus = 2" :aria-pressed="newStatus === 2"
+                            :class="newStatus === 2 ? 'is-selected' : ''">
+                            <i class="fa-solid fa-spinner"></i><span>En proceso</span>
+                        </button>
+                        <button type="button" class="order-status-choice order-status-choice--done"
+                            @click="newStatus = 3" :aria-pressed="newStatus === 3"
+                            :class="newStatus === 3 ? 'is-selected' : ''">
+                            <i class="fa-solid fa-check"></i><span>Terminado</span>
+                        </button>
+                        <button type="button" class="order-status-choice order-status-choice--cancelled"
+                            @click="newStatus = 4" :aria-pressed="newStatus === 4"
+                            :class="newStatus === 4 ? 'is-selected' : ''">
+                            <i class="fa-solid fa-xmark"></i><span>Cancelado</span>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="order-status-note" x-show="newStatus === 4" x-transition>
+                    <label for="status-change-note">Motivo de cancelación <span>(opcional)</span></label>
+                    <textarea id="status-change-note" class="form-control" x-model="statusChangeNote" rows="2"
+                        placeholder="Escribe el motivo de la cancelación"></textarea>
+                </section>
             </div>
 
-            <!-- Selector de nuevo estado -->
-            <div class="mb-4">
-
-                <label class="form-label fw-bold">Nuevo Estado</label>
-
-                <div class="d-flex flex-wrap gap-2">
-
-                    <button type="button" class="btn flex-fill" @click="newStatus = 1"
-                        :class="newStatus === 1 ? 'btn-warning' : 'btn-outline-warning'">
-                        <i class="fa-solid fa-clock me-1"></i> Pendiente
-                    </button>
-
-                    <button type="button" class="btn flex-fill" @click="newStatus = 2"
-                        :class="newStatus === 2 ? 'btn-info' : 'btn-outline-info'">
-                        <i class="fa-solid fa-spinner me-1"></i> En Proceso
-                    </button>
-
-                    <button type="button" class="btn flex-fill" @click="newStatus = 3"
-                        :class="newStatus === 3 ? 'btn-success' : 'btn-outline-success'">
-                        <i class="fa-solid fa-check me-1"></i> Terminado
-                    </button>
-
-                    <button type="button" class="btn flex-fill" @click="newStatus = 4"
-                        :class="newStatus === 4 ? 'btn-danger' : 'btn-outline-danger'">
-                        <i class="fa-solid fa-times me-1"></i> Cancelado
-                    </button>
-
-                </div>
-
-            </div>
-
-            <!-- Nota opcional -->
-            <div class="mb-4" x-show="newStatus === 4">
-
-                <label class="form-label fw-bold">Motivo de Cancelación</label>
-                <textarea class="form-control" x-model="statusChangeNote" rows="2"
-                    placeholder="Opcional: indica el motivo..."></textarea>
-
-            </div>
-
-            <hr>
-
-            <!-- Footer -->
-            <div class="d-flex flex-wrap justify-content-center justify-items-center my-3 gap-2">
-
-                <button @click="closeStatusModal()" class="btn btn-danger my-2">
-                    <i class="fa-solid fa-xmark me-1"></i>&nbsp;
-                    Cancelar
+            <footer class="order-status-footer">
+                <button @click="closeStatusModal()" type="button" class="order-status-action order-status-action--secondary">
+                    <i class="fa-solid fa-xmark"></i> Cancelar
                 </button>
-
-                <button @click="confirmStatusChange()" class="btn btn-primary my-2"
+                <button @click="confirmStatusChange()" type="button" class="order-status-action order-status-action--primary"
                     :disabled="!newStatus || newStatus === statusModalOrder?.status || changingStatus">
-
-                    <span x-show="!changingStatus">
-                        <i class="fa-solid fa-check me-1"></i> Confirmar Cambio
-                    </span>
-
-                    <span x-show="changingStatus">
-                        <i class="fa-solid fa-spinner fa-spin me-1"></i> Guardando...
-                    </span>
-
+                    <span x-show="!changingStatus"><i class="fa-solid fa-check"></i> Confirmar cambio</span>
+                    <span x-show="changingStatus"><i class="fa-solid fa-spinner fa-spin"></i> Guardando...</span>
                 </button>
-
-            </div>
-
-        </div>
-
+            </footer>
+        </section>
     </div>
-
 </template>
