@@ -230,7 +230,7 @@
         }
 
         .pill-title {
-            background: #3b3d43;
+            background: #044688;
             color: #ffffff;
             border-radius: 16px;
             display: inline-block;
@@ -252,9 +252,9 @@
         }
 
         .services-table th {
-            background: #3b3d43;
+            background: #044688;
             color: #ffffff;
-            border: 1.2px solid #3b3d43;
+            border: 1.2px solid #044688;
             font-size: 10.5px;
             padding: 7px 5px;
             text-align: center;
@@ -326,6 +326,15 @@
             font-weight: bold;
             text-align: right;
             text-transform: uppercase;
+        }
+
+        .totals-label--brand {
+            background: #044688;
+            color: #ffffff;
+        }
+
+        .company-info {
+            color: #044688;
         }
 
         .totals-value {
@@ -484,7 +493,7 @@
                 <tr>
 
                     <!-- EMPRESA -->
-                    <td width="48%" valign="top">
+                    <td width="48%" valign="top" class="company-info">
 
                         <div class="border">
 
@@ -737,7 +746,7 @@
                         <table class="totals-table">
 
                             <tr>
-                                <td class="totals-label">Base imponible</td>
+                                <td class="totals-label totals-label--brand">Base imponible</td>
                                 <td class="totals-value">{!! $money($taxBase) !!}</td>
                             </tr>
 
@@ -749,12 +758,12 @@
                             @endif
 
                             <tr>
-                                <td class="totals-label">Tipo de IVA</td>
+                                <td class="totals-label totals-label--brand">Tipo de IVA</td>
                                 <td class="totals-value">{{ $taxRateLabel }}</td>
                             </tr>
 
                             <tr>
-                                <td class="totals-label">Total IVA</td>
+                                <td class="totals-label totals-label--brand">Total IVA</td>
                                 <td class="totals-value">{!! $money($taxesValue) !!}</td>
                             </tr>
 
