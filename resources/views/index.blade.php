@@ -348,28 +348,26 @@
                                 maxlength="15" placeholder="Ej: 123456789" data-field-name="Telefono de Factura">
                         </div>
 
-                        <hr>
-
-                        <div class="col-12 mb-2 my-2">
-                            <label class="fw-bold mb-1">
-                                <i class="fa-solid fa-location-dot me-1 text-primary"></i> Dirección Fiscal <span
-                                    class="required">*</span>
-                            </label>
+                        <div class="col-12 px-2 my-2" aria-hidden="true">
+                            <div style="height: 2px; background-color: #cbd5e1; width: 100%;"></div>
                         </div>
 
-                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2 my-2">
+                        <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
+                            <label for="direccion-calle" class="fw-bold mb-1">Dirección <span class="required">*</span></label>
                             <input type="text" class="form-control" name="invoice_address" id="direccion-calle"
                                 maxlength="100" placeholder="Calle, número, puerta" data-field-name="Dirección">
                         </div>
 
-                        <div class="col-lg-4 col-md-3 col-sm-12 mb-3 px-2 my-2">
+                        <div class="col-lg-4 col-md-3 col-sm-12 mb-3 px-2">
+                            <label for="direccion-ciudad" class="fw-bold mb-1">Ciudad <span class="required">*</span></label>
                             <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad"
                                 maxlength="20" placeholder="Ciudad" data-field-name="Ciudad">
                         </div>
 
-                        <div class="col-lg-2 col-md-3 col-sm-12 mb-3 px-2 my-2">
+                        <div class="col-lg-2 col-md-3 col-sm-12 mb-3 px-2">
+                            <label for="direccion-cp" class="fw-bold mb-1">Código Postal <span class="required">*</span></label>
                             <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp"
-                                maxlength="7" placeholder="Código Postal" data-field-name="Código Postal">
+                                maxlength="7" inputmode="numeric" placeholder="Código Postal" data-field-name="Código Postal">
                         </div>
 
                     </div>
