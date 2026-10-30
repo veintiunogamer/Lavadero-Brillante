@@ -204,9 +204,7 @@
                             <td>
                                 <span x-text="order.client?.name || '--'"></span>
                                 <div x-show="order.client?.license_plaque" x-html="licensePlate(order.client?.license_plaque)"></div>
-                                <small class="d-block text-muted" x-show="currentTab === 4" x-text="'Motivo: ' + (order.deletion_reason || '--')"></small>
-                                <small class="d-block text-muted" x-show="currentTab === 4" x-text="'Archivó: ' + (order.deleted_by_user?.name || '--')"></small>
-                                <small class="d-block text-muted" x-show="currentTab === 4 && order.invoice" x-text="'Factura: ' + (Number(order.invoice?.status) === 1 ? 'Habilitada' : 'Inhabilitada')"></small>
+                                <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="badge mt-1" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + order.client.temp_registration"></span>
                             </td>
                             <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                             <td>

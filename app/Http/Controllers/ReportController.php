@@ -305,7 +305,7 @@ class ReportController extends Controller
     private function querySales(?Carbon $start = null, ?Carbon $end = null)
     {
         return Order::with([
-            'client:id,name,phone,license_plaque,fleet',
+            'client:id,name,phone,license_plaque,temp_registration,fleet',
             'user:id,name',
             'vehicleType:id,name',
             'services:id,name',
@@ -358,13 +358,14 @@ class ReportController extends Controller
                 'c.name',
                 'c.phone',
                 'c.license_plaque',
+                'c.temp_registration',
                 'c.brand',
                 'c.fleet',
                 DB::raw('COUNT(o.id) as orders_count'),
                 DB::raw('COALESCE(SUM(o.total), 0) as total_spent'),
                 DB::raw('MAX(o.creation_date) as last_order_date'),
             ])
-            ->groupBy('c.id', 'c.name', 'c.phone', 'c.license_plaque', 'c.brand', 'c.fleet')
+            ->groupBy('c.id', 'c.name', 'c.phone', 'c.license_plaque', 'c.temp_registration', 'c.brand', 'c.fleet')
             ->orderBy('c.name');
 
         if ($search) {
@@ -372,6 +373,7 @@ class ReportController extends Controller
                 $q->where('c.name', 'like', '%' . $search . '%')
                     ->orWhere('c.phone', 'like', '%' . $search . '%')
                     ->orWhere('c.license_plaque', 'like', '%' . $search . '%')
+                    ->orWhere('c.temp_registration', 'like', '%' . $search . '%')
                     ->orWhere('c.brand', 'like', '%' . $search . '%')
                     ->orWhere('c.fleet', 'like', '%' . $search . '%');
             });

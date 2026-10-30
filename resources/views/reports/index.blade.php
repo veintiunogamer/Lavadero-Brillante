@@ -203,7 +203,8 @@
                                     </td>
                                     <td>
                                         <div x-text="order.client ? order.client.name : '--'"></div>
-                                        <div class="mt-1" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
+                                        <div class="mt-1" x-show="order.client?.license_plaque" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
+                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="badge mt-1" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + order.client.temp_registration"></span>
                                     </td>
                                     <td x-text="order.client && order.client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td>
@@ -386,7 +387,7 @@
                                 <tr>
                                     <td x-text="client.name"></td>
                                     <td x-text="client.phone || '--'"></td>
-                                    <td x-html="licensePlate(client.license_plaque)"></td>
+                                    <td><span x-show="client.license_plaque" x-html="licensePlate(client.license_plaque)"></span><span x-show="!client.license_plaque && client.temp_registration" class="badge" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + client.temp_registration"></span></td>
                                     <td x-text="client.brand || '--'"></td>
                                     <td x-text="client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td x-text="client.orders_count"></td>

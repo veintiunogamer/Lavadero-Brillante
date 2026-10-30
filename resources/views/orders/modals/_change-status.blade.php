@@ -26,6 +26,7 @@
                     <div class="order-status-context__plate">
                         <label>Placa</label>
                         <div x-html="licensePlate(statusModalOrder?.client?.license_plaque)"></div>
+                        <span x-show="!statusModalOrder?.client?.license_plaque && statusModalOrder?.client?.temp_registration" class="badge" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + statusModalOrder.client.temp_registration"></span>
                     </div>
                     <div class="order-status-context__current">
                         <label>Estado actual</label>

@@ -412,7 +412,7 @@
 
     $clientName = $invoice->business_name ?? $client->name ?? '--';
     $clientPhone = $client->phone ?? '--';
-    $licensePlaque = $client->license_plaque ?? '--';
+    $licensePlaque = $client->license_plaque ?? ($client->temp_registration ? 'Registro: ' . $client->temp_registration : '--');
 
     $clientAddress = $invoice->address ?? $client->address ?? '--';
     if ($invoice->address) {
