@@ -31,15 +31,19 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'license_plaque' => 'nullable|string|max:20',
+            'temp_registration' => 'nullable|string|max:20|regex:/^[A-Za-z0-9]+$/',
             'brand' => 'nullable|string|max:50',
             'fleet' => 'nullable|boolean',
         ]);
+
+        $this->validateClientIdentifier($request);
 
         $client = Client::create([
             'id' => (string) \Illuminate\Support\Str::uuid(),
             'name' => $request->name,
             'phone' => $request->phone,
-            'license_plaque' => $request->license_plaque,
+            'license_plaque' => $request->filled('license_plaque') ? strtoupper(trim($request->license_plaque)) : null,
+            'temp_registration' => $request->filled('temp_registration') ? strtoupper(trim($request->temp_registration)) : null,
             'brand' => $request->brand,
             'fleet' => (bool) $request->fleet,
             'status' => 1,
@@ -74,14 +78,18 @@ class ClientController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'license_plaque' => 'nullable|string|max:20',
+            'temp_registration' => 'nullable|string|max:20|regex:/^[A-Za-z0-9]+$/',
             'brand' => 'nullable|string|max:50',
             'fleet' => 'nullable|boolean',
         ]);
 
+        $this->validateClientIdentifier($request);
+
         $client->update([
             'name' => $request->name,
             'phone' => $request->phone,
-            'license_plaque' => $request->license_plaque,
+            'license_plaque' => $request->filled('license_plaque') ? strtoupper(trim($request->license_plaque)) : null,
+            'temp_registration' => $request->filled('temp_registration') ? strtoupper(trim($request->temp_registration)) : null,
             'brand' => $request->brand,
             'fleet' => (bool) $request->fleet,
         ]);
@@ -115,7 +123,10 @@ class ClientController extends Controller
             return response()->json(['exists' => false, 'client' => null]);
         }
 
-        $client = Client::where('license_plaque', strtoupper($licensePlate))
+        $client = Client::where(function ($query) use ($licensePlate) {
+            $query->where('license_plaque', strtoupper($licensePlate))
+                ->orWhere('temp_registration', strtoupper($licensePlate));
+        })
             ->where('status', 1)
             ->first();
 
@@ -126,12 +137,29 @@ class ClientController extends Controller
                     'id' => $client->id,
                     'name' => $client->name,
                     'phone' => $client->phone,
-                    'license_plaque' => $client->license_plaque
+                    'license_plaque' => $client->license_plaque,
+                    'temp_registration' => $client->temp_registration,
+                    'brand' => $client->brand,
+                    'fleet' => $client->fleet,
                 ]
             ]);
         }
 
         return response()->json(['exists' => false, 'client' => null]);
+    }
+
+    private function validateClientIdentifier(Request $request): void
+    {
+        $request->validate([
+            'license_plaque' => 'nullable|required_without:temp_registration',
+            'temp_registration' => ['nullable', 'required_without:license_plaque', 'max:20', 'regex:/^[A-Za-z0-9]+$/'],
+        ]);
+
+        if ($request->filled('license_plaque') && $request->filled('temp_registration')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'license_plaque' => 'Indica una matrícula o un registro temporal, no ambos.',
+            ]);
+        }
     }
 
     /**

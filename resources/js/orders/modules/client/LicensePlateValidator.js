@@ -13,6 +13,7 @@ export class LicensePlateValidator {
         this.clientNameInput = null;
         this.clientPhoneInput = null;
         this.licensePlateInfo = null;
+        this.tempRegistrationInput = null;
         this.debounceTimer = null;
         this.debounceDelay = 500;
         this.initialized = false;
@@ -28,14 +29,56 @@ export class LicensePlateValidator {
         this.clientNameInput = document.querySelector('input[name="client_name"]');
         this.clientPhoneInput = document.getElementById('telefono-whatsapp');
         this.licensePlateInfo = document.getElementById('license-plate-info');
+        this.tempRegistrationInput = document.getElementById('temp-registration-input');
+        this.registrationMode = false;
 
         if (!this.licensePlateInput || this.licensePlateInput.dataset.initialized) {
             return;
         }
 
         this.bindEvents();
+        this.initVehicleIdentifierToggle();
         this.licensePlateInput.dataset.initialized = 'true';
         this.initialized = true;
+    }
+
+    initVehicleIdentifierToggle() {
+        const plateButton = document.getElementById('vehicle-id-plate-toggle');
+        const registrationButton = document.getElementById('vehicle-id-registration-toggle');
+        const plateField = document.getElementById('license-plate-field');
+        const registrationField = document.getElementById('temp-registration-field');
+        if (!plateButton || !registrationButton || !plateField || !registrationField) return;
+
+        const setMode = (registration) => {
+            this.registrationMode = registration;
+            plateField.style.display = registration ? 'none' : '';
+            registrationField.style.display = registration ? '' : 'none';
+            this.licensePlateInput.required = !registration;
+            this.licensePlateInput.classList.toggle('required-field', !registration);
+            this.tempRegistrationInput.required = registration;
+            this.tempRegistrationInput.classList.toggle('required-field', registration);
+            this.licensePlateInput.disabled = registration;
+            this.tempRegistrationInput.disabled = !registration;
+            plateButton.classList.toggle('active', !registration);
+            registrationButton.classList.toggle('active', registration);
+            plateButton.classList.toggle('btn-primary', !registration);
+            plateButton.classList.toggle('btn-outline-primary', registration);
+            registrationButton.classList.toggle('btn-primary', registration);
+            registrationButton.classList.toggle('btn-outline-primary', !registration);
+            if (registration) this.licensePlateInput.value = '';
+            else this.tempRegistrationInput.value = '';
+            document.dispatchEvent(new CustomEvent('formFieldChanged'));
+        };
+
+        plateButton.addEventListener('click', () => setMode(false));
+        registrationButton.addEventListener('click', () => setMode(true));
+        this.tempRegistrationInput.addEventListener('input', (event) => {
+            event.target.value = event.target.value.replace(/[^a-z0-9]/gi, '').toUpperCase();
+            clearTimeout(this.debounceTimer);
+            this.debounceTimer = setTimeout(() => this.validateAndFetch(event.target.value.trim()), this.debounceDelay);
+            document.dispatchEvent(new CustomEvent('formFieldChanged'));
+        });
+        this.tempRegistrationInput.disabled = true;
     }
 
     /**
@@ -81,6 +124,10 @@ export class LicensePlateValidator {
 
             if (result.exists && result.client) {
 
+                if (result.client.temp_registration && !result.client.license_plaque && !this.registrationMode) {
+                    document.getElementById('vehicle-id-registration-toggle')?.click();
+                }
+
                 this.fillClientData(result.client);
                 window.notyf?.success('Cliente encontrado - datos cargados automáticamente');
             
@@ -111,6 +158,7 @@ export class LicensePlateValidator {
             // Extraer últimos 9 dígitos (formato español)
             this.clientPhoneInput.value = phoneValue.replace(/\D/g, '').slice(-9);
         }
+        if (this.tempRegistrationInput && this.registrationMode) this.tempRegistrationInput.value = client.temp_registration || '';
 
         // Rellenar modelo (brand)
         const brandInput = document.getElementById('client-brand-input');
@@ -134,6 +182,8 @@ export class LicensePlateValidator {
      * Limpia los datos del cliente
      */
     clearClientData() {
+
+        if (this.tempRegistrationInput) this.tempRegistrationInput.value = '';
 
         if (this.clientNameInput) {
             this.clientNameInput.value = '';

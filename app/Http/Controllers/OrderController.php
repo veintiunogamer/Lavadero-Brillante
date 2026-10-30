@@ -48,7 +48,8 @@ class OrderController extends Controller
         $today = Carbon::today();
         $dateCode = $today->format('dmY');
 
-        $todayOrders = Order::whereDate('creation_date', $today)->count();
+        // Los consecutivos archivados también deben reservar su número histórico.
+        $todayOrders = Order::withTrashed()->whereDate('creation_date', $today)->count();
         $sequence = str_pad((string) ($todayOrders + 1), 3, '0', STR_PAD_LEFT);
 
         return [
@@ -132,7 +133,8 @@ class OrderController extends Controller
             $validated = $request->validate([
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'required|string|max:20',
-                'license_plaque' => 'required|string|max:10',
+                'license_plaque' => 'nullable|string|max:20|required_without:temp_registration',
+                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque'],
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
                 'assigned_user' => 'required|uuid|exists:users,id',
@@ -152,7 +154,7 @@ class OrderController extends Controller
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'nullable|date_format:H:i',
-                'hour_out' => 'nullable|date_format:H:i',
+                'hour_out' => 'nullable|date_format:H:i|different:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='TPV', 3='transferencia'
@@ -170,12 +172,17 @@ class OrderController extends Controller
                 'invoice_city' => 'required_if:invoice_required,true|nullable|string|max:100',
             ]);
 
+            $this->validateClientIdentifiers($request);
+
 
             // 1. Buscar o crear cliente (prioriza matrícula para evitar duplicados)
-            $licensePlaque = strtoupper(trim($validated['license_plaque']));
+            $licensePlaque = !empty($validated['license_plaque']) ? strtoupper(trim($validated['license_plaque'])) : null;
+            $tempRegistration = !empty($validated['temp_registration']) ? strtoupper(trim($validated['temp_registration'])) : null;
             $clientPhone = trim($validated['client_phone']);
 
-            $client = \App\Models\Client::whereRaw('UPPER(license_plaque) = ?', [$licensePlaque])->first();
+            $client = $licensePlaque
+                ? \App\Models\Client::whereRaw('UPPER(license_plaque) = ?', [$licensePlaque])->first()
+                : \App\Models\Client::whereRaw('UPPER(temp_registration) = ?', [$tempRegistration])->first();
 
             if (!$client && $clientPhone) {
                 $client = \App\Models\Client::where('phone', $clientPhone)->first();
@@ -188,6 +195,7 @@ class OrderController extends Controller
                     'name' => $validated['client_name'],
                     'phone' => $clientPhone,
                     'license_plaque' => $licensePlaque,
+                    'temp_registration' => $tempRegistration,
                     'brand' => $validated['client_brand'] ?? null,
                     'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
                     'status' => \App\Models\Client::STATUS_ACTIVE,
@@ -199,6 +207,7 @@ class OrderController extends Controller
                     'name' => $validated['client_name'],
                     'phone' => $clientPhone,
                     'license_plaque' => $licensePlaque,
+                    'temp_registration' => $tempRegistration,
                     'brand' => $validated['client_brand'] ?? null,
                     'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
                 ]);
@@ -373,7 +382,8 @@ class OrderController extends Controller
             $validated = $request->validate([
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'nullable|string|max:20',
-                'license_plaque' => 'required|string|max:15',
+                'license_plaque' => 'nullable|string|max:20|required_without:temp_registration',
+                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque'],
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
                 'invoice_required' => 'nullable|boolean',
@@ -401,12 +411,14 @@ class OrderController extends Controller
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'nullable|date_format:H:i',
-                'hour_out' => 'nullable|date_format:H:i',
+                'hour_out' => 'nullable|date_format:H:i|different:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3',
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3,4',
                 'order_status' => 'required|integer|in:1,2,3,4'
             ]);
+
+            $this->validateClientIdentifiers($request);
 
             \DB::beginTransaction();
 
@@ -416,7 +428,8 @@ class OrderController extends Controller
             $client->update([
                 'name' => $validated['client_name'],
                 'phone' => $validated['client_phone'],
-                'license_plaque' => strtoupper($validated['license_plaque']),
+                'license_plaque' => !empty($validated['license_plaque']) ? strtoupper(trim($validated['license_plaque'])) : null,
+                'temp_registration' => !empty($validated['temp_registration']) ? strtoupper(trim($validated['temp_registration'])) : null,
                 'brand' => $validated['client_brand'] ?? null,
                 'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
             ]);
@@ -505,6 +518,7 @@ class OrderController extends Controller
                         'address' => $validated['invoice_address'],
                         'city' => $validated['invoice_city'],
                         'zipcode' => $validated['invoice_postal_code'],
+                        'status' => \App\Models\Invoice::STATUS_ENABLED,
                     ]);
                 } else {
 
@@ -522,8 +536,8 @@ class OrderController extends Controller
                     ]);
                 }
             } else {
-                // Si el switch de factura está desactivado, eliminar invoice si existe
-                $order->invoice()->delete();
+                // Conservar el registro de factura por trazabilidad, pero deshabilitarlo.
+                $order->invoice()->update(['status' => \App\Models\Invoice::STATUS_DISABLED]);
             }
 
             \DB::commit();
@@ -728,6 +742,13 @@ class OrderController extends Controller
      */
     public function invoicePdf(Order $order)
     {
+        if ($order->invoice && (int) $order->invoice->status !== \App\Models\Invoice::STATUS_ENABLED) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La factura de esta orden está inhabilitada.',
+            ], 410);
+        }
+
         if (!class_exists('Barryvdh\\DomPDF\\Facade\\Pdf')) {
             return response()->json([
                 'success' => false,
@@ -901,12 +922,81 @@ class OrderController extends Controller
         }
     }
 
+    /** Lista órdenes archivadas para que un administrador pueda restaurarlas. */
+    public function archived()
+    {
+        $orders = Order::onlyTrashed()
+            ->with(['client', 'services', 'user', 'payments', 'invoice', 'deletedByUser'])
+            ->orderByDesc('deleted_at')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $orders,
+            'count' => $orders->count(),
+        ]);
+    }
+
+    /** Archiva lógicamente una orden, preservando sus relaciones y trazabilidad. */
+    public function archive(Request $request, string $order)
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'min:5', 'max:500'],
+        ]);
+
+        $order = Order::with(['payments', 'invoice'])->findOrFail($order);
+
+        if (!in_array((int) $order->status, [Order::STATUS_PENDING, Order::STATUS_CANCELED], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Solo se pueden archivar órdenes pendientes o canceladas.',
+            ], 422);
+        }
+
+        DB::transaction(function () use ($order, $request, $validated) {
+            $order->invoice()->update(['status' => \App\Models\Invoice::STATUS_DISABLED]);
+            $order->deleted_by = $request->user()->id;
+            $order->deletion_reason = trim($validated['reason']);
+            $order->save();
+            $order->delete();
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Orden archivada correctamente.',
+        ]);
+    }
+
+    /** Restaura una orden archivada previamente. */
+    public function restore(string $order)
+    {
+        $order = Order::onlyTrashed()->findOrFail($order);
+        DB::transaction(function () use ($order) {
+            $order->restore();
+            $order->invoice()->update(['status' => \App\Models\Invoice::STATUS_ENABLED]);
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Orden restaurada correctamente.',
+        ]);
+    }
+
     /**
      * Normaliza cualquier valor de hora a formato H:i para validación y guardado.
      *
      * @param mixed $value
      * @return string|null
      */
+    private function validateClientIdentifiers(\Illuminate\Http\Request $request): void
+    {
+        if ($request->filled('license_plaque') && $request->filled('temp_registration')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'license_plaque' => 'Indica una matrícula o un registro temporal, no ambos.',
+            ]);
+        }
+    }
+
     private function normalizeTimeInput($value): ?string
     {
         if ($value === null) {

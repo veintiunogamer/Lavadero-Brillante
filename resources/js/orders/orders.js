@@ -46,6 +46,10 @@ window.agendamientoApp = function() {
         newPaymentStatus: null,
         paymentPartialAmount: null,
         changingPayment: false,
+        showArchiveModal: false,
+        archiveModalOrder: null,
+        archiveReason: '',
+        archiving: false,
 
         /**
          * Inicializa el componente y carga las órdenes
@@ -75,7 +79,8 @@ window.agendamientoApp = function() {
             
             try {
 
-                const response = await fetch(`/orders/status/${status}`, {
+                const endpoint = Number(status) === 4 ? '/orders/archived' : `/orders/status/${status}`;
+                const response = await fetch(endpoint, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -423,6 +428,76 @@ window.agendamientoApp = function() {
                 
             } finally {
                 this.changingStatus = false;
+            }
+        },
+
+        openArchiveModal(order) {
+            this.archiveModalOrder = order;
+            this.archiveReason = '';
+            this.showArchiveModal = true;
+        },
+
+        closeArchiveModal() {
+            this.showArchiveModal = false;
+            this.archiveModalOrder = null;
+            this.archiveReason = '';
+        },
+
+        async confirmArchive() {
+            if (!this.archiveModalOrder || this.archiveReason.trim().length < 5) return;
+
+            this.archiving = true;
+            try {
+                const response = await fetch(`/orders/${this.archiveModalOrder.id}/archive`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ reason: this.archiveReason.trim() })
+                });
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    window.notyf?.error(result.message || 'No se pudo archivar la orden');
+                    return;
+                }
+
+                window.notyf?.success(result.message || 'Orden archivada');
+                this.closeArchiveModal();
+                await this.loadOrders(this.currentTab);
+            } catch (error) {
+                console.error('Error al archivar orden:', error);
+                window.notyf?.error('Error al archivar la orden');
+            } finally {
+                this.archiving = false;
+            }
+        },
+
+        async restoreOrder(order) {
+            if (!window.confirm(`¿Restaurar la orden de ${order.client?.name || 'este cliente'}?`)) return;
+
+            try {
+                const response = await fetch(`/orders/${order.id}/restore`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                });
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    window.notyf?.error(result.message || 'No se pudo restaurar la orden');
+                    return;
+                }
+
+                window.notyf?.success(result.message || 'Orden restaurada');
+                await this.loadOrders(this.currentTab);
+            } catch (error) {
+                console.error('Error al restaurar orden:', error);
+                window.notyf?.error('Error al restaurar la orden');
             }
         },
 

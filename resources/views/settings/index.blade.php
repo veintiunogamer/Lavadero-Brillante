@@ -549,7 +549,7 @@
                             <tr :class="client.status ? '' : 'table-secondary'">
                                 <td x-text="client.name"></td>
                                 <td x-text="client.phone || '--'"></td>
-                                <td x-html="licensePlate(client.license_plaque)"></td>
+                                <td><span x-show="client.license_plaque" x-html="licensePlate(client.license_plaque)"></span><span x-show="!client.license_plaque && client.temp_registration" class="badge" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + client.temp_registration"></span></td>
                                 <td x-text="client.brand || '--'"></td>
                                 <td x-text="client.fleet ? 'Sí' : 'No'"></td>
                                 <td>
@@ -826,6 +826,12 @@
                         <small x-show="licensePlateExists" class="text-danger">
                             <i class="fa-solid fa-exclamation-triangle"></i> Esta matrícula ya está registrada
                         </small>
+                    </div>
+
+                    <div class="user-form-field">
+                        <label class="form-label">Registro temporal</label>
+                        <input type="text" x-model="clientForm.temp_registration" class="form-control" maxlength="20" pattern="[A-Za-z0-9]+" placeholder="Letras y números" style="text-transform:uppercase;background:#fff8d6;color:#17324d;">
+                        <span x-show="errors.client.temp_registration" x-text="errors.client.temp_registration?.[0]" class="text-danger small"></span>
                     </div>
 
                     <div class="user-form-field">

@@ -212,12 +212,18 @@ function createOrderFormApp() {
             const clientName = document.querySelector('[name="client_name"]');
             const clientPhone = document.querySelector('[name="client_phone"]');
             const licensePlateInput = document.querySelector('[name="license_plaque"]');
+            const tempRegistrationInput = document.querySelector('[name="temp_registration"]');
 
             timepicker.setHours(order.hour_in || '', order.hour_out || '');
             
             if (clientName && order.client) clientName.value = order.client.name || '';
             if (clientPhone && order.client) clientPhone.value = order.client.phone || '';
             if (licensePlateInput && order.client) licensePlateInput.value = order.client.license_plaque || '';
+            if (tempRegistrationInput && order.client) tempRegistrationInput.value = order.client.temp_registration || '';
+            if (order.client?.temp_registration && !order.client?.license_plaque) {
+                document.getElementById('vehicle-id-registration-toggle')?.click();
+                if (tempRegistrationInput) tempRegistrationInput.value = order.client.temp_registration;
+            }
 
             // Pre-llenar modelo (brand)
             const brandInput = document.getElementById('client-brand-input');
@@ -231,7 +237,9 @@ function createOrderFormApp() {
 
             // Pre-llenar datos de facturación
             const invoiceSwitch = document.getElementById('get-invoice');
-            const hasInvoice = order.invoice && Object.keys(order.invoice).length > 0;
+            const hasInvoice = order.invoice
+                && Object.keys(order.invoice).length > 0
+                && Number(order.invoice.status) === 1;
 
             if (invoiceSwitch) {
                 invoiceSwitch.checked = hasInvoice;

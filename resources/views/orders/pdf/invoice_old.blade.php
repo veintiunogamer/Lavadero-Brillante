@@ -191,7 +191,7 @@
     @php
     $clientName = optional($order->client)->name ?? '--';
     $clientPhone = optional($order->client)->phone ?? '--';
-    $licensePlaque = optional($order->client)->license_plaque ?? '--';
+    $licensePlaque = optional($order->client)->license_plaque ?? (optional($order->client)->temp_registration ? 'Registro: ' . optional($order->client)->temp_registration : '--');
     $vehicleCat = optional($order->vehicleType)->name ?? '--';
     $operario = optional($order->user)->name ?? '--';
 
