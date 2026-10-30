@@ -71,14 +71,19 @@
                                         <i class="fa-solid fa-check-circle"></i> Cliente encontrado
                                     </small>
                                 </div>
-                                <div class="btn-group w-100 mb-2" role="group" aria-label="Tipo de identificación del vehículo">
-                                    <button type="button" class="btn btn-outline-primary active" id="vehicle-id-plate-toggle">Matrícula</button>
-                                    <button type="button" class="btn btn-outline-primary" id="vehicle-id-registration-toggle">Registro temporal</button>
+                                <div class="btn-group w-100 mb-2" role="group"
+                                    aria-label="Tipo de identificación del vehículo">
+                                    <button type="button" class="btn btn-outline-primary active"
+                                        id="vehicle-id-plate-toggle">Matrícula</button>
+                                    <button type="button" class="btn btn-outline-primary"
+                                        id="vehicle-id-registration-toggle">Registro temporal</button>
                                 </div>
                                 <div id="license-plate-field">
-                                    <label class="fw-bold license-plate-quick-label mb-2" for="license-plaque-input">Matrícula <span class="required">*</span></label>
+                                    <label class="fw-bold license-plate-quick-label mb-2"
+                                        for="license-plaque-input">Matrícula <span class="required">*</span></label>
                                     <div class="license-plate-quick-field">
-                                        <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon" aria-hidden="true"></i>
+                                        <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon"
+                                            aria-hidden="true"></i>
                                         <input type="text"
                                             class="input form-control required-field license-plate-order border-primary"
                                             name="license_plaque" id="license-plaque-input" placeholder="Ej: 1234 ABC"
@@ -87,10 +92,16 @@
                                     </div>
                                 </div>
                                 <div id="temp-registration-field" class="mb-2" style="display:none;">
-                                    <label class="fw-bold license-plate-quick-label mb-2" for="temp-registration-input">Registro temporal <span class="required">*</span></label>
+                                    <label class="fw-bold license-plate-quick-label mb-2"
+                                        for="temp-registration-input">Registro temporal <span
+                                            class="required">*</span></label>
                                     <div class="license-plate-quick-field">
-                                        <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon" aria-hidden="true"></i>
-                                        <input type="text" class="input form-control required-field border-primary" name="temp_registration" id="temp-registration-input" placeholder="Ej: ABC123456" maxlength="20" pattern="[A-Za-z0-9]+" style="text-transform:uppercase;">
+                                        <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon"
+                                            aria-hidden="true"></i>
+                                        <input type="text" class="input form-control required-field border-primary"
+                                            name="temp_registration" id="temp-registration-input"
+                                            placeholder="Ej: ABC123456" maxlength="20" pattern="[A-Za-z0-9]+"
+                                            style="text-transform:uppercase;">
                                     </div>
                                     <small class="d-block mt-1">Solo letras y números, máximo 20 caracteres.</small>
                                 </div>
@@ -365,21 +376,25 @@
                         </div>
 
                         <div class="col-lg-6 col-md-6 col-sm-12 mb-3 px-2">
-                            <label for="direccion-calle" class="fw-bold mb-1">Dirección <span class="required">*</span></label>
+                            <label for="direccion-calle" class="fw-bold mb-1">Dirección <span
+                                    class="required">*</span></label>
                             <input type="text" class="form-control" name="invoice_address" id="direccion-calle"
                                 maxlength="100" placeholder="Calle, número, puerta" data-field-name="Dirección">
                         </div>
 
                         <div class="col-lg-4 col-md-3 col-sm-12 mb-3 px-2">
-                            <label for="direccion-ciudad" class="fw-bold mb-1">Ciudad <span class="required">*</span></label>
+                            <label for="direccion-ciudad" class="fw-bold mb-1">Ciudad <span
+                                    class="required">*</span></label>
                             <input type="text" class="form-control" name="invoice_city" id="direccion-ciudad"
                                 maxlength="20" placeholder="Ciudad" data-field-name="Ciudad">
                         </div>
 
                         <div class="col-lg-2 col-md-3 col-sm-12 mb-3 px-2">
-                            <label for="direccion-cp" class="fw-bold mb-1">Código Postal <span class="required">*</span></label>
+                            <label for="direccion-cp" class="fw-bold mb-1">Código Postal <span
+                                    class="required">*</span></label>
                             <input type="text" class="form-control" name="invoice_postal_code" id="direccion-cp"
-                                maxlength="7" inputmode="numeric" placeholder="Código Postal" data-field-name="Código Postal">
+                                maxlength="7" inputmode="numeric" placeholder="Código Postal"
+                                data-field-name="Código Postal">
                         </div>
 
                     </div>
@@ -842,8 +857,11 @@
                                     </td>
                                     <td>
                                         <div x-text="order.client ? order.client.name : '--'"></div>
-                                        <div class="mt-1" x-show="order.client?.license_plaque" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
-                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="badge mt-1" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + order.client.temp_registration"></span>
+                                        <div class="mt-1" x-show="order.client?.license_plaque"
+                                            x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
+                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration"
+                                            class="badge mt-1" style="background:#fff1a8;color:#17324d"
+                                            x-text="'Registro: ' + order.client.temp_registration"></span>
                                     </td>
                                     <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                                     <td>
