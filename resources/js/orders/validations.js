@@ -399,6 +399,15 @@ class OrderFormValidator extends FormValidator {
             valid = false;
         }
 
+        if (horaEntrada && horaSalida && horaEntrada.trim().slice(0, 5) === horaSalida.trim().slice(0, 5)) {
+            this.errors.push('La hora de entrada y la hora de salida no pueden ser iguales');
+            if (horaEntradaInput && horaEntradaInput.style.display !== 'none') this.markFieldAsError(horaEntradaInput);
+            else if (horaEntradaFallback) this.markFieldAsError(horaEntradaFallback);
+            if (horaSalidaInput && horaSalidaInput.style.display !== 'none') this.markFieldAsError(horaSalidaInput);
+            else if (horaSalidaFallback) this.markFieldAsError(horaSalidaFallback);
+            valid = false;
+        }
+
         return valid;
     }
 

@@ -80,6 +80,13 @@ export class FormSubmitHandler {
         const registration = document.getElementById('temp-registration-input')?.value.trim();
         if (!plate && !registration) return false;
 
+        const hourIn = (document.getElementById('hour_in')?.value || document.getElementById('hour_in_fallback')?.value || '').slice(0, 5);
+        const hourOut = (document.getElementById('hour_out')?.value || document.getElementById('hour_out_fallback')?.value || '').slice(0, 5);
+        const sameTime = Boolean(hourIn && hourOut && hourIn === hourOut);
+        const timeError = document.getElementById('hour-equality-error');
+        if (timeError) timeError.style.display = sameTime ? 'block' : 'none';
+        if (sameTime) return false;
+
         const requiredFields = document.querySelectorAll('.required-field');
         
         for (let field of requiredFields) {
