@@ -61,6 +61,10 @@ export class LicensePlateValidator {
             this.tempRegistrationInput.disabled = !registration;
             plateButton.classList.toggle('active', !registration);
             registrationButton.classList.toggle('active', registration);
+            plateButton.classList.toggle('btn-primary', !registration);
+            plateButton.classList.toggle('btn-outline-primary', registration);
+            registrationButton.classList.toggle('btn-primary', registration);
+            registrationButton.classList.toggle('btn-outline-primary', !registration);
             if (registration) this.licensePlateInput.value = '';
             else this.tempRegistrationInput.value = '';
             document.dispatchEvent(new CustomEvent('formFieldChanged'));

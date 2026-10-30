@@ -66,35 +66,32 @@
                         <div class="col-12 mb-3 px-2">
                             <!-- Acceso rápido: punto de inicio para localizar al cliente por matrícula -->
                             <div class="license-plate-quick">
-                                <label class="fw-bold license-plate-quick-label" for="license-plaque-input">
-                                    <span class="license-plate-quick-label-main">
-                                        <i class="fa-solid fa-magnifying-glass license-plate-quick-label-icon"
-                                            aria-hidden="true"></i>
-                                        <span id="vehicle-id-label">Matrícula <span class="required">*</span></span>
-                                        <span class="license-plate-quick-chip">
-                                            <i class="fa-solid fa-bolt" aria-hidden="true"></i> Acceso rápido
-                                        </span>
-                                    </span>
+                                <div class="d-flex justify-content-end mb-2">
                                     <small id="license-plate-info" class="text-success text-nowrap" style="display: none;">
                                         <i class="fa-solid fa-check-circle"></i> Cliente encontrado
                                     </small>
-                                </label>
+                                </div>
                                 <div class="btn-group w-100 mb-2" role="group" aria-label="Tipo de identificación del vehículo">
-                                    <button type="button" class="btn btn-outline-primary active" id="vehicle-id-plate-toggle">Placa</button>
-                                    <button type="button" class="btn btn-outline-warning" id="vehicle-id-registration-toggle">Registro temporal</button>
+                                    <button type="button" class="btn btn-outline-primary active" id="vehicle-id-plate-toggle">Matrícula</button>
+                                    <button type="button" class="btn btn-outline-primary" id="vehicle-id-registration-toggle">Registro temporal</button>
                                 </div>
-                                <div class="license-plate-quick-field" id="license-plate-field">
-                                    <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon"
-                                        aria-hidden="true"></i>
-                                    <input type="text"
-                                        class="input form-control required-field license-plate-order border-primary"
-                                        name="license_plaque" id="license-plaque-input" placeholder="Ej: 1234 ABC"
-                                        data-field-name="Matrícula" maxlength="7" aria-describedby="license-plate-hint"
-                                        style="text-transform: uppercase;">
+                                <div id="license-plate-field">
+                                    <label class="fw-bold license-plate-quick-label mb-2" for="license-plaque-input">Matrícula <span class="required">*</span></label>
+                                    <div class="license-plate-quick-field">
+                                        <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon" aria-hidden="true"></i>
+                                        <input type="text"
+                                            class="input form-control required-field license-plate-order border-primary"
+                                            name="license_plaque" id="license-plaque-input" placeholder="Ej: 1234 ABC"
+                                            data-field-name="Matrícula" maxlength="7" aria-describedby="license-plate-hint"
+                                            style="text-transform: uppercase;">
+                                    </div>
                                 </div>
-                                <div id="temp-registration-field" class="p-3 rounded-3 border mb-2" style="display:none;background:#fff8d6;border-color:#e6c84f!important;color:#17324d;">
-                                    <label class="fw-bold mb-2" for="temp-registration-input">Registro temporal <span class="required">*</span></label>
-                                    <input type="text" class="input form-control required-field" name="temp_registration" id="temp-registration-input" placeholder="Ej: ABC123456" maxlength="20" pattern="[A-Za-z0-9]+" style="text-transform:uppercase;">
+                                <div id="temp-registration-field" class="mb-2" style="display:none;">
+                                    <label class="fw-bold license-plate-quick-label mb-2" for="temp-registration-input">Registro temporal <span class="required">*</span></label>
+                                    <div class="license-plate-quick-field">
+                                        <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon" aria-hidden="true"></i>
+                                        <input type="text" class="input form-control required-field border-primary" name="temp_registration" id="temp-registration-input" placeholder="Ej: ABC123456" maxlength="20" pattern="[A-Za-z0-9]+" style="text-transform:uppercase;">
+                                    </div>
                                     <small class="d-block mt-1">Solo letras y números, máximo 20 caracteres.</small>
                                 </div>
                                 <p class="license-plate-quick-hint" id="license-plate-hint">
