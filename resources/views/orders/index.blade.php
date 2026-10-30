@@ -202,9 +202,14 @@
                                 <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`
                             ">
                             <td>
-                                <span x-text="order.client?.name || '--'"></span>
-                                <div x-show="order.client?.license_plaque" x-html="licensePlate(order.client?.license_plaque)"></div>
-                                <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="badge mt-1" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + order.client.temp_registration"></span>
+                                <div class="order-client-identity">
+                                    <span x-text="order.client?.name || '--'"></span>
+                                    <div x-show="order.client?.license_plaque" x-html="licensePlate(order.client?.license_plaque)"></div>
+                                    <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="temp-registration-badge">
+                                        <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                                        <span x-text="order.client.temp_registration"></span>
+                                    </span>
+                                </div>
                             </td>
                             <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                             <td>

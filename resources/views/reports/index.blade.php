@@ -173,16 +173,16 @@
                         <thead>
                             <tr>
                                 <th>Fecha</th>
-                                <th>Cliente</th>
+                                <th>Nombre</th>
                                 <th>Flota</th>
                                 <th>Servicios</th>
 
-                                <th>Subtotal</th>
+                                <th>Importe</th>
                                 <th>IVA</th>
                                 <th>Descuento</th>
 
-                                <th>Pago</th>
-                                <th>Método</th>
+                                <th>Estado de pago</th>
+                                <th>Forma de pago</th>
                                 <th>Estado</th>
 
                                 <th>Total</th>
@@ -204,7 +204,10 @@
                                     <td>
                                         <div x-text="order.client ? order.client.name : '--'"></div>
                                         <div class="mt-1" x-show="order.client?.license_plaque" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
-                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="badge mt-1" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + order.client.temp_registration"></span>
+                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="temp-registration-badge">
+                                            <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                                            <span x-text="order.client.temp_registration"></span>
+                                        </span>
                                     </td>
                                     <td x-text="order.client && order.client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td>
@@ -372,7 +375,7 @@
                     <table class="table table-hover table-bordered align-middle reports-table">
                         <thead>
                             <tr>
-                                <th>Cliente</th>
+                                <th>Nombre</th>
                                 <th>Teléfono</th>
                                 <th>Matrícula</th>
                                 <th>Modelo</th>
@@ -387,7 +390,13 @@
                                 <tr>
                                     <td x-text="client.name"></td>
                                     <td x-text="client.phone || '--'"></td>
-                                    <td><span x-show="client.license_plaque" x-html="licensePlate(client.license_plaque)"></span><span x-show="!client.license_plaque && client.temp_registration" class="badge" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + client.temp_registration"></span></td>
+                                    <td>
+                                        <span x-show="client.license_plaque" x-html="licensePlate(client.license_plaque)"></span>
+                                        <span x-show="!client.license_plaque && client.temp_registration" class="temp-registration-badge">
+                                            <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                                            <span x-text="client.temp_registration"></span>
+                                        </span>
+                                    </td>
                                     <td x-text="client.brand || '--'"></td>
                                     <td x-text="client.fleet == 1 ? 'Sí' : 'No'"></td>
                                     <td x-text="client.orders_count"></td>

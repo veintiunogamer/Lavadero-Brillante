@@ -39,9 +39,13 @@
                             <p x-text="selectedOrder?.client?.name || '--'"></p>
                         </div>
                         <div class="order-detail-data">
-                            <label>Matrícula</label>
-                            <div x-html="licensePlate(selectedOrder?.client?.license_plaque)"></div>
-                            <span x-show="!selectedOrder?.client?.license_plaque && selectedOrder?.client?.temp_registration" class="badge" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + selectedOrder.client.temp_registration"></span>
+                            <label x-text="!selectedOrder?.client?.license_plaque && selectedOrder?.client?.temp_registration ? 'Registro temporal' : 'Matrícula'"></label>
+                            <div x-show="selectedOrder?.client?.license_plaque" x-html="licensePlate(selectedOrder?.client?.license_plaque)"></div>
+                            <span x-show="!selectedOrder?.client?.license_plaque && selectedOrder?.client?.temp_registration" class="order-detail-temp-registration">
+                                <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                                <span x-text="selectedOrder?.client?.temp_registration"></span>
+                            </span>
+                            <p x-show="!selectedOrder?.client?.license_plaque && !selectedOrder?.client?.temp_registration">--</p>
                         </div>
                         <div class="order-detail-data">
                             <label>Modelo</label>

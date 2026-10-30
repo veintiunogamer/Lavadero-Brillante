@@ -859,9 +859,10 @@
                                         <div x-text="order.client ? order.client.name : '--'"></div>
                                         <div class="mt-1" x-show="order.client?.license_plaque"
                                             x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
-                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration"
-                                            class="badge mt-1" style="background:#fff1a8;color:#17324d"
-                                            x-text="'Registro: ' + order.client.temp_registration"></span>
+                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="temp-registration-badge">
+                                            <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                                            <span x-text="order.client.temp_registration"></span>
+                                        </span>
                                     </td>
                                     <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                                     <td>
