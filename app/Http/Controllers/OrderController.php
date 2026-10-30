@@ -154,7 +154,7 @@ class OrderController extends Controller
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'nullable|date_format:H:i',
-                'hour_out' => 'nullable|date_format:H:i',
+                'hour_out' => 'nullable|date_format:H:i|different:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3', // 1=Pendiente, 2=Parcial, 3=Pagado
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3', // 1='efectivo', 2='TPV', 3='transferencia'
@@ -409,7 +409,7 @@ class OrderController extends Controller
                 'payment_period' => 'required|integer|in:1,2',
                 'selected_date' => 'required_if:payment_period,1|nullable|date',
                 'hour_in' => 'nullable|date_format:H:i',
-                'hour_out' => 'nullable|date_format:H:i',
+                'hour_out' => 'nullable|date_format:H:i|different:hour_in',
                 'payment_status' => 'required|integer|in:1,2,3',
                 'partial_payment' => 'nullable|numeric|min:0',
                 'payment_method' => 'required|integer|in:1,2,3,4',
