@@ -133,7 +133,8 @@ class OrderController extends Controller
             $validated = $request->validate([
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'required|string|max:20',
-                'license_plaque' => 'required|string|max:10',
+                'license_plaque' => 'nullable|string|max:20|required_without:temp_registration',
+                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque', 'prohibited_with:license_plaque'],
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
                 'assigned_user' => 'required|uuid|exists:users,id',
@@ -173,10 +174,13 @@ class OrderController extends Controller
 
 
             // 1. Buscar o crear cliente (prioriza matrícula para evitar duplicados)
-            $licensePlaque = strtoupper(trim($validated['license_plaque']));
+            $licensePlaque = !empty($validated['license_plaque']) ? strtoupper(trim($validated['license_plaque'])) : null;
+            $tempRegistration = !empty($validated['temp_registration']) ? strtoupper(trim($validated['temp_registration'])) : null;
             $clientPhone = trim($validated['client_phone']);
 
-            $client = \App\Models\Client::whereRaw('UPPER(license_plaque) = ?', [$licensePlaque])->first();
+            $client = $licensePlaque
+                ? \App\Models\Client::whereRaw('UPPER(license_plaque) = ?', [$licensePlaque])->first()
+                : \App\Models\Client::whereRaw('UPPER(temp_registration) = ?', [$tempRegistration])->first();
 
             if (!$client && $clientPhone) {
                 $client = \App\Models\Client::where('phone', $clientPhone)->first();
@@ -189,6 +193,7 @@ class OrderController extends Controller
                     'name' => $validated['client_name'],
                     'phone' => $clientPhone,
                     'license_plaque' => $licensePlaque,
+                    'temp_registration' => $tempRegistration,
                     'brand' => $validated['client_brand'] ?? null,
                     'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
                     'status' => \App\Models\Client::STATUS_ACTIVE,
@@ -200,6 +205,7 @@ class OrderController extends Controller
                     'name' => $validated['client_name'],
                     'phone' => $clientPhone,
                     'license_plaque' => $licensePlaque,
+                    'temp_registration' => $tempRegistration,
                     'brand' => $validated['client_brand'] ?? null,
                     'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
                 ]);
@@ -374,7 +380,8 @@ class OrderController extends Controller
             $validated = $request->validate([
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'nullable|string|max:20',
-                'license_plaque' => 'required|string|max:15',
+                'license_plaque' => 'nullable|string|max:20|required_without:temp_registration',
+                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque', 'prohibited_with:license_plaque'],
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
                 'invoice_required' => 'nullable|boolean',
@@ -417,7 +424,8 @@ class OrderController extends Controller
             $client->update([
                 'name' => $validated['client_name'],
                 'phone' => $validated['client_phone'],
-                'license_plaque' => strtoupper($validated['license_plaque']),
+                'license_plaque' => !empty($validated['license_plaque']) ? strtoupper(trim($validated['license_plaque'])) : null,
+                'temp_registration' => !empty($validated['temp_registration']) ? strtoupper(trim($validated['temp_registration'])) : null,
                 'brand' => $validated['client_brand'] ?? null,
                 'fleet' => filter_var($request->input('fleet'), FILTER_VALIDATE_BOOLEAN),
             ]);

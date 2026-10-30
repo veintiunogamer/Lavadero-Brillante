@@ -21,6 +21,7 @@ class Client extends Model
         'name',
         'phone',
         'license_plaque',
+        'temp_registration',
         'brand',
         'fleet',
         'status',
