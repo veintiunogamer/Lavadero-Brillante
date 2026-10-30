@@ -110,6 +110,24 @@ class FormValidator {
 
         });
 
+        // Validar ciudad y código postal de facturación cuando tienen valor.
+        const cityField = this.form.querySelector('#direccion-ciudad');
+        const postalCodeField = this.form.querySelector('#direccion-cp');
+
+        if (cityField?.value && !this.validateCity(cityField.value)) {
+            this.errors.push('La Ciudad solo puede contener letras y espacios');
+            this.markFieldAsError(cityField);
+        } else if (cityField?.value) {
+            this.markFieldAsValid(cityField);
+        }
+
+        if (postalCodeField?.value && !this.validatePostalCode(postalCodeField.value)) {
+            this.errors.push('El Código Postal solo puede contener números');
+            this.markFieldAsError(postalCodeField);
+        } else if (postalCodeField?.value) {
+            this.markFieldAsValid(postalCodeField);
+        }
+
         return this.errors.length === 0;
     }
 
@@ -132,6 +150,16 @@ class FormValidator {
     validateEmail(email) {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);
+    }
+
+    /** Valida ciudades con letras Unicode y espacios. */
+    validateCity(city) {
+        return /^[\p{L}\s]+$/u.test(city.trim());
+    }
+
+    /** Valida códigos postales compuestos solo por dígitos. */
+    validatePostalCode(postalCode) {
+        return /^\d+$/.test(postalCode.trim());
     }
 
     /**
@@ -371,6 +399,15 @@ class OrderFormValidator extends FormValidator {
             valid = false;
         }
 
+        if (horaEntrada && horaSalida && horaEntrada.trim().slice(0, 5) === horaSalida.trim().slice(0, 5)) {
+            this.errors.push('La hora de entrada y la hora de salida no pueden ser iguales');
+            if (horaEntradaInput && horaEntradaInput.style.display !== 'none') this.markFieldAsError(horaEntradaInput);
+            else if (horaEntradaFallback) this.markFieldAsError(horaEntradaFallback);
+            if (horaSalidaInput && horaSalidaInput.style.display !== 'none') this.markFieldAsError(horaSalidaInput);
+            else if (horaSalidaFallback) this.markFieldAsError(horaSalidaFallback);
+            valid = false;
+        }
+
         return valid;
     }
 
@@ -387,6 +424,40 @@ class OrderFormValidator extends FormValidator {
 
         return basicValid && specificValid;
     }
+}
+
+/** Restringe ciudad y código postal en cada edición, también al pegar texto. */
+function setupInvoiceAddressInputRestrictions() {
+    const cityField = document.getElementById('direccion-ciudad');
+    const postalCodeField = document.getElementById('direccion-cp');
+
+    if (cityField && !cityField.dataset.inputRestrictionReady) {
+        cityField.dataset.inputRestrictionReady = 'true';
+        cityField.addEventListener('input', () => {
+            const cursor = cityField.selectionStart;
+            const beforeCursor = cityField.value.slice(0, cursor).replace(/[^\p{L}\s]/gu, '');
+            cityField.value = cityField.value.replace(/[^\p{L}\s]/gu, '');
+            const newCursor = beforeCursor.length;
+            cityField.setSelectionRange(newCursor, newCursor);
+        });
+    }
+
+    if (postalCodeField && !postalCodeField.dataset.inputRestrictionReady) {
+        postalCodeField.dataset.inputRestrictionReady = 'true';
+        postalCodeField.addEventListener('input', () => {
+            const cursor = postalCodeField.selectionStart;
+            const beforeCursor = postalCodeField.value.slice(0, cursor).replace(/[^0-9]/g, '');
+            postalCodeField.value = postalCodeField.value.replace(/[^0-9]/g, '');
+            const newCursor = beforeCursor.length;
+            postalCodeField.setSelectionRange(newCursor, newCursor);
+        });
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupInvoiceAddressInputRestrictions);
+} else {
+    setupInvoiceAddressInputRestrictions();
 }
 
 // Exportar para usar en otros archivos

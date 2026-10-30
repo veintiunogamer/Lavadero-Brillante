@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    public const STATUS_DISABLED = 0;
+    public const STATUS_ENABLED = 1;
+
     public $incrementing = false;
     public $timestamps = false;
 
@@ -22,8 +25,18 @@ class Invoice extends Model
         'address',
         'city',
         'zipcode',
-        'creation_date'
+        'creation_date',
+        'status',
     ];
+
+    protected $casts = [
+        'status' => 'integer',
+    ];
+
+    public function scopeEnabled($query)
+    {
+        return $query->where('status', self::STATUS_ENABLED);
+    }
 
     /**
      * Relación inversa con Order

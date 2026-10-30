@@ -186,7 +186,7 @@
             <tr>
                 <td>{{ $client->name }}</td>
                 <td>{{ $client->phone ?? '--' }}</td>
-                <td>{!! \App\Helpers\LicensePlateHelper::render($client->license_plaque) !!}</td>
+                <td>{!! $client->license_plaque ? \App\Helpers\LicensePlateHelper::render($client->license_plaque) : e('Registro: ' . ($client->temp_registration ?? '--')) !!}</td>
                 <td>{{ $client->brand ?? '--' }}</td>
                 <td>{{ $client->fleet == 1 ? 'Sí' : 'No' }}</td>
                 <td>{{ isset($client->orders_count) ? $client->orders_count : '0' }}</td>

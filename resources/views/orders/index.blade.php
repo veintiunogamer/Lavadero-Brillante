@@ -33,6 +33,12 @@
                 <button :class="currentTab === 3 ? 'nav-link active' : 'nav-link'" id="completed-tab" @click="changeTab(3)" type="button" role="tab" aria-controls="completed" :aria-selected="currentTab === 3"><i class="fa-solid fa-check-circle me-2"></i>Terminados</button>
             </li>
 
+            @if(auth()->user()->isAdmin())
+            <li class="nav-item" role="presentation">
+                <button :class="currentTab === 4 ? 'nav-link active' : 'nav-link'" id="archived-tab" @click="changeTab(4)" type="button" role="tab" aria-controls="archived" :aria-selected="currentTab === 4"><i class="fa-solid fa-box-archive me-2"></i>Archivadas</button>
+            </li>
+            @endif
+
         </ul>
 
         <!-- Filtro de búsqueda -->
@@ -156,6 +162,14 @@
                 </div>
             </template>
 
+            <template x-if="!searchTerm && currentTab === 4">
+                <div>
+                    <i class="fa-solid fa-box-open citas-empty-icon text-warning"></i>
+                    <p class="citas-empty-title">Sin órdenes archivadas</p>
+                    <p class="citas-empty-sub">Las órdenes archivadas aparecerán aquí y podrán restaurarse.</p>
+                </div>
+            </template>
+
         </div>
 
         <!-- Tabla de agendamientos -->
@@ -188,8 +202,14 @@
                                 <span class='badge bg-danger'>${formatTime(order.hour_out)}</span>`
                             ">
                             <td>
-                                <span x-text="order.client?.name || '--'"></span>
-                                <div x-show="order.client?.license_plaque" x-html="licensePlate(order.client?.license_plaque)"></div>
+                                <div class="order-client-identity">
+                                    <span x-text="order.client?.name || '--'"></span>
+                                    <div x-show="order.client?.license_plaque" x-html="licensePlate(order.client?.license_plaque)"></div>
+                                    <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="temp-registration-badge">
+                                        <i class="fa-regular fa-id-card" aria-hidden="true"></i>
+                                        <span x-text="order.client.temp_registration"></span>
+                                    </span>
+                                </div>
                             </td>
                             <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                             <td>
@@ -211,22 +231,31 @@
 
                                 <div class="btn-group btn-group-md">
 
-                                    <button class="btn btn-info" @click="openQuickView(order)" title="Ver detalles">
+                                    <button class="btn btn-info" @click="openQuickView(order)" title="Ver detalles" x-show="currentTab !== 4">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
 
                                     <button class="btn btn-success" @click="openStatusTypeModal(order)" title="Cambiar estado"
-                                        x-show="order.status !== 3 || order.payment?.status !== 3">
+                                        x-show="currentTab !== 4 && (order.status !== 3 || order.payment?.status !== 3)">
                                         <i class="fa-solid fa-exchange-alt"></i>
                                     </button>
 
-                                    <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar">
+                                    <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar" x-show="currentTab !== 4">
                                         <i class="fa-solid fa-edit"></i>
                                     </a>
 
-                                    <button class="btn btn-warning" @click="printOrder(order.id)" title="Imprimir orden">
+                                    <button class="btn btn-warning" @click="printOrder(order.id)" title="Imprimir orden" x-show="currentTab !== 4">
                                         <i class="fa-solid fa-print"></i>
                                     </button>
+
+                                    @if(auth()->user()->isAdmin())
+                                    <button class="btn btn-danger text-white rounded-end" @click="openArchiveModal(order)" title="Archivar orden" x-show="currentTab !== 4 && [1, 4].includes(Number(order.status))">
+                                        <i class="fa-solid fa-box-archive"></i>
+                                    </button>
+                                    <button class="btn btn-outline-success" @click="restoreOrder(order)" title="Restaurar orden" x-show="currentTab === 4">
+                                        <i class="fa-solid fa-rotate-left"></i>
+                                    </button>
+                                    @endif
 
                                 </div>
 
@@ -257,6 +286,7 @@
     @include('orders.modals._change-status')
     @include('orders.modals._select-status-type')
     @include('orders.modals._change-payment')
+    @include('orders.modals._archive-order')
 
 </div>
 

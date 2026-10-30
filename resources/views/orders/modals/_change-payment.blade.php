@@ -29,6 +29,7 @@
                     <div>
                         <span class="text-muted">Placa:</span>
                         <div class="d-inline-block ms-1" x-html="licensePlate(paymentModalOrder?.client?.license_plaque)"></div>
+                        <span x-show="!paymentModalOrder?.client?.license_plaque && paymentModalOrder?.client?.temp_registration" class="badge" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + paymentModalOrder.client.temp_registration"></span>
                     </div>
                 </div>
 

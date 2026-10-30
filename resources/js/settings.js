@@ -92,6 +92,7 @@ window.settingsApp = function() {
             name: '',
             phone: '',
             license_plaque: '',
+            temp_registration: '',
             brand: ''
         },
 
@@ -138,7 +139,8 @@ window.settingsApp = function() {
 
                         return item.name.toLowerCase().includes(searchTerm) ||
                         item.phone?.toLowerCase().includes(searchTerm) ||
-                        item.license_plaque?.toLowerCase().includes(searchTerm);
+                        item.license_plaque?.toLowerCase().includes(searchTerm) ||
+                        item.temp_registration?.toLowerCase().includes(searchTerm);
                         
                     default:
                         return true;
@@ -709,6 +711,7 @@ window.settingsApp = function() {
                 name: client.name,
                 phone: client.phone || '',
                 license_plaque: client.license_plaque || '',
+                temp_registration: client.temp_registration || '',
                 brand: client.brand || '',
                 fleet: client.fleet || 0
             };
@@ -738,7 +741,7 @@ window.settingsApp = function() {
 
                 const currentClient = this.clients.find(c => c.id === this.currentEditId);
                 
-                if (currentClient && currentClient.license_plaque === licensePlate.toUpperCase()) {
+                if (currentClient && [currentClient.license_plaque, currentClient.temp_registration].includes(licensePlate.toUpperCase())) {
                     this.licensePlateExists = false;
                     return;
                 }
@@ -843,6 +846,7 @@ window.settingsApp = function() {
                 name: '',
                 phone: '',
                 license_plaque: '',
+                temp_registration: '',
                 brand: ''
             };
             
@@ -1137,7 +1141,7 @@ window.settingsApp = function() {
 
                 const currentClient = this.clients.find(c => c.id === this.currentEditId);
 
-                if (currentClient && currentClient.license_plaque === licensePlate) {
+                if (currentClient && [currentClient.license_plaque, currentClient.temp_registration].includes(licensePlate.toUpperCase())) {
                     this.licensePlateExists = false;
                     return;
                 }
