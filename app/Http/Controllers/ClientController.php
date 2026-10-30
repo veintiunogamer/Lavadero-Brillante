@@ -151,9 +151,15 @@ class ClientController extends Controller
     private function validateClientIdentifier(Request $request): void
     {
         $request->validate([
-            'license_plaque' => 'nullable|required_without:temp_registration|prohibited_with:temp_registration',
-            'temp_registration' => ['nullable', 'required_without:license_plaque', 'prohibited_with:license_plaque', 'max:20', 'regex:/^[A-Za-z0-9]+$/'],
+            'license_plaque' => 'nullable|required_without:temp_registration',
+            'temp_registration' => ['nullable', 'required_without:license_plaque', 'max:20', 'regex:/^[A-Za-z0-9]+$/'],
         ]);
+
+        if ($request->filled('license_plaque') && $request->filled('temp_registration')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'license_plaque' => 'Indica una matrícula o un registro temporal, no ambos.',
+            ]);
+        }
     }
 
     /**

@@ -134,7 +134,7 @@ class OrderController extends Controller
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'required|string|max:20',
                 'license_plaque' => 'nullable|string|max:20|required_without:temp_registration',
-                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque', 'prohibited_with:license_plaque'],
+                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque'],
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
                 'assigned_user' => 'required|uuid|exists:users,id',
@@ -171,6 +171,8 @@ class OrderController extends Controller
                 'invoice_postal_code' => 'required_if:invoice_required,true|nullable|string|max:10',
                 'invoice_city' => 'required_if:invoice_required,true|nullable|string|max:100',
             ]);
+
+            $this->validateClientIdentifiers($request);
 
 
             // 1. Buscar o crear cliente (prioriza matrícula para evitar duplicados)
@@ -381,7 +383,7 @@ class OrderController extends Controller
                 'client_name' => 'required|string|max:100',
                 'client_phone' => 'nullable|string|max:20',
                 'license_plaque' => 'nullable|string|max:20|required_without:temp_registration',
-                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque', 'prohibited_with:license_plaque'],
+                'temp_registration' => ['nullable', 'string', 'max:20', 'regex:/^[A-Za-z0-9]+$/', 'required_without:license_plaque'],
                 'client_brand' => 'nullable|string|max:50',
                 'fleet' => 'nullable|boolean',
                 'invoice_required' => 'nullable|boolean',
@@ -415,6 +417,8 @@ class OrderController extends Controller
                 'payment_method' => 'required|integer|in:1,2,3,4',
                 'order_status' => 'required|integer|in:1,2,3,4'
             ]);
+
+            $this->validateClientIdentifiers($request);
 
             \DB::beginTransaction();
 
@@ -984,6 +988,15 @@ class OrderController extends Controller
      * @param mixed $value
      * @return string|null
      */
+    private function validateClientIdentifiers(\Illuminate\Http\Request $request): void
+    {
+        if ($request->filled('license_plaque') && $request->filled('temp_registration')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'license_plaque' => 'Indica una matrícula o un registro temporal, no ambos.',
+            ]);
+        }
+    }
+
     private function normalizeTimeInput($value): ?string
     {
         if ($value === null) {
