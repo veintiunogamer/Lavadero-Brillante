@@ -39,16 +39,16 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
 
     public function headings(): array
     {
-        return [
-            'Cliente',
-            'Telefono',
-            'Matricula',
+        return array_map(static fn ($heading) => mb_strtoupper($heading, 'UTF-8'), [
+            'Nombre',
+            'Teléfono',
+            'Matrícula',
             'Modelo',
             'Flota',
             'Citas',
             'Total gastado',
-            'Ultima visita',
-        ];
+            'Última visita',
+        ]);
     }
 
     public function startCell(): string
@@ -80,10 +80,11 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
         $drawing->setName('Logo');
         $drawing->setDescription('Lavadero Brillante');
         $drawing->setPath($this->company['logo']);
-        $drawing->setHeight(70);
+        $drawing->setResizeProportional(true);
+        $drawing->setHeight(76);
         $drawing->setCoordinates('A1');
-        $drawing->setOffsetX(8);
-        $drawing->setOffsetY(8);
+        $drawing->setOffsetX(42);
+        $drawing->setOffsetY(22);
 
         return [$drawing];
     }
@@ -94,24 +95,25 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                $sheet->mergeCells('B1:H1');
-                $sheet->mergeCells('B2:H2');
-                $sheet->mergeCells('B3:H3');
-                $sheet->mergeCells('B4:H4');
+                $sheet->mergeCells('A1:B4');
+                $sheet->mergeCells('C1:H1');
+                $sheet->mergeCells('C2:H2');
+                $sheet->mergeCells('C3:H3');
+                $sheet->mergeCells('C4:H4');
 
-                $sheet->setCellValue('B1', $this->company['name'] ?? 'Lavadero Brillante');
-                $sheet->setCellValue('B2', $this->company['owner'] ?? '');
-                $sheet->setCellValue('B3', ($this->company['nif'] ?? '') . ' | ' . ($this->company['address'] ?? '') . ' | ' . ($this->company['city'] ?? ''));
-                $sheet->setCellValue('B4', 'Periodo: ' . $this->periodLabel);
+                $sheet->setCellValue('C1', $this->company['name'] ?? 'Lavadero Brillante');
+                $sheet->setCellValue('C2', $this->company['owner'] ?? '');
+                $sheet->setCellValue('C3', ($this->company['nif'] ?? '') . ' | ' . ($this->company['address'] ?? '') . ' | ' . ($this->company['city'] ?? ''));
+                $sheet->setCellValue('C4', 'Periodo: ' . $this->periodLabel);
 
-                $sheet->getStyle('B1')->getFont()->setBold(true)->setSize(16);
-                $sheet->getStyle('B2:B4')->getFont()->setSize(10);
-                $sheet->getStyle('B1:B4')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle('C1')->getFont()->setBold(true)->setSize(16);
+                $sheet->getStyle('C2:C4')->getFont()->setSize(10);
+                $sheet->getStyle('C1:C4')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-                $sheet->getRowDimension(1)->setRowHeight(24);
-                $sheet->getRowDimension(2)->setRowHeight(18);
-                $sheet->getRowDimension(3)->setRowHeight(18);
-                $sheet->getRowDimension(4)->setRowHeight(18);
+                $sheet->getRowDimension(1)->setRowHeight(30);
+                $sheet->getRowDimension(2)->setRowHeight(20);
+                $sheet->getRowDimension(3)->setRowHeight(20);
+                $sheet->getRowDimension(4)->setRowHeight(20);
                 $sheet->getRowDimension(5)->setRowHeight(10);
                 $sheet->freezePane('A7');
                 $sheet->setAutoFilter('A6:H6');
@@ -128,6 +130,10 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => '000000']
+                ],
+                'alignment' => [
+                    'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    'vertical' => Alignment::VERTICAL_CENTER,
                 ],
             ],
         ];

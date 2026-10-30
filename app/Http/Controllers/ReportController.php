@@ -214,7 +214,16 @@ class ReportController extends Controller
             [$start, $end, $periodLabel] = $this->resolveSalesWindow($request);
 
             $orders = collect($this->querySales($start, $end)->cursor());
+            $orders = $this->filterSalesCollection($orders, $request);
             $summary = $this->buildSalesSummary($orders);
+            $isTodayRange = $request->query('date') === null && $request->query('range') === 'today';
+            if ($isTodayRange && $start) {
+                $spanishDate = $start->copy()->locale('es');
+                $periodLabel = ucfirst($spanishDate->translatedFormat('l'))
+                    . ' ' . $spanishDate->day
+                    . ' de ' . ucfirst($spanishDate->translatedFormat('F'))
+                    . ' de ' . $spanishDate->year;
+            }
 
             $filename = 'reporte-ventas-' . Carbon::now()->format('Ymd') . '.xlsx';
 
@@ -224,7 +233,9 @@ class ReportController extends Controller
                     $this->orderReportService(),
                     $this->getCompanyInfo(),
                     $periodLabel,
-                    $summary
+                    $summary,
+                    $request->query('date') !== null || $request->query('range') === 'today',
+                    $isTodayRange
                 ),
                 $filename
             );
@@ -276,7 +287,7 @@ class ReportController extends Controller
             return [
                 $target->copy()->startOfDay(),
                 $target->copy()->endOfDay(),
-                'Fecha: ' . $target->format('d/m/Y'),
+                $target->format('d/m/Y'),
             ];
         }
 
@@ -294,9 +305,9 @@ class ReportController extends Controller
         [$start, $end] = $this->getRangeDates($range);
 
         $periodLabel = match ($range) {
-            'today' => 'Hoy',
-            'week' => 'Esta semana',
-            default => 'Este mes',
+            'today' => $start->format('d/m/Y'),
+            'week' => $start->format('d/m/Y') . ' - ' . $end->format('d/m/Y'),
+            default => $start->locale('es')->translatedFormat('F Y'),
         };
 
         return [$start, $end, $periodLabel];
