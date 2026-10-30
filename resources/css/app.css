@@ -2188,6 +2188,11 @@ hr {
     border: 1px solid var(--color-gris-claro) !important;
 }
 
+.flatpickr-wrapper {
+    display: block;
+    width: 100%;
+}
+
 /* Estilo del input del time picker */
 .time-picker {
     cursor: pointer;

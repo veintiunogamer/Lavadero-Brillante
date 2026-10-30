@@ -57,6 +57,8 @@ export class TimePickerManager {
             flatpickr(input, {
                 enableTime: true,
                 noCalendar: true,
+                static: true,
+                position: 'below',
                 dateFormat: "H:i",
                 time_24hr: true,
                 minuteIncrement: 30,
@@ -64,15 +66,39 @@ export class TimePickerManager {
                 onReady: (dateObj, dateStr, instance) => {
 
                     instance.calendarContainer.style.zIndex = 10000;
+                    this.matchPickerWidth(instance);
                 },
                 onChange: (selectedDates, dateStr, instance) => {
 
+                    this.validateDifferentTimes();
                     document.dispatchEvent(new CustomEvent('formFieldChanged'));
 
                 }
             });
 
         });
+    }
+
+    matchPickerWidth(instance) {
+        const width = instance._input.getBoundingClientRect().width;
+        instance.calendarContainer.style.width = `${width}px`;
+        const timeContainer = instance.calendarContainer.querySelector('.flatpickr-time');
+        if (timeContainer) timeContainer.style.width = `${width}px`;
+    }
+
+    validateDifferentTimes() {
+        const input = document.getElementById('hour_in');
+        const output = document.getElementById('hour_out');
+        const inputFallback = document.getElementById('hour_in_fallback');
+        const outputFallback = document.getElementById('hour_out_fallback');
+        const valueIn = (this.useFallback ? inputFallback?.value : input?.value) || '';
+        const valueOut = (this.useFallback ? outputFallback?.value : output?.value) || '';
+        const sameTime = valueIn && valueOut && valueIn.slice(0, 5) === valueOut.slice(0, 5);
+
+        [input, output, inputFallback, outputFallback].filter(Boolean).forEach(field => {
+            field.classList.toggle('is-invalid', Boolean(sameTime));
+        });
+        return !sameTime;
     }
 
     /**
@@ -142,6 +168,7 @@ export class TimePickerManager {
         if (horaEntradaFallback && !horaEntradaFallback.dataset.initialized) {
             
             horaEntradaFallback.addEventListener('change', () => {
+                this.validateDifferentTimes();
                 document.dispatchEvent(new CustomEvent('formFieldChanged'));
             });
 
@@ -151,6 +178,7 @@ export class TimePickerManager {
         if (horaEntradaFallback && horaSalidaFallback && !horaSalidaFallback.dataset.initialized) {
             
             horaSalidaFallback.addEventListener('change', () => {
+                this.validateDifferentTimes();
                 document.dispatchEvent(new CustomEvent('formFieldChanged'));
             });
 

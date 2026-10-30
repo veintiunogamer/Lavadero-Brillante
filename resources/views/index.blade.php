@@ -211,6 +211,12 @@
                         </div>
 
                         <div class="col-12 px-2">
+                            <small id="hour-equality-error" class="text-danger fw-semibold" style="display:none;">
+                                La hora de entrada y la hora de salida no pueden ser iguales.
+                            </small>
+                        </div>
+
+                        <div class="col-12 px-2">
                             <div class="col-12" style="width: 100%;">
                                 <label class="fw-bold">
                                     <i class="fa fa-list text-primary"></i>&nbsp;
