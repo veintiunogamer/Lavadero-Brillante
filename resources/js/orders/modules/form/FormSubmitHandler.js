@@ -76,6 +76,10 @@ export class FormSubmitHandler {
      */
     isFormValid() {
 
+        const plate = document.getElementById('license-plaque-input')?.value.trim();
+        const registration = document.getElementById('temp-registration-input')?.value.trim();
+        if (!plate && !registration) return false;
+
         const requiredFields = document.querySelectorAll('.required-field');
         
         for (let field of requiredFields) {

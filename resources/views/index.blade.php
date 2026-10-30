@@ -70,7 +70,7 @@
                                     <span class="license-plate-quick-label-main">
                                         <i class="fa-solid fa-magnifying-glass license-plate-quick-label-icon"
                                             aria-hidden="true"></i>
-                                        <span>Matrícula <span class="required">*</span></span>
+                                        <span id="vehicle-id-label">Matrícula <span class="required">*</span></span>
                                         <span class="license-plate-quick-chip">
                                             <i class="fa-solid fa-bolt" aria-hidden="true"></i> Acceso rápido
                                         </span>
@@ -79,7 +79,11 @@
                                         <i class="fa-solid fa-check-circle"></i> Cliente encontrado
                                     </small>
                                 </label>
-                                <div class="license-plate-quick-field">
+                                <div class="btn-group w-100 mb-2" role="group" aria-label="Tipo de identificación del vehículo">
+                                    <button type="button" class="btn btn-outline-primary active" id="vehicle-id-plate-toggle">Placa</button>
+                                    <button type="button" class="btn btn-outline-warning" id="vehicle-id-registration-toggle">Registro temporal</button>
+                                </div>
+                                <div class="license-plate-quick-field" id="license-plate-field">
                                     <i class="fa-solid fa-magnifying-glass license-plate-quick-field-icon"
                                         aria-hidden="true"></i>
                                     <input type="text"
@@ -88,9 +92,14 @@
                                         data-field-name="Matrícula" maxlength="7" aria-describedby="license-plate-hint"
                                         style="text-transform: uppercase;">
                                 </div>
+                                <div id="temp-registration-field" class="p-3 rounded-3 border mb-2" style="display:none;background:#fff8d6;border-color:#e6c84f!important;color:#17324d;">
+                                    <label class="fw-bold mb-2" for="temp-registration-input">Registro temporal <span class="required">*</span></label>
+                                    <input type="text" class="input form-control required-field" name="temp_registration" id="temp-registration-input" placeholder="Ej: ABC123456" maxlength="20" pattern="[A-Za-z0-9]+" style="text-transform:uppercase;">
+                                    <small class="d-block mt-1">Solo letras y números, máximo 20 caracteres.</small>
+                                </div>
                                 <p class="license-plate-quick-hint" id="license-plate-hint">
                                     <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
-                                    Ingresa la matrícula del vehículo para encontrar rápidamente al cliente
+                                    Ingresa la placa o el registro temporal para encontrar rápidamente al cliente
                                 </p>
                             </div>
                         </div>
@@ -830,7 +839,8 @@
                                     </td>
                                     <td>
                                         <div x-text="order.client ? order.client.name : '--'"></div>
-                                        <div class="mt-1" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
+                                        <div class="mt-1" x-show="order.client?.license_plaque" x-html="licensePlate(order.client ? order.client.license_plaque : null)"></div>
+                                        <span x-show="!order.client?.license_plaque && order.client?.temp_registration" class="badge mt-1" style="background:#fff1a8;color:#17324d" x-text="'Registro: ' + order.client.temp_registration"></span>
                                     </td>
                                     <td x-text="order.client && order.client.fleet ? 'Sí' : 'No'"></td>
                                     <td>
