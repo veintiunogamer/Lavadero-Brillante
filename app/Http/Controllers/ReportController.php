@@ -235,7 +235,7 @@ class ReportController extends Controller
                     $periodLabel,
                     $summary,
                     $request->query('date') !== null || $request->query('range') === 'today',
-                    $isTodayRange
+                    $request->query('date') !== null || $request->query('range') === 'today'
                 ),
                 $filename
             );
@@ -316,7 +316,7 @@ class ReportController extends Controller
     private function querySales(?Carbon $start = null, ?Carbon $end = null)
     {
         return Order::with([
-            'client:id,name,phone,license_plaque,temp_registration,fleet',
+            'client:id,name,phone,license_plaque,temp_registration,brand,fleet',
             'user:id,name',
             'vehicleType:id,name',
             'services:id,name',
@@ -438,7 +438,6 @@ class ReportController extends Controller
     {
         return [
             'name' => 'Lavadero Brillante',
-            'owner' => 'Eusebio Borrego Lau',
             'nif' => '28614307F',
             'address' => 'Calle Dr. Fleming, 21',
             'city' => '46960 Aldaya',

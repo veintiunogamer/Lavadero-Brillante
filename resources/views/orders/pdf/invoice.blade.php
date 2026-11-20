@@ -421,7 +421,6 @@
     @php
     $company = [
     'name' => 'Lavadero Brillante',
-    'owner' => 'Eusebio Borrego Lao',
     'nif' => '28.614.307-F',
     'address' => 'Calle Dr. Fleming, 21',
     'city' => '46960/Aldaya - Valencia',
@@ -533,10 +532,6 @@
                         <div class="border">
 
                             <div class="box-pad mt-2 mb-2">
-                                <div class="info-line">
-                                    <strong>{{ $company['owner'] }}</strong>
-                                </div>
-
                                 <div class="info-line">
                                     {{ $company['address'] }}
                                 </div>

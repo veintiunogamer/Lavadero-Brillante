@@ -139,7 +139,6 @@
     @php
         $company = $company ?? [
             'name' => 'Lavadero Brillante',
-            'owner' => 'Eusebio Borrego Lau',
             'nif' => '28614307F',
             'address' => 'Calle Dr. Fleming, 21',
             'city' => '46960 Aldaya',
@@ -155,7 +154,6 @@
             </td>
             <td style="text-align: left;">
                 <h1 class="company-name">{{ $company['name'] }}</h1>
-                <div class="company-owner">{{ $company['owner'] }}</div>
                 <div class="company-meta">{{ $company['nif'] }} | {{ $company['address'] }} | {{ $company['city'] }}</div>
                 <div class="subtitle">{{ $title }}</div>
                 <div class="subtitle">{{ $periodLabel }}</div>
