@@ -198,6 +198,13 @@
             font-size: 9px;
         }
 
+        /* Datos de cabecera y cliente: azul sin afectar la tabla de servicios. */
+        .company-info,
+        .client-table,
+        .invoice-table tr:first-child {
+            color: #044688;
+        }
+
         .client-table td {
             border: 1.2px solid #4a4d55;
             padding: 11px 10px;
@@ -212,7 +219,7 @@
 
         .field-label {
             width: 28%;
-            color: #555963;
+            color: #044688;
             font-size: 10px;
             text-transform: uppercase;
         }
@@ -220,10 +227,12 @@
         .field-value {
             font-size: 11px;
             font-weight: bold;
+            color: #044688;
         }
 
         .invoice-number {
             background: #eeeeef;
+            color: #044688;
             font-size: 16px;
             font-weight: bold;
             text-align: center;
@@ -321,8 +330,8 @@
 
         .totals-label {
             width: 55%;
-            background: #3b3d43;
-            color: #ffffff;
+            background: #ffffff;
+            color: #044688;
             font-weight: bold;
             text-align: right;
             text-transform: uppercase;
@@ -331,6 +340,25 @@
         .totals-label--brand {
             background: #044688;
             color: #ffffff;
+        }
+
+        .totals-label--brand + .totals-value {
+            background: #eeeeef;
+            color: #044688;
+        }
+
+        .totals-value {
+            color: #044688;
+        }
+
+        .grand-total .totals-label,
+        .grand-total .totals-value {
+            background: #eeeeef;
+            color: #044688 !important;
+        }
+
+        .bank-details {
+            color: #044688;
         }
 
         .company-info {
@@ -730,7 +758,7 @@
                     <!-- DATOS BANCARIOS -->
                     <td style="width:55%; vertical-align:bottom;">
 
-                        <table style="width:260px;border-collapse:collapse;border:1px solid #4a4d55;margin-top:15px;">
+                        <table class="bank-details" style="width:260px;border-collapse:collapse;border:1px solid #4a4d55;margin-top:15px;">
 
                             <tr>
                                 <td style="padding:6px 8px;">

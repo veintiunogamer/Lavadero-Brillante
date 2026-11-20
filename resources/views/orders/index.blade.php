@@ -33,7 +33,7 @@
                 <button :class="currentTab === 3 ? 'nav-link active' : 'nav-link'" id="completed-tab" @click="changeTab(3)" type="button" role="tab" aria-controls="completed" :aria-selected="currentTab === 3"><i class="fa-solid fa-check-circle me-2"></i>Terminados</button>
             </li>
 
-            @if(auth()->user()->isAdmin())
+            @if(auth()->user()->canViewArchivedOrders())
             <li class="nav-item" role="presentation">
                 <button :class="currentTab === 4 ? 'nav-link active' : 'nav-link'" id="archived-tab" @click="changeTab(4)" type="button" role="tab" aria-controls="archived" :aria-selected="currentTab === 4"><i class="fa-solid fa-box-archive me-2"></i>Archivadas</button>
             </li>
@@ -240,7 +240,7 @@
                                         <i class="fa-solid fa-exchange-alt"></i>
                                     </button>
 
-                                    <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary" title="Editar" x-show="currentTab !== 4">
+                                    <a :href="'/orders/' + order.id + '/edit'" class="btn btn-primary order-edit-btn" title="Editar" x-show="currentTab !== 4">
                                         <i class="fa-solid fa-edit"></i>
                                     </a>
 
@@ -252,7 +252,7 @@
                                     <button class="btn btn-danger text-white rounded-end" @click="openArchiveModal(order)" title="Archivar orden" x-show="currentTab !== 4 && [1, 4].includes(Number(order.status))">
                                         <i class="fa-solid fa-box-archive"></i>
                                     </button>
-                                    <button class="btn btn-outline-success" @click="restoreOrder(order)" title="Restaurar orden" x-show="currentTab === 4">
+                                    <button class="btn btn-success text-white restore-order-btn" @click="restoreOrder(order)" title="Restaurar orden" x-show="currentTab === 4">
                                         <i class="fa-solid fa-rotate-left"></i>
                                     </button>
                                     @endif

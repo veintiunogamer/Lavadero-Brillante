@@ -1206,6 +1206,25 @@ hr {
     color: var(--color-negro);
 }
 
+#agendamiento-root .order-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+#agendamiento-root .restore-order-btn {
+    color: #fff !important;
+    border-color: var(--bs-success, #198754) !important;
+    border-radius: 0.375rem !important;
+}
+
+/* Aumenta ligeramente la altura de los controles del formulario principal sin cambiar su ancho. */
+#orders-root button,
+#orders-root .btn {
+    min-height: 42px;
+}
+
 .citas-tabs {
     display: flex;
     gap: 0.75rem;
@@ -1218,6 +1237,7 @@ hr {
 
 .citas-tab {
     flex: 1;
+    min-height: 46px;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 8px;
