@@ -55,6 +55,11 @@ window.agendamientoApp = function() {
          * Inicializa el componente y carga las órdenes
          */
         async init() {
+            const requestedTab = new URLSearchParams(window.location.search).get('tab');
+            if (requestedTab === 'archived') {
+                this.currentTab = 4;
+            }
+
             await this.loadOrders(this.currentTab);
         },
 

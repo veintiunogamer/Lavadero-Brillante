@@ -233,7 +233,6 @@
             <td style="width:50%; vertical-align:top;">
                 <div class="brand-blue">LAVADERO</div>
                 <div class="brand-orange">BRILLANTE</div>
-                <div class="brand-owner">Eusebio Borrego Lau</div>
                 <div class="brand-info">NIF: 28614307F</div>
                 <div class="brand-info">Calle Dr. Fleming, 21</div>
                 <div class="brand-info">46960 Aldaya</div>

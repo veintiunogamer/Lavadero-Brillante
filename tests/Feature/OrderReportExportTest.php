@@ -126,7 +126,6 @@ class OrderReportExportTest extends TestCase
             'report' => $report,
             'company' => [
                 'name' => 'Lavadero Brillante',
-                'owner' => 'Eusebio Borrego Lau',
                 'nif' => '28614307F',
                 'address' => 'Calle Dr. Fleming, 21',
                 'city' => '46960 Aldaya',
@@ -369,7 +368,6 @@ class OrderReportExportTest extends TestCase
             'report' => $report,
             'company' => [
                 'name' => 'Lavadero Brillante',
-                'owner' => 'Eusebio Borrego Lau',
                 'nif' => '28614307F',
                 'address' => 'Calle Dr. Fleming, 21',
                 'city' => '46960 Aldaya',
@@ -459,7 +457,6 @@ class OrderReportExportTest extends TestCase
             'clients' => collect([$client]),
             'company' => [
                 'name' => 'Lavadero Brillante',
-                'owner' => 'Eusebio Borrego Lau',
                 'nif' => '28614307F',
                 'address' => 'Calle Dr. Fleming, 21',
                 'city' => '46960 Aldaya',

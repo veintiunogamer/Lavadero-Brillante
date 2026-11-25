@@ -703,6 +703,12 @@
                         <i class="fa-solid fa-list-check icon color-blue"></i>
                         Registro de Citas
                     </h2>
+                    @if(auth()->user()->canViewArchivedOrders())
+                    <a href="{{ route('orders.index', ['tab' => 'archived']) }}" class="btn btn-outline-primary">
+                        <i class="fa-solid fa-box-archive me-1"></i>
+                        Archivados
+                    </a>
+                    @endif
                 </div>
 
                 <!-- Tabs para filtrar entre citas pendientes y historial -->
@@ -908,6 +914,14 @@
                                                 <i class="fa-solid fa-print"></i>
                                             </button>
 
+                                            @if(auth()->user()->canViewArchivedOrders())
+                                            <button @click="openArchiveModal(order)" class="btn btn-danger"
+                                                title="Archivar orden"
+                                                x-show="[1, 4].includes(Number(order.status))">
+                                                <i class="fa-solid fa-box-archive"></i>
+                                            </button>
+                                            @endif
+
                                         </div>
                                     </td>
                                 </tr>
@@ -938,6 +952,7 @@
         @include('orders.modals._change-status')
         @include('orders.modals._select-status-type')
         @include('orders.modals._change-payment')
+        @include('orders.modals._archive-order')
 
         <!-- Modal Factura -->
         <div x-cloak x-show="showInvoiceModal" x-transition.opacity class="invoice-modal-backdrop"

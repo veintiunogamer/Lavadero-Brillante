@@ -93,6 +93,10 @@ function createOrderFormApp() {
         newPaymentStatus: null,
         paymentPartialAmount: null,
         changingPayment: false,
+        showArchiveModal: false,
+        archiveModalOrder: null,
+        archiveReason: '',
+        archiving: false,
         showInvoiceModal: false,
         invoiceOrderId: null,
 
@@ -870,6 +874,50 @@ function createOrderFormApp() {
 
             } finally {
                 this.changingStatus = false;
+            }
+        },
+
+        openArchiveModal(order) {
+            this.archiveModalOrder = order;
+            this.archiveReason = '';
+            this.showArchiveModal = true;
+        },
+
+        closeArchiveModal() {
+            this.showArchiveModal = false;
+            this.archiveModalOrder = null;
+            this.archiveReason = '';
+        },
+
+        async confirmArchive() {
+            if (!this.archiveModalOrder || this.archiveReason.trim().length < 5 || this.archiving) return;
+
+            this.archiving = true;
+            try {
+                const response = await fetch(`/orders/${this.archiveModalOrder.id}/archive`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                    },
+                    body: JSON.stringify({ reason: this.archiveReason.trim() })
+                });
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    window.notyf?.error(result.message || 'No se pudo archivar la orden');
+                    return;
+                }
+
+                window.notyf?.success(result.message || 'Orden archivada');
+                this.closeArchiveModal();
+                await this.loadOrders();
+            } catch (error) {
+                console.error('Error al archivar orden:', error);
+                window.notyf?.error('Error al archivar la orden');
+            } finally {
+                this.archiving = false;
             }
         },
 

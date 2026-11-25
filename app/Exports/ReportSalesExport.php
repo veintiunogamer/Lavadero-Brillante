@@ -53,6 +53,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         $headings[1] = 'Entrada';
         array_splice($headings, 2, 0, ['Salida']);
         $headings[3] = 'Nombre';
+        $headings[6] = 'Modelo';
         $headings[10] = 'Importe';
         $headings[12] = 'Descuento';
         $headings[13] = 'Estado de pago';
@@ -88,6 +89,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
         $entry = $this->excelTime($parts[0] ?? '--');
         $exit = $this->excelTime($parts[1] ?? '--');
         array_splice($row, 1, 0, [$entry, $exit]);
+        $row[6] = optional($order->client)->brand ?: '--';
         if ($this->hideDate) {
             array_shift($row);
         }
@@ -133,16 +135,14 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                 $sheet->mergeCells("C1:{$lastColumn}1");
                 $sheet->mergeCells("C2:{$lastColumn}2");
                 $sheet->mergeCells("C3:{$lastColumn}3");
-                $sheet->mergeCells("C4:{$lastColumn}4");
 
                 $sheet->setCellValue('C1', $this->company['name'] ?? 'Lavadero Brillante');
-                $sheet->setCellValue('C2', $this->company['owner'] ?? '');
-                $sheet->setCellValue('C3', ($this->company['nif'] ?? '') . ' | ' . ($this->company['address'] ?? '') . ' | ' . ($this->company['city'] ?? ''));
-                $sheet->setCellValue('C4', 'Fecha: ' . $this->periodLabel);
+                $sheet->setCellValue('C2', ($this->company['nif'] ?? '') . ' | ' . ($this->company['address'] ?? '') . ' | ' . ($this->company['city'] ?? ''));
+                $sheet->setCellValue('C3', 'Fecha: ' . $this->periodLabel);
 
                 $sheet->getStyle('C1')->getFont()->setBold(true)->setSize(16);
-                $sheet->getStyle('C2:C4')->getFont()->setSize(10);
-                $sheet->getStyle('C1:C4')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle('C2:C3')->getFont()->setSize(10);
+                $sheet->getStyle('C1:C3')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
                 $sheet->getRowDimension(1)->setRowHeight(30);
                 $sheet->getRowDimension(2)->setRowHeight(20);
@@ -237,25 +237,32 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
 
     public function columnWidths(): array
     {
-        return [
-            'A' => $this->hideDate ? 12 : 16, // Fecha
-            'B' => 12, // Entrada
-            'C' => 12, // Salida
-            'D' => 30, // Nombre
-            'E' => 14, // Teléfono
-            'F' => 14, // Matrícula
-            'G' => 26, // Categoría
-            'H' => 9,  // Flota
-            'I' => 50, // Servicios
-            'J' => 20, // Detallador
-            'K' => 13, // Importe
-            'L' => 11, // IVA
-            'M' => 14, // Descuento
-            'N' => 18, // Estado de pago
-            'O' => 18, // Forma de pago
-            'P' => 13, // Estado
-            'Q' => 13, // Total
-            'R' => 60, // Observaciones
+        $widths = [
+            16, // Fecha
+            12, // Entrada
+            12, // Salida
+            42, // Nombre
+            14, // Teléfono
+            14, // Matrícula
+            26, // Modelo
+            9,  // Flota
+            68, // Servicios
+            20, // Detallador
+            13, // Importe
+            11, // IVA
+            22, // Descuento
+            28, // Estado de pago
+            18, // Forma de pago
+            13, // Estado
+            13, // Total
+            90, // Observaciones
         ];
+
+        if ($this->hideDate) {
+            array_shift($widths);
+        }
+
+        $columns = range('A', chr(ord('A') + count($widths) - 1));
+        return array_combine($columns, $widths);
     }
 }

@@ -925,6 +925,8 @@ class OrderController extends Controller
     /** Lista órdenes archivadas para que un administrador pueda restaurarlas. */
     public function archived()
     {
+        abort_unless(auth()->user()?->canViewArchivedOrders(), 403);
+
         $orders = Order::onlyTrashed()
             ->with(['client', 'services', 'user', 'payments', 'invoice', 'deletedByUser'])
             ->orderByDesc('deleted_at')
@@ -940,6 +942,8 @@ class OrderController extends Controller
     /** Archiva lógicamente una orden, preservando sus relaciones y trazabilidad. */
     public function archive(Request $request, string $order)
     {
+        abort_unless($request->user()?->canViewArchivedOrders(), 403);
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'min:5', 'max:500'],
         ]);
