@@ -49,15 +49,11 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
 
     public function headings(): array
     {
-        $headings = OrderReportService::headings();
-        $headings[1] = 'Entrada';
-        array_splice($headings, 2, 0, ['Salida']);
-        $headings[3] = 'Nombre';
-        $headings[6] = 'Modelo';
-        $headings[10] = 'Importe';
-        $headings[12] = 'Descuento';
-        $headings[13] = 'Estado de pago';
-        $headings[14] = 'Forma de pago';
+        $headings = [
+            'Fecha', 'Entrada', 'Salida', 'Nombre', 'Teléfono', 'Matrícula',
+            'Categoría', 'Flota', 'Servicios', 'Importe', 'IVA', 'Descuento',
+            'Estado de pago', 'Forma de pago', 'Estado', 'Total',
+        ];
         if ($this->hideDate) {
             array_shift($headings);
         }
@@ -77,6 +73,8 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
     public function map($order): array
     {
         $row = array_values($this->reportService->row($order));
+        array_splice($row, 16, 1); // Observaciones: bloque inferior.
+        array_splice($row, 8, 1);  // Detallador: bloque inferior.
         if (!empty($row[0]) && $row[0] !== '--') {
             $date = \DateTime::createFromFormat('!d/m/Y', $row[0]);
             if ($date !== false) {
@@ -129,7 +127,7 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                 $dataEndRow = 6 + $this->orders->count();
                 $summaryStartRow = $dataEndRow + 2;
 
-                $lastColumn = $this->hideDate ? 'Q' : 'R';
+                $lastColumn = $this->hideDate ? 'O' : 'P';
 
                 $sheet->mergeCells('A1:B4');
                 $sheet->mergeCells("C1:{$lastColumn}1");
@@ -194,6 +192,9 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
 
                     $sheet->getStyle("A{$row}:{$lastColumn}{$row}")->getFont()->setBold(true);
                     $sheet->getRowDimension($row)->setRowHeight(24);
+                    $sheet->getStyle("A{$row}:{$lastColumn}{$row}")->getAlignment()
+                        ->setVertical(Alignment::VERTICAL_CENTER)
+                        ->setIndent(1);
                     $sheet->getStyle("A{$row}:{$lastColumn}{$row}")->getBorders()->getAllBorders()
                         ->setBorderStyle(Border::BORDER_THIN)
                         ->getColor()->setRGB('D1D5DB');
@@ -207,6 +208,37 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
                     }
 
                     $row++;
+                }
+
+                // Observaciones fuera de la tabla filtrable, después del resumen.
+                // Deja dos filas vacías entre el resumen de totales y el detalle.
+                $detailsStartRow = $row + 3;
+                $sheet->setCellValue("A{$detailsStartRow}", 'NOMBRE');
+                $observationsEndColumn = $this->hideDate ? 'D' : 'E';
+                $sheet->mergeCells("B{$detailsStartRow}:{$observationsEndColumn}{$detailsStartRow}");
+                $sheet->setCellValue("B{$detailsStartRow}", 'OBSERVACIONES');
+                $sheet->getStyle("A{$detailsStartRow}:{$observationsEndColumn}{$detailsStartRow}")->getFont()
+                    ->setBold(true)->getColor()->setRGB('FFFFFF');
+                $sheet->getStyle("A{$detailsStartRow}:{$observationsEndColumn}{$detailsStartRow}")->getFill()->setFillType(Fill::FILL_SOLID);
+                $sheet->getStyle("A{$detailsStartRow}:{$observationsEndColumn}{$detailsStartRow}")->getFill()->getStartColor()->setRGB('000000');
+                $sheet->getStyle("A{$detailsStartRow}:{$observationsEndColumn}{$detailsStartRow}")->getAlignment()
+                    ->setVertical(Alignment::VERTICAL_CENTER)->setIndent(1);
+                $sheet->getRowDimension($detailsStartRow)->setRowHeight(24);
+
+                $detailsRow = $detailsStartRow + 1;
+                foreach ($this->orders as $order) {
+                    $name = optional($order->user)->name ?? '--';
+                    $observations = trim((string) ($order->vehicle_notes ?? '')) ?: '--';
+                    $sheet->setCellValue("A{$detailsRow}", $name);
+                    $sheet->mergeCells("B{$detailsRow}:{$observationsEndColumn}{$detailsRow}");
+                    $sheet->setCellValue("B{$detailsRow}", $observations);
+                    $sheet->getStyle("A{$detailsRow}:{$observationsEndColumn}{$detailsRow}")->getBorders()->getAllBorders()
+                        ->setBorderStyle(Border::BORDER_THIN)->getColor()->setRGB('D1D5DB');
+                    $sheet->getStyle("A{$detailsRow}")->getFont()->setBold(true);
+                    $sheet->getStyle("A{$detailsRow}:{$observationsEndColumn}{$detailsRow}")->getAlignment()->setVertical(Alignment::VERTICAL_TOP)->setWrapText(true);
+                    $sheet->getStyle("A{$detailsRow}:{$observationsEndColumn}{$detailsRow}")->getAlignment()->setIndent(1);
+                    $sheet->getRowDimension($detailsRow)->setRowHeight(30);
+                    $detailsRow++;
                 }
 
                 // Horas de entrada y salida centradas y la fila de órdenes alineada a la izquierda.
@@ -244,10 +276,10 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
             42, // Nombre
             14, // Teléfono
             14, // Matrícula
-            26, // Modelo
+            26, // Categoría
             9,  // Flota
             68, // Servicios
-            20, // Detallador
+            20, // Detallador (sección inferior)
             13, // Importe
             11, // IVA
             22, // Descuento
@@ -255,8 +287,9 @@ class ReportSalesExport implements FromCollection, WithHeadings, WithMapping, Sh
             18, // Forma de pago
             13, // Estado
             13, // Total
-            90, // Observaciones
         ];
+
+        array_splice($widths, 9, 1);
 
         if ($this->hideDate) {
             array_shift($widths);
