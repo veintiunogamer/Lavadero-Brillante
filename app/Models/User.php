@@ -90,4 +90,15 @@ class User extends Authenticatable
     {
         return $this->role && $this->role->type == Role::TYPE_ADMIN;
     }
+
+    /** Permite a administradores y cuentas de soporte consultar órdenes archivadas. */
+    public function canViewArchivedOrders(): bool
+    {
+        $username = Str::lower(trim((string) $this->username));
+        $roleName = Str::lower(trim((string) ($this->role?->name ?? '')));
+
+        return $this->isAdmin()
+            || $username === 'soporte'
+            || in_array($roleName, ['soporte', 'support'], true);
+    }
 }

@@ -99,16 +99,14 @@ class ReportClientsExport implements FromCollection, WithHeadings, WithMapping, 
                 $sheet->mergeCells('C1:H1');
                 $sheet->mergeCells('C2:H2');
                 $sheet->mergeCells('C3:H3');
-                $sheet->mergeCells('C4:H4');
 
                 $sheet->setCellValue('C1', $this->company['name'] ?? 'Lavadero Brillante');
-                $sheet->setCellValue('C2', $this->company['owner'] ?? '');
-                $sheet->setCellValue('C3', ($this->company['nif'] ?? '') . ' | ' . ($this->company['address'] ?? '') . ' | ' . ($this->company['city'] ?? ''));
-                $sheet->setCellValue('C4', 'Periodo: ' . $this->periodLabel);
+                $sheet->setCellValue('C2', ($this->company['nif'] ?? '') . ' | ' . ($this->company['address'] ?? '') . ' | ' . ($this->company['city'] ?? ''));
+                $sheet->setCellValue('C3', 'Periodo: ' . $this->periodLabel);
 
                 $sheet->getStyle('C1')->getFont()->setBold(true)->setSize(16);
-                $sheet->getStyle('C2:C4')->getFont()->setSize(10);
-                $sheet->getStyle('C1:C4')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle('C2:C3')->getFont()->setSize(10);
+                $sheet->getStyle('C1:C3')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
                 $sheet->getRowDimension(1)->setRowHeight(30);
                 $sheet->getRowDimension(2)->setRowHeight(20);
